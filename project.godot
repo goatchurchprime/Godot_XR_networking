@@ -1,0 +1,179 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[ {
+"base": "MovementProvider",
+"class": "Function_ClimbMovement",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/functions/Function_Climb_movement.gd"
+}, {
+"base": "MovementProvider",
+"class": "Function_DirectMovement",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/functions/Function_Direct_movement.gd"
+}, {
+"base": "MovementProvider",
+"class": "Function_Glide",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/functions/Function_Glide_movement.gd"
+}, {
+"base": "MovementProvider",
+"class": "Function_Jump",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/functions/Function_Jump_movement.gd"
+}, {
+"base": "Area",
+"class": "Function_Pickup",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/functions/Function_Pickup.gd"
+}, {
+"base": "MovementProvider",
+"class": "Function_WindMovement",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/functions/Function_Wind_movement.gd"
+}, {
+"base": "Node",
+"class": "GroundPhysics",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/overrides/GroundPhysics.gd"
+}, {
+"base": "Resource",
+"class": "GroundPhysicsSettings",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/overrides/GroundPhysicsSettings.gd"
+}, {
+"base": "Node",
+"class": "MovementProvider",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/functions/MovementProvider.gd"
+}, {
+"base": "Reference",
+"class": "NCONSTANTS",
+"language": "GDScript",
+"path": "res://addons/player-networking/NCONSTANTS.gd"
+}, {
+"base": "Reference",
+"class": "NCONSTANTS2",
+"language": "GDScript",
+"path": "res://NCONSTANTS2.gd"
+}, {
+"base": "Spatial",
+"class": "Object_climbable",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/objects/Object_climbable.gd"
+}, {
+"base": "OculusTracker",
+"class": "OculusHandTracker",
+"language": "GDScript",
+"path": "res://addons/godot_ovrmobile/example_scenes/oculus_hand_tracker.gd"
+}, {
+"base": "OculusTracker",
+"class": "OculusTouchController",
+"language": "GDScript",
+"path": "res://addons/godot_ovrmobile/example_scenes/oculus_touch_controller.gd"
+}, {
+"base": "ARVRController",
+"class": "OculusTracker",
+"language": "GDScript",
+"path": "res://addons/godot_ovrmobile/example_scenes/oculus_tracker.gd"
+}, {
+"base": "Node",
+"class": "PlayerBody",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/assets/PlayerBody.gd"
+}, {
+"base": "Reference",
+"class": "VelocityAverager",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/misc/Velocity_Averager.gd"
+}, {
+"base": "Reference",
+"class": "VelocityAveragerLinear",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/misc/Velocity_Averager_Linear.gd"
+}, {
+"base": "CanvasLayer",
+"class": "VirtualKeyboard2D",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/objects/keyboard/VirtualKeyboard_2D.gd"
+}, {
+"base": "Area",
+"class": "WindArea",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/objects/Wind_area.gd"
+}, {
+"base": "Area",
+"class": "XRToolsInteractableArea",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/objects/Interactable_area.gd"
+}, {
+"base": "PhysicsBody",
+"class": "XRToolsInteractableBody",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/objects/Interactable_body.gd"
+}, {
+"base": "RigidBody",
+"class": "XRToolsPickable",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/objects/Object_pickable.gd"
+} ]
+_global_script_class_icons={
+"Function_ClimbMovement": "",
+"Function_DirectMovement": "",
+"Function_Glide": "",
+"Function_Jump": "",
+"Function_Pickup": "",
+"Function_WindMovement": "",
+"GroundPhysics": "",
+"GroundPhysicsSettings": "",
+"MovementProvider": "",
+"NCONSTANTS": "",
+"NCONSTANTS2": "",
+"Object_climbable": "",
+"OculusHandTracker": "",
+"OculusTouchController": "",
+"OculusTracker": "",
+"PlayerBody": "",
+"VelocityAverager": "",
+"VelocityAveragerLinear": "",
+"VirtualKeyboard2D": "",
+"WindArea": "",
+"XRToolsInteractableArea": "",
+"XRToolsInteractableBody": "",
+"XRToolsPickable": ""
+}
+
+[application]
+
+config/name="Godot XR Networking"
+run/main_scene="res://Main.tscn"
+config/icon="res://icon.png"
+
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/godot-xr-tools/plugin.cfg" )
+
+[gdnative]
+
+singletons=[ "res://addons/godot_ovrmobile/godot_ovrmobile.gdnlib" ]
+
+[global]
+
+etc=false
+
+[physics]
+
+common/enable_pause_aware_picking=true
+
+[rendering]
+
+quality/driver/driver_name="GLES2"
+vram_compression/import_etc=true
+environment/default_environment="res://default_env.tres"

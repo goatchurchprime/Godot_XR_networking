@@ -1,0 +1,62 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://addons/godot-xr-tools/assets/LeftHand.glb" type="PackedScene" id=1]
+[ext_resource path="res://VRPlayerAvatar.gd" type="Script" id=2]
+[ext_resource path="res://addons/godot-xr-tools/assets/HandBlendTree.tres" type="AnimationNodeBlendTree" id=4]
+
+[sub_resource type="CubeMesh" id=1]
+size = Vector3( 0.2, 0.1, 0.1 )
+
+[sub_resource type="SpatialMaterial" id=2]
+albedo_color = Color( 0.105882, 0.188235, 0.509804, 1 )
+
+[sub_resource type="SphereMesh" id=3]
+radius = 0.14
+height = 0.3
+radial_segments = 24
+rings = 24
+
+[sub_resource type="SpatialMaterial" id=4]
+albedo_color = Color( 0.741176, 0.623529, 0.584314, 1 )
+
+[node name="VRPlayerAvatar" type="Spatial"]
+script = ExtResource( 2 )
+
+[node name="HeadCam" type="CSGMesh" parent="."]
+mesh = SubResource( 1 )
+material = SubResource( 2 )
+
+[node name="skullcomponent" type="CSGMesh" parent="HeadCam"]
+transform = Transform( 0.9, 0, 0, 0, 1, 0, 0, 0, 0.98, 0, -0.051, 0.085 )
+mesh = SubResource( 3 )
+material = SubResource( 4 )
+
+[node name="HandLeft" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.219986, -0.306672, -0.155452 )
+
+[node name="LeftHand" type="Spatial" parent="HandLeft"]
+
+[node name="LeftHand" parent="HandLeft/LeftHand" instance=ExtResource( 1 )]
+transform = Transform( -0.5, 0, 4.37114e-08, 0, 0.5, 0, -4.37114e-08, 0, -0.5, 0, 0, 0 )
+
+[node name="AnimationTree" type="AnimationTree" parent="HandLeft/LeftHand"]
+tree_root = ExtResource( 4 )
+anim_player = NodePath("../LeftHand/AnimationPlayer")
+active = true
+parameters/Grip/blend_amount = 0.0
+parameters/Trigger/blend_amount = 0.0
+
+[node name="HandRight" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33106, -0.311561, -0.170176 )
+
+[node name="RightHand" type="Spatial" parent="HandRight"]
+
+[node name="RightHand" parent="HandRight/RightHand" instance=ExtResource( 1 )]
+transform = Transform( 0.5, 4.37114e-08, 0, -4.37114e-08, 0.5, 0, 0, 0, -0.5, 0, 0, 0 )
+
+[node name="AnimationTree" type="AnimationTree" parent="HandRight/RightHand"]
+tree_root = ExtResource( 4 )
+anim_player = NodePath("../RightHand/AnimationPlayer")
+active = true
+parameters/Grip/blend_amount = 0.0
+parameters/Trigger/blend_amount = 0.0
