@@ -56,10 +56,13 @@ func avatarinitdata():
 					 }
 	return avatardata
 	
-static func changethinnedframedatafordoppelganger(fd, doppelnetoffset):
+static func changethinnedframedatafordoppelganger(fd, doppelnetoffset, isframe0):
 	fd[NCONSTANTS.CFI_TIMESTAMP] += doppelnetoffset
 	fd[NCONSTANTS.CFI_TIMESTAMPPREV] += doppelnetoffset
 	if fd.has(NCONSTANTS2.CFI_VRORIGIN_POSITION):
-		fd[NCONSTANTS2.CFI_VRORIGIN_POSITION].z += -2
+		if isframe0:
+			fd[NCONSTANTS2.CFI_VRORIGIN_POSITION].z += -2
+		else:
+			fd.erase(NCONSTANTS2.CFI_VRORIGIN_POSITION)
 	if fd.has(NCONSTANTS2.CFI_VRORIGIN_ROTATION):
 		fd[NCONSTANTS2.CFI_VRORIGIN_ROTATION] *= Quat(Vector3(0, 1, 0), deg2rad(180))

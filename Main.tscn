@@ -33,15 +33,15 @@ script = ExtResource( 1 )
 [node name="ARVROrigin" type="ARVROrigin" parent="."]
 
 [node name="ARVRCamera" type="ARVRCamera" parent="ARVROrigin"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.58621, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.80099, 0 )
 
 [node name="vr_common_shader_cache" parent="ARVROrigin/ARVRCamera" instance=ExtResource( 2 )]
 
 [node name="ARVRController_Left" type="ARVRController" parent="ARVROrigin"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.490194, 2.33713, -1.39571 )
+visible = false
 
 [node name="Function_Direct_movement" parent="ARVROrigin/ARVRController_Left" instance=ExtResource( 5 )]
-move_type = 1
 
 [node name="LeftHand" parent="ARVROrigin/ARVRController_Left" instance=ExtResource( 7 )]
 
@@ -72,7 +72,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0 )
 shape = SubResource( 6 )
 
 [node name="Viewport2Din3D" parent="." instance=ExtResource( 8 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0365348, 2.37673, -2.6145 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0365348, 1.73924, -2.6145 )
 viewport_size = Vector2( 600, 400 )
 scene = ExtResource( 11 )
 
