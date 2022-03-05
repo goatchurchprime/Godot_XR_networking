@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://addons/godot-xr-tools/misc/VR_Common_Shader_Cache.tscn" type="PackedScene" id=2]
@@ -11,7 +11,6 @@
 [ext_resource path="res://VRPlayerAvatar.tscn" type="PackedScene" id=9]
 [ext_resource path="res://addons/godot-xr-tools/assets/RightHand.tscn" type="PackedScene" id=10]
 [ext_resource path="res://addons/player-networking/NetworkGateway.tscn" type="PackedScene" id=11]
-[ext_resource path="res://addons/godot-xr-tools/objects/Virtual_Keyboard.tscn" type="PackedScene" id=12]
 
 [sub_resource type="PlaneMesh" id=2]
 size = Vector2( 20, 20 )
@@ -42,6 +41,8 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.490194, 2.33713, -1.39571 )
 visible = false
 
 [node name="Function_Direct_movement" parent="ARVROrigin/ARVRController_Left" instance=ExtResource( 5 )]
+max_speed = 4.0
+move_type = 1
 
 [node name="LeftHand" parent="ARVROrigin/ARVRController_Left" instance=ExtResource( 7 )]
 
@@ -80,6 +81,3 @@ scene = ExtResource( 11 )
 
 [node name="VRPlayerAvatar" parent="Players" instance=ExtResource( 9 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.32787, 1.91254 )
-
-[node name="Virtual_Keyboard" parent="." instance=ExtResource( 12 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.07657, -2.41354 )
