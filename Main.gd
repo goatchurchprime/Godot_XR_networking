@@ -41,3 +41,4 @@ func _input(event):
 func _physics_process(delta):
 	if $ARVROrigin.transform.origin.y < -30:
 		$ARVROrigin.transform.origin = Vector3(0, 2, 0)
+		$SportBall.transform.origin = Vector3(0, 2, -3)
