@@ -44,6 +44,7 @@ max_speed = 4.0
 move_type = 1
 
 [node name="LeftHand" parent="ARVROrigin/ARVRController_Left" instance=ExtResource( 7 )]
+visible = false
 
 [node name="ARVRController_Right" type="ARVRController" parent="ARVROrigin"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.532531, 2.28761, -1.40461 )
@@ -54,6 +55,7 @@ teleport_button = 7
 camera = NodePath("../../ARVRCamera")
 
 [node name="RightHand" parent="ARVROrigin/ARVRController_Right" instance=ExtResource( 10 )]
+visible = false
 
 [node name="Function_pointer" parent="ARVROrigin/ARVRController_Right" instance=ExtResource( 6 )]
 

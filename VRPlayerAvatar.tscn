@@ -35,7 +35,6 @@ material = SubResource( 4 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.219986, -0.306672, -0.155452 )
 
 [node name="LeftHand" type="Spatial" parent="HandLeft"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0 )
 
 [node name="LeftHand" parent="HandLeft/LeftHand" instance=ExtResource( 1 )]
 transform = Transform( -0.5, 0, 4.37114e-08, 0, 0.5, 0, -4.37114e-08, 0, -0.5, 0, 0, 0 )
@@ -51,7 +50,6 @@ parameters/Trigger/blend_amount = 0.0
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33106, -0.311561, -0.170176 )
 
 [node name="RightHand" type="Spatial" parent="HandRight"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0 )
 
 [node name="RightHand" parent="HandRight/RightHand" instance=ExtResource( 1 )]
 transform = Transform( 0.5, 4.37114e-08, 0, -4.37114e-08, 0.5, 0, 0, 0, -0.5, 0, 0, 0 )
