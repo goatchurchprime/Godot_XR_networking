@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=28 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://addons/godot-xr-tools/misc/VR_Common_Shader_Cache.tscn" type="PackedScene" id=2]
@@ -12,6 +12,8 @@
 [ext_resource path="res://addons/godot-xr-tools/assets/RightHand.tscn" type="PackedScene" id=10]
 [ext_resource path="res://addons/player-networking/NetworkGateway.tscn" type="PackedScene" id=11]
 [ext_resource path="res://addons/godot-xr-tools/objects/Object_pickable.gd" type="Script" id=12]
+[ext_resource path="res://addons/godot-xr-tools/functions/Function_Pickup.tscn" type="PackedScene" id=13]
+[ext_resource path="res://click04.wav" type="AudioStream" id=14]
 
 [sub_resource type="PlaneMesh" id=2]
 size = Vector2( 20, 20 )
@@ -28,7 +30,7 @@ albedo_texture = SubResource( 4 )
 extents = Vector3( 10, 0.1, 10 )
 
 [sub_resource type="PhysicsMaterial" id=9]
-bounce = 0.46
+bounce = 0.51
 
 [sub_resource type="SphereShape" id=7]
 margin = 0.01
@@ -39,6 +41,23 @@ radius = 0.1
 height = 0.2
 radial_segments = 16
 rings = 8
+
+[sub_resource type="BoxShape" id=10]
+extents = Vector3( 10, 10, 1 )
+
+[sub_resource type="CubeMesh" id=11]
+size = Vector3( 20, 20, 2 )
+
+[sub_resource type="OpenSimplexNoise" id=12]
+
+[sub_resource type="NoiseTexture" id=13]
+seamless = true
+noise = SubResource( 12 )
+
+[sub_resource type="SpatialMaterial" id=14]
+albedo_color = Color( 0.980392, 0.843137, 0.858824, 1 )
+albedo_texture = SubResource( 13 )
+uv1_scale = Vector3( 10, 20, 1 )
 
 [node name="Main" type="Spatial"]
 script = ExtResource( 1 )
@@ -60,6 +79,8 @@ move_type = 1
 [node name="LeftHand" parent="ARVROrigin/ARVRController_Left" instance=ExtResource( 7 )]
 visible = false
 
+[node name="Function_Pickup" parent="ARVROrigin/ARVRController_Left" instance=ExtResource( 13 )]
+
 [node name="ARVRController_Right" type="ARVRController" parent="ARVROrigin"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.532531, 2.28761, -1.40461 )
 controller_id = 2
@@ -72,17 +93,21 @@ camera = NodePath("../../ARVRCamera")
 visible = false
 
 [node name="Function_pointer" parent="ARVROrigin/ARVRController_Right" instance=ExtResource( 6 )]
+show_target = true
+collision_mask = 520191
+
+[node name="Function_Pickup" parent="ARVROrigin/ARVRController_Right" instance=ExtResource( 13 )]
 
 [node name="PlayerBody" parent="ARVROrigin" instance=ExtResource( 4 )]
 player_radius = 0.3
 
-[node name="StaticBody" type="StaticBody" parent="."]
+[node name="Floor" type="StaticBody" parent="."]
 
-[node name="MeshInstance" type="MeshInstance" parent="StaticBody"]
+[node name="MeshInstance" type="MeshInstance" parent="Floor"]
 mesh = SubResource( 2 )
 material/0 = SubResource( 5 )
 
-[node name="CollisionShape" type="CollisionShape" parent="StaticBody"]
+[node name="CollisionShape" type="CollisionShape" parent="Floor"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0 )
 shape = SubResource( 6 )
 
@@ -98,8 +123,13 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.32787, 1.91254 )
 
 [node name="SportBall" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.54476, 1.91887, -4.03967 )
+collision_layer = 4097
+collision_mask = 4097
 physics_material_override = SubResource( 9 )
-gravity_scale = 0.1
+contacts_reported = 1
+contact_monitor = true
+can_sleep = false
+angular_velocity = Vector3( 5, 0, 0 )
 script = ExtResource( 12 )
 reset_transform_on_pickup = false
 highlight_mesh_instance = null
@@ -110,3 +140,55 @@ shape = SubResource( 7 )
 [node name="MeshInstance" type="MeshInstance" parent="SportBall/CollisionShape"]
 mesh = SubResource( 8 )
 material/0 = null
+
+[node name="bouncesound" type="AudioStreamPlayer3D" parent="SportBall"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.54476, -1.91887, 4.03967 )
+stream = ExtResource( 14 )
+
+[node name="Wall" type="StaticBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10.3501 )
+visible = false
+
+[node name="CollisionShape" type="CollisionShape" parent="Wall"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.86959, 0 )
+shape = SubResource( 10 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Wall/CollisionShape"]
+mesh = SubResource( 11 )
+material/0 = SubResource( 14 )
+
+[node name="Wall4" type="StaticBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6.91089 )
+visible = false
+
+[node name="CollisionShape" type="CollisionShape" parent="Wall4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.86959, 0 )
+shape = SubResource( 10 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Wall4/CollisionShape"]
+mesh = SubResource( 11 )
+material/0 = SubResource( 14 )
+
+[node name="Wall2" type="StaticBody" parent="."]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -10.9296, 0, -3.38746 )
+visible = false
+
+[node name="CollisionShape" type="CollisionShape" parent="Wall2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.86959, 0 )
+shape = SubResource( 10 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Wall2/CollisionShape"]
+mesh = SubResource( 11 )
+material/0 = SubResource( 14 )
+
+[node name="Wall3" type="StaticBody" parent="."]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 9.63735, 0, -3.38746 )
+visible = false
+
+[node name="CollisionShape" type="CollisionShape" parent="Wall3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.86959, 0 )
+shape = SubResource( 10 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Wall3/CollisionShape"]
+mesh = SubResource( 11 )
+material/0 = SubResource( 14 )

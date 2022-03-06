@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://addons/godot-xr-tools/assets/LeftHand.glb" type="PackedScene" id=1]
 [ext_resource path="res://VRPlayerAvatar.gd" type="Script" id=2]
@@ -21,15 +21,23 @@ albedo_color = Color( 0.741176, 0.623529, 0.584314, 1 )
 
 [sub_resource type="CylinderShape" id=5]
 margin = 0.02
-radius = 0.2
+radius = 0.4
 height = 0.05
 
 [sub_resource type="CylinderMesh" id=6]
-top_radius = 0.2
-bottom_radius = 0.2
+top_radius = 0.4
+bottom_radius = 0.4
 height = 0.05
 radial_segments = 32
 rings = 0
+
+[sub_resource type="SpatialMaterial" id=7]
+albedo_color = Color( 0.501961, 0.45098, 0.160784, 1 )
+emission_enabled = true
+emission = Color( 0.964706, 0.956863, 0.054902, 1 )
+emission_energy = 1.0
+emission_operator = 0
+emission_on_uv2 = false
 
 [node name="VRPlayerAvatar" type="Spatial"]
 script = ExtResource( 2 )
@@ -74,7 +82,9 @@ parameters/Grip/blend_amount = 0.0
 parameters/Trigger/blend_amount = 0.0
 
 [node name="PaddleBody" type="KinematicBody" parent="HandRight"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.376662 )
+transform = Transform( 0.752357, 0.658755, 0, -0.658755, 0.752357, 0, 0, 0, 1, 0, 0, -0.575272 )
+collision_layer = 4096
+collision_mask = 4096
 
 [node name="CollisionShape" type="CollisionShape" parent="HandRight/PaddleBody"]
 transform = Transform( 0.704795, 0.709411, 0, -0.709411, 0.704795, 0, 0, 0, 1, 0, 0, 0 )
@@ -82,4 +92,4 @@ shape = SubResource( 5 )
 
 [node name="MeshInstance" type="MeshInstance" parent="HandRight/PaddleBody/CollisionShape"]
 mesh = SubResource( 6 )
-material/0 = null
+material/0 = SubResource( 7 )
