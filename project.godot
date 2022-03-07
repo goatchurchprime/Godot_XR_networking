@@ -168,7 +168,7 @@ enabled=PoolStringArray( "res://addons/godot-xr-tools/plugin.cfg" )
 
 [gdnative]
 
-singletons=[ "res://addons/godot_ovrmobile/godot_ovrmobile.gdnlib", "res://webrtc/webrtc.tres" ]
+singletons=[ "res://addons/godot-openxr/config/godot_openxr.gdnlib", "res://addons/godot_ovrmobile/godot_ovrmobile.gdnlib", "res://webrtc/webrtc.tres" ]
 
 [global]
 

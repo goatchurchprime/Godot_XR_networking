@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=2]
+[gd_scene load_steps=29 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://addons/godot-xr-tools/misc/VR_Common_Shader_Cache.tscn" type="PackedScene" id=2]
@@ -7,13 +7,14 @@
 [ext_resource path="res://addons/godot-xr-tools/functions/Function_Direct_movement.tscn" type="PackedScene" id=5]
 [ext_resource path="res://addons/godot-xr-tools/functions/Function_pointer.tscn" type="PackedScene" id=6]
 [ext_resource path="res://addons/godot-xr-tools/assets/LeftHand.tscn" type="PackedScene" id=7]
-[ext_resource path="res://addons/godot-xr-tools/objects/Viewport_2D_in_3D.tscn" type="PackedScene" id=8]
+[ext_resource path="res://addons/godot-openxr/config/OpenXRConfig.gdns" type="Script" id=8]
 [ext_resource path="res://VRPlayerAvatar.tscn" type="PackedScene" id=9]
 [ext_resource path="res://addons/godot-xr-tools/assets/RightHand.tscn" type="PackedScene" id=10]
 [ext_resource path="res://addons/player-networking/NetworkGateway.tscn" type="PackedScene" id=11]
 [ext_resource path="res://addons/godot-xr-tools/objects/Object_pickable.gd" type="Script" id=12]
 [ext_resource path="res://addons/godot-xr-tools/functions/Function_Pickup.tscn" type="PackedScene" id=13]
 [ext_resource path="res://click04.wav" type="AudioStream" id=14]
+[ext_resource path="res://addons/godot-xr-tools/objects/Viewport_2D_in_3D.tscn" type="PackedScene" id=15]
 
 [sub_resource type="PlaneMesh" id=2]
 size = Vector2( 20, 20 )
@@ -64,6 +65,9 @@ script = ExtResource( 1 )
 
 [node name="ARVROrigin" type="ARVROrigin" parent="."]
 
+[node name="XRConfiguration" type="Node" parent="ARVROrigin"]
+script = ExtResource( 8 )
+
 [node name="ARVRCamera" type="ARVRCamera" parent="ARVROrigin"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.80099, 0 )
 
@@ -111,7 +115,7 @@ material/0 = SubResource( 5 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0 )
 shape = SubResource( 6 )
 
-[node name="ViewportNetworkGateway" parent="." instance=ExtResource( 8 )]
+[node name="ViewportNetworkGateway" parent="." instance=ExtResource( 15 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0365348, 1.73924, -2.6145 )
 viewport_size = Vector2( 550, 400 )
 scene = ExtResource( 11 )
