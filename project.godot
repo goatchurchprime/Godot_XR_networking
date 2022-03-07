@@ -79,21 +79,6 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/godot-xr-tools/objects/Object_climbable.gd"
 }, {
-"base": "OculusTracker",
-"class": "OculusHandTracker",
-"language": "GDScript",
-"path": "res://addons/godot_ovrmobile/example_scenes/oculus_hand_tracker.gd"
-}, {
-"base": "OculusTracker",
-"class": "OculusTouchController",
-"language": "GDScript",
-"path": "res://addons/godot_ovrmobile/example_scenes/oculus_touch_controller.gd"
-}, {
-"base": "ARVRController",
-"class": "OculusTracker",
-"language": "GDScript",
-"path": "res://addons/godot_ovrmobile/example_scenes/oculus_tracker.gd"
-}, {
 "base": "Node",
 "class": "PlayerBody",
 "language": "GDScript",
@@ -144,9 +129,6 @@ _global_script_class_icons={
 "NCONSTANTS": "",
 "NCONSTANTS2": "",
 "Object_climbable": "",
-"OculusHandTracker": "",
-"OculusTouchController": "",
-"OculusTracker": "",
 "PlayerBody": "",
 "VelocityAverager": "",
 "VelocityAveragerLinear": "",
@@ -168,7 +150,7 @@ enabled=PoolStringArray( "res://addons/godot-xr-tools/plugin.cfg" )
 
 [gdnative]
 
-singletons=[ "res://addons/godot-openxr/config/godot_openxr.gdnlib", "res://addons/godot_ovrmobile/godot_ovrmobile.gdnlib", "res://webrtc/webrtc.tres" ]
+singletons=[ "res://addons/godot-openxr/config/godot_openxr.gdnlib", "res://webrtc/webrtc.tres" ]
 
 [global]
 

@@ -13,3 +13,5 @@ ln -s ../../godot-xr-tools/addons/godot-xr-tools/ godot-xr-tools
 
 To make this fully work you will also need to create a top level webrtc directory from https://github.com/godotengine/webrtc-native/releases 
 (See the multiplayer networking workbench readme for more details)
+
+Also get the asset godot-openxr

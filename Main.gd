@@ -74,6 +74,7 @@ func _ready():
 		openxrcontinueinitializing(interface)
 	else:
 		$ARVROrigin/ARVRController_Left/Function_Direct_movement.nonVRkeyboard = true
+	get_node("/root").msaa = Viewport.MSAA_4X
 	$ARVROrigin/ARVRController_Right.connect("button_pressed", self, "vr_right_button_pressed")
 	$ARVROrigin/ARVRController_Left.connect("button_pressed", self, "vr_left_button_pressed")
 
@@ -89,8 +90,7 @@ func ball_body_entered(body):
 		yield(get_tree().create_timer(0.2), "timeout")
 		body.get_node("CollisionShape/MeshInstance").get_surface_material(0).emission_enabled = false
 		
-func ball_body_exited(body):
-	pass
+func ball_body_exited(body):	pass
 	#if body.name == "PaddleBody":
 	#	body.get_node("CollisionShape/MeshInstance").get_surface_material(0).emission_enabled = false
 		

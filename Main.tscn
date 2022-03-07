@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=2]
+[gd_scene load_steps=30 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://addons/godot-xr-tools/misc/VR_Common_Shader_Cache.tscn" type="PackedScene" id=2]
@@ -37,17 +37,23 @@ bounce = 0.51
 margin = 0.01
 radius = 0.1
 
+[sub_resource type="SpatialMaterial" id=15]
+albedo_color = Color( 0.878431, 0.360784, 0.980392, 1 )
+metallic = 0.28
+roughness = 0.54
+
 [sub_resource type="SphereMesh" id=8]
+material = SubResource( 15 )
 radius = 0.1
 height = 0.2
-radial_segments = 16
-rings = 8
+radial_segments = 10
+rings = 5
 
 [sub_resource type="BoxShape" id=10]
-extents = Vector3( 10, 10, 1 )
+extents = Vector3( 10, 5, 1 )
 
 [sub_resource type="CubeMesh" id=11]
-size = Vector3( 20, 20, 2 )
+size = Vector3( 20, 10, 2 )
 
 [sub_resource type="OpenSimplexNoise" id=12]
 
@@ -75,6 +81,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.80099, 0 )
 
 [node name="ARVRController_Left" type="ARVRController" parent="ARVROrigin"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.490194, 2.33713, -1.39571 )
+visible = false
 
 [node name="Function_Direct_movement" parent="ARVROrigin/ARVRController_Left" instance=ExtResource( 5 )]
 max_speed = 4.0
@@ -84,9 +91,11 @@ move_type = 1
 visible = false
 
 [node name="Function_Pickup" parent="ARVROrigin/ARVRController_Left" instance=ExtResource( 13 )]
+pickup_range = 0.8
 
 [node name="ARVRController_Right" type="ARVRController" parent="ARVROrigin"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.532531, 2.28761, -1.40461 )
+visible = false
 controller_id = 2
 
 [node name="Function_Teleport" parent="ARVROrigin/ARVRController_Right" instance=ExtResource( 3 )]
@@ -101,6 +110,7 @@ show_target = true
 collision_mask = 520191
 
 [node name="Function_Pickup" parent="ARVROrigin/ARVRController_Right" instance=ExtResource( 13 )]
+pickup_range = 0.8
 
 [node name="PlayerBody" parent="ARVROrigin" instance=ExtResource( 4 )]
 player_radius = 0.3
@@ -150,8 +160,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.54476, -1.91887, 4.03967 )
 stream = ExtResource( 14 )
 
 [node name="Wall" type="StaticBody" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10.3501 )
-visible = false
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5.51366, -10.3501 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Wall"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.86959, 0 )
@@ -162,8 +171,7 @@ mesh = SubResource( 11 )
 material/0 = SubResource( 14 )
 
 [node name="Wall4" type="StaticBody" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6.91089 )
-visible = false
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5.05293, 6.91089 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Wall4"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.86959, 0 )
@@ -174,8 +182,7 @@ mesh = SubResource( 11 )
 material/0 = SubResource( 14 )
 
 [node name="Wall2" type="StaticBody" parent="."]
-transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -10.9296, 0, -3.38746 )
-visible = false
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -10.9296, -5.49478, -3.38746 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Wall2"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.86959, 0 )
@@ -186,8 +193,7 @@ mesh = SubResource( 11 )
 material/0 = SubResource( 14 )
 
 [node name="Wall3" type="StaticBody" parent="."]
-transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 9.63735, 0, -3.38746 )
-visible = false
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 9.63735, -4.36763, -3.38746 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Wall3"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.86959, 0 )
@@ -196,3 +202,7 @@ shape = SubResource( 10 )
 [node name="MeshInstance" type="MeshInstance" parent="Wall3/CollisionShape"]
 mesh = SubResource( 11 )
 material/0 = SubResource( 14 )
+
+[node name="DirectionalLight" type="DirectionalLight" parent="."]
+transform = Transform( 0.925065, -0.301336, 0.231195, 0.0305464, 0.66577, 0.745531, -0.378578, -0.682603, 0.625085, 3.30504, 8.65411, 0 )
+shadow_enabled = true
