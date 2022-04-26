@@ -30,16 +30,26 @@ func avatartoframedata():
 			 }
 	return fd
 
-func framedatatoavatar(fd):
-	transform = Transform(Basis(fd[NCONSTANTS2.CFI_VRORIGIN_ROTATION]), fd[NCONSTANTS2.CFI_VRORIGIN_POSITION])
-	$HeadCam.transform = Transform(Basis(fd[NCONSTANTS2.CFI_VRHEAD_ROTATION]), fd[NCONSTANTS2.CFI_VRHEAD_POSITION])
-	$HandLeft.transform = Transform(Basis(fd[NCONSTANTS2.CFI_VRHANDLEFT_ROTATION]), fd[NCONSTANTS2.CFI_VRHANDLEFT_POSITION])
-	$HandRight.transform = Transform(Basis(fd[NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION]), fd[NCONSTANTS2.CFI_VRHANDRIGHT_POSITION])
+func overwritetranform(orgtransform, rot, pos):
+	if rot == null:
+		if pos == null:
+			return orgtransform
+		return Transform(orgtransform.basis, pos)
+	if pos == null:
+		return Transform(Basis(rot), orgtransform.origin)
+	return Transform(Basis(rot), pos)
 
-	$HandLeft/LeftHand/AnimationTree.set("parameters/Grip/blend_amount", fd[NCONSTANTS2.CFI_VRHANDLEFT_POSE].x) 
-	$HandLeft/LeftHand/AnimationTree.set("parameters/Trigger/blend_amount", fd[NCONSTANTS2.CFI_VRHANDLEFT_POSE].y) 
-	$HandRight/RightHand/AnimationTree.set("parameters/Grip/blend_amount", fd[NCONSTANTS2.CFI_VRHANDRIGHT_POSE].x) 
-	$HandRight/RightHand/AnimationTree.set("parameters/Trigger/blend_amount", fd[NCONSTANTS2.CFI_VRHANDRIGHT_POSE].y) 
+func framedatatoavatar(fd):
+	transform = overwritetranform(transform, fd.get(NCONSTANTS2.CFI_VRORIGIN_ROTATION), fd.get(NCONSTANTS2.CFI_VRORIGIN_POSITION))
+	$HeadCam.transform = overwritetranform($HeadCam.transform, fd.get(NCONSTANTS2.CFI_VRHEAD_ROTATION), fd.get(NCONSTANTS2.CFI_VRHEAD_POSITION))
+	$HandLeft.transform = overwritetranform($HandLeft.transform, fd.get(NCONSTANTS2.CFI_VRHANDLEFT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDLEFT_POSITION))
+	$HandRight.transform = overwritetranform($HandRight.transform, fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_POSITION))
+	if fd.has(NCONSTANTS2.CFI_VRHANDLEFT_POSE):
+		$HandLeft/LeftHand/AnimationTree.set("parameters/Grip/blend_amount", fd[NCONSTANTS2.CFI_VRHANDLEFT_POSE].x) 
+		$HandLeft/LeftHand/AnimationTree.set("parameters/Trigger/blend_amount", fd[NCONSTANTS2.CFI_VRHANDLEFT_POSE].y) 
+	if fd.has(NCONSTANTS2.CFI_VRHANDRIGHT_POSE):
+		$HandRight/RightHand/AnimationTree.set("parameters/Grip/blend_amount", fd[NCONSTANTS2.CFI_VRHANDRIGHT_POSE].x) 
+		$HandRight/RightHand/AnimationTree.set("parameters/Trigger/blend_amount", fd[NCONSTANTS2.CFI_VRHANDRIGHT_POSE].y) 
 
 
 var possibleusernames = ["Alice", "Beth", "Cath", "Dan", "Earl", "Fred", "George", "Harry", "Ivan", "John", "Kevin", "Larry", "Martin", "Oliver", "Peter", "Quentin", "Robert", "Samuel", "Thomas", "Ulrik", "Victor", "Wayne", "Xavier", "Youngs", "Zephir"]

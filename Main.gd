@@ -66,14 +66,14 @@ func _ready():
 	#var brokeraddress = "broker.mqttdashboard.com"
 	var roomname = "cucumber"
 	var brokeraddress = "mqtt.dynamicdevices.co.uk"
-	NetworkGateway.initialstatemqttwebrtc(NetworkGateway.NETWORK_OPTIONS_MQTT_WEBRTC.AS_NECESSARY, roomname, brokeraddress)
+	#NetworkGateway.initialstatemqttwebrtc(NetworkGateway.NETWORK_OPTIONS_MQTT_WEBRTC.AS_NECESSARY, roomname, brokeraddress)
 	
 	print("  Available Interfaces are %s: " % str(ARVRServer.get_interfaces()));
 	var interface = ARVRServer.find_interface("OpenXR")
 	if interface and interface.initialize():
 		openxrcontinueinitializing(interface)
-	else:
-		$ARVROrigin/ARVRController_Left/Function_Direct_movement.nonVRkeyboard = true
+#	else:
+#		$ARVROrigin/ARVRController_Left/Function_Direct_movement.nonVRkeyboard = true
 	get_node("/root").msaa = Viewport.MSAA_4X
 	$ARVROrigin/ARVRController_Right.connect("button_pressed", self, "vr_right_button_pressed")
 	$ARVROrigin/ARVRController_Left.connect("button_pressed", self, "vr_left_button_pressed")
@@ -121,6 +121,8 @@ func _input(event):
 		vr_right_button_pressed(VR_BUTTON_BY)
 	if event is InputEventKey and event.scancode == KEY_F and event.pressed and not event.echo:
 		vr_left_button_pressed(VR_BUTTON_BY)
+	if event is InputEventKey and event.scancode == KEY_G and event.pressed and not event.echo:
+		NetworkGateway.get_node("PlayerConnections/Doppelganger").pressed = not NetworkGateway.get_node("PlayerConnections/Doppelganger").pressed
 
 
 func _physics_process(delta):

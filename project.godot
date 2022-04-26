@@ -9,11 +9,6 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "Reference",
-"class": "ARVRHelpers",
-"language": "GDScript",
-"path": "res://addons/godot-xr-tools/misc/ARVR_Helpers.gd"
-}, {
 "base": "MovementProvider",
 "class": "Function_ClimbMovement",
 "language": "GDScript",
@@ -33,11 +28,6 @@ _global_script_classes=[ {
 "class": "Function_Jump",
 "language": "GDScript",
 "path": "res://addons/godot-xr-tools/functions/Function_Jump_movement.gd"
-}, {
-"base": "MovementProvider",
-"class": "Function_JumpDetect",
-"language": "GDScript",
-"path": "res://addons/godot-xr-tools/functions/Function_JumpDetect_movement.gd"
 }, {
 "base": "Area",
 "class": "Function_Pickup",
@@ -115,12 +105,10 @@ _global_script_classes=[ {
 "path": "res://addons/godot-xr-tools/objects/Object_pickable.gd"
 } ]
 _global_script_class_icons={
-"ARVRHelpers": "",
 "Function_ClimbMovement": "",
 "Function_DirectMovement": "",
 "Function_Glide": "",
 "Function_Jump": "",
-"Function_JumpDetect": "",
 "Function_Pickup": "",
 "Function_WindMovement": "",
 "GroundPhysics": "",

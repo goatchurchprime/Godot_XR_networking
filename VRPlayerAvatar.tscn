@@ -70,7 +70,6 @@ parameters/Trigger/blend_amount = 0.0
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33106, -0.311561, -0.170176 )
 
 [node name="RightHand" type="Spatial" parent="HandRight"]
-visible = false
 
 [node name="RightHand" parent="HandRight/RightHand" instance=ExtResource( 1 )]
 transform = Transform( 0.5, 4.37114e-08, 0, -4.37114e-08, 0.5, 0, 0, 0, -0.5, 0, 0, 0 )
