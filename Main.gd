@@ -86,6 +86,8 @@ func _ready():
 	$SportBall.connect("body_entered", self, "ball_body_entered")
 	$SportBall.connect("body_exited", self, "ball_body_exited")
 
+	NetworkGateway.set_process_input(false)
+
 func ball_body_entered(body):
 	#print("ball_body_entered ", body)
 	if body.name == "PaddleBody":
