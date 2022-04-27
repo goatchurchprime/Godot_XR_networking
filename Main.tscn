@@ -81,7 +81,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.80099, 0 )
 
 [node name="ARVRController_Left" type="ARVRController" parent="ARVROrigin"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.490194, 2.33713, -1.39571 )
-visible = false
 
 [node name="Function_Direct_movement" parent="ARVROrigin/ARVRController_Left" instance=ExtResource( 5 )]
 max_speed = 4.0
@@ -95,7 +94,6 @@ pickup_range = 0.8
 
 [node name="ARVRController_Right" type="ARVRController" parent="ARVROrigin"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.532531, 2.28761, -1.40461 )
-visible = false
 controller_id = 2
 
 [node name="Function_Teleport" parent="ARVROrigin/ARVRController_Right" instance=ExtResource( 3 )]

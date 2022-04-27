@@ -34,7 +34,7 @@ rings = 0
 [sub_resource type="SpatialMaterial" id=7]
 albedo_color = Color( 0.501961, 0.45098, 0.160784, 1 )
 emission_enabled = true
-emission = Color( 0.964706, 0.956863, 0.054902, 1 )
+emission = Color( 0.772549, 0.768627, 0.12549, 1 )
 emission_energy = 1.0
 emission_operator = 0
 emission_on_uv2 = false

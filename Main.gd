@@ -64,18 +64,22 @@ func _on_openxr_pose_recentered():
 func _ready():
 	#var brokeraddress = "ws://broker.mqttdashboard.com:8000"
 	#var brokeraddress = "broker.mqttdashboard.com"
-	var roomname = "cucumber"
+	#var roomname = "cucumber"
+	var roomname = "lettuce"
 	var brokeraddress = "mqtt.dynamicdevices.co.uk"
-	#NetworkGateway.initialstatemqttwebrtc(NetworkGateway.NETWORK_OPTIONS_MQTT_WEBRTC.AS_NECESSARY, roomname, brokeraddress)
-	
+	brokeraddress = NetworkGateway.get_node("MQTTsignalling/brokeraddress").text
+	roomname = NetworkGateway.get_node("MQTTsignalling/roomname").text
 	print("  Available Interfaces are %s: " % str(ARVRServer.get_interfaces()));
 	var interface = ARVRServer.find_interface("OpenXR")
 	if interface and interface.initialize():
 		openxrcontinueinitializing(interface)
-#	else:
+	else:
 #		$ARVROrigin/ARVRController_Left/Function_Direct_movement.nonVRkeyboard = true
+		NetworkGateway.initialstatemqttwebrtc(NetworkGateway.NETWORK_OPTIONS_MQTT_WEBRTC.AS_NECESSARY, roomname, brokeraddress)
+
 	get_node("/root").msaa = Viewport.MSAA_4X
 	$ARVROrigin/ARVRController_Right.connect("button_pressed", self, "vr_right_button_pressed")
+	$ARVROrigin/ARVRController_Right.connect("button_release", self, "vr_right_button_release")
 	$ARVROrigin/ARVRController_Left.connect("button_pressed", self, "vr_left_button_pressed")
 
 	$ARVROrigin/PlayerBody.default_physics.move_drag = 45
@@ -83,7 +87,7 @@ func _ready():
 	$SportBall.connect("body_exited", self, "ball_body_exited")
 
 func ball_body_entered(body):
-	print("ball_body_entered ", body)
+	#print("ball_body_entered ", body)
 	if body.name == "PaddleBody":
 		$SportBall/bouncesound.play()
 		body.get_node("CollisionShape/MeshInstance").get_surface_material(0).emission_enabled = true
@@ -96,6 +100,10 @@ func ball_body_exited(body):	pass
 		
 
 const VR_BUTTON_BY = 1
+const VR_BUTTON_AX = 7
+const VR_GRIP = 2
+const VR_TRIGGER = 15
+
 func vr_right_button_pressed(button: int):
 	print("vr right button pressed ", button)
 	if button == VR_BUTTON_BY:
@@ -107,6 +115,13 @@ func vr_right_button_pressed(button: int):
 														  headtrans.origin + headtrans.basis.z*-3, 
 														  Vector3(0, 1, 0))
 			$ViewportNetworkGateway.visible = true
+			
+	if button == VR_GRIP:
+		NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(true)
+
+func vr_right_button_release(button: int):
+	if button == VR_GRIP:
+		NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(false)
 
 func vr_left_button_pressed(button: int):
 	print("vr left button pressed ", button)
@@ -117,12 +132,15 @@ func vr_left_button_pressed(button: int):
 		
 			
 func _input(event):
-	if event is InputEventKey and event.scancode == KEY_M and event.pressed and not event.echo:
-		vr_right_button_pressed(VR_BUTTON_BY)
-	if event is InputEventKey and event.scancode == KEY_F and event.pressed and not event.echo:
-		vr_left_button_pressed(VR_BUTTON_BY)
-	if event is InputEventKey and event.scancode == KEY_G and event.pressed and not event.echo:
-		NetworkGateway.get_node("PlayerConnections/Doppelganger").pressed = not NetworkGateway.get_node("PlayerConnections/Doppelganger").pressed
+	if event is InputEventKey and not event.echo:
+		if event.scancode == KEY_M and event.pressed:
+			vr_right_button_pressed(VR_BUTTON_BY)
+		if event.scancode == KEY_F and event.pressed:
+			vr_left_button_pressed(VR_BUTTON_BY)
+		if event.scancode == KEY_G and event.pressed:
+			NetworkGateway.get_node("PlayerConnections/Doppelganger").pressed = not NetworkGateway.get_node("PlayerConnections/Doppelganger").pressed
+		if event.scancode == KEY_SHIFT:
+			vr_right_button_pressed(VR_GRIP) if event.pressed else vr_right_button_release(VR_GRIP)
 
 
 func _physics_process(delta):

@@ -14,6 +14,10 @@ func processlocalavatarposition(delta):
 	$HandRight/RightHand/AnimationTree.set("parameters/Grip/blend_amount", arvrorigin.get_node("ARVRController_Right/RightHand/AnimationTree").get("parameters/Grip/blend_amount"))
 	$HandRight/RightHand/AnimationTree.set("parameters/Trigger/blend_amount", arvrorigin.get_node("ARVRController_Right/RightHand/AnimationTree").get("parameters/Trigger/blend_amount"))
 
+func setpaddlebody(active):
+	$HandRight/PaddleBody/CollisionShape.visible = active
+	$HandRight/PaddleBody/CollisionShape.disabled = not active
+
 func avatartoframedata():
 	var fd = {  NCONSTANTS2.CFI_VRORIGIN_POSITION: transform.origin, 
 				NCONSTANTS2.CFI_VRORIGIN_ROTATION: transform.basis.get_rotation_quat(), 
@@ -26,7 +30,9 @@ func avatartoframedata():
 				NCONSTANTS2.CFI_VRHANDLEFT_POSE: Vector2($HandLeft/LeftHand/AnimationTree.get("parameters/Grip/blend_amount"), 
 														 $HandLeft/LeftHand/AnimationTree.get("parameters/Trigger/blend_amount")),
 				NCONSTANTS2.CFI_VRHANDRIGHT_POSE: Vector2($HandRight/RightHand/AnimationTree.get("parameters/Grip/blend_amount"), 
-														  $HandRight/RightHand/AnimationTree.get("parameters/Trigger/blend_amount"))
+														  $HandRight/RightHand/AnimationTree.get("parameters/Trigger/blend_amount")),
+
+				NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY: $HandRight/PaddleBody/CollisionShape.visible
 			 }
 	return fd
 
@@ -50,8 +56,10 @@ func framedatatoavatar(fd):
 	if fd.has(NCONSTANTS2.CFI_VRHANDRIGHT_POSE):
 		$HandRight/RightHand/AnimationTree.set("parameters/Grip/blend_amount", fd[NCONSTANTS2.CFI_VRHANDRIGHT_POSE].x) 
 		$HandRight/RightHand/AnimationTree.set("parameters/Trigger/blend_amount", fd[NCONSTANTS2.CFI_VRHANDRIGHT_POSE].y) 
-
-
+	if fd.has(NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY):
+		print("remote setpaddlebody ", fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY])
+		setpaddlebody(fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY])
+		
 var possibleusernames = ["Alice", "Beth", "Cath", "Dan", "Earl", "Fred", "George", "Harry", "Ivan", "John", "Kevin", "Larry", "Martin", "Oliver", "Peter", "Quentin", "Robert", "Samuel", "Thomas", "Ulrik", "Victor", "Wayne", "Xavier", "Youngs", "Zephir"]
 func initavatarlocal():
 	randomize()
@@ -78,3 +86,6 @@ static func changethinnedframedatafordoppelganger(fd, doppelnetoffset, isframe0)
 			fd.erase(NCONSTANTS2.CFI_VRORIGIN_POSITION)
 	if fd.has(NCONSTANTS2.CFI_VRORIGIN_ROTATION):
 		fd[NCONSTANTS2.CFI_VRORIGIN_ROTATION] *= Quat(Vector3(0, 1, 0), deg2rad(180))
+
+	if fd.has(NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY):
+		print("OPP setpaddlebody ", fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY])
