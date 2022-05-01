@@ -83,12 +83,14 @@ parameters/Trigger/blend_amount = 0.0
 
 [node name="PaddleBody" type="KinematicBody" parent="HandRight"]
 transform = Transform( 0.752357, 0.658755, 0, -0.658755, 0.752357, 0, 0, 0, 1, 0, 0, -0.575272 )
+visible = false
 collision_layer = 4096
 collision_mask = 4096
 
 [node name="CollisionShape" type="CollisionShape" parent="HandRight/PaddleBody"]
 transform = Transform( 0.704795, 0.709411, 0, -0.709411, 0.704795, 0, 0, 0, 1, 0, 0, 0 )
 shape = SubResource( 5 )
+disabled = true
 
 [node name="MeshInstance" type="MeshInstance" parent="HandRight/PaddleBody/CollisionShape"]
 mesh = SubResource( 6 )

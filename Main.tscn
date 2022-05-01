@@ -109,15 +109,7 @@ collision_mask = 520191
 [node name="Function_Pickup" parent="ARVROrigin/ARVRController_Right" instance=ExtResource( 13 )]
 
 [node name="PlayerBody" parent="ARVROrigin" instance=ExtResource( 4 )]
-enabled = true
 player_radius = 0.3
-player_head_height = 0.1
-eye_forward_offset = 0.66
-gravity = -9.8
-push_rigid_bodies = true
-physics = null
-collision_layer = 524288
-collision_mask = 1023
 
 [node name="Floor" type="StaticBody" parent="."]
 
@@ -130,7 +122,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0 )
 shape = SubResource( 6 )
 
 [node name="ViewportNetworkGateway" parent="." instance=ExtResource( 15 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0365348, 1.73924, -2.6145 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.401293, 1.48204, -2.6145 )
 viewport_size = Vector2( 550, 400 )
 scene = ExtResource( 11 )
 
@@ -170,6 +162,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.86959, 0 )
 shape = SubResource( 10 )
 
 [node name="MeshInstance" type="MeshInstance" parent="Wall/CollisionShape"]
+use_in_baked_light = true
 mesh = SubResource( 11 )
 material/0 = SubResource( 14 )
 
@@ -181,6 +174,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.86959, 0 )
 shape = SubResource( 10 )
 
 [node name="MeshInstance" type="MeshInstance" parent="Wall4/CollisionShape"]
+use_in_baked_light = true
 mesh = SubResource( 11 )
 material/0 = SubResource( 14 )
 
@@ -192,6 +186,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.86959, 0 )
 shape = SubResource( 10 )
 
 [node name="MeshInstance" type="MeshInstance" parent="Wall2/CollisionShape"]
+use_in_baked_light = true
 mesh = SubResource( 11 )
 material/0 = SubResource( 14 )
 
@@ -203,9 +198,16 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.86959, 0 )
 shape = SubResource( 10 )
 
 [node name="MeshInstance" type="MeshInstance" parent="Wall3/CollisionShape"]
+use_in_baked_light = true
 mesh = SubResource( 11 )
 material/0 = SubResource( 14 )
 
 [node name="DirectionalLight" type="DirectionalLight" parent="."]
 transform = Transform( 0.925065, -0.301336, 0.231195, 0.0305464, 0.66577, 0.745531, -0.378578, -0.682603, 0.625085, 3.30504, 8.65411, 0 )
+light_bake_mode = 2
 shadow_enabled = true
+
+[node name="BakedLightmap" type="BakedLightmap" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.3723, -1.68565 )
+visible = false
+extents = Vector3( 12, 10, 13 )

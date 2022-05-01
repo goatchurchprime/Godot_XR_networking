@@ -2,6 +2,9 @@ extends Spatial
 
 onready var NetworkGateway = $ViewportNetworkGateway/Viewport/NetworkGateway
 
+# BakedLightMap requires the UV2 unwraps on the walls, which can't be 
+# done with Boxmeshes it seems.  Then we would hit Bake on the BakeLightMap node
+
 func openxrcontinueinitializing(interface):
 	print("OpenXR Interface initialized")
 
@@ -74,8 +77,13 @@ func _ready():
 	if interface and interface.initialize():
 		openxrcontinueinitializing(interface)
 	else:
-#		$ARVROrigin/ARVRController_Left/Function_Direct_movement.nonVRkeyboard = true
-		NetworkGateway.initialstatemqttwebrtc(NetworkGateway.NETWORK_OPTIONS_MQTT_WEBRTC.AS_NECESSARY, roomname, brokeraddress)
+		#$ARVROrigin/ARVRController_Left/Function_Direct_movement.nonVRkeyboard = true
+
+		# Uncomment if you want the mqtt_webrtc system to begin at startup for the PC
+		#NetworkGateway.initialstatemqttwebrtc(NetworkGateway.NETWORK_OPTIONS_MQTT_WEBRTC.AS_NECESSARY, roomname, brokeraddress)
+		
+		# Uncomment if you want the enet-srver system to begin at startup on the PC
+		NetworkGateway.initialstatenormal(NetworkGateway.NETWORK_PROTOCOL.ENET, NetworkGateway.NETWORK_OPTIONS.AS_SERVER)
 
 	get_node("/root").msaa = Viewport.MSAA_4X
 	$ARVROrigin/ARVRController_Right.connect("button_pressed", self, "vr_right_button_pressed")
@@ -141,6 +149,8 @@ func _input(event):
 			vr_left_button_pressed(VR_BUTTON_BY)
 		if event.scancode == KEY_G and event.pressed:
 			NetworkGateway.get_node("PlayerConnections/Doppelganger").pressed = not NetworkGateway.get_node("PlayerConnections/Doppelganger").pressed
+		if (event.scancode == KEY_2):
+			NetworkGateway.selectandtrigger_networkoption(NetworkGateway.NETWORK_OPTIONS.LOCAL_NETWORK)
 		if event.scancode == KEY_SHIFT:
 			vr_right_button_pressed(VR_GRIP) if event.pressed else vr_right_button_release(VR_GRIP)
 
