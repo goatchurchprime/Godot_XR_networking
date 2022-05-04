@@ -50,6 +50,11 @@ _global_script_classes=[ {
 "path": "res://addons/godot-xr-tools/functions/Function_Pickup.gd"
 }, {
 "base": "MovementProvider",
+"class": "Function_TurnMovement",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/functions/Function_Turn_movement.gd"
+}, {
+"base": "MovementProvider",
 "class": "Function_WindMovement",
 "language": "GDScript",
 "path": "res://addons/godot-xr-tools/functions/Function_Wind_movement.gd"
@@ -148,6 +153,7 @@ _global_script_class_icons={
 "Function_Jump": "",
 "Function_JumpDetect": "",
 "Function_Pickup": "",
+"Function_TurnMovement": "",
 "Function_WindMovement": "",
 "GroundPhysics": "",
 "GroundPhysicsSettings": "",
