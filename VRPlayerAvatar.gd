@@ -9,10 +9,10 @@ func processlocalavatarposition(delta):
 	$HeadCam.transform = arvrorigin.get_node("ARVRCamera").transform
 	$HandLeft.transform = arvrorigin.get_node("LeftHandController").transform
 	$HandRight.transform = arvrorigin.get_node("RightHandController").transform
-	#$HandLeft/LeftHand/AnimationTree.set("parameters/Grip/blend_amount", arvrorigin.get_node("ARVRController_Left/LeftHand/AnimationTree").get("parameters/Grip/blend_amount"))
-	#$HandLeft/LeftHand/AnimationTree.set("parameters/Trigger/blend_amount", arvrorigin.get_node("ARVRController_Left/LeftHand/AnimationTree").get("parameters/Trigger/blend_amount"))
-	#$HandRight/RightHand/AnimationTree.set("parameters/Grip/blend_amount", arvrorigin.get_node("ARVRController_Right/RightHand/AnimationTree").get("parameters/Grip/blend_amount"))
-	#$HandRight/RightHand/AnimationTree.set("parameters/Trigger/blend_amount", arvrorigin.get_node("ARVRController_Right/RightHand/AnimationTree").get("parameters/Trigger/blend_amount"))
+	$HandLeft/LeftHand/AnimationTree.set("parameters/Grip/blend_amount", arvrorigin.get_node("LeftHandController/LeftHand/AnimationTree").get("parameters/Grip/blend_amount"))
+	$HandLeft/LeftHand/AnimationTree.set("parameters/Trigger/blend_amount", arvrorigin.get_node("LeftHandController/LeftHand/AnimationTree").get("parameters/Trigger/blend_amount"))
+	$HandRight/RightHand/AnimationTree.set("parameters/Grip/blend_amount", arvrorigin.get_node("RightHandController/RightHand/AnimationTree").get("parameters/Grip/blend_amount"))
+	$HandRight/RightHand/AnimationTree.set("parameters/Trigger/blend_amount", arvrorigin.get_node("RightHandController/RightHand/AnimationTree").get("parameters/Trigger/blend_amount"))
 
 func setpaddlebody(active):
 	$HandRight/PaddleBody.visible = active
@@ -32,7 +32,7 @@ func avatartoframedata():
 				NCONSTANTS2.CFI_VRHANDRIGHT_POSE: Vector2($HandRight/RightHand/AnimationTree.get("parameters/Grip/blend_amount"), 
 														  $HandRight/RightHand/AnimationTree.get("parameters/Trigger/blend_amount")),
 
-				NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY: $HandRight/PaddleBody/CollisionShape.visible
+				NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY: $HandRight/PaddleBody.visible
 			 }
 	return fd
 
