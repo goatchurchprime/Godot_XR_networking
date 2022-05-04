@@ -95,7 +95,6 @@ step_turn_angle = 30.0
 [node name="Left_hand" parent="FPController" instance=ExtResource( 10 )]
 
 [node name="Right_hand" parent="FPController" instance=ExtResource( 13 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.27639, 0, 0 )
 
 [node name="PlayerBody" parent="FPController" instance=ExtResource( 4 )]
 
