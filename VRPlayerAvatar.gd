@@ -1,18 +1,18 @@
 extends Spatial
 
 
-onready var arvrorigin = get_node("/root/Main/ARVROrigin")
+onready var arvrorigin = get_node("/root/Main/FPController")
 var labeltext = "unknown"
 
 func processlocalavatarposition(delta):
 	transform = arvrorigin.transform
 	$HeadCam.transform = arvrorigin.get_node("ARVRCamera").transform
-	$HandLeft.transform = arvrorigin.get_node("ARVRController_Left").transform
-	$HandRight.transform = arvrorigin.get_node("ARVRController_Right").transform
-	$HandLeft/LeftHand/AnimationTree.set("parameters/Grip/blend_amount", arvrorigin.get_node("ARVRController_Left/LeftHand/AnimationTree").get("parameters/Grip/blend_amount"))
-	$HandLeft/LeftHand/AnimationTree.set("parameters/Trigger/blend_amount", arvrorigin.get_node("ARVRController_Left/LeftHand/AnimationTree").get("parameters/Trigger/blend_amount"))
-	$HandRight/RightHand/AnimationTree.set("parameters/Grip/blend_amount", arvrorigin.get_node("ARVRController_Right/RightHand/AnimationTree").get("parameters/Grip/blend_amount"))
-	$HandRight/RightHand/AnimationTree.set("parameters/Trigger/blend_amount", arvrorigin.get_node("ARVRController_Right/RightHand/AnimationTree").get("parameters/Trigger/blend_amount"))
+	$HandLeft.transform = arvrorigin.get_node("LeftHandController").transform
+	$HandRight.transform = arvrorigin.get_node("RightHandController").transform
+	#$HandLeft/LeftHand/AnimationTree.set("parameters/Grip/blend_amount", arvrorigin.get_node("ARVRController_Left/LeftHand/AnimationTree").get("parameters/Grip/blend_amount"))
+	#$HandLeft/LeftHand/AnimationTree.set("parameters/Trigger/blend_amount", arvrorigin.get_node("ARVRController_Left/LeftHand/AnimationTree").get("parameters/Trigger/blend_amount"))
+	#$HandRight/RightHand/AnimationTree.set("parameters/Grip/blend_amount", arvrorigin.get_node("ARVRController_Right/RightHand/AnimationTree").get("parameters/Grip/blend_amount"))
+	#$HandRight/RightHand/AnimationTree.set("parameters/Trigger/blend_amount", arvrorigin.get_node("ARVRController_Right/RightHand/AnimationTree").get("parameters/Trigger/blend_amount"))
 
 func setpaddlebody(active):
 	$HandRight/PaddleBody/CollisionShape.visible = active

@@ -14,7 +14,7 @@ func openxrcontinueinitializing(interface):
 	# Start passthrough?
 	if false:
 		vp.transparent_bg = true
-		$ARVROrigin/XRConfiguration.start_passthrough()
+		$FPController/Configuration.start_passthrough()
 
 	# Connect to our plugin signals
 	ARVRServer.connect("openxr_session_begun", self, "_on_openxr_session_begun")
@@ -29,7 +29,7 @@ func openxrcontinueinitializing(interface):
 	# We can't set keep linear yet because we won't know the correct value until after our session has begun.
 
 	# increase our physics engine update speed
-	var refresh_rate = $ARVROrigin/XRConfiguration.get_refresh_rate()
+	var refresh_rate = $FPController/Configuration.get_refresh_rate()
 	if refresh_rate == 0:
 		# Only Facebook Reality Labs supports this at this time
 		print("No refresh rate given by XR runtime")
@@ -48,7 +48,7 @@ func _on_openxr_session_begun():
 	var vp : Viewport = get_viewport()
 	if vp:
 		# Our interface will tell us whether we should keep our render buffer in linear color space
-		vp.keep_3d_linear = $ARVROrigin/XRConfiguration.keep_3d_linear()
+		vp.keep_3d_linear = $FPController/Configuration.keep_3d_linear()
 
 func _on_openxr_session_ending():
 	print("OpenXR session ending")
@@ -77,7 +77,7 @@ func _ready():
 	if interface and interface.initialize():
 		openxrcontinueinitializing(interface)
 	else:
-		#$ARVROrigin/ARVRController_Left/Function_Direct_movement.nonVRkeyboard = true
+		#$FPController/LeftHandController/Function_Direct_movement.nonVRkeyboard = true
 
 		# Uncomment if you want the mqtt_webrtc system to begin at startup for the PC
 		#NetworkGateway.initialstatemqttwebrtc(NetworkGateway.NETWORK_OPTIONS_MQTT_WEBRTC.AS_NECESSARY, roomname, brokeraddress)
@@ -86,11 +86,11 @@ func _ready():
 		NetworkGateway.initialstatenormal(NetworkGateway.NETWORK_PROTOCOL.ENET, NetworkGateway.NETWORK_OPTIONS.AS_SERVER)
 
 	get_node("/root").msaa = Viewport.MSAA_4X
-	$ARVROrigin/ARVRController_Right.connect("button_pressed", self, "vr_right_button_pressed")
-	$ARVROrigin/ARVRController_Right.connect("button_release", self, "vr_right_button_release")
-	$ARVROrigin/ARVRController_Left.connect("button_pressed", self, "vr_left_button_pressed")
+	$FPController/RightHandController.connect("button_pressed", self, "vr_right_button_pressed")
+	$FPController/RightHandController.connect("button_release", self, "vr_right_button_release")
+	$FPController/LeftHandController.connect("button_pressed", self, "vr_left_button_pressed")
 
-	$ARVROrigin/PlayerBody.default_physics.move_drag = 45
+	$FPController/PlayerBody.default_physics.move_drag = 45
 	$SportBall.connect("body_entered", self, "ball_body_entered")
 	$SportBall.connect("body_exited", self, "ball_body_exited")
 
@@ -120,7 +120,7 @@ func vr_right_button_pressed(button: int):
 		if $ViewportNetworkGateway.visible:
 			$ViewportNetworkGateway.visible = false
 		else:
-			var headtrans = $ARVROrigin/ARVRCamera.global_transform
+			var headtrans = $FPController/ARVRCamera.global_transform
 			$ViewportNetworkGateway.look_at_from_position(headtrans.origin + headtrans.basis.z*-3, 
 														  headtrans.origin + headtrans.basis.z*-3, 
 														  Vector3(0, 1, 0))
@@ -136,9 +136,9 @@ func vr_right_button_release(button: int):
 func vr_left_button_pressed(button: int):
 	print("vr left button pressed ", button)
 	if button == VR_BUTTON_BY:
-		$SportBall.transform.origin = $ARVROrigin/ARVRCamera.global_transform.origin + \
+		$SportBall.transform.origin = $FPController/ARVRCamera.global_transform.origin + \
 									  Vector3(0, 2, 0) + \
-									  $ARVROrigin/ARVRCamera.global_transform.basis.z*-0.75
+									  $FPController/ARVRCamera.global_transform.basis.z*-0.75
 		
 			
 func _input(event):
@@ -156,8 +156,8 @@ func _input(event):
 
 
 func _physics_process(delta):
-	if $ARVROrigin.transform.origin.y < -30:
-		$ARVROrigin.transform.origin = Vector3(0, 2, 0)
+	if $FPController.transform.origin.y < -30:
+		$FPController.transform.origin = Vector3(0, 2, 0)
 	if has_node("SportBall"):
 		if $SportBall.transform.origin.y < -3:
 			$SportBall.transform.origin = Vector3(0, 2, -3)
