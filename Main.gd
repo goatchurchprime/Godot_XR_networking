@@ -5,66 +5,11 @@ onready var NetworkGateway = $ViewportNetworkGateway/Viewport/NetworkGateway
 # BakedLightMap requires the UV2 unwraps on the walls, which can't be 
 # done with Boxmeshes it seems.  Then we would hit Bake on the BakeLightMap node
 
-func openxrcontinueinitializing(interface):
-	print("OpenXR Interface initialized")
-
-	# Find the viewport we're using to render our XR output
-	var vp = get_viewport()
-
-	# Start passthrough?
-	if false:
-		vp.transparent_bg = true
-		$FPController/Configuration.start_passthrough()
-
-	# Connect to our plugin signals
-	ARVRServer.connect("openxr_session_begun", self, "_on_openxr_session_begun")
-	ARVRServer.connect("openxr_session_ending", self, "_on_openxr_session_ending")
-	ARVRServer.connect("openxr_focused_state", self, "_on_openxr_focused_state")
-	ARVRServer.connect("openxr_visible_state", self, "_on_openxr_visible_state")
-	ARVRServer.connect("openxr_pose_recentered", self, "_on_openxr_pose_recentered")
-
-	# Change our viewport so it is tied to our ARVR interface and renders to our HMD
-	vp.arvr = true
-
-	# We can't set keep linear yet because we won't know the correct value until after our session has begun.
-
-	# increase our physics engine update speed
-	var refresh_rate = $FPController/Configuration.get_refresh_rate()
-	if refresh_rate == 0:
-		# Only Facebook Reality Labs supports this at this time
-		print("No refresh rate given by XR runtime")
-
-		# Use something sufficiently high
-		Engine.iterations_per_second = 144
-	else:
-		print("HMD refresh rate is set to " + str(refresh_rate))
-
-		# Match our physics to our HMD
-		Engine.iterations_per_second = refresh_rate
-
-func _on_openxr_session_begun():
-	print("OpenXR session begun")
-
-	var vp : Viewport = get_viewport()
-	if vp:
-		# Our interface will tell us whether we should keep our render buffer in linear color space
-		vp.keep_3d_linear = $FPController/Configuration.keep_3d_linear()
-
-func _on_openxr_session_ending():
-	print("OpenXR session ending")
-
-func _on_openxr_focused_state():
-	print("OpenXR focused state")
-
-func _on_openxr_visible_state():
-	print("OpenXR visible state")
-
-func _on_openxr_pose_recentered():
-	print("OpenXR pose recentered")
-
-
-
 func _ready():
+	if OS.has_feature("QUEST"):
+		print("kk1 ", $FPController/left_hand_mesh/HandModel/Armature001/Skeleton.hand)
+		print("kk2 ", $FPController/right_hand_mesh/HandModel/Armature/Skeleton.hand)
+	
 	#var brokeraddress = "ws://broker.mqttdashboard.com:8000"
 	#var brokeraddress = "broker.mqttdashboard.com"
 	#var roomname = "cucumber"
@@ -72,18 +17,15 @@ func _ready():
 	var brokeraddress = "mqtt.dynamicdevices.co.uk"
 	brokeraddress = NetworkGateway.get_node("MQTTsignalling/brokeraddress").text
 	roomname = NetworkGateway.get_node("MQTTsignalling/roomname").text
-	print("  Available Interfaces are %s: " % str(ARVRServer.get_interfaces()));
-	var interface = ARVRServer.find_interface("OpenXR")
-	if interface and interface.initialize():
-		openxrcontinueinitializing(interface)
-	else:
-		#$FPController/LeftHandController/Function_Direct_movement.nonVRkeyboard = true
 
-		# Uncomment if you want the mqtt_webrtc system to begin at startup for the PC
-		#NetworkGateway.initialstatemqttwebrtc(NetworkGateway.NETWORK_OPTIONS_MQTT_WEBRTC.AS_NECESSARY, roomname, brokeraddress)
-		
-		# Uncomment if you want the enet-srver system to begin at startup on the PC
-		NetworkGateway.initialstatenormal(NetworkGateway.NETWORK_PROTOCOL.ENET, NetworkGateway.NETWORK_OPTIONS.AS_SERVER)
+
+	#$FPController/LeftHandController/Function_Direct_movement.nonVRkeyboard = true
+
+	# Uncomment if you want the mqtt_webrtc system to begin at startup for the PC
+	#NetworkGateway.initialstatemqttwebrtc(NetworkGateway.NETWORK_OPTIONS_MQTT_WEBRTC.AS_NECESSARY, roomname, brokeraddress)
+	
+	# Uncomment if you want the enet-srver system to begin at startup on the PC
+#	NetworkGateway.initialstatenormal(NetworkGateway.NETWORK_PROTOCOL.ENET, NetworkGateway.NETWORK_OPTIONS.AS_SERVER)
 
 	get_node("/root").msaa = Viewport.MSAA_4X
 	$FPController/RightHandController.connect("button_pressed", self, "vr_right_button_pressed")
