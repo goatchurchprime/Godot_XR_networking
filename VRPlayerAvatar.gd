@@ -16,17 +16,28 @@ func processlocalavatarposition(delta):
 
 	if LeftHandController.get_is_active():
 		$HandLeft.transform = LeftHandController.transform
-		$HandLeft/LeftHand/AnimationTree.set("parameters/Grip/blend_amount", arvrorigin.get_node("LeftHandController/LeftHand/AnimationTree").get("parameters/Grip/blend_amount"))
 		$HandLeft/LeftHand/AnimationTree.set("parameters/Trigger/blend_amount", arvrorigin.get_node("LeftHandController/LeftHand/AnimationTree").get("parameters/Trigger/blend_amount"))
+		$HandLeft/LeftHand/AnimationTree.set("parameters/Grip/blend_amount", arvrorigin.get_node("LeftHandController/LeftHand/AnimationTree").get("parameters/Grip/blend_amount"))
 	elif is_instance_valid(Left_hand) and Left_hand.is_active():
 		$HandLeft.transform = Transform(Left_hand.transform.basis.rotated(Left_hand.transform.basis.z, deg2rad(-90)), Left_hand.transform.origin)
+		var thumbtippos = Left_hand.get_node("Wrist/ThumbMetacarpal/ThumbProximal/ThumbDistal/ThumbTip").global_transform.origin
+		var indextippos = Left_hand.get_node("Wrist/IndexMetacarpal/IndexProximal/IndexIntermediate/IndexDistal/IndexTip").global_transform.origin
+		var middletippos = Left_hand.get_node("Wrist/MiddleMetacarpal/MiddleProximal/MiddleIntermediate/MiddleDistal/MiddleTip").global_transform.origin
+		$HandLeft/LeftHand/AnimationTree.set("parameters/Trigger/blend_amount", max(0.0, 1.0 - thumbtippos.distance_to(indextippos)/0.04))
+		$HandLeft/LeftHand/AnimationTree.set("parameters/Grip/blend_amount", max(0.0, 1.0 - thumbtippos.distance_to(middletippos)/0.04))
 		
 	if RightHandController.get_is_active():
 		$HandRight.transform = RightHandController.transform
-		$HandRight/RightHand/AnimationTree.set("parameters/Grip/blend_amount", arvrorigin.get_node("RightHandController/RightHand/AnimationTree").get("parameters/Grip/blend_amount"))
 		$HandRight/RightHand/AnimationTree.set("parameters/Trigger/blend_amount", arvrorigin.get_node("RightHandController/RightHand/AnimationTree").get("parameters/Trigger/blend_amount"))
+		$HandRight/RightHand/AnimationTree.set("parameters/Grip/blend_amount", arvrorigin.get_node("RightHandController/RightHand/AnimationTree").get("parameters/Grip/blend_amount"))
 	elif is_instance_valid(Right_hand) and Right_hand.is_active():
 		$HandRight.transform = Transform(Right_hand.transform.basis.rotated(Right_hand.transform.basis.z, deg2rad(90)), Right_hand.transform.origin)
+		var thumbtippos = Right_hand.get_node("Wrist/ThumbMetacarpal/ThumbProximal/ThumbDistal/ThumbTip").global_transform.origin
+		var indextippos = Right_hand.get_node("Wrist/IndexMetacarpal/IndexProximal/IndexIntermediate/IndexDistal/IndexTip").global_transform.origin
+		var middletippos = Right_hand.get_node("Wrist/MiddleMetacarpal/MiddleProximal/MiddleIntermediate/MiddleDistal/MiddleTip").global_transform.origin
+		$HandRight/RightHand/AnimationTree.set("parameters/Trigger/blend_amount", max(0.0, 1.0 - thumbtippos.distance_to(indextippos)/0.04))
+		$HandRight/RightHand/AnimationTree.set("parameters/Grip/blend_amount", max(0.0, 1.0 - thumbtippos.distance_to(middletippos)/0.04))
+
 
 func setpaddlebody(active):
 	$HandRight/PaddleBody.visible = active
