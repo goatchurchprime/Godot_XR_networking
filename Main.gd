@@ -9,9 +9,11 @@ export var PCstartupprotocol = "webrtc"
 export var QUESTstartupprotocol = "webrtc"
 
 func _ready():
-	#if OS.has_feature("QUEST"):
-	#	print("kk1 ", $FPController/Left_hand.hand)
-	#	print("kk2 ", $FPController/Right_hand.hand)
+	if not OS.has_feature("QUEST"):
+		$FPController/Left_hand/Wrist.set_process(false)
+		$FPController/Left_hand/Wrist.set_physics_process(false)
+		$FPController/Right_hand/Wrist.set_process(false)
+		$FPController/Right_hand/Wrist.set_physics_process(false)
 	
 	#$FPController/LeftHandController/Function_Direct_movement.nonVRkeyboard = true
 
