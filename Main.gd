@@ -2,30 +2,30 @@ extends Spatial
 
 onready var NetworkGateway = $ViewportNetworkGateway/Viewport/NetworkGateway
 
-# BakedLightMap requires the UV2 unwraps on the walls, which can't be 
-# done with Boxmeshes it seems.  Then we would hit Bake on the BakeLightMap node
+export var webrtcroomname = "lettuce"
+export var webrtcbroker = "mqtt.dynamicdevices.co.uk"
+# "ws://broker.mqttdashboard.com:8000"
+export var PCstartupprotocol = "webrtc"
+export var QUESTstartupprotocol = "webrtc"
 
 func _ready():
-	if OS.has_feature("QUEST"):
-		print("kk1 ", $FPController/left_hand_mesh/HandModel/Armature001/Skeleton.hand)
-		print("kk2 ", $FPController/right_hand_mesh/HandModel/Armature/Skeleton.hand)
+	#if OS.has_feature("QUEST"):
+	#	print("kk1 ", $FPController/Left_hand.hand)
+	#	print("kk2 ", $FPController/Right_hand.hand)
 	
-	#var brokeraddress = "ws://broker.mqttdashboard.com:8000"
-	#var brokeraddress = "broker.mqttdashboard.com"
-	#var roomname = "cucumber"
-	var roomname = "lettuce"
-	var brokeraddress = "mqtt.dynamicdevices.co.uk"
-	brokeraddress = NetworkGateway.get_node("MQTTsignalling/brokeraddress").text
-	roomname = NetworkGateway.get_node("MQTTsignalling/roomname").text
-
-
 	#$FPController/LeftHandController/Function_Direct_movement.nonVRkeyboard = true
 
-	# Uncomment if you want the mqtt_webrtc system to begin at startup for the PC
-	#NetworkGateway.initialstatemqttwebrtc(NetworkGateway.NETWORK_OPTIONS_MQTT_WEBRTC.AS_NECESSARY, roomname, brokeraddress)
-	
-	# Uncomment if you want the enet-srver system to begin at startup on the PC
-#	NetworkGateway.initialstatenormal(NetworkGateway.NETWORK_PROTOCOL.ENET, NetworkGateway.NETWORK_OPTIONS.AS_SERVER)
+	if OS.has_feature("QUEST"):
+		if QUESTstartupprotocol == "webrtc":
+			NetworkGateway.initialstatemqttwebrtc(NetworkGateway.NETWORK_OPTIONS_MQTT_WEBRTC.AS_NECESSARY, webrtcroomname, webrtcbroker)
+		elif QUESTstartupprotocol == "enet":
+			NetworkGateway.initialstatenormal(NetworkGateway.NETWORK_PROTOCOL.ENET, NetworkGateway.NETWORK_OPTIONS.AS_CLIENT)
+	else:
+		if PCstartupprotocol == "webrtc":
+			NetworkGateway.initialstatemqttwebrtc(NetworkGateway.NETWORK_OPTIONS_MQTT_WEBRTC.AS_NECESSARY, webrtcroomname, webrtcbroker)
+		elif PCstartupprotocol == "enet":
+			NetworkGateway.initialstatenormal(NetworkGateway.NETWORK_PROTOCOL.ENET, NetworkGateway.NETWORK_OPTIONS.AS_SERVER)
+			
 
 	get_node("/root").msaa = Viewport.MSAA_4X
 	$FPController/RightHandController.connect("button_pressed", self, "vr_right_button_pressed")
