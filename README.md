@@ -1,7 +1,10 @@
 
 This is a minimal working VR networking example using the https://github.com/goatchurchprime/godot_multiplayer_networking_workbench as 
 the basis for connecting using one of the three godot networking protocols (enet, websocket or webrtc) and spawning player avatars 
-into the space on connection.
+into the space on connection.  This works in Godot 3.4.
+
+
+## Installation
 
 There are four addons, that have to be copied over or installed because they are not committed into this repository.
 
@@ -38,4 +41,20 @@ godot_multiplayer_networking_workbench/addons/player-networking directory into t
 If you also want to use WebRTC capability you will need to download the latest precompiled godot-webrtc-native-release-0.5.zip file, and 
 copy its webrtc directory into the top level of this project so it becomes the directory Godot_XR_networking/webrtc.
 
+
+## Operation
+
+The NetworkGateway dashboard appears in VR and is operable.  If you set it to WebRTC via MQTT signalling, the 
+instances should automatically connect (the as-necessary option means that the first one online becomes the server).
+For details of how it works (in an even more minimal example) go to the 
+[godot multiplayer networking workbench](https://github.com/goatchurchprime/godot_multiplayer_networking_workbench) project 
+and try it out.
+It very closely follows the Godot Networking documentation, except that you can try out the different 
+configurations and protocols using an graphical user interface rather than having to hack the code.
+
+If you don't happen to have 2 QuestVR devices you can run the second (or both) instance(s) on your PC by going to the 
+Godot_XR_networking directory itself and executing the godot executable, and it will start up 
+immediately without the editor.  
+
+(However to make this work properly we will probably need a [keyboard simulator](https://github.com/GodotVR/godot-xr-tools/issues/93) added.)
 
