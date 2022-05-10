@@ -14,7 +14,9 @@ func _ready():
 		$FPController/Left_hand/Wrist.set_physics_process(false)
 		$FPController/Right_hand/Wrist.set_process(false)
 		$FPController/Right_hand/Wrist.set_physics_process(false)
-	
+		$FPController/Left_hand.queue_free()
+		$FPController/Right_hand.queue_free()
+		
 	#$FPController/LeftHandController/Function_Direct_movement.nonVRkeyboard = true
 
 	if OS.has_feature("QUEST"):
@@ -100,7 +102,8 @@ func _input(event):
 
 
 func _physics_process(delta):
-	if $FPController.transform.origin.y < -30:
+	var lowestfloorheight = -30
+	if $FPController.transform.origin.y < lowestfloorheight:
 		$FPController.transform.origin = Vector3(0, 2, 0)
 	if has_node("SportBall"):
 		if $SportBall.transform.origin.y < -3:
