@@ -1,54 +1,74 @@
+# Godot_XR_networking-modular
 
-This is a minimal working VR networking example using the https://github.com/goatchurchprime/godot_multiplayer_networking_workbench as 
+Attempt at modular (tool) version of Godot_XR_networking by GoatChurchPrime: https://github.com/goatchurchprime/Godot_XR_networking to insert into your OpenXR project.
+
+This is a tempoarary repository, for review by GoatChurchPrime.  If it works, any future work will be done on his repository, not this one.
+
+This is a minimal working VR networking module using the https://github.com/goatchurchprime/godot_multiplayer_networking_workbench as 
 the basis for connecting using one of the three godot networking protocols (enet, websocket or webrtc) and spawning player avatars 
-into the space on connection.  This works in Godot 3.4.
+into the space on connection.  This works in Godot 3.4., and works with projects built for PCVR as well as Quest native.
+
+It requires installation first of the OpenXR Asset Plugin and OpenXR-Tools asset plugin as described below into your project.
 
 
 ## Installation
 
-There are four addons, that have to be copied over or installed because they are not committed into this repository.
+There are two addons, that have to be installed in your project first which this module depends on to work.
 
 1. **OpenXR Plugin**
 
-Open this Godot_XR_networking project, ignore errors, and use the AssetLib to install the OpenXR plugin, which will go into the Godot_XR_networking/addons/godot-openxr directory
+Use the AssetLib in your project to install the OpenXR plugin, which will go into the /addons folder of your project.  Make sure to go to project settings and also activate the plugin.
 
-(Alternatively, if you are on Linux, you can take advantage of the full working demo project that is committed into the addons repository by 
-checking out https://github.com/GodotVR/godot_openxr next to your Godot_XR_networking directory before then going into the Godot_XR_networking/addons directory 
-and executing `ln -s ../../godot_openxr/demo/addons/godot-openxr/ godot-openxr` to create a symlink.)
-
+https://github.com/GodotVR/godot_openxr
 
 2. **Godot XR Tools**
 
 Use the AssetLib to install the Godot XR Tools - AR and VR helper library plugin, which will go into the Godot_XR_networking/addons/godot-xr-tools directory
 
-(Alternatively, to use a symlink, which will make it easier to update any changes to these base libraries and spot any unintentional edits 
-check out https://github.com/GodotVR/godot-xr-tools next to your Godot_XR_networking directory before going into the Godot_XR_networking/addons directory 
-and executing `ln -s ../../godot-xr-tools/addons/godot-xr-tools/ godot-xr-tools`.)
+https://github.com/GodotVR/godot-xr-tools 
 
 
-3. **Networking workbench**
+3. **Installing this asset into your project**
 
-The networking workbench is not in the AssetLib, so you will need to check out or download the repository 
-https://github.com/goatchurchprime/godot_multiplayer_networking_workbench and copy its
-godot_multiplayer_networking_workbench/addons/player-networking directory into the Godot_XR_networking/addons directory.
+**Backup your project first.**  
 
-(Alternatively go into the Godot_XR_networking/addons directory and execute
-`ln -s ../../godot_multiplayer_networking_workbench/addons/player-networking/ player-networking`.)
+ONLY THEN drag and drop the contents of this asset (not the master "Godot_XR_networking_modular" folder itself but rather all of its contents) into your project folder root directory.
 
+This adds the following components:
 
-4. **WebRTC libraries**
+-A "player-networking" asset folder to your "addons" directory, which is from here: 
+https://github.com/goatchurchprime/godot_multiplayer_networking_workbench 
 
-If you also want to use WebRTC capability you will need to download the latest precompiled godot-webrtc-native-release-0.5.zip file, and 
-copy its webrtc directory into the top level of this project so it becomes the directory Godot_XR_networking/webrtc.
+-A "webrtc" directory into the root of your project folder, which is the latest precompiled godot-webrtc-native-release-0.5.zip file.
 
+-A Godot-OpenXR Networking Node (.tscn) and script, and a VRPlayerAvatar scene and script into your Open-XR-Tools/assets folder.
 
-## Operation
+4.  **Using this asset in your project**
 
-The NetworkGateway dashboard appears in VR and is operable.  If you set it to WebRTC via MQTT signalling, the 
-instances should automatically connect (the as-necessary option means that the first one online becomes the server).
+Once you have installed everything it is time to try it out.
+
+Go to the root of your project scene and "instance child scene" and choose the OpenXR-Tools-Networking.tscn.  
+
+By default, it believes your ARVROrigin is called "FPController" and that you have the same VR player avatar installed as called for in the XR-Tools instructions. 
+
+So you should make sure you have followed the instructions already to implement the OpenXR asset's first person controller (see,example: https://www.youtube.com/watch?v=LZ9UKR48b0Y) and Open-XR-Tools left and right hand scenes into your project (see same video as well as https://github.com/GodotVR/godot-xr-tools/wiki/Hands).  
+
+You should also have assigned a "pointer" function ("instance child scene") to one of the controllers following the instructions here: https://github.com/GodotVR/godot-xr-tools/wiki/PointerAndUI
+
+If you have changed the names of the compoenents for your ARVROrigin or left or right hand controllers, click on the OpenXR-Tools-Networking node that is now in your scene and in the inspector click to select those nodes in your scene.
+
+This will also create a 2Dto3DViewport node (https://github.com/GodotVR/godot-xr-tools/wiki/PointerAndUI)  your scene containing the NetworkGateway dashboard.  You can assign a controller button in the OpenXR-Tools-Networking node to make the menu appear or disappear.  
+
+(Right now, restricted to right hand assignment for testing, will fix in near future)
+
+If you just want to use local network multiplayer, you  can set the NetworkGateway dashboard in game to "Enet" in the top left corner drop down, and then set one player as "as server" in the top right drop down box, and other players as "local network" and the players should automatically connect.
+
+For web-based multiplayer (Experimental) if you set the NetworkGateway dashboard in the top right corner dropdown to WebRTC via MQTT signalling, the 
+instances should automatically connect if you then use the "as necessary" option in the top right corner drop down (the as-necessary option means that the first one online becomes the server).
 For details of how it works (in an even more minimal example) go to the 
 [godot multiplayer networking workbench](https://github.com/goatchurchprime/godot_multiplayer_networking_workbench) project 
 and try it out.
+
 It very closely follows the Godot Networking documentation, except that you can try out the different 
 configurations and protocols using an graphical user interface rather than having to hack the code.
 

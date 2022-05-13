@@ -1,46 +1,12 @@
 extends Spatial
 
-onready var NetworkGateway = $ViewportNetworkGateway/Viewport/NetworkGateway
-
-export var webrtcroomname = "lettuce"
-export var webrtcbroker = "mqtt.dynamicdevices.co.uk"
-# "ws://broker.mqttdashboard.com:8000"
-export var PCstartupprotocol = "webrtc"
-export var QUESTstartupprotocol = "webrtc"
 
 func _ready():
-	if not OS.has_feature("QUEST"):
-		$FPController/Left_hand/Wrist.set_process(false)
-		$FPController/Left_hand/Wrist.set_physics_process(false)
-		$FPController/Right_hand/Wrist.set_process(false)
-		$FPController/Right_hand/Wrist.set_physics_process(false)
-		$FPController/Left_hand.queue_free()
-		$FPController/Right_hand.queue_free()
-		
-	#$FPController/LeftHandController/Function_Direct_movement.nonVRkeyboard = true
-
-	if OS.has_feature("QUEST"):
-		if QUESTstartupprotocol == "webrtc":
-			NetworkGateway.initialstatemqttwebrtc(NetworkGateway.NETWORK_OPTIONS_MQTT_WEBRTC.AS_NECESSARY, webrtcroomname, webrtcbroker)
-		elif QUESTstartupprotocol == "enet":
-			NetworkGateway.initialstatenormal(NetworkGateway.NETWORK_PROTOCOL.ENET, NetworkGateway.NETWORK_OPTIONS.AS_CLIENT)
-	else:
-		if PCstartupprotocol == "webrtc":
-			NetworkGateway.initialstatemqttwebrtc(NetworkGateway.NETWORK_OPTIONS_MQTT_WEBRTC.AS_NECESSARY, webrtcroomname, webrtcbroker)
-		elif PCstartupprotocol == "enet":
-			NetworkGateway.initialstatenormal(NetworkGateway.NETWORK_PROTOCOL.ENET, NetworkGateway.NETWORK_OPTIONS.AS_SERVER)
-			
-
+	
 	get_node("/root").msaa = Viewport.MSAA_4X
-	$FPController/RightHandController.connect("button_pressed", self, "vr_right_button_pressed")
-	$FPController/RightHandController.connect("button_release", self, "vr_right_button_release")
-	$FPController/LeftHandController.connect("button_pressed", self, "vr_left_button_pressed")
-
 	$FPController/PlayerBody.default_physics.move_drag = 45
 	$SportBall.connect("body_entered", self, "ball_body_entered")
 	$SportBall.connect("body_exited", self, "ball_body_exited")
-
-	NetworkGateway.set_process_input(false)
 
 func ball_body_entered(body):
 	#print("ball_body_entered ", body)
@@ -60,25 +26,6 @@ const VR_BUTTON_AX = 7
 const VR_GRIP = 2
 const VR_TRIGGER = 15
 
-func vr_right_button_pressed(button: int):
-	print("vr right button pressed ", button)
-	if button == VR_BUTTON_BY:
-		if $ViewportNetworkGateway.visible:
-			$ViewportNetworkGateway.visible = false
-		else:
-			var headtrans = $FPController/ARVRCamera.global_transform
-			$ViewportNetworkGateway.look_at_from_position(headtrans.origin + headtrans.basis.z*-3, 
-														  headtrans.origin + headtrans.basis.z*-3, 
-														  Vector3(0, 1, 0))
-			$ViewportNetworkGateway.visible = true
-			
-	if button == VR_GRIP:
-		NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(true)
-
-func vr_right_button_release(button: int):
-	if button == VR_GRIP:
-		NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(false)
-
 func vr_left_button_pressed(button: int):
 	print("vr left button pressed ", button)
 	if button == VR_BUTTON_BY:
@@ -86,21 +33,12 @@ func vr_left_button_pressed(button: int):
 									  Vector3(0, 2, 0) + \
 									  $FPController/ARVRCamera.global_transform.basis.z*-0.75
 		
-			
 func _input(event):
 	if event is InputEventKey and not event.echo:
-		if event.scancode == KEY_M and event.pressed:
-			vr_right_button_pressed(VR_BUTTON_BY)
 		if event.scancode == KEY_F and event.pressed:
 			vr_left_button_pressed(VR_BUTTON_BY)
-		if event.scancode == KEY_G and event.pressed:
-			NetworkGateway.get_node("PlayerConnections/Doppelganger").pressed = not NetworkGateway.get_node("PlayerConnections/Doppelganger").pressed
-		if (event.scancode == KEY_2):
-			NetworkGateway.selectandtrigger_networkoption(NetworkGateway.NETWORK_OPTIONS.LOCAL_NETWORK)
-		if event.scancode == KEY_SHIFT:
-			vr_right_button_pressed(VR_GRIP) if event.pressed else vr_right_button_release(VR_GRIP)
-
-
+	
+			
 func _physics_process(delta):
 	var lowestfloorheight = -30
 	if $FPController.transform.origin.y < lowestfloorheight:
