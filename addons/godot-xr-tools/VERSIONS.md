@@ -1,4 +1,13 @@
-# 2.3
+# 2.4.0
+- Added configuration setting for head height in player body.
+- Added Function_JumpDetect_movement to detect jumping via the players body and/or arms
+- Improved responsiveness of snap-turning
+- Moved flight logic from Function_Direct_movement to Function_Flight_movement
+- Added option to disable player sliding on slopes
+- Added support for remote grabbing
+- Moved turning logic from Function_Direct_movement to Function_Turn_movement
+
+# 2.3.0
 - Added vignette
 - Moved player physics into new PlayerBody asset (breaking change)
 - Moved Function_Direct_movement settings for player physics into PlayerBody
