@@ -195,6 +195,7 @@ visible = false
 extents = Vector3( 12, 10, 13 )
 
 [node name="XR-Tools-Networking" parent="." instance=ExtResource( 9 )]
+webrtcbroker = "test.mosquitto.org"
 
 [editable path="FPController"]
 [editable path="FPController/Left_hand"]
