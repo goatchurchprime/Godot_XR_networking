@@ -1,0 +1,26 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://addons/godot-xr-tools/assets/VRPlayerAvatar.tscn" type="PackedScene" id=1]
+[ext_resource path="res://addons/player-networking/NetworkGateway.tscn" type="PackedScene" id=2]
+[ext_resource path="res://addons/godot-xr-tools/objects/Viewport_2D_in_3D.tscn" type="PackedScene" id=3]
+[ext_resource path="res://addons/godot-xr-tools/assets/VRPlayerAvatar.gd" type="Script" id=4]
+[ext_resource path="res://addons/godot-xr-tools/assets/XR-Tools-Networking.gd" type="Script" id=5]
+[ext_resource path="res://addons/godot-xr-tools/objects/Viewport_2D_in_3D.gd" type="Script" id=6]
+
+[node name="XR-Tools-Networking" type="Node"]
+script = ExtResource( 5 )
+fpcontroller_path = NodePath("../FPController")
+leftcontroller_path = NodePath("../FPController/LeftHandController")
+rightcontroller_path = NodePath("../FPController/RightHandController")
+
+[node name="ViewportNetworkGateway" type="Spatial" parent="." instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.401293, 1.48204, -2.6145 )
+script = ExtResource( 6 )
+viewport_size = Vector2( 550, 400 )
+scene = ExtResource( 2 )
+collision_layer = 1023
+
+[node name="Players" type="Spatial" parent="."]
+
+[node name="VRPlayerAvatar" type="Spatial" parent="Players" instance=ExtResource( 1 )]
+script = ExtResource( 4 )
