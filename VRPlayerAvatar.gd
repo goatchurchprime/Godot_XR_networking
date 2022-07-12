@@ -12,81 +12,39 @@ onready var Right_hand = arvrorigin.get_node_or_null("Right_hand")
 
 
 	
+
+var ovrbonemapping = { 2:"Wrist/ThumbMetacarpal", 3:"Wrist/ThumbMetacarpal/ThumbProximal", 4:"Wrist/ThumbMetacarpal/ThumbProximal/ThumbDistal", 
+					   6:"Wrist/IndexMetacarpal/IndexProximal", 7:"Wrist/IndexMetacarpal/IndexProximal/IndexIntermediate", 8:"Wrist/IndexMetacarpal/IndexProximal/IndexIntermediate/IndexDistal", 
+					   10:"Wrist/MiddleMetacarpal/MiddleProximal", 11:"Wrist/MiddleMetacarpal/MiddleProximal/MiddleIntermediate", 12:"Wrist/MiddleMetacarpal/MiddleProximal/MiddleIntermediate/MiddleDistal", 
+					   14:"Wrist/RingMetacarpal/RingProximal", 15:"Wrist/RingMetacarpal/RingProximal/RingIntermediate", 16:"Wrist/RingMetacarpal/RingProximal/RingIntermediate/RingDistal", 
+					   19:"Wrist/LittleMetacarpal/LittleProximal", 20:"Wrist/LittleMetacarpal/LittleProximal/LittleIntermediate", 21:"Wrist/LittleMetacarpal/LittleProximal/LittleIntermediate/LittleDistal" 
+					 }
+					
 var qconj = Quat(0,sqrt(0.5),0,sqrt(0.5))
 var qconjI = Quat(qconj.x, qconj.y, qconj.z, -qconj.w)
 var qconjT = Quat(sqrt(0.5),0,0,-sqrt(0.5))
 var qconjTI = Quat(qconjT.x, qconjT.y, qconjT.z, -qconjT.w)
-func setboneorient(boneid, xrbonepath, ovrskel, xrhand, refl):
-	var xrbonetransT = xrhand.get_node(xrbonepath).transform
-	var xrbonetrans = xrbonetransT.basis
-	var qxrbonetrans = xrbonetrans.get_rotation_quat()
-	if refl:
-		qxrbonetrans = Quat(qxrbonetrans.x, -qxrbonetrans.y, -qxrbonetrans.z, qxrbonetrans.w)
-	var qxrbonetransR
-	if boneid <= 4:
-		qxrbonetransR = qconjT*qxrbonetrans*qconjTI
-		if boneid == 2:
-			qxrbonetransR = Quat(-0.651024, -0.147317, -0.376364, -0.642507)*qxrbonetransR
-	else:
-		qxrbonetransR = qconj*qxrbonetrans*qconjI
-	var bonerest = ovrskel.get_bone_rest(boneid)
-	var qbonepose = bonerest.basis.get_rotation_quat().inverse()*qxrbonetransR
-	ovrskel.set_bone_pose(boneid, Transform(qbonepose))
-	
 func processtoovrhand(xrhand, ovrskel, refl):
-	setboneorient(2, "Wrist/ThumbMetacarpal", ovrskel, xrhand, refl)
-	setboneorient(3, "Wrist/ThumbMetacarpal/ThumbProximal", ovrskel, xrhand, refl)
-	setboneorient(4, "Wrist/ThumbMetacarpal/ThumbProximal/ThumbDistal", ovrskel, xrhand, refl)
+	for boneid in ovrbonemapping:
+		var xrbonepath = ovrbonemapping[boneid]
+		var xrbonetransT = xrhand.get_node(xrbonepath).transform
+		var xrbonetrans = xrbonetransT.basis
+		var qxrbonetrans = xrbonetrans.get_rotation_quat()
+		if refl:
+			qxrbonetrans = Quat(qxrbonetrans.x, -qxrbonetrans.y, -qxrbonetrans.z, qxrbonetrans.w)  # Conjugating with R=Basis(-i,j,k)
+		var qxrbonetransR
+		if boneid <= 4:
+			qxrbonetransR = qconjT*qxrbonetrans*qconjTI
+			if boneid == 2:
+				qxrbonetransR = Quat(-0.651024, -0.147317, -0.376364, -0.642507)*qxrbonetransR
+		else:
+			qxrbonetransR = qconj*qxrbonetrans*qconjI
+		var bonerest = ovrskel.get_bone_rest(boneid)
+		var qbonepose = bonerest.basis.get_rotation_quat().inverse()*qxrbonetransR
+		ovrskel.set_bone_pose(boneid, Transform(qbonepose))
 
-	setboneorient(6, "Wrist/IndexMetacarpal/IndexProximal", ovrskel, xrhand, refl)
-	setboneorient(7, "Wrist/IndexMetacarpal/IndexProximal/IndexIntermediate", ovrskel, xrhand, refl)
-	setboneorient(8, "Wrist/IndexMetacarpal/IndexProximal/IndexIntermediate/IndexDistal", ovrskel, xrhand, refl)
-
-	setboneorient(10, "Wrist/MiddleMetacarpal/MiddleProximal", ovrskel, xrhand, refl)
-	setboneorient(11, "Wrist/MiddleMetacarpal/MiddleProximal/MiddleIntermediate", ovrskel, xrhand, refl)
-	setboneorient(12, "Wrist/MiddleMetacarpal/MiddleProximal/MiddleIntermediate/MiddleDistal", ovrskel, xrhand, refl)
-
-	setboneorient(14, "Wrist/RingMetacarpal/RingProximal", ovrskel, xrhand, refl)
-	setboneorient(15, "Wrist/RingMetacarpal/RingProximal/RingIntermediate", ovrskel, xrhand, refl)
-	setboneorient(16, "Wrist/RingMetacarpal/RingProximal/RingIntermediate/RingDistal", ovrskel, xrhand, refl)
-
-	setboneorient(19, "Wrist/LittleMetacarpal/LittleProximal", ovrskel, xrhand, refl)
-	setboneorient(20, "Wrist/LittleMetacarpal/LittleProximal/LittleIntermediate", ovrskel, xrhand, refl)
-	setboneorient(21, "Wrist/LittleMetacarpal/LittleProximal/LittleIntermediate/LittleDistal", ovrskel, xrhand, refl)
-
-
-var jointnames = [
-		"Wrist",
-		"Wrist/ThumbMetacarpal",
-		"Wrist/ThumbMetacarpal/ThumbProximal",
-		"Wrist/ThumbMetacarpal/ThumbProximal/ThumbDistal",
-		"Wrist/ThumbMetacarpal/ThumbProximal/ThumbDistal/ThumbTip",
-		"Wrist/IndexMetacarpal",
-		"Wrist/IndexMetacarpal/IndexProximal",
-		"Wrist/IndexMetacarpal/IndexProximal/IndexIntermediate",
-		"Wrist/IndexMetacarpal/IndexProximal/IndexIntermediate/IndexDistal",
-		"Wrist/IndexMetacarpal/IndexProximal/IndexIntermediate/IndexDistal/IndexTip",
-		"Wrist/MiddleMetacarpal",
-		"Wrist/MiddleMetacarpal/MiddleProximal",
-		"Wrist/MiddleMetacarpal/MiddleProximal/MiddleIntermediate",
-		"Wrist/MiddleMetacarpal/MiddleProximal/MiddleIntermediate/MiddleDistal",
-		"Wrist/MiddleMetacarpal/MiddleProximal/MiddleIntermediate/MiddleDistal/MiddleTip",
-		"Wrist/RingMetacarpal",
-		"Wrist/RingMetacarpal/RingProximal",
-		"Wrist/RingMetacarpal/RingProximal/RingIntermediate",
-		"Wrist/RingMetacarpal/RingProximal/RingIntermediate/RingDistal",
-		"Wrist/RingMetacarpal/RingProximal/RingIntermediate/RingDistal/RingTip",
-		"Wrist/LittleMetacarpal",
-		"Wrist/LittleMetacarpal/LittleProximal",
-		"Wrist/LittleMetacarpal/LittleProximal/LittleIntermediate",
-		"Wrist/LittleMetacarpal/LittleProximal/LittleIntermediate/LittleDistal",
-		"Wrist/LittleMetacarpal/LittleProximal/LittleIntermediate/LittleDistal/LittleTip",
-	]
-
-var filehandcount = 10
 var leftthumbindextouched = false
 var rightthumbindextouched = false
-# warning-ignore:unused_argument
 func processlocalavatarposition(delta):
 	transform = arvrorigin.transform
 	$HeadCam.transform = arvrorigin.get_node("ARVRCamera").transform
@@ -128,7 +86,7 @@ func processlocalavatarposition(delta):
 		$HandRight/RightHand/AnimationTree.set("parameters/Trigger/blend_amount", max(0.0, 1.0 - thumbtippos.distance_to(indextippos)/0.04))
 		$HandRight/RightHand/AnimationTree.set("parameters/Grip/blend_amount", max(0.0, 1.0 - thumbtippos.distance_to(middletippos)/0.04))
 
-		$HandRightOVR.transform = Right_hand.transform  # $HandRight.transform
+		$HandRightOVR.transform = Right_hand.transform  
 		processtoovrhand(Right_hand, $HandRightOVR/ovr_right_hand_model/ArmatureRight/Skeleton, false)
 
 		if not rightthumbindextouched:
@@ -137,34 +95,6 @@ func processlocalavatarposition(delta):
 		else:
 			rightthumbindextouched = (thumbtippos.distance_to(indextippos) < 0.02)
 
-		if leftthumbindexjusttouched:
-			var xrhand = Right_hand
-			var bits = [ "Wrist/ThumbMetacarpal", "Wrist/ThumbMetacarpal/ThumbProximal", "Wrist/ThumbMetacarpal/ThumbProximal/ThumbDistal", "Wrist/ThumbMetacarpal/ThumbProximal/ThumbDistal/ThumbTip" ]
-			bits = jointnames
-			var bbits = { }
-			for b in bits:
-				bbits[b] = xrhand.get_node(b).transform
-			var filehandsave = File.new()
-			filehandsave.open("user://handdat%d.dat" % filehandcount, File.WRITE)
-			filehandsave.store_var(bbits)
-			filehandsave.close()
-			print("******** ", filehandcount)
-			print(OS.get_user_data_dir())
-			print(var2str(bbits).substr(0, 150))
-			filehandcount += 1
-
-			var mqtt = get_node("/root/Main/ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT")
-			mqtt.publish("hand/pos", var2str(bbits))
-
-	if is_instance_valid(Left_hand) and handtrackingavailable and Left_hand.is_active():
-		if rightthumbindexjusttouched:
-			var xrhand = Left_hand
-			var bits = jointnames
-			var bbits = { }
-			for b in bits:
-				bbits[b] = xrhand.get_node(b).transform
-			var mqtt = get_node("/root/Main/ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT")
-			mqtt.publish("hand/pos", var2str(bbits))
 
 func setpaddlebody(active):
 	$HandRight/PaddleBody.visible = active
