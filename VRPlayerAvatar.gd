@@ -7,11 +7,12 @@ var labeltext = "unknown"
 onready var arvrcamera = arvrorigin.get_node("ARVRCamera")
 onready var LeftHandController = arvrorigin.get_node("LeftHandController")
 onready var RightHandController = arvrorigin.get_node("RightHandController")
-onready var Left_hand = arvrorigin.get_node_or_null("Left_hand")
-onready var Right_hand = arvrorigin.get_node_or_null("Right_hand")
+onready var Left_hand = arvrorigin.get_node_or_null("TLeft_hand/Left_hand")
+onready var Right_hand = arvrorigin.get_node_or_null("TRight_hand/Right_hand")
 onready var Configuration = arvrorigin.get_node_or_null("Configuration")
-onready var XRPose = arvrorigin.get_node_or_null("XRPose")
-	
+onready var XRPoseLeftHand = arvrorigin.get_node_or_null("TLeft_hand/XRPose")
+onready var XRPoseRightHand = arvrorigin.get_node_or_null("TRight_hand/XRPose")
+
 
 var ovrbonemapping = { 2:"Wrist/ThumbMetacarpal", 3:"Wrist/ThumbMetacarpal/ThumbProximal", 4:"Wrist/ThumbMetacarpal/ThumbProximal/ThumbDistal", 
 					   6:"Wrist/IndexMetacarpal/IndexProximal", 7:"Wrist/IndexMetacarpal/IndexProximal/IndexIntermediate", 8:"Wrist/IndexMetacarpal/IndexProximal/IndexIntermediate/IndexDistal", 
@@ -58,20 +59,19 @@ func processlocalavatarposition(delta):
 	transform = arvrorigin.transform
 	$HeadCam.transform = arvrorigin.get_node("ARVRCamera").transform
 	var handtrackingavailable = (arvrorigin.interface != null)
-	var leftthumbindexjusttouched = false
-	var rightthumbindexjusttouched = false
-	
 	if LeftHandController.get_is_active():
 		$HandLeftOVR.visible = false
 		$ControllerLeft.transform = LeftHandController.transform
 		$ControllerLeft.visible = true
-		print(Configuration.get_tracking_confidence(1), Configuration.get_tracking_confidence(2), XRPose.get_tracking_confidence())
+		print(Configuration.get_tracking_confidence(1), Configuration.get_tracking_confidence(2), XRPoseLeftHand.get_tracking_confidence(), XRPoseRightHand.get_tracking_confidence())
+
 	elif is_instance_valid(Left_hand) and handtrackingavailable and Left_hand.is_active():
 		$ControllerLeft.visible = false
 		$HandLeftOVR.transform = Left_hand.transform
 		processtoovrhand(Left_hand, $HandLeftOVR/ovr_left_hand_model/ArmatureLeft/Skeleton, true)
 		$HandLeftOVR.visible = true
-		print(Configuration.get_tracking_confidence(1), Configuration.get_tracking_confidence(2), XRPose.get_tracking_confidence())
+		print(Configuration.get_tracking_confidence(1), Configuration.get_tracking_confidence(2), XRPoseLeftHand.get_tracking_confidence(), XRPoseRightHand.get_tracking_confidence())
+
 	else:
 		$HandLeftOVR.visible = false
 		$ControllerLeft.visible = false
@@ -133,8 +133,8 @@ var possibleusernames = ["Alice", "Beth", "Cath", "Dan", "Earl", "Fred", "George
 func initavatarlocal():
 	randomize()
 	labeltext = possibleusernames[randi()%len(possibleusernames)]
-	$HandLeft/LeftHand/LeftHand/Armature_Left/Skeleton/Hand_Left.set_surface_material(0, load("vrhandmaterial.tres"))
-	$HandRight/RightHand/RightHand/Armature_Left/Skeleton/Hand_Left.set_surface_material(0, load("vrhandmaterial.tres"))
+	$HandLeftOVR/ovr_left_hand_model/ArmatureLeft/Skeleton/l_handMeshNode.set_surface_material(0, load("vrhandmaterial.tres"))
+	$HandRightOVR/ovr_right_hand_model/ArmatureRight/Skeleton/r_handMeshNode.set_surface_material(0, load("vrhandmaterial.tres"))
 
 func initavatarremote(avatardata):
 	labeltext = avatardata["labeltext"]

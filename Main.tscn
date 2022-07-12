@@ -90,20 +90,25 @@ step_turn_angle = 30.0
 
 [node name="PlayerBody" parent="FPController" instance=ExtResource( 4 )]
 
-[node name="Left_hand" parent="FPController" instance=ExtResource( 13 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0, 0 )
+[node name="TLeft_hand" type="Spatial" parent="FPController"]
 visible = false
 
-[node name="Wrist" parent="FPController/Left_hand" index="0"]
+[node name="Left_hand" parent="FPController/TLeft_hand" instance=ExtResource( 13 )]
+
+[node name="Wrist" parent="FPController/TLeft_hand/Left_hand" index="0"]
 script = null
 
-[node name="Right_hand" parent="FPController" instance=ExtResource( 10 )]
+[node name="XRPose" parent="FPController/TLeft_hand" instance=ExtResource( 16 )]
+
+[node name="TRight_hand" type="Spatial" parent="FPController"]
 visible = false
 
-[node name="Wrist" parent="FPController/Right_hand" index="0"]
+[node name="Right_hand" parent="FPController/TRight_hand" instance=ExtResource( 10 )]
+
+[node name="Wrist" parent="FPController/TRight_hand/Right_hand" index="0"]
 script = null
 
-[node name="XRPose" parent="FPController" instance=ExtResource( 16 )]
+[node name="XRPose" parent="FPController/TRight_hand" instance=ExtResource( 16 )]
 
 [node name="Floor" type="StaticBody" parent="."]
 
@@ -207,5 +212,5 @@ visible = false
 extents = Vector3( 12, 10, 13 )
 
 [editable path="FPController"]
-[editable path="FPController/Left_hand"]
-[editable path="FPController/Right_hand"]
+[editable path="FPController/TLeft_hand/Left_hand"]
+[editable path="FPController/TRight_hand/Right_hand"]

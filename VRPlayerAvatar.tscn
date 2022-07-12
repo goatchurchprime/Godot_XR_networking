@@ -73,6 +73,7 @@ parameters/Trigger/blend_amount = 0.0
 
 [node name="HandRight" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33106, -0.311561, -0.170176 )
+visible = false
 
 [node name="RightHand" type="Spatial" parent="HandRight"]
 

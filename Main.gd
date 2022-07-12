@@ -11,20 +11,16 @@ export var QUESTstartupprotocol = "webrtc"
 
 func _ready():
 	if OS.has_feature("QUEST"):
-		if has_node("FPController/Right_hand"):
-			$FPController/Right_hand.hand = 1
+		if has_node("FPController/TRight_hand/Right_hand"):
+			$FPController/TRight_hand/Right_hand.hand = 1
+			$FPController/TRight_hand/XRPose.set_path("user/hand/right")
 	else:
-		if has_node("FPController/Left_hand"):
-			$FPController/Left_hand/Wrist.set_process(false)
-			$FPController/Left_hand/Wrist.set_physics_process(false)
-		if has_node("FPController/Right_hand"):
-			$FPController/Right_hand/Wrist.set_process(false)
-			$FPController/Right_hand/Wrist.set_physics_process(false)
-
-		if has_node("FPController/LeftHand"):
-			$FPController/LeftHand.queue_free()  # calls motion_range which doesn't exist; though doesn't work as its ready is already called
-		if has_node("FPController/RightHand"):
-			$FPController/RightHand.queue_free()  
+		if has_node("FPController/TLeft_hand/Left_hand"):
+			$FPController/TLeft_hand/Left_hand/Wrist.set_process(false)
+			$FPController/TLeft_hand/Left_hand/Wrist.set_physics_process(false)
+		if has_node("FPController/TRight_hand/Right_hand"):
+			$FPController/TRight_hand/Right_hand/Wrist.set_process(false)
+			$FPController/TRight_hand/Right_hand/Wrist.set_physics_process(false)
 	#$FPController/LeftHandController/Function_Direct_movement.nonVRkeyboard = true
 
 	if OS.has_feature("QUEST"):
