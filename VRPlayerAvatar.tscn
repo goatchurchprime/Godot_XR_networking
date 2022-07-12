@@ -1,9 +1,7 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=13 format=2]
 
-[ext_resource path="res://addons/godot-xr-tools/assets/LeftHand.glb" type="PackedScene" id=1]
 [ext_resource path="res://VRPlayerAvatar.gd" type="Script" id=2]
 [ext_resource path="res://xrassets/ovr_right_hand_model.glb" type="PackedScene" id=3]
-[ext_resource path="res://addons/godot-xr-tools/assets/HandBlendTree.tres" type="AnimationNodeBlendTree" id=4]
 [ext_resource path="res://xrassets/ovr_left_hand_model.glb" type="PackedScene" id=5]
 [ext_resource path="res://xrassets/right_quest2_contoller.tscn" type="PackedScene" id=6]
 [ext_resource path="res://xrassets/left_quest2_controller.tscn" type="PackedScene" id=7]
@@ -56,48 +54,16 @@ mesh = SubResource( 3 )
 material = SubResource( 4 )
 
 [node name="HandLeft" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.219986, -0.306672, -0.155452 )
-visible = false
-
-[node name="LeftHand" type="Spatial" parent="HandLeft"]
-
-[node name="LeftHand" parent="HandLeft/LeftHand" instance=ExtResource( 1 )]
-transform = Transform( -0.5, 0, 4.37114e-08, 0, 0.5, 0, -4.37114e-08, 0, -0.5, 0, 0, 0 )
-
-[node name="AnimationTree" type="AnimationTree" parent="HandLeft/LeftHand"]
-tree_root = ExtResource( 4 )
-anim_player = NodePath("../LeftHand/AnimationPlayer")
-active = true
-parameters/Grip/blend_amount = 0.0
-parameters/Trigger/blend_amount = 0.0
-
-[node name="HandRight" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33106, -0.311561, -0.170176 )
-visible = false
-
-[node name="RightHand" type="Spatial" parent="HandRight"]
-
-[node name="RightHand" parent="HandRight/RightHand" instance=ExtResource( 1 )]
-transform = Transform( 0.5, 4.37114e-08, 0, -4.37114e-08, 0.5, 0, 0, 0, -0.5, 0, 0, 0 )
-
-[node name="AnimationTree" type="AnimationTree" parent="HandRight/RightHand"]
-tree_root = ExtResource( 4 )
-anim_player = NodePath("../RightHand/AnimationPlayer")
-active = true
-parameters/Grip/blend_amount = 0.0
-parameters/Trigger/blend_amount = 0.0
-
-[node name="HandLeftOVR" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.263509, -0.42626, -0.236405 )
 
-[node name="ovr_left_hand_model" parent="HandLeftOVR" instance=ExtResource( 5 )]
-transform = Transform( -4.37114e-08, -1, -4.37114e-08, 0, -4.37114e-08, 1, -1, 4.37114e-08, 1.91069e-15, 0, 0.1, 0 )
+[node name="ovr_left_hand_model" parent="HandLeft" instance=ExtResource( 5 )]
+transform = Transform( -4.37114e-08, -1, -4.37114e-08, 0, -4.37114e-08, 1, -1, 4.37114e-08, 1.91069e-15, 0, 0, 0 )
 
-[node name="HandRightOVR" type="Spatial" parent="."]
+[node name="HandRight" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.337105, -0.42626, -0.236405 )
 
-[node name="ovr_right_hand_model" parent="HandRightOVR" instance=ExtResource( 3 )]
-transform = Transform( -4.37114e-08, -1, 4.37114e-08, 0, -4.37114e-08, -1, 1, -4.37114e-08, 1.91069e-15, 0, 0.1, 0 )
+[node name="ovr_right_hand_model" parent="HandRight" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, -1, 4.37114e-08, 0, -4.37114e-08, -1, 1, -4.37114e-08, 1.91069e-15, 0, 0, 0 )
 
 [node name="ControllerLeft" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.307861, -0.332077, -0.346588 )
