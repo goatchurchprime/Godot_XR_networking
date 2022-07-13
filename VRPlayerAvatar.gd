@@ -135,8 +135,8 @@ var possibleusernames = ["Alice", "Beth", "Cath", "Dan", "Earl", "Fred", "George
 func initavatarlocal():
 	randomize()
 	labeltext = possibleusernames[randi()%len(possibleusernames)]
-	$HandLeft/ovr_left_hand_model/ArmatureLeft/Skeleton/l_handMeshNode.set_surface_material(0, load("vrhandmaterial.tres"))
-	$HandRight/ovr_right_hand_model/ArmatureRight/Skeleton/r_handMeshNode.set_surface_material(0, load("vrhandmaterial.tres"))
+	$HandLeft/ovr_left_hand_model/ArmatureLeft/Skeleton/l_handMeshNode.set_surface_material(0, load("res://xrassets/vrhandmaterial.tres"))
+	$HandRight/ovr_right_hand_model/ArmatureRight/Skeleton/r_handMeshNode.set_surface_material(0, load("res://xrassets/vrhandmaterial.tres"))
 
 func initavatarremote(avatardata):
 	labeltext = avatardata["labeltext"]
