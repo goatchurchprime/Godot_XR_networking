@@ -1,8 +1,10 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=13 format=2]
 
-[ext_resource path="res://addons/godot-xr-tools/assets/LeftHand.glb" type="PackedScene" id=1]
 [ext_resource path="res://VRPlayerAvatar.gd" type="Script" id=2]
-[ext_resource path="res://addons/godot-xr-tools/assets/HandBlendTree.tres" type="AnimationNodeBlendTree" id=4]
+[ext_resource path="res://xrassets/ovr_right_hand_model.glb" type="PackedScene" id=3]
+[ext_resource path="res://xrassets/ovr_left_hand_model.glb" type="PackedScene" id=5]
+[ext_resource path="res://xrassets/right_quest2_contoller.tscn" type="PackedScene" id=6]
+[ext_resource path="res://xrassets/left_quest2_controller.tscn" type="PackedScene" id=7]
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 0.2, 0.1, 0.1 )
@@ -52,46 +54,37 @@ mesh = SubResource( 3 )
 material = SubResource( 4 )
 
 [node name="HandLeft" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.219986, -0.306672, -0.155452 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.263509, -0.42626, -0.236405 )
 
-[node name="LeftHand" type="Spatial" parent="HandLeft"]
-
-[node name="LeftHand" parent="HandLeft/LeftHand" instance=ExtResource( 1 )]
-transform = Transform( -0.5, 0, 4.37114e-08, 0, 0.5, 0, -4.37114e-08, 0, -0.5, 0, 0, 0 )
-
-[node name="AnimationTree" type="AnimationTree" parent="HandLeft/LeftHand"]
-tree_root = ExtResource( 4 )
-anim_player = NodePath("../LeftHand/AnimationPlayer")
-active = true
-parameters/Grip/blend_amount = 0.0
-parameters/Trigger/blend_amount = 0.0
+[node name="ovr_left_hand_model" parent="HandLeft" instance=ExtResource( 5 )]
+transform = Transform( -4.37114e-08, -1, -4.37114e-08, 0, -4.37114e-08, 1, -1, 4.37114e-08, 1.91069e-15, 0, 0, 0 )
 
 [node name="HandRight" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33106, -0.311561, -0.170176 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.337105, -0.42626, -0.236405 )
 
-[node name="RightHand" type="Spatial" parent="HandRight"]
+[node name="ovr_right_hand_model" parent="HandRight" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, -1, 4.37114e-08, 0, -4.37114e-08, -1, 1, -4.37114e-08, 1.91069e-15, 0, 0, 0 )
 
-[node name="RightHand" parent="HandRight/RightHand" instance=ExtResource( 1 )]
-transform = Transform( 0.5, 4.37114e-08, 0, -4.37114e-08, 0.5, 0, 0, 0, -0.5, 0, 0, 0 )
+[node name="ControllerLeft" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.307861, -0.332077, -0.346588 )
 
-[node name="AnimationTree" type="AnimationTree" parent="HandRight/RightHand"]
-tree_root = ExtResource( 4 )
-anim_player = NodePath("../RightHand/AnimationPlayer")
-active = true
-parameters/Grip/blend_amount = 0.0
-parameters/Trigger/blend_amount = 0.0
+[node name="left_quest2_controller" parent="ControllerLeft" instance=ExtResource( 7 )]
 
-[node name="PaddleBody" type="KinematicBody" parent="HandRight"]
-transform = Transform( 0.752357, 0.658755, 0, -0.658755, 0.752357, 0, 0, 0, 1, 0, 0, -0.575272 )
-visible = false
+[node name="ControllerRight" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.319285, -0.267242, -0.39732 )
+
+[node name="right_quest2_contoller" parent="ControllerRight" instance=ExtResource( 6 )]
+
+[node name="PaddleBody" type="KinematicBody" parent="ControllerRight"]
+transform = Transform( 0.752357, 0.658755, 0, -0.658755, 0.752357, 0, 0, 0, 1, 0.011775, -0.044319, -0.348128 )
 collision_layer = 4096
 collision_mask = 4096
 
-[node name="CollisionShape" type="CollisionShape" parent="HandRight/PaddleBody"]
+[node name="CollisionShape" type="CollisionShape" parent="ControllerRight/PaddleBody"]
 transform = Transform( 0.704795, 0.709411, 0, -0.709411, 0.704795, 0, 0, 0, 1, 0, 0, 0 )
 shape = SubResource( 5 )
 disabled = true
 
-[node name="MeshInstance" type="MeshInstance" parent="HandRight/PaddleBody/CollisionShape"]
+[node name="MeshInstance" type="MeshInstance" parent="ControllerRight/PaddleBody/CollisionShape"]
 mesh = SubResource( 6 )
 material/0 = SubResource( 7 )

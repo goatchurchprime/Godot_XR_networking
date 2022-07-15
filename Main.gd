@@ -8,15 +8,19 @@ export var webrtcbroker = "mqtt.dynamicdevices.co.uk"
 export var PCstartupprotocol = "webrtc"
 export var QUESTstartupprotocol = "webrtc"
 
+
 func _ready():
-	if not OS.has_feature("QUEST"):
-		$FPController/Left_hand/Wrist.set_process(false)
-		$FPController/Left_hand/Wrist.set_physics_process(false)
-		$FPController/Right_hand/Wrist.set_process(false)
-		$FPController/Right_hand/Wrist.set_physics_process(false)
-		$FPController/Left_hand.queue_free()
-		$FPController/Right_hand.queue_free()
-		
+	if OS.has_feature("QUEST"):
+		if has_node("FPController/TRight_hand/Right_hand"):
+			$FPController/TRight_hand/Right_hand.hand = 1
+			$FPController/TRight_hand/XRPose.set_path("user/hand/right")
+	else:
+		if has_node("FPController/TLeft_hand/Left_hand"):
+			$FPController/TLeft_hand/Left_hand/Wrist.set_process(false)
+			$FPController/TLeft_hand/Left_hand/Wrist.set_physics_process(false)
+		if has_node("FPController/TRight_hand/Right_hand"):
+			$FPController/TRight_hand/Right_hand/Wrist.set_process(false)
+			$FPController/TRight_hand/Right_hand/Wrist.set_physics_process(false)
 	#$FPController/LeftHandController/Function_Direct_movement.nonVRkeyboard = true
 
 	if OS.has_feature("QUEST"):
@@ -86,6 +90,8 @@ func vr_left_button_pressed(button: int):
 									  Vector3(0, 2, 0) + \
 									  $FPController/ARVRCamera.global_transform.basis.z*-0.75
 		
+	if button == VR_BUTTON_AX:
+		pass
 			
 func _input(event):
 	if event is InputEventKey and not event.echo:
@@ -99,7 +105,10 @@ func _input(event):
 			NetworkGateway.selectandtrigger_networkoption(NetworkGateway.NETWORK_OPTIONS.LOCAL_NETWORK)
 		if event.scancode == KEY_SHIFT:
 			vr_right_button_pressed(VR_GRIP) if event.pressed else vr_right_button_release(VR_GRIP)
-
+		
+		if event.scancode == KEY_Q and event.pressed:
+			var mqtt = get_node("/root/Main/ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT")
+			mqtt.publish("hand/pos", "hithere")
 
 func _physics_process(delta):
 	var lowestfloorheight = -30
@@ -108,4 +117,6 @@ func _physics_process(delta):
 	if has_node("SportBall"):
 		if $SportBall.transform.origin.y < -3:
 			$SportBall.transform.origin = Vector3(0, 2, -3)
+
+
 

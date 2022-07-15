@@ -1,12 +1,10 @@
-[gd_scene load_steps=30 format=2]
+[gd_scene load_steps=29 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
-[ext_resource path="res://addons/godot-xr-tools/assets/RightHand.tscn" type="PackedScene" id=2]
 [ext_resource path="res://addons/godot-openxr/scenes/first_person_controller_vr.tscn" type="PackedScene" id=3]
 [ext_resource path="res://addons/godot-xr-tools/assets/PlayerBody.tscn" type="PackedScene" id=4]
 [ext_resource path="res://addons/godot-xr-tools/functions/Function_Direct_movement.tscn" type="PackedScene" id=5]
 [ext_resource path="res://addons/godot-xr-tools/functions/Function_pointer.tscn" type="PackedScene" id=6]
-[ext_resource path="res://addons/godot-xr-tools/assets/LeftHand.tscn" type="PackedScene" id=7]
 [ext_resource path="res://addons/godot-xr-tools/functions/Function_Turn_movement.tscn" type="PackedScene" id=8]
 [ext_resource path="res://VRPlayerAvatar.tscn" type="PackedScene" id=9]
 [ext_resource path="res://addons/godot-openxr/scenes/right_hand_nodes.tscn" type="PackedScene" id=10]
@@ -15,6 +13,7 @@
 [ext_resource path="res://addons/godot-openxr/scenes/left_hand_nodes.tscn" type="PackedScene" id=13]
 [ext_resource path="res://click04.wav" type="AudioStream" id=14]
 [ext_resource path="res://addons/godot-xr-tools/objects/Viewport_2D_in_3D.tscn" type="PackedScene" id=15]
+[ext_resource path="res://addons/godot-openxr/scenes/XRPose.tscn" type="PackedScene" id=16]
 
 [sub_resource type="PlaneMesh" id=2]
 size = Vector2( 20, 20 )
@@ -81,25 +80,35 @@ visible = true
 max_speed = 5.0
 strafe = true
 
-[node name="LeftHand" parent="FPController/LeftHandController" index="1" instance=ExtResource( 7 )]
-visible = false
-
 [node name="RightHandController" parent="FPController" index="3"]
 visible = true
 
 [node name="Function_pointer" parent="FPController/RightHandController" index="0" instance=ExtResource( 6 )]
 
-[node name="RightHand" parent="FPController/RightHandController" index="1" instance=ExtResource( 2 )]
-visible = false
-
-[node name="Function_Turn_movement" parent="FPController/RightHandController" index="2" instance=ExtResource( 8 )]
+[node name="Function_Turn_movement" parent="FPController/RightHandController" index="1" instance=ExtResource( 8 )]
 step_turn_angle = 30.0
 
 [node name="PlayerBody" parent="FPController" instance=ExtResource( 4 )]
 
-[node name="Left_hand" parent="FPController" instance=ExtResource( 13 )]
+[node name="TLeft_hand" type="Spatial" parent="FPController"]
+visible = false
 
-[node name="Right_hand" parent="FPController" instance=ExtResource( 10 )]
+[node name="Left_hand" parent="FPController/TLeft_hand" instance=ExtResource( 13 )]
+
+[node name="Wrist" parent="FPController/TLeft_hand/Left_hand" index="0"]
+script = null
+
+[node name="XRPose" parent="FPController/TLeft_hand" instance=ExtResource( 16 )]
+
+[node name="TRight_hand" type="Spatial" parent="FPController"]
+visible = false
+
+[node name="Right_hand" parent="FPController/TRight_hand" instance=ExtResource( 10 )]
+
+[node name="Wrist" parent="FPController/TRight_hand/Right_hand" index="0"]
+script = null
+
+[node name="XRPose" parent="FPController/TRight_hand" instance=ExtResource( 16 )]
 
 [node name="Floor" type="StaticBody" parent="."]
 
@@ -203,5 +212,5 @@ visible = false
 extents = Vector3( 12, 10, 13 )
 
 [editable path="FPController"]
-[editable path="FPController/Left_hand"]
-[editable path="FPController/Right_hand"]
+[editable path="FPController/TLeft_hand/Left_hand"]
+[editable path="FPController/TRight_hand/Right_hand"]
