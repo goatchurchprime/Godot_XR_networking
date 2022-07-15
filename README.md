@@ -13,9 +13,10 @@ There are four addons, that have to be copied over or installed because they are
 Open this Godot_XR_networking project, ignore errors, and use the AssetLib to install the OpenXR plugin, which will go into the Godot_XR_networking/addons/godot-openxr directory
 
 (Alternatively, if you are on Linux, you can take advantage of the full working demo project that is committed into the addons repository by 
-checking out https://github.com/GodotVR/godot_openxr next to your Godot_XR_networking directory before then going into the Godot_XR_networking/addons directory 
+checking out https://github.com/GodotVR/godot_openxr next to your Godot_XR_networking directory at one of the tags, copying over the .so and .dll bin 
+files for the different operating systems from the tagged release (or pre-release) which has been created by their CI, and checking out at that tag
+before then going into the Godot_XR_networking/addons directory 
 and executing `ln -s ../../godot_openxr/demo/addons/godot-openxr/ godot-openxr` to create a symlink.)
-
 
 2. **Godot XR Tools**
 
@@ -40,6 +41,15 @@ godot_multiplayer_networking_workbench/addons/player-networking directory into t
 
 If you also want to use WebRTC capability you will need to download the latest precompiled godot-webrtc-native-release-0.5.zip file, and 
 copy its webrtc directory into the top level of this project so it becomes the directory Godot_XR_networking/webrtc.
+
+
+5. **Opus libraries**
+
+If you want to use the Opus audio compression libraries (which give a 100x efficiency) for a PTT voice communication interface 
+install Godot-Opus from the AssetLib and it will be used by the record send and play features.
+
+(Alternatively go into the Godot_XR_networking/addons directory and execute
+`ln -s ../../libopus-gdnative-voip-demo/addons/opus/ opus`.)
 
 
 ## Operation
