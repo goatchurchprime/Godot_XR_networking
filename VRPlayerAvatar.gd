@@ -15,7 +15,6 @@ onready var XRPoseRightHand = arvrorigin.get_node_or_null("TRight_hand/XRPose")
 
 const TRACKING_CONFIDENCE_HIGH = 2
 
-
 var ovrbonemapping = { 2:"Wrist/ThumbMetacarpal", 3:"Wrist/ThumbMetacarpal/ThumbProximal", 4:"Wrist/ThumbMetacarpal/ThumbProximal/ThumbDistal", 
 					   6:"Wrist/IndexMetacarpal/IndexProximal", 7:"Wrist/IndexMetacarpal/IndexProximal/IndexIntermediate", 8:"Wrist/IndexMetacarpal/IndexProximal/IndexIntermediate/IndexDistal", 
 					   10:"Wrist/MiddleMetacarpal/MiddleProximal", 11:"Wrist/MiddleMetacarpal/MiddleProximal/MiddleIntermediate", 12:"Wrist/MiddleMetacarpal/MiddleProximal/MiddleIntermediate/MiddleDistal", 
@@ -57,39 +56,53 @@ func processtoovrhand(xrhand, ovrskel, refl):
 		#else:
 		#	leftthumbindextouched = (thumbtippos.distance_to(indextippos) < 0.02)
 
+
+var processrecordedhand = true
 func processlocalavatarposition(delta):
 	transform = arvrorigin.transform
 	$HeadCam.transform = arvrorigin.get_node("ARVRCamera").transform
 	var handtrackingavailable = (arvrorigin.interface != null)
-	if LeftHandController.get_is_active():
+
+	if handtrackingavailable and is_instance_valid(Left_hand) and Left_hand.is_active():
+		$ControllerLeft.visible = false
+		if XRPoseLeftHand.get_tracking_confidence() == TRACKING_CONFIDENCE_HIGH:
+			$HandLeft.transform = Left_hand.transform
+			processtoovrhand(Left_hand, $HandLeft/ovr_left_hand_model/ArmatureLeft/Skeleton, true)
+			$HandLeft.visible = true
+		else:
+			$HandLeft.visible = false
+	elif LeftHandController.get_is_active():
 		$HandLeft.visible = false
 		$ControllerLeft.transform = LeftHandController.transform
 		$ControllerLeft.visible = true
-		print(Configuration.get_tracking_confidence(1), Configuration.get_tracking_confidence(2), XRPoseLeftHand.get_tracking_confidence(), XRPoseRightHand.get_tracking_confidence())
-
-	elif is_instance_valid(Left_hand) and handtrackingavailable and Left_hand.is_active() and XRPoseLeftHand.get_tracking_confidence() == TRACKING_CONFIDENCE_HIGH:
-		$ControllerLeft.visible = false
-		$HandLeft.transform = Left_hand.transform
-		processtoovrhand(Left_hand, $HandLeft/ovr_left_hand_model/ArmatureLeft/Skeleton, true)
-		$HandLeft.visible = true
-		print(Configuration.get_tracking_confidence(1), Configuration.get_tracking_confidence(2), XRPoseLeftHand.get_tracking_confidence(), XRPoseRightHand.get_tracking_confidence())
-
 	else:
 		$HandLeft.visible = false
 		$ControllerLeft.visible = false
 			
-	if RightHandController.get_is_active():
+	if handtrackingavailable and is_instance_valid(Right_hand) and Right_hand.is_active():
+		$ControllerRight.visible = false
+		if XRPoseRightHand.get_tracking_confidence() == TRACKING_CONFIDENCE_HIGH:
+			$HandRight.transform = Right_hand.transform  
+			processtoovrhand(Right_hand, $HandRight/ovr_right_hand_model/ArmatureRight/Skeleton, false)
+			$HandRight.visible = true
+		else:
+			$HandRight.visible = false
+	elif RightHandController.get_is_active():
 		$HandRight.visible = false
 		$ControllerRight.transform = RightHandController.transform
 		$ControllerRight.visible = true
-	elif is_instance_valid(Right_hand) and handtrackingavailable and Right_hand.is_active(): # and XRPoseRightHand.get_tracking_confidence() == TRACKING_CONFIDENCE_HIGH:
-		$ControllerRight.visible = false
+
+	elif processrecordedhand:
 		$HandRight.transform = Right_hand.transform  
+		$HandRight.transform.origin.y += 0.1
 		processtoovrhand(Right_hand, $HandRight/ovr_right_hand_model/ArmatureRight/Skeleton, false)
 		$HandRight.visible = true
+
 	else:
 		$HandRight.visible = false
 		$ControllerRight.visible = false
+
+
 
 func setpaddlebody(active):
 	$ControllerRight/PaddleBody.visible = active
@@ -147,7 +160,6 @@ func avatarinitdata():
 					 }
 	return avatardata
 	
-
 
 static func changethinnedframedatafordoppelganger(fd, doppelnetoffset, isframe0):
 	fd[NCONSTANTS.CFI_TIMESTAMP] += doppelnetoffset

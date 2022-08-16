@@ -23,8 +23,8 @@ albedo_color = Color( 0.741176, 0.623529, 0.584314, 1 )
 
 [sub_resource type="CylinderShape" id=5]
 margin = 0.02
-radius = 0.4
 height = 0.05
+radius = 0.4
 
 [sub_resource type="CylinderMesh" id=6]
 top_radius = 0.4
@@ -77,6 +77,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.319285, -0.267242, -0.39732 
 
 [node name="PaddleBody" type="KinematicBody" parent="ControllerRight"]
 transform = Transform( 0.752357, 0.658755, 0, -0.658755, 0.752357, 0, 0, 0, 1, 0.011775, -0.044319, -0.348128 )
+visible = false
 collision_layer = 4096
 collision_mask = 4096
 

@@ -63,7 +63,8 @@ const VR_BUTTON_BY = 1
 const VR_BUTTON_AX = 7
 const VR_GRIP = 2
 const VR_TRIGGER = 15
-
+const VR_BUTTON_4 = 4
+	
 func vr_right_button_pressed(button: int):
 	print("vr right button pressed ", button)
 	if button == VR_BUTTON_BY:
@@ -92,6 +93,8 @@ func vr_left_button_pressed(button: int):
 		
 	if button == VR_BUTTON_AX:
 		pass
+	if button == VR_BUTTON_4:
+		$FPController/HandtrackingDevelopment.lefthandfingertap()
 			
 func _input(event):
 	if event is InputEventKey and not event.echo:
@@ -105,7 +108,6 @@ func _input(event):
 			NetworkGateway.selectandtrigger_networkoption(NetworkGateway.NETWORK_OPTIONS.LOCAL_NETWORK)
 		if event.scancode == KEY_SHIFT:
 			vr_right_button_pressed(VR_GRIP) if event.pressed else vr_right_button_release(VR_GRIP)
-		
 		if event.scancode == KEY_Q and event.pressed:
 			var mqtt = get_node("/root/Main/ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT")
 			mqtt.publish("hand/pos", "hithere")

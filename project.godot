@@ -20,9 +20,19 @@ _global_script_classes=[ {
 "path": "res://addons/godot-xr-tools/functions/Function_Climb_movement.gd"
 }, {
 "base": "MovementProvider",
+"class": "Function_CrouchMovement",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/functions/Function_Crouch_movement.gd"
+}, {
+"base": "MovementProvider",
 "class": "Function_DirectMovement",
 "language": "GDScript",
 "path": "res://addons/godot-xr-tools/functions/Function_Direct_movement.gd"
+}, {
+"base": "MovementProvider",
+"class": "Function_FallDamage",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/examples/Function_Fall_damage.gd"
 }, {
 "base": "MovementProvider",
 "class": "Function_FlightMovement",
@@ -33,6 +43,11 @@ _global_script_classes=[ {
 "class": "Function_Glide",
 "language": "GDScript",
 "path": "res://addons/godot-xr-tools/functions/Function_Glide_movement.gd"
+}, {
+"base": "MovementProvider",
+"class": "Function_Grapple",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/functions/Function_Grapple_movement.gd"
 }, {
 "base": "MovementProvider",
 "class": "Function_Jump",
@@ -130,6 +145,21 @@ _global_script_classes=[ {
 "path": "res://addons/godot-xr-tools/objects/highlight/highlight_visible.gd"
 }, {
 "base": "Area",
+"class": "XRTSnapZone",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/objects/Snap_Zone.gd"
+}, {
+"base": "BoneAttachment",
+"class": "XRToolsHandPhysicsBone",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/assets/HandPhysicsBone.gd"
+}, {
+"base": "Spatial",
+"class": "XRToolsHoldButton",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/misc/hold_button.gd"
+}, {
+"base": "Area",
 "class": "XRToolsInteractableArea",
 "language": "GDScript",
 "path": "res://addons/godot-xr-tools/objects/Interactable_area.gd"
@@ -139,6 +169,16 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/godot-xr-tools/objects/Interactable_body.gd"
 }, {
+"base": "Node",
+"class": "XRToolsMoveTo",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/misc/Move_To.gd"
+}, {
+"base": "XRToolsHand",
+"class": "XRToolsPhysicsHand",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/assets/PhysicsHand.gd"
+}, {
 "base": "RigidBody",
 "class": "XRToolsPickable",
 "language": "GDScript",
@@ -147,9 +187,12 @@ _global_script_classes=[ {
 _global_script_class_icons={
 "ARVRHelpers": "",
 "Function_ClimbMovement": "",
+"Function_CrouchMovement": "",
 "Function_DirectMovement": "",
+"Function_FallDamage": "",
 "Function_FlightMovement": "",
 "Function_Glide": "",
+"Function_Grapple": "",
 "Function_Jump": "",
 "Function_JumpDetect": "",
 "Function_Pickup": "",
@@ -161,7 +204,7 @@ _global_script_class_icons={
 "NCONSTANTS": "",
 "NCONSTANTS2": "",
 "Object_climbable": "",
-"PlayerBody": "",
+"PlayerBody": "res://addons/godot-xr-tools/editor/icons/XRToolsBody.svg",
 "VelocityAverager": "",
 "VelocityAveragerLinear": "",
 "VirtualKeyboard2D": "",
@@ -169,8 +212,13 @@ _global_script_class_icons={
 "XRTHighlightMaterial": "",
 "XRTHighlightRing": "",
 "XRTHighlightVisible": "",
+"XRTSnapZone": "",
+"XRToolsHandPhysicsBone": "",
+"XRToolsHoldButton": "",
 "XRToolsInteractableArea": "",
 "XRToolsInteractableBody": "",
+"XRToolsMoveTo": "",
+"XRToolsPhysicsHand": "",
 "XRToolsPickable": ""
 }
 

@@ -1,6 +1,7 @@
-[gd_scene load_steps=29 format=2]
+[gd_scene load_steps=30 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
+[ext_resource path="res://HandtrackingDevelopment.gd" type="Script" id=2]
 [ext_resource path="res://addons/godot-openxr/scenes/first_person_controller_vr.tscn" type="PackedScene" id=3]
 [ext_resource path="res://addons/godot-xr-tools/assets/PlayerBody.tscn" type="PackedScene" id=4]
 [ext_resource path="res://addons/godot-xr-tools/functions/Function_Direct_movement.tscn" type="PackedScene" id=5]
@@ -91,7 +92,6 @@ step_turn_angle = 30.0
 [node name="PlayerBody" parent="FPController" instance=ExtResource( 4 )]
 
 [node name="TLeft_hand" type="Spatial" parent="FPController"]
-visible = false
 
 [node name="Left_hand" parent="FPController/TLeft_hand" instance=ExtResource( 13 )]
 
@@ -101,14 +101,17 @@ script = null
 [node name="XRPose" parent="FPController/TLeft_hand" instance=ExtResource( 16 )]
 
 [node name="TRight_hand" type="Spatial" parent="FPController"]
-visible = false
 
 [node name="Right_hand" parent="FPController/TRight_hand" instance=ExtResource( 10 )]
+transform = Transform( 1.91069e-15, -4.37114e-08, 1, -1, -4.37114e-08, 0, 4.37114e-08, -1, -4.37114e-08, 0, 1.8, -0.3 )
 
 [node name="Wrist" parent="FPController/TRight_hand/Right_hand" index="0"]
 script = null
 
 [node name="XRPose" parent="FPController/TRight_hand" instance=ExtResource( 16 )]
+
+[node name="HandtrackingDevelopment" type="Node" parent="FPController"]
+script = ExtResource( 2 )
 
 [node name="Floor" type="StaticBody" parent="."]
 
@@ -147,7 +150,6 @@ shape = SubResource( 7 )
 
 [node name="MeshInstance" type="MeshInstance" parent="SportBall/CollisionShape"]
 mesh = SubResource( 8 )
-material/0 = null
 
 [node name="bouncesound" type="AudioStreamPlayer3D" parent="SportBall"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.54476, -1.91887, 4.03967 )
