@@ -115,7 +115,8 @@ static func setvecstobonesG(ibR, ib0, p1, p2, p3, p4, ovrhandrestdata, ovrhandpo
 	
 	var t0bonerestG = tRboneposeG*t0bonerest
 	var t0boneposebasis = rotationtoalign(t1bonerest.origin, t0bonerestG.basis.inverse()*vec1)
-	var t0bonepose = Transform(t0boneposebasis, Vector3(0,0,0))
+	var t0boneposeorigin = tRboneposeG.affine_inverse()*p1 - t0bonerest.origin
+	var t0bonepose = Transform(t0boneposebasis, t0boneposeorigin)
 	var t0boneposeG = t0bonerestG*t0bonepose
 
 	var t1bonerestG = t0boneposeG*t1bonerest
