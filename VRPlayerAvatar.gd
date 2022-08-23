@@ -20,16 +20,13 @@ func _ready():
 	ovrhandrightrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata($ovr_right_hand_model)
 	ovrhandleftrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata($ovr_left_hand_model)
 	
-func processavatarhand(LR_hand, ovr_LR_hand_model, ControllerLR, ovrhandLRrestdata, LRHandController):
+func processavatarhand(LR_hand, ovr_LR_hand_model, ControllerLR, ovrhandLRrestdata, LRHandController, XRPoseLRHand):
 	var handtrackingavailable = (arvrorigin.interface != null)
 	if handtrackingavailable and is_instance_valid(LR_hand) and LR_hand.is_active():
 		ControllerLR.visible = false
-		#var trackingconfidence = 2
-		#var trackingconfidence = XRPoseRightHand.get_tracking_confidence()
-		var trackingconfidence = Configuration.get_tracking_confidence(LRHandController.controller_id)
-		trackingconfidence = 1
+		var trackingconfidence = XRPoseLRHand.get_tracking_confidence() # see https://github.com/GodotVR/godot_openxr/issues/221
 		var h = OpenXRtrackedhand_funcs.gethandjointpositions(LR_hand)
-		if trackingconfidence >= 1 and h["ht1"] != Vector3.ZERO: # == TRACKING_CONFIDENCE_HIGH:
+		if trackingconfidence == TRACKING_CONFIDENCE_HIGH and h["ht1"] != Vector3.ZERO: 
 			var ovrhandpose = OpenXRtrackedhand_funcs.setshapetobones(h, ovrhandLRrestdata)
 			ovr_LR_hand_model.transform = ovrhandpose["handtransform"]
 			var skel = ovrhandLRrestdata["skel"]
@@ -49,8 +46,8 @@ func processavatarhand(LR_hand, ovr_LR_hand_model, ControllerLR, ovrhandLRrestda
 func processlocalavatarposition(delta):
 	transform = arvrorigin.transform
 	$HeadCam.transform = arvrorigin.get_node("ARVRCamera").transform
-	processavatarhand(Left_hand, $ovr_left_hand_model, $ControllerLeft, ovrhandleftrestdata, LeftHandController)
-	processavatarhand(Right_hand, $ovr_right_hand_model, $ControllerRight, ovrhandrightrestdata, RightHandController)
+	processavatarhand(Left_hand, $ovr_left_hand_model, $ControllerLeft, ovrhandleftrestdata, LeftHandController, XRPoseLeftHand)
+	processavatarhand(Right_hand, $ovr_right_hand_model, $ControllerRight, ovrhandrightrestdata, RightHandController, XRPoseRightHand)
 
 func setpaddlebody(active):
 	$ControllerRight/PaddleBody.visible = active

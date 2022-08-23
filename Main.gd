@@ -12,8 +12,16 @@ export var QUESTstartupprotocol = "webrtc"
 func _ready():
 	if OS.has_feature("QUEST"):
 		if has_node("FPController/TRight_hand/Right_hand"):
-			$FPController/TRight_hand/Right_hand.hand = 1
-			$FPController/TRight_hand/XRPose.set_path("user/hand/right")
+			#$FPController/TRight_hand/Left_hand.hand = 0  # "Left"
+			#$FPController/TRight_hand/Left_hand.motion_range = 0  # "Unobstructed"
+			$FPController/TRight_hand/Right_hand.hand = 1  # "Right"
+			#$FPController/TRight_hand/Right_hand.motion_range = 0  # "Unobstructed"
+
+			#$FPController/TLeft_hand/XRPose.action = 0 # "SkeletonBase"
+			#$FPController/TLeft_hand/XRPose.path = 0 # "/user/hand/left"
+			#$FPController/TRight_hand/XRPose.action = 0 # "SkeletonBase"
+			$FPController/TRight_hand/XRPose.path = "/user/hand/right"
+			
 	else:
 		if has_node("FPController/TLeft_hand/Left_hand"):
 			$FPController/TLeft_hand/Left_hand/Wrist.set_process(false)
@@ -79,6 +87,11 @@ func vr_right_button_pressed(button: int):
 			
 	if button == VR_GRIP:
 		NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(true)
+
+	if button == VR_BUTTON_4:
+		$FPController/HandtrackingDevelopment.lefthandfingertap()
+		$FPController/TLeft_hand.visible = not $FPController/TLeft_hand.visible
+		$FPController/TRight_hand.visible = not $FPController/TRight_hand.visible
 
 func vr_right_button_release(button: int):
 	if button == VR_GRIP:

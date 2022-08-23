@@ -1,8 +1,5 @@
 class_name OpenXRtrackedhand_funcs
 
-extends Spatial
-
-
 const hand_joint_node_names = [
 	"Wrist",
 	"Wrist/ThumbMetacarpal",
