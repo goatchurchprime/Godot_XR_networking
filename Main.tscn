@@ -103,7 +103,7 @@ script = null
 [node name="TRight_hand" type="Spatial" parent="FPController"]
 
 [node name="Right_hand" parent="FPController/TRight_hand" instance=ExtResource( 10 )]
-transform = Transform( 1.91069e-15, -4.37114e-08, 1, -1, -4.37114e-08, 0, 4.37114e-08, -1, -4.37114e-08, 0, 1.8, -0.3 )
+transform = Transform( 2.18557e-08, -0.5, 0.866025, -1, -4.37114e-08, 0, 3.78552e-08, -0.866025, -0.5, 0, 1.75, -0.3 )
 
 [node name="Wrist" parent="FPController/TRight_hand/Right_hand" index="0"]
 script = null

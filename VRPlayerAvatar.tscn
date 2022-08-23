@@ -53,18 +53,6 @@ transform = Transform( 0.9, 0, 0, 0, 1, 0, 0, 0, 0.98, 0, -0.051, 0.085 )
 mesh = SubResource( 3 )
 material = SubResource( 4 )
 
-[node name="HandLeft" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.263509, -0.42626, -0.236405 )
-
-[node name="ovr_left_hand_model" parent="HandLeft" instance=ExtResource( 5 )]
-transform = Transform( -4.37114e-08, -1, -4.37114e-08, 0, -4.37114e-08, 1, -1, 4.37114e-08, 1.91069e-15, 0, 0, 0 )
-
-[node name="HandRight" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.337105, -0.42626, -0.236405 )
-
-[node name="ovr_right_hand_model" parent="HandRight" instance=ExtResource( 3 )]
-transform = Transform( -4.37114e-08, -1, 4.37114e-08, 0, -4.37114e-08, -1, 1, -4.37114e-08, 1.91069e-15, 0, 0, 0 )
-
 [node name="ControllerLeft" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.307861, -0.332077, -0.346588 )
 
@@ -89,3 +77,9 @@ disabled = true
 [node name="MeshInstance" type="MeshInstance" parent="ControllerRight/PaddleBody/CollisionShape"]
 mesh = SubResource( 6 )
 material/0 = SubResource( 7 )
+
+[node name="ovr_right_hand_model" parent="." instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, -1, 4.37114e-08, 0, -4.37114e-08, -1, 1, -4.37114e-08, 1.91069e-15, 0.337105, -0.42626, -0.236405 )
+
+[node name="ovr_left_hand_model" parent="." instance=ExtResource( 5 )]
+transform = Transform( -4.37114e-08, -1, -4.37114e-08, 0, -4.37114e-08, 1, -1, 4.37114e-08, 1.91069e-15, -0.263509, -0.42626, -0.236405 )

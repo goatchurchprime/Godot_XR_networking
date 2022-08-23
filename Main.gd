@@ -95,6 +95,8 @@ func vr_left_button_pressed(button: int):
 		pass
 	if button == VR_BUTTON_4:
 		$FPController/HandtrackingDevelopment.lefthandfingertap()
+		$FPController/TLeft_hand.visible = not $FPController/TLeft_hand.visible
+		$FPController/TRight_hand.visible = not $FPController/TRight_hand.visible
 			
 func _input(event):
 	if event is InputEventKey and not event.echo:
