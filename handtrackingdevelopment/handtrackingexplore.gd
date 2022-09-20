@@ -162,7 +162,7 @@ var rpmavatarhandrestdata = null
 func _ready():
 	$Right_hand/Wrist.set_process(false)
 	$Right_hand/Wrist.set_physics_process(false)
-	ovrhandrestdata = getovrhandrestdata(ovrhandmodel)
+	ovrhandrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata(ovrhandmodel)
 	rpmavatarhandrestdata = getrpmhandrestdata(rpmavatar)
 	applyhandpose(handposes[0])
 
@@ -331,7 +331,7 @@ func setshapetobonesRPM(h, skelrightarmgtrans, rpmhandrestdata):
 
 const Dapply_readyplayerme_hand = false	
 func sethandpos():
-	var h = gethandjointpositions($Right_hand)
+	var h = OpenXRtrackedhand_funcs.gethandjointpositions($Right_hand)
 	if Dapply_readyplayerme_hand:
 		var rpmavatar = rpmavatarhandrestdata["rpmavatar"]
 		var skel = rpmavatarhandrestdata["skel"] # rpmavatar.get_node("Armature/Skeleton")
@@ -342,7 +342,7 @@ func sethandpos():
 				skel.set_bone_pose(i, rpmhandpose[i])
 		return
 
-	var ovrhandpose = setshapetobones(h, ovrhandrestdata)
+	var ovrhandpose = OpenXRtrackedhand_funcs.setshapetobones(h, ovrhandrestdata)	
 	ovrhandmodel.transform = ovrhandpose["handtransform"]
 	for i in range(23):
 		ovrhandrestdata["skel"].set_bone_pose(i, ovrhandpose[i])
