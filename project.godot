@@ -240,7 +240,7 @@ enable_audio_input=true
 
 [editor_plugins]
 
-enabled=PoolStringArray( "res://addons/godot-openxr/plugin.cfg", "res://addons/godot-xr-tools/plugin.cfg", "res://addons/opus/plugin.cfg" )
+enabled=PoolStringArray( "res://addons/godot-openxr/plugin.cfg", "res://addons/godot-xr-tools/plugin.cfg", "res://addons/goutte.camera.trackball/plugin.cfg", "res://addons/opus/plugin.cfg" )
 
 [gdnative]
 
