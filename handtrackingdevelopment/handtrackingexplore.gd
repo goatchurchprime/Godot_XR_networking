@@ -105,24 +105,6 @@ func veclengstretchrat(vecB, vecT):
 	var vecldiff = vecTleng - vecBleng
 	return vecldiff/vecBleng
 
-func getovrhandrestdata(ovrhandmodel):
-	var ovrhanddata = { "ovrhandmodel":ovrhandmodel }
-	var skel = ovrhandmodel.get_node("ArmatureRight/Skeleton")
-	ovrhanddata["skel"] = skel
-	for i in range(24):
-		ovrhanddata[i] = skel.get_bone_rest(i)
-		
-	var hminverse = ovrhandmodel.global_transform.basis.inverse()
-	var skelgtrans = skel.global_transform
-	var globalbonepose6 = ovrhanddata[0]*ovrhanddata[6]
-	var globalbonepose14 = ovrhanddata[0]*ovrhanddata[14]
-	ovrhanddata["posindex1"] = hminverse*((skelgtrans*globalbonepose6).origin - skelgtrans.origin)
-	ovrhanddata["posring1"] = hminverse*((skelgtrans*globalbonepose14).origin - skelgtrans.origin)
-	ovrhanddata["wristtransinverse"] = basisfrom(ovrhanddata["posindex1"], ovrhanddata["posring1"]).inverse()
-	ovrhanddata["skeltrans"] = ovrhandmodel.global_transform.affine_inverse()*skelgtrans
-	
-	return ovrhanddata
-
 func getrpmhandrestdata(rpmavatar):
 	var rpmavatardata = { "rpmavatar":rpmavatar }
 	var skel = rpmavatar.get_node("Armature/Skeleton")
@@ -139,16 +121,6 @@ func getrpmhandrestdata(rpmavatar):
 	rpmavatardata["wristtransinverse"] = basisfrom(rpmavatardata["posindex1"], rpmavatardata["posring1"]).inverse()
 	
 	return rpmavatardata
-
-
-
-func gethandjointpositions(hand):
-	assert (len(hand_joint_node_names) == len(hand_joint_node_shortnames))
-	var handjointpositions = { }
-	var handtransinverse = hand.get_parent().global_transform.affine_inverse()
-	for i in range(len(hand_joint_node_names)):
-		handjointpositions[hand_joint_node_shortnames[i]] = (handtransinverse*hand.get_node(hand_joint_node_names[i]).global_transform).origin
-	return handjointpositions
 
 func applyhandpose(handpose):
 	var hand = $Right_hand
@@ -221,31 +193,6 @@ func setvecstobonesG(ibR, ib0, p1, p2, p3, p4, ovrhandrestdata, ovrhandpose):
 	ovrhandpose[ib1] = t1bonepose
 	ovrhandpose[ib2] = t2bonepose
 	ovrhandpose[ib3] = t3bonepose
-
-
-func setshapetobonesG(handjointpositions, ovrhandrestdata):
-	var handbasis = basisfrom(handjointpositions["hi1"] - handjointpositions["hwr"], handjointpositions["hr1"] - handjointpositions["hwr"])
-	var ovrhandmodelbasis = handbasis*ovrhandrestdata["wristtransinverse"]
-	var ovrhandmodelorigin = handjointpositions["hi1"] - ovrhandmodelbasis*ovrhandrestdata["posindex1"]
-	var ovrhandpose = { "handtransform":Transform(ovrhandmodelbasis, ovrhandmodelorigin) }
-	return ovrhandpose
-
-
-func setshapetobones(h, ovrhandrestdata):
-	var handbasis = basisfrom(h["hi1"] - h["hwr"], h["hr1"] - h["hwr"])
-	var ovrhandmodelbasis = handbasis*ovrhandrestdata["wristtransinverse"]
-	var ovrhandmodelorigin = h["hi1"] - ovrhandmodelbasis*ovrhandrestdata["posindex1"]
-	var ovrhandpose = { "handtransform":Transform(ovrhandmodelbasis, ovrhandmodelorigin) }
-
-	ovrhandpose[0] = Transform()
-	setvecstobonesG(1, 2, h["ht0"], h["ht1"], h["ht2"], h["ht3"], ovrhandrestdata, ovrhandpose)
-	setvecstobonesG(0, 6, h["hi1"], h["hi2"], h["hi3"], h["hi4"], ovrhandrestdata, ovrhandpose)
-	setvecstobonesG(0, 10, h["hm1"], h["hm2"], h["hm3"], h["hm4"], ovrhandrestdata, ovrhandpose)
-	setvecstobonesG(0, 14, h["hr1"], h["hr2"], h["hr3"], h["hr4"], ovrhandrestdata, ovrhandpose)
-	setvecstobonesG(18, 19, h["hl1"], h["hl2"], h["hl3"], h["hl4"], ovrhandrestdata, ovrhandpose)
-	return ovrhandpose
-
-# wristtransinverse should be wristbasisinverse
 
 
 func setvecstobonesG_RPM(ibR, ib0, p1, p2, p3, p4, handrestdata, handpose, tRboneposeG):
