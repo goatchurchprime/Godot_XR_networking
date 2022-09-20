@@ -11,24 +11,20 @@ export var QUESTstartupprotocol = "webrtc"
 
 func _ready():
 	if OS.has_feature("QUEST"):
-		if has_node("FPController/TRight_hand/Right_hand"):
-			#$FPController/TRight_hand/Left_hand.hand = 0  # "Left"
-			#$FPController/TRight_hand/Left_hand.motion_range = 0  # "Unobstructed"
-			$FPController/TRight_hand/Right_hand.hand = 1  # "Right"
-			#$FPController/TRight_hand/Right_hand.motion_range = 0  # "Unobstructed"
-
-			#$FPController/TLeft_hand/XRPose.action = 0 # "SkeletonBase"
-			#$FPController/TLeft_hand/XRPose.path = 0 # "/user/hand/left"
-			#$FPController/TRight_hand/XRPose.action = 0 # "SkeletonBase"
-			$FPController/TRight_hand/XRPose.path = "/user/hand/right"
+		if has_node("FPController/Right_hand"):
+			#$FPController/Left_hand/XRPose.action = "SkeletonBase"
+			#$FPController/Left_hand/XRPose.path = "/user/hand/left"
+			#$FPController/Right_hand/XRPose.action = "SkeletonBase"
+			$FPController/Right_hand/XRPose.path = "/user/hand/right"
+			
 			
 	else:
-		if has_node("FPController/TLeft_hand/Left_hand"):
-			$FPController/TLeft_hand/Left_hand/Wrist.set_process(false)
-			$FPController/TLeft_hand/Left_hand/Wrist.set_physics_process(false)
-		if has_node("FPController/TRight_hand/Right_hand"):
-			$FPController/TRight_hand/Right_hand/Wrist.set_process(false)
-			$FPController/TRight_hand/Right_hand/Wrist.set_physics_process(false)
+		if has_node("FPController/Left_hand"):
+			$FPController/Left_hand/Wrist.set_process(false)
+			$FPController/Left_hand/Wrist.set_physics_process(false)
+		if has_node("FPController/Right_hand"):
+			$FPController/Right_hand/Wrist.set_process(false)
+			$FPController/Right_hand/Wrist.set_physics_process(false)
 	#$FPController/LeftHandController/Function_Direct_movement.nonVRkeyboard = true
 
 	if OS.has_feature("QUEST"):
@@ -41,7 +37,7 @@ func _ready():
 			NetworkGateway.initialstatemqttwebrtc(NetworkGateway.NETWORK_OPTIONS_MQTT_WEBRTC.AS_NECESSARY, webrtcroomname, webrtcbroker)
 		elif PCstartupprotocol == "enet":
 			NetworkGateway.initialstatenormal(NetworkGateway.NETWORK_PROTOCOL.ENET, NetworkGateway.NETWORK_OPTIONS.AS_SERVER)
-			
+			$FPController/PlayerBody
 
 	get_node("/root").msaa = Viewport.MSAA_4X
 	$FPController/RightHandController.connect("button_pressed", self, "vr_right_button_pressed")
@@ -52,7 +48,19 @@ func _ready():
 	$SportBall.connect("body_entered", self, "ball_body_entered")
 	$SportBall.connect("body_exited", self, "ball_body_exited")
 
+	var handtestL = load("res://xrassets/HandTest_L.glb").instance()
+	var handtestLmesh = handtestL.get_node("Armature/Skeleton/mesh_Hand_L")
+	print(handtestLmesh, handtestLmesh.mesh)
+	print($FPController/LeftHand/HandModel/Armature001/Skeleton/vr_glove_left_slim)
+	$FPController/LeftHand/HandModel/Armature001/Skeleton/vr_glove_left_slim.mesh = handtestLmesh.mesh
+
 	NetworkGateway.set_process_input(false)
+	
+	var LocalPlayer = NetworkGateway.get_node("PlayerConnections").LocalPlayer
+	LocalPlayer.get_node("ovr_left_hand_model/ArmatureLeft").visible = false
+	$FPController/Left_hand/Wrist.visible = false
+	$FPController/Right_hand/Wrist.visible = false
+
 
 func ball_body_entered(body):
 	#print("ball_body_entered ", body)
@@ -90,8 +98,8 @@ func vr_right_button_pressed(button: int):
 
 	if button == VR_BUTTON_4:
 		$FPController/HandtrackingDevelopment.lefthandfingertap()
-		$FPController/TLeft_hand.visible = not $FPController/TLeft_hand.visible
-		$FPController/TRight_hand.visible = not $FPController/TRight_hand.visible
+		$FPController/Left_hand.visible = not $FPController/Left_hand.visible
+		$FPController/Right_hand.visible = not $FPController/Right_hand.visible
 
 func vr_right_button_release(button: int):
 	if button == VR_GRIP:
@@ -108,8 +116,8 @@ func vr_left_button_pressed(button: int):
 		pass
 	if button == VR_BUTTON_4:
 		$FPController/HandtrackingDevelopment.lefthandfingertap()
-		$FPController/TLeft_hand.visible = not $FPController/TLeft_hand.visible
-		$FPController/TRight_hand.visible = not $FPController/TRight_hand.visible
+		$FPController/Left_hand.visible = not $FPController/Left_hand.visible
+		$FPController/Right_hand.visible = not $FPController/Right_hand.visible
 			
 func _input(event):
 	if event is InputEventKey and not event.echo:

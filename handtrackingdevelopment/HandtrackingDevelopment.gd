@@ -1,10 +1,10 @@
 extends Node
 
 onready var arvrorigin = get_node("/root/Main/FPController")
-onready var Left_hand = arvrorigin.get_node_or_null("TLeft_hand/Left_hand")
-onready var Right_hand = arvrorigin.get_node_or_null("TRight_hand/Right_hand")
-onready var XRPoseLeftHand = arvrorigin.get_node_or_null("TLeft_hand/XRPose")
-onready var XRPoseRightHand = arvrorigin.get_node_or_null("TRight_hand/XRPose")
+onready var Left_hand = arvrorigin.get_node_or_null("Left_hand")
+onready var Right_hand = arvrorigin.get_node_or_null("Right_hand")
+onready var XRPoseLeftHand = arvrorigin.get_node_or_null("Left_hand/XRPose")
+onready var XRPoseRightHand = arvrorigin.get_node_or_null("Right_hand/XRPose")
 
 # from https://github.com/GodotVR/godot_openxr/blob/master/src/gdclasses/OpenXRHand.cpp#L48
 var hand_joint_node_names = [

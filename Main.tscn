@@ -1,7 +1,7 @@
-[gd_scene load_steps=30 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
-[ext_resource path="res://HandtrackingDevelopment.gd" type="Script" id=2]
+[ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
 [ext_resource path="res://addons/godot-openxr/scenes/first_person_controller_vr.tscn" type="PackedScene" id=3]
 [ext_resource path="res://addons/godot-xr-tools/assets/PlayerBody.tscn" type="PackedScene" id=4]
 [ext_resource path="res://addons/godot-xr-tools/functions/Function_Direct_movement.tscn" type="PackedScene" id=5]
@@ -15,6 +15,7 @@
 [ext_resource path="res://click04.wav" type="AudioStream" id=14]
 [ext_resource path="res://addons/godot-xr-tools/objects/Viewport_2D_in_3D.tscn" type="PackedScene" id=15]
 [ext_resource path="res://addons/godot-openxr/scenes/XRPose.tscn" type="PackedScene" id=16]
+[ext_resource path="res://addons/godot-openxr/scenes/left_hand_mesh.tscn" type="PackedScene" id=17]
 
 [sub_resource type="PlaneMesh" id=2]
 size = Vector2( 20, 20 )
@@ -91,27 +92,19 @@ step_turn_angle = 30.0
 
 [node name="PlayerBody" parent="FPController" instance=ExtResource( 4 )]
 
-[node name="TLeft_hand" type="Spatial" parent="FPController"]
+[node name="Left_hand" parent="FPController" instance=ExtResource( 13 )]
 
-[node name="Left_hand" parent="FPController/TLeft_hand" instance=ExtResource( 13 )]
+[node name="XRPose" parent="FPController/Left_hand" instance=ExtResource( 16 )]
 
-[node name="Wrist" parent="FPController/TLeft_hand/Left_hand" index="0"]
-script = null
+[node name="Right_hand" parent="FPController" instance=ExtResource( 10 )]
 
-[node name="XRPose" parent="FPController/TLeft_hand" instance=ExtResource( 16 )]
-
-[node name="TRight_hand" type="Spatial" parent="FPController"]
-
-[node name="Right_hand" parent="FPController/TRight_hand" instance=ExtResource( 10 )]
-transform = Transform( 2.18557e-08, -0.5, 0.866025, -1, -4.37114e-08, 0, 3.78552e-08, -0.866025, -0.5, 0, 1.75, -0.3 )
-
-[node name="Wrist" parent="FPController/TRight_hand/Right_hand" index="0"]
-script = null
-
-[node name="XRPose" parent="FPController/TRight_hand" instance=ExtResource( 16 )]
+[node name="XRPose" parent="FPController/Right_hand" instance=ExtResource( 16 )]
+transform = Transform( 1, 2.09518e-15, 0, 1.77636e-15, 1, 0, 0, 6.51902e-15, 1, 0.5, 1, -0.5 )
 
 [node name="HandtrackingDevelopment" type="Node" parent="FPController"]
 script = ExtResource( 2 )
+
+[node name="LeftHand" parent="FPController" instance=ExtResource( 17 )]
 
 [node name="Floor" type="StaticBody" parent="."]
 
@@ -214,5 +207,3 @@ visible = false
 extents = Vector3( 12, 10, 13 )
 
 [editable path="FPController"]
-[editable path="FPController/TLeft_hand/Left_hand"]
-[editable path="FPController/TRight_hand/Right_hand"]

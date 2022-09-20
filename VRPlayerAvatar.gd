@@ -6,11 +6,11 @@ var labeltext = "unknown"
 
 onready var LeftHandController = arvrorigin.get_node("LeftHandController")
 onready var RightHandController = arvrorigin.get_node("RightHandController")
-onready var Left_hand = arvrorigin.get_node_or_null("TLeft_hand/Left_hand")
-onready var Right_hand = arvrorigin.get_node_or_null("TRight_hand/Right_hand")
+onready var Left_hand = arvrorigin.get_node_or_null("Left_hand")
+onready var Right_hand = arvrorigin.get_node_or_null("Right_hand")
 onready var Configuration = arvrorigin.get_node_or_null("Configuration")
-onready var XRPoseLeftHand = arvrorigin.get_node_or_null("TLeft_hand/XRPose")
-onready var XRPoseRightHand = arvrorigin.get_node_or_null("TRight_hand/XRPose")
+onready var XRPoseLeftHand = arvrorigin.get_node_or_null("Left_hand/XRPose")
+onready var XRPoseRightHand = arvrorigin.get_node_or_null("Right_hand/XRPose")
 
 const TRACKING_CONFIDENCE_HIGH = 2
 
