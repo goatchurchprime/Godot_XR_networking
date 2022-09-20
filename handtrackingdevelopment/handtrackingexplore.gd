@@ -127,7 +127,8 @@ func applyhandpose(handpose):
 	var dat = handposes[0]
 	for hjnname in handpose:
 		hand.get_node(hjnname).transform = handpose[hjnname]
-	sethandpos()
+	$Right_hand/Wrist.update_lengths()
+	sethandposfromnodes()
 
 var ovrhandrestdata = null
 var rpmavatarhandrestdata = null
@@ -276,9 +277,12 @@ func setshapetobonesRPM(h, skelrightarmgtrans, rpmhandrestdata):
 	return rpmhandpose
 
 
-const Dapply_readyplayerme_hand = false	
-func sethandpos():
+const Dapply_readyplayerme_hand = false
+func sethandposfromnodes():
 	var h = OpenXRtrackedhand_funcs.gethandjointpositions($Right_hand)
+	#$MeshInstance_marker2.global_transform = $Right_hand/Wrist/ThumbMetacarpal/ThumbProximal/ThumbDistal/ThumbTip.global_transform
+	$MeshInstance_marker2.global_transform = $Right_hand/Wrist/ThumbMetacarpal/ThumbProximal/ThumbDistal.global_transform
+
 	if Dapply_readyplayerme_hand:
 		var rpmavatar = rpmavatarhandrestdata["rpmavatar"]
 		var skel = rpmavatarhandrestdata["skel"] # rpmavatar.get_node("Armature/Skeleton")
@@ -287,6 +291,8 @@ func sethandpos():
 		for i in range(36, 57):
 			if rpmhandpose.has(i):
 				skel.set_bone_pose(i, rpmhandpose[i])
+				
+		$MeshInstance_marker.global_transform = skel.global_transform*skel.get_bone_global_pose(40)
 		return
 
 	var ovrhandpose = OpenXRtrackedhand_funcs.setshapetobones(h, ovrhandrestdata)	
@@ -294,7 +300,8 @@ func sethandpos():
 	for i in range(23):
 		ovrhandrestdata["skel"].set_bone_pose(i, ovrhandpose[i])
 	#$MeshInstance.global_transform.origin = $Right_hand.global_transform*h["hi1"]
-
+	$MeshInstance_marker.global_transform = ovrhandrestdata["skel"].global_transform*ovrhandrestdata["skel"].get_bone_global_pose(4)
+	$MeshInstance_marker/MeshInstance_marker.scale = Vector3(100,100,100)
 
 func _input(event):
 	if event is InputEventKey and event.pressed:

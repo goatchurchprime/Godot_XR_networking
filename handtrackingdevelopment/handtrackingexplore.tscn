@@ -1,10 +1,13 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://xrassets/ovr_right_hand_model.glb" type="PackedScene" id=1]
 [ext_resource path="res://handtrackingdevelopment/handtrackingexplore.gd" type="Script" id=2]
 [ext_resource path="res://xrassets/readyplayerme_avatar.glb" type="PackedScene" id=3]
 [ext_resource path="res://addons/goutte.camera.trackball/trackball_camera.gd" type="Script" id=4]
 [ext_resource path="res://addons/godot-openxr/scenes/right_hand_nodes.tscn" type="PackedScene" id=5]
+
+[sub_resource type="CubeMesh" id=1]
+size = Vector3( 0.018, 0.018, 0.018 )
 
 [node name="Spatial" type="Spatial"]
 script = ExtResource( 2 )
@@ -24,5 +27,19 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.32766, 0.282288 )
 
 [node name="readyplayerme_avatar" parent="." instance=ExtResource( 3 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.914242, -0.160076 )
+
+[node name="MeshInstance_marker" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.196732, 0.320114 )
+
+[node name="MeshInstance_marker" type="MeshInstance" parent="MeshInstance_marker"]
+mesh = SubResource( 1 )
+skeleton = NodePath("../..")
+
+[node name="MeshInstance_marker2" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.196732, 0.320114 )
+
+[node name="MeshInstance_marker" type="MeshInstance" parent="MeshInstance_marker2"]
+mesh = SubResource( 1 )
+skeleton = NodePath("../..")
 
 [editable path="readyplayerme_avatar"]
