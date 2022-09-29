@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=2]
+[gd_scene load_steps=30 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
@@ -15,7 +15,6 @@
 [ext_resource path="res://click04.wav" type="AudioStream" id=14]
 [ext_resource path="res://addons/godot-xr-tools/objects/Viewport_2D_in_3D.tscn" type="PackedScene" id=15]
 [ext_resource path="res://addons/godot-openxr/scenes/XRPose.tscn" type="PackedScene" id=16]
-[ext_resource path="res://addons/godot-openxr/scenes/left_hand_mesh.tscn" type="PackedScene" id=17]
 
 [sub_resource type="PlaneMesh" id=2]
 size = Vector2( 20, 20 )
@@ -86,6 +85,7 @@ strafe = true
 visible = true
 
 [node name="Function_pointer" parent="FPController/RightHandController" index="0" instance=ExtResource( 6 )]
+show_target = true
 
 [node name="Function_Turn_movement" parent="FPController/RightHandController" index="1" instance=ExtResource( 8 )]
 step_turn_angle = 30.0
@@ -103,8 +103,6 @@ transform = Transform( 1, 2.09518e-15, 0, 1.77636e-15, 1, 0, 0, 6.51902e-15, 1, 
 
 [node name="HandtrackingDevelopment" type="Node" parent="FPController"]
 script = ExtResource( 2 )
-
-[node name="LeftHand" parent="FPController" instance=ExtResource( 17 )]
 
 [node name="Floor" type="StaticBody" parent="."]
 
@@ -207,3 +205,4 @@ visible = false
 extents = Vector3( 12, 10, 13 )
 
 [editable path="FPController"]
+[editable path="Players/VRPlayerAvatar"]
