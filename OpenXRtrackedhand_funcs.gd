@@ -104,17 +104,30 @@ static func setvecstobonesG(ibR, ib0, p1, p2, p3, p4, ovrhandrestdata, ovrhandpo
 	var t3bonerest = ovrhandrestdata[ib3]
 
 	var tRboneposeG = ovrhandpose["handtransform"]*ovrhandrestdata["skeltrans"]
+
 	if ibR != 0:
 		assert (Dskel.get_bone_parent(ibR) == 0)
-		tRboneposeG *= ovrhandrestdata[0]
+		tRboneposeG *= ovrhandrestdata[0]*ovrhandpose[0]
 		ovrhandpose[ibR] = Transform()
+		
+			
 	tRboneposeG *= ovrhandrestdata[ibR]
 	
 	var t0bonerestG = tRboneposeG*t0bonerest
 	var t0boneposebasis = rotationtoalign(t1bonerest.origin, t0bonerestG.basis.inverse()*vec1)
-	var t0boneposeorigin = tRboneposeG.affine_inverse()*p1 - t0bonerest.origin
+	#var t0boneposeorigin = tRboneposeG.affine_inverse()*p1 - t0bonerest.origin
+	var t0boneposeorigin = t0bonerestG.affine_inverse()*p1
 	var t0bonepose = Transform(t0boneposebasis, t0boneposeorigin)
 	var t0boneposeG = t0bonerestG*t0bonepose
+
+	if ibR == 1:
+		#print((ovrhandpose["handtransform"]*ovrhandrestdata["skeltrans"]*ovrhandrestdata[0]*ovrhandpose[0]*ovrhandrestdata[1]*ovrhandpose[1]*ovrhandrestdata[2]*ovrhandpose[2]).origin)
+		print((t0bonerestG*t0bonepose).origin)
+		print((t0bonerestG.xform(t0boneposeorigin)), " ll")
+# need to find out how we depart from p1 here in the result
+		print((t0bonerestG.xform(tRboneposeG.affine_inverse()*p1 - t0bonerest.origin)), " llp")
+		print(p1, " p1ht0")
+		
 
 	var t1bonerestG = t0boneposeG*t1bonerest
 	var t1boneposebasis = rotationtoalign(t2bonerest.origin, t1bonerestG.basis.inverse()*vec2)
@@ -136,6 +149,7 @@ static func setvecstobonesG(ibR, ib0, p1, p2, p3, p4, ovrhandrestdata, ovrhandpo
 	ovrhandpose[ib2] = t2bonepose
 	ovrhandpose[ib3] = t3bonepose
 
+
 static func setshapetobonesG(handjointpositions, ovrhandrestdata):
 	var handbasis = basisfrom(handjointpositions["hi1"] - handjointpositions["hwr"], handjointpositions["hr1"] - handjointpositions["hwr"])
 	var ovrhandmodelbasis = handbasis*ovrhandrestdata["wristtransinverse"]
@@ -151,6 +165,12 @@ static func setshapetobones(h, ovrhandrestdata):
 
 	ovrhandpose[0] = Transform()
 	setvecstobonesG(1, 2, h["ht0"], h["ht1"], h["ht2"], h["ht3"], ovrhandrestdata, ovrhandpose)
+
+	var Dskel = ovrhandrestdata["skel"]
+	print((ovrhandpose["handtransform"]*ovrhandrestdata["skeltrans"]*ovrhandrestdata[0]*ovrhandpose[0]*ovrhandrestdata[1]*ovrhandpose[1]*ovrhandrestdata[2]*ovrhandpose[2]).origin)
+	print(h["ht0"], " ht0")
+
+
 	setvecstobonesG(0, 6, h["hi1"], h["hi2"], h["hi3"], h["hi4"], ovrhandrestdata, ovrhandpose)
 	setvecstobonesG(0, 10, h["hm1"], h["hm2"], h["hm3"], h["hm4"], ovrhandrestdata, ovrhandpose)
 	setvecstobonesG(0, 14, h["hr1"], h["hr2"], h["hr3"], h["hr4"], ovrhandrestdata, ovrhandpose)

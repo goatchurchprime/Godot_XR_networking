@@ -223,7 +223,11 @@ func setvecstobonesG_RPM(ibR, ib0, p1, p2, p3, p4, handrestdata, handpose, tRbon
 	
 	var t0bonerestG = tRboneposeG*t0bonerest
 	var t0boneposebasis = rotationtoalign(t1bonerest.origin, t0bonerestG.basis.inverse()*vec1)
-	var t0boneposeorigin = tRboneposeG.affine_inverse()*p1 - t0bonerest.origin
+
+	#var t0boneposeorigin = tRboneposeG.affine_inverse()*p1 - t0bonerest.origin
+	var t0boneposeorigin = t0bonerestG.affine_inverse().xform(p1)
+
+
 	#if (Nokey%2) == 0:
 	#	t0boneposeorigin = Vector3.ZERO
 	var t0bonepose = Transform(t0boneposebasis, t0boneposeorigin)
@@ -277,11 +281,12 @@ func setshapetobonesRPM(h, skelrightarmgtrans, rpmhandrestdata):
 	return rpmhandpose
 
 
-const Dapply_readyplayerme_hand = false
+const Dapply_readyplayerme_hand = true
 func sethandposfromnodes():
 	var h = OpenXRtrackedhand_funcs.gethandjointpositions($Right_hand)
 	#$MeshInstance_marker2.global_transform = $Right_hand/Wrist/ThumbMetacarpal/ThumbProximal/ThumbDistal/ThumbTip.global_transform
-	$MeshInstance_marker2.global_transform = $Right_hand/Wrist/ThumbMetacarpal/ThumbProximal/ThumbDistal.global_transform
+#	$MeshInstance_marker2.global_transform = $Right_hand/Wrist/ThumbMetacarpal/ThumbProximal/ThumbDistal.global_transform
+	$MeshInstance_marker2.global_transform.origin = h["ht3"]
 
 	if Dapply_readyplayerme_hand:
 		var rpmavatar = rpmavatarhandrestdata["rpmavatar"]
@@ -296,11 +301,17 @@ func sethandposfromnodes():
 		return
 
 	var ovrhandpose = OpenXRtrackedhand_funcs.setshapetobones(h, ovrhandrestdata)	
+	var skel = ovrhandrestdata["skel"]
 	ovrhandmodel.transform = ovrhandpose["handtransform"]
 	for i in range(23):
-		ovrhandrestdata["skel"].set_bone_pose(i, ovrhandpose[i])
+		skel.set_bone_pose(i, ovrhandpose[i])
+
+	print((skel.global_transform*skel.get_bone_global_pose(2)).origin)
+	print((skel.global_transform*skel.get_bone_rest(0)*skel.get_bone_pose(0)*skel.get_bone_rest(1)*skel.get_bone_pose(1)*skel.get_bone_rest(2)*skel.get_bone_pose(2)).origin)
+	print(h["ht0"])
+
 	#$MeshInstance.global_transform.origin = $Right_hand.global_transform*h["hi1"]
-	$MeshInstance_marker.global_transform = ovrhandrestdata["skel"].global_transform*ovrhandrestdata["skel"].get_bone_global_pose(4)
+	$MeshInstance_marker.global_transform = skel.global_transform*skel.get_bone_global_pose(5)
 	$MeshInstance_marker/MeshInstance_marker.scale = Vector3(100,100,100)
 
 func _input(event):
