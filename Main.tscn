@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=2]
+[gd_scene load_steps=33 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://addons/godot-xr-tools/assets/PlayerBody.tscn" type="PackedScene" id=4]
 [ext_resource path="res://addons/godot-xr-tools/functions/Function_Direct_movement.tscn" type="PackedScene" id=5]
 [ext_resource path="res://addons/godot-xr-tools/functions/Function_pointer.tscn" type="PackedScene" id=6]
+[ext_resource path="res://xrassets/readyplayerme_avatar.glb" type="PackedScene" id=7]
 [ext_resource path="res://addons/godot-xr-tools/functions/Function_Turn_movement.tscn" type="PackedScene" id=8]
 [ext_resource path="res://VRPlayerAvatar.tscn" type="PackedScene" id=9]
 [ext_resource path="res://addons/godot-openxr/scenes/right_hand_nodes.tscn" type="PackedScene" id=10]
@@ -65,6 +66,12 @@ noise = SubResource( 12 )
 albedo_color = Color( 0.980392, 0.843137, 0.858824, 1 )
 albedo_texture = SubResource( 13 )
 uv1_scale = Vector3( 10, 20, 1 )
+
+[sub_resource type="CubeMesh" id=16]
+size = Vector3( 0.05, 0.05, 0.05 )
+
+[sub_resource type="SpatialMaterial" id=17]
+albedo_color = Color( 0.858824, 0.129412, 0.129412, 1 )
 
 [node name="Main" type="Spatial"]
 script = ExtResource( 1 )
@@ -203,6 +210,16 @@ shadow_enabled = true
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.3723, -1.68565 )
 visible = false
 extents = Vector3( 12, 10, 13 )
+
+[node name="readyplayerme_avatar" parent="." instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.866634 )
+
+[node name="MeshInstance_marker" type="MeshInstance" parent="."]
+mesh = SubResource( 16 )
+
+[node name="MeshInstance_marker2" type="MeshInstance" parent="."]
+mesh = SubResource( 16 )
+material/0 = SubResource( 17 )
 
 [editable path="FPController"]
 [editable path="Players/VRPlayerAvatar"]

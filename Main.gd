@@ -133,9 +133,50 @@ func _physics_process(delta):
 			$SportBall.transform.origin = Vector3(0, 2, -3)
 
 
+
 func _process(delta):
 	if $FPController.interface != null and $FPController/Right_hand.is_active():
 		$FPController/RightHandController/Function_pointer.active_button = VR_HANDTRACKING_INDEXTHUMB_PINCH
 	else:
 		$FPController/RightHandController/Function_pointer.active_button = VR_TRIGGER
 
+	if $Players.has_node("Doppelganger"):
+		var Dheadcam = $Players.get_node("Doppelganger/HeadCam")
+		var skel = $readyplayerme_avatar/Armature/Skeleton
+		#skel.get_node("Wolf3D_Hair").visible = false
+		#skel.get_node("Wolf3D_Head").visible = false
+		assert (skel.get_bone_name(4) == "Neck")
+		assert (skel.get_bone_name(5) == "Head")
+		assert (skel.get_bone_name(7) == "LeftEye")
+		assert (skel.get_bone_name(8) == "RightEye")
+		
+		var headpose = skel.global_transform*skel.get_bone_global_pose(5)
+		assert (skel.get_bone_rest(7).basis.is_equal_approx(skel.get_bone_rest(8).basis))
+		var middleeyerestpose = Transform(skel.get_bone_rest(7).basis, (skel.get_bone_rest(7).origin + skel.get_bone_rest(8).origin)/2)
+		
+		var RPMeyeballdepth = skel.get_node("EyeLeft").get_aabb().size.z
+		#$MeshInstance_marker.transform.origin = headpose.origin
+		#var middleeyerestG = headpose*middleeyerestpose
+		
+		var vrheadcam = Dheadcam.global_transform
+		var rpmheadcambasis = Basis(-vrheadcam.basis.x, vrheadcam.basis.y, -vrheadcam.basis.z)
+		var rpmheadcamposition = vrheadcam.origin - rpmheadcambasis.z*RPMeyeballdepth
+		var rpmheadcam = Transform(rpmheadcambasis, rpmheadcamposition)
+		var bp45 = skel.get_bone_global_pose(4)*skel.get_bone_rest(5)
+		# skel.global_transform*skel.get_bone_global_pose(4)*skel.get_bone_rest(5)*bonepose5*middleeyerestpose == rpmheadcam
+		var nktrans = rpmheadcam*middleeyerestpose.inverse()
+		# skel.global_transform*bp45*bonepose5 == rpmheadcam*middleeyerestpose.inverse()
+		
+		# (A.basis, A.origin)*(B.basis, B.origin) = (A.basis*B.basis, A.origin + A.basis*B.origin)
+		var gbasis = skel.global_transform.basis
+		# (gbasis, gpos)*(bp45.basis, bp45.pos)*(bonepose5basis, 0) = nktrans
+		# (gbasis, gpos)*(bp45.basis*bonepose5basis, bp45.pos) = (nktrans.basis, nktrans.pos)
+		# (gbasis*bp45.basis*bonepose5basis, gpos + gbasis*bp45.pos) = (nktrans.basis, nktrans.pos)
+		var gpos = nktrans.origin - gbasis.xform(bp45.origin)
+		var bonepose5basis = (gbasis*bp45.basis).inverse()*nktrans.basis
+		
+		#$MeshInstance_marker2.transform.origin = middleeyerestG.origin + middleeyerestG.basis.z*RPMeyeballdepth
+		#$MeshInstance_marker.transform.origin = middleeyerestG.origin + Vector3(0,0.02,0)
+		$readyplayerme_avatar.transform.origin = gpos
+		skel.set_bone_pose(5, Transform(bonepose5basis, Vector3(0,0,0)))
+	
