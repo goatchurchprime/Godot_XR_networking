@@ -140,7 +140,7 @@ static func setshapetobonesG(handjointpositions, ovrhandrestdata):
 	var ovrhandpose = { "handtransform":Transform(ovrhandmodelbasis, ovrhandmodelorigin) }
 	return ovrhandpose
 
-static func setshapetobones(h, ovrhandrestdata):
+static func setshapetobonesOVR(h, ovrhandrestdata):
 	var handbasis = basisfrom(h["hi1"] - h["hwr"], h["hr1"] - h["hwr"])
 	var ovrhandmodelbasis = handbasis*ovrhandrestdata["wristtransinverse"]
 	var ovrhandmodelorigin = h["hi1"] - ovrhandmodelbasis*ovrhandrestdata["posindex1"]
@@ -163,4 +163,25 @@ static func setshapetobones(h, ovrhandrestdata):
 	setvecstobonesG(18, 19, h["hl1"], h["hl2"], h["hl3"], h["hl4"], ovrhandrestdata, ovrhandpose, tRboneposeGR18)
 	
 	return ovrhandpose
+
+
+static func setshapetobonesRPM(h, skelarmgtrans, rpmhandspose, rpmhandrestdata, bleft):
+	var handbasis = basisfrom(h["hi1"] - h["hwr"], h["hr1"] - h["hwr"])
+
+	var di = 24 if bleft else 0
+	assert (rpmhandrestdata["skel"].get_bone_name(36-di) == "LeftHand" if bleft else "RightHand")
+	# solve h["hwr"] = skelrightarmgtrans.origin + skelrightarmgtrans.basis*rpmhandrestdata[36].origin + skelrightarmgtrans.basis*rpmhandrestdata[36].basis*rpmhandpose[36].origin
+	var lh = h["hwr"] - skelarmgtrans.origin - skelarmgtrans.basis*rpmhandrestdata[36-di].origin 
+	var lhb = skelarmgtrans.basis*rpmhandrestdata[36-di].basis
+	var p36 = lhb.inverse()*lh
+	var b36 = lhb.inverse()*handbasis*rpmhandrestdata["wristrighttransinverse"]
+	rpmhandspose[36-di] = Transform(b36, p36)
+
+	var tRboneposeG36 = skelarmgtrans*rpmhandrestdata[36-di]*rpmhandspose[36-di]
+
+	setvecstobonesG(36-di, 37-di, h["ht0"], h["ht1"], h["ht2"], h["ht3"], rpmhandrestdata, rpmhandspose, tRboneposeG36)
+	setvecstobonesG(36-di, 41-di, h["hi1"], h["hi2"], h["hi3"], h["hi4"], rpmhandrestdata, rpmhandspose, tRboneposeG36)
+	setvecstobonesG(36-di, 45-di, h["hm1"], h["hm2"], h["hm3"], h["hm4"], rpmhandrestdata, rpmhandspose, tRboneposeG36)
+	setvecstobonesG(36-di, 49-di, h["hr1"], h["hr2"], h["hr3"], h["hr4"], rpmhandrestdata, rpmhandspose, tRboneposeG36)
+	setvecstobonesG(36-di, 53-di, h["hl1"], h["hl2"], h["hl3"], h["hl4"], rpmhandrestdata, rpmhandspose, tRboneposeG36)
 

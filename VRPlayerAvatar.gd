@@ -27,7 +27,7 @@ func processavatarhand(LR_hand, ovr_LR_hand_model, ControllerLR, ovrhandLRrestda
 		var trackingconfidence = XRPoseLRHand.get_tracking_confidence() # see https://github.com/GodotVR/godot_openxr/issues/221
 		var h = OpenXRtrackedhand_funcs.gethandjointpositions(LR_hand)
 		if trackingconfidence == TRACKING_CONFIDENCE_HIGH and h["ht1"] != Vector3.ZERO: 
-			var ovrhandpose = OpenXRtrackedhand_funcs.setshapetobones(h, ovrhandLRrestdata)
+			var ovrhandpose = OpenXRtrackedhand_funcs.setshapetobonesOVR(h, ovrhandLRrestdata)
 			ovr_LR_hand_model.transform = ovrhandpose["handtransform"]
 			var skel = ovrhandLRrestdata["skel"]
 			for i in range(23):
