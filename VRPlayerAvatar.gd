@@ -54,24 +54,35 @@ func setpaddlebody(active):
 	$ControllerRight/PaddleBody/CollisionShape.disabled = not active
 
 func avatartoframedata():
-	var chleft = $ovr_left_hand_model if $ovr_left_hand_model.visible else $ControllerLeft
-	var chright = $ovr_right_hand_model if $ovr_right_hand_model.visible else $ControllerRight
-
 	var fd = {  NCONSTANTS2.CFI_VRORIGIN_POSITION: transform.origin, 
 				NCONSTANTS2.CFI_VRORIGIN_ROTATION: transform.basis.get_rotation_quat(), 
 				NCONSTANTS2.CFI_VRHEAD_POSITION: $HeadCam.transform.origin, 
-				NCONSTANTS2.CFI_VRHEAD_ROTATION: $HeadCam.transform.basis.get_rotation_quat(), 
-
-				NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE: (-1.0 if $ovr_left_hand_model.visible else (1.0 if $ControllerLeft.visible else 0.0)), 
-				NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE: (-1.0 if $ovr_right_hand_model.visible else (1.0 if $ControllerRight.visible else 0.0)),
-				
-				NCONSTANTS2.CFI_VRHANDLEFT_POSITION: chleft.transform.origin, 
-				NCONSTANTS2.CFI_VRHANDLEFT_ROTATION: chleft.transform.basis.get_rotation_quat(), 
-				NCONSTANTS2.CFI_VRHANDRIGHT_POSITION: chright.transform.origin, 
-				NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION: chright.transform.basis.get_rotation_quat(),
-
-				NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY: $ControllerRight/PaddleBody.visible
+				NCONSTANTS2.CFI_VRHEAD_ROTATION: $HeadCam.transform.basis.get_rotation_quat() 
 			 }
+			
+	if $ovr_left_hand_model.visible:
+		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE] = -1.0
+		fd[NCONSTANTS2.CFI_VRHANDLEFT_POSITION] = $ovr_left_hand_model.transform.origin
+		fd[NCONSTANTS2.CFI_VRHANDLEFT_ROTATION] = $ovr_left_hand_model.transform.basis.get_rotation_quat()
+	elif $ControllerLeft.visible:
+		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE] = 1.0
+		fd[NCONSTANTS2.CFI_VRHANDLEFT_POSITION] = $ControllerLeft.transform.origin
+		fd[NCONSTANTS2.CFI_VRHANDLEFT_ROTATION] = $ControllerLeft.transform.basis.get_rotation_quat()
+	else:
+		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE] = 0.0
+
+	if $ovr_right_hand_model.visible:
+		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE] = -1.0
+		fd[NCONSTANTS2.CFI_VRHANDRIGHT_POSITION] = $ovr_right_hand_model.transform.origin
+		fd[NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION] = $ovr_right_hand_model.transform.basis.get_rotation_quat()
+	elif $ControllerRight.visible:
+		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE] = 1.0
+		fd[NCONSTANTS2.CFI_VRHANDRIGHT_POSITION] = $ControllerRight.transform.origin
+		fd[NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION] = $ControllerRight.transform.basis.get_rotation_quat()
+	else:
+		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE] = 0.0
+
+	fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY] = $ControllerRight/PaddleBody.visible
 
 	if $ovr_left_hand_model.visible:
 		var skel = ovrhandleftrestdata["skel"]
@@ -101,7 +112,7 @@ func framedatatoavatar(fd):
 		var hcleftfade = fd.get(NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE)
 		$ControllerLeft.visible = (hcleftfade > 0.0)
 		$ovr_left_hand_model.visible = (hcleftfade < 0.0)
-	if fd.get(NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE):
+	if fd.has(NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE):
 		var hcrightfade = fd.get(NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE)
 		$ControllerRight.visible = (hcrightfade > 0.0)
 		$ovr_right_hand_model.visible = (hcrightfade < 0.0)
