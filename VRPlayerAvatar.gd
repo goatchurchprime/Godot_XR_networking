@@ -43,7 +43,7 @@ func processavatarhand(LR_hand, ovr_LR_hand_model, ControllerLR, ovrhandLRrestda
 		ovr_LR_hand_model.visible = false
 		ControllerLR.visible = false
 
-func processlocalavatarposition(delta):
+func PAV_processlocalavatarposition(delta):
 	transform = arvrorigin.transform
 	$HeadCam.transform = arvrorigin.get_node("ARVRCamera").transform
 	processavatarhand(Left_hand, $ovr_left_hand_model, $ControllerLeft, ovrhandleftrestdata, LeftHandController, XRPoseLeftHand)
@@ -53,7 +53,7 @@ func setpaddlebody(active):
 	$ControllerRight/PaddleBody.visible = active
 	$ControllerRight/PaddleBody/CollisionShape.disabled = not active
 
-func avatartoframedata():
+func PAV_avatartoframedata():
 	var fd = {  NCONSTANTS2.CFI_VRORIGIN_POSITION: transform.origin, 
 				NCONSTANTS2.CFI_VRORIGIN_ROTATION: transform.basis.get_rotation_quat(), 
 				NCONSTANTS2.CFI_VRHEAD_POSITION: $HeadCam.transform.origin, 
@@ -104,7 +104,7 @@ func overwritetranform(orgtransform, rot, pos):
 		return Transform(Basis(rot), orgtransform.origin)
 	return Transform(Basis(rot), pos)
 
-func framedatatoavatar(fd):
+func PAV_framedatatoavatar(fd):
 	transform = overwritetranform(transform, fd.get(NCONSTANTS2.CFI_VRORIGIN_ROTATION), fd.get(NCONSTANTS2.CFI_VRORIGIN_POSITION))
 	$HeadCam.transform = overwritetranform($HeadCam.transform, fd.get(NCONSTANTS2.CFI_VRHEAD_ROTATION), fd.get(NCONSTANTS2.CFI_VRHEAD_POSITION))
 
@@ -145,23 +145,23 @@ func framedatatoavatar(fd):
 
 		
 var possibleusernames = ["Alice", "Beth", "Cath", "Dan", "Earl", "Fred", "George", "Harry", "Ivan", "John", "Kevin", "Larry", "Martin", "Oliver", "Peter", "Quentin", "Robert", "Samuel", "Thomas", "Ulrik", "Victor", "Wayne", "Xavier", "Youngs", "Zephir"]
-func initavatarlocal():
+func PAV_initavatarlocal():
 	randomize()
 	labeltext = possibleusernames[randi()%len(possibleusernames)]
 	$ovr_left_hand_model/ArmatureLeft/Skeleton/l_handMeshNode.set_surface_material(0, load("res://xrassets/vrhandmaterial.tres"))
 	$ovr_right_hand_model/ArmatureRight/Skeleton/r_handMeshNode.set_surface_material(0, load("res://xrassets/vrhandmaterial.tres"))
 
-func initavatarremote(avatardata):
+func PAV_initavatarremote(avatardata):
 	labeltext = avatardata["labeltext"]
 
-func avatarinitdata():
+func PAV_avatarinitdata():
 	var avatardata = { "avatarsceneresource":filename, 
 					   "labeltext":labeltext
 					 }
 	return avatardata
 	
 
-static func changethinnedframedatafordoppelganger(fd, doppelnetoffset, isframe0):
+static func PAV_changethinnedframedatafordoppelganger(fd, doppelnetoffset, isframe0):
 	fd[NCONSTANTS.CFI_TIMESTAMP] += doppelnetoffset
 	fd[NCONSTANTS.CFI_TIMESTAMPPREV] += doppelnetoffset
 	if fd.has(NCONSTANTS2.CFI_VRORIGIN_POSITION):

@@ -131,7 +131,6 @@ func sethandposfromnodes():
 #	$MeshInstance_marker2.global_transform = $Right_hand/Wrist/ThumbMetacarpal/ThumbProximal/ThumbDistal.global_transform
 	$MeshInstance_marker2.global_transform.origin = h["ht3"]
 
-
 	if Dapply_readyplayerme_hand:
 		var rpmavatar = rpmavatarhandrestdata["rpmavatar"]
 		var skel = rpmavatarhandrestdata["skel"]

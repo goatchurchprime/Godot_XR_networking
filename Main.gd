@@ -48,17 +48,7 @@ func _ready():
 	$SportBall.connect("body_entered", self, "ball_body_entered")
 	$SportBall.connect("body_exited", self, "ball_body_exited")
 
-#	var handtestL = load("res://xrassets/HandTest_L.glb").instance()
-#	var handtestLmesh = handtestL.get_node("Armature/Skeleton/mesh_Hand_L")
-#	print(handtestLmesh, handtestLmesh.mesh)
-#	print($FPController/LeftHand/HandModel/Armature001/Skeleton/vr_glove_left_slim)
-#	$FPController/LeftHand/HandModel/Armature001/Skeleton/vr_glove_left_slim.mesh = handtestLmesh.mesh
-
 	NetworkGateway.set_process_input(false)
-	
-#	var LocalPlayer = NetworkGateway.get_node("PlayerConnections").LocalPlayer
-#	LocalPlayer.get_node("ovr_left_hand_model/ArmatureLeft").visible = false
-
 #	$FPController/Left_hand/Wrist.visible = false
 #	$FPController/Right_hand/Wrist.visible = false
 
@@ -71,9 +61,10 @@ func ball_body_entered(body):
 		yield(get_tree().create_timer(0.2), "timeout")
 		body.get_node("CollisionShape/MeshInstance").get_surface_material(0).emission_enabled = false
 		
-func ball_body_exited(body):	pass
+func ball_body_exited(body):	
 	#if body.name == "PaddleBody":
 	#	body.get_node("CollisionShape/MeshInstance").get_surface_material(0).emission_enabled = false
+	pass
 		
 
 const VR_BUTTON_BY = 1
