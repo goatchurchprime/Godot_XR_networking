@@ -16,7 +16,7 @@ func _ready():
 			#$FPController/Left_hand/XRPose.path = "/user/hand/left"
 			#$FPController/Right_hand/XRPose.action = "SkeletonBase"
 			$FPController/Right_hand/XRPose.path = "/user/hand/right"
-			
+			$FPController/Right_hand.hand = 1
 			
 	else:
 		if has_node("FPController/Left_hand"):
@@ -48,18 +48,19 @@ func _ready():
 	$SportBall.connect("body_entered", self, "ball_body_entered")
 	$SportBall.connect("body_exited", self, "ball_body_exited")
 
-	var handtestL = load("res://xrassets/HandTest_L.glb").instance()
-	var handtestLmesh = handtestL.get_node("Armature/Skeleton/mesh_Hand_L")
-	print(handtestLmesh, handtestLmesh.mesh)
-	print($FPController/LeftHand/HandModel/Armature001/Skeleton/vr_glove_left_slim)
-	$FPController/LeftHand/HandModel/Armature001/Skeleton/vr_glove_left_slim.mesh = handtestLmesh.mesh
+#	var handtestL = load("res://xrassets/HandTest_L.glb").instance()
+#	var handtestLmesh = handtestL.get_node("Armature/Skeleton/mesh_Hand_L")
+#	print(handtestLmesh, handtestLmesh.mesh)
+#	print($FPController/LeftHand/HandModel/Armature001/Skeleton/vr_glove_left_slim)
+#	$FPController/LeftHand/HandModel/Armature001/Skeleton/vr_glove_left_slim.mesh = handtestLmesh.mesh
 
 	NetworkGateway.set_process_input(false)
 	
-	var LocalPlayer = NetworkGateway.get_node("PlayerConnections").LocalPlayer
-	LocalPlayer.get_node("ovr_left_hand_model/ArmatureLeft").visible = false
-	$FPController/Left_hand/Wrist.visible = false
-	$FPController/Right_hand/Wrist.visible = false
+#	var LocalPlayer = NetworkGateway.get_node("PlayerConnections").LocalPlayer
+#	LocalPlayer.get_node("ovr_left_hand_model/ArmatureLeft").visible = false
+
+#	$FPController/Left_hand/Wrist.visible = false
+#	$FPController/Right_hand/Wrist.visible = false
 
 
 func ball_body_entered(body):
@@ -80,6 +81,7 @@ const VR_BUTTON_AX = 7
 const VR_GRIP = 2
 const VR_TRIGGER = 15
 const VR_BUTTON_4 = 4
+const VR_HANDTRACKING_INDEXTHUMB_PINCH = VR_BUTTON_4
 	
 func vr_right_button_pressed(button: int):
 	print("vr right button pressed ", button)
@@ -96,11 +98,7 @@ func vr_right_button_pressed(button: int):
 	if button == VR_GRIP:
 		NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(true)
 
-	if button == VR_BUTTON_4:
-		$FPController/HandtrackingDevelopment.lefthandfingertap()
-		$FPController/Left_hand.visible = not $FPController/Left_hand.visible
-		$FPController/Right_hand.visible = not $FPController/Right_hand.visible
-
+	
 func vr_right_button_release(button: int):
 	if button == VR_GRIP:
 		NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(false)
@@ -144,4 +142,9 @@ func _physics_process(delta):
 			$SportBall.transform.origin = Vector3(0, 2, -3)
 
 
+func _process(delta):
+	if $FPController.interface != null and $FPController/Right_hand.is_active():
+		$FPController/RightHandController/Function_pointer.active_button = VR_HANDTRACKING_INDEXTHUMB_PINCH
+	else:
+		$FPController/RightHandController/Function_pointer.active_button = VR_TRIGGER
 

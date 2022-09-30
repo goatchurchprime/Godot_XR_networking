@@ -1,6 +1,7 @@
 extends Node
 
 onready var arvrorigin = get_node("/root/Main/FPController")
+onready var arvrcamera = arvrorigin.get_node("ARVRCamera")
 onready var Left_hand = arvrorigin.get_node_or_null("Left_hand")
 onready var Right_hand = arvrorigin.get_node_or_null("Right_hand")
 onready var XRPoseLeftHand = arvrorigin.get_node_or_null("Left_hand/XRPose")
@@ -65,3 +66,18 @@ func dumphandlocationstomqtt(hand):
 
 func lefthandfingertap():
 	dumphandlocationstomqtt(Right_hand)
+
+const horizontal_speed = 2.0
+func _process(delta):
+	if arvrorigin.interface == null:
+		var dlr = (-1 if Input.is_action_pressed("ui_left") else 0) + (1 if Input.is_action_pressed("ui_right") else 0)
+		var dud = (-1 if Input.is_action_pressed("ui_up") else 0) + (1 if Input.is_action_pressed("ui_down") else 0)
+		if dlr != 0 or dud != 0:
+			if Input.is_action_pressed("ui_shift"):
+				arvrcamera.rotation_degrees.x = clamp(arvrcamera.rotation_degrees.x - 90*delta*dud, -89, 89)
+				arvrcamera.rotation_degrees.y = arvrcamera.rotation_degrees.y - 90*delta*dlr
+			else:
+				arvrorigin.transform.origin += arvrcamera.global_transform.basis.x.normalized()*(dlr*delta*horizontal_speed) + \
+											   arvrcamera.global_transform.basis.z.normalized()*(dud*delta*horizontal_speed)
+			
+			
