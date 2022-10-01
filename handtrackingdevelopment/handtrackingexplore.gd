@@ -5,7 +5,7 @@ onready var ovrhandmodel = $ovr_right_hand_model
 #onready var skel = $ovr_right_hand_model/ArmatureRight/Skeleton
 onready var rpmavatar = $readyplayerme_avatar
 
-const Dapply_readyplayerme_hand = false
+const Dapply_readyplayerme_hand = true
 
 func _process(delta):
 	pass
@@ -75,37 +75,6 @@ func veclengstretchrat(vecB, vecT):
 	var vecldiff = vecTleng - vecBleng
 	return vecldiff/vecBleng
 
-func getrpmhandrestdata(rpmavatar):
-	var rpmavatardata = { "rpmavatar":rpmavatar }
-	var skel = rpmavatar.get_node("Armature/Skeleton")
-	rpmavatardata["skel"] = skel
-
-	for i in range(36, 57):
-		rpmavatardata[i] = skel.get_bone_rest(i)
-	for i in range(12, 32):
-		rpmavatardata[i] = skel.get_bone_rest(i)
-		
-	assert (skel.get_bone_name(36) == "RightHand")
-	assert (skel.get_bone_name(41) == "RightHandIndex1")
-	assert (skel.get_bone_name(49) == "RightHandRing1")
-	var boneposeI1right = rpmavatardata[36]*rpmavatardata[41]
-	var boneposeR1right = rpmavatardata[36]*rpmavatardata[49]
-	var wristposright = Vector3(0,0,0)
-	rpmavatardata["posindex1right"] = boneposeI1right.origin - wristposright
-	rpmavatardata["posring1right"] = boneposeR1right.origin - wristposright
-	rpmavatardata["wristrighttransinverse"] = basisfrom(rpmavatardata["posindex1right"], rpmavatardata["posring1right"]).inverse()
-
-	assert (skel.get_bone_name(12) == "LeftHand")
-	assert (skel.get_bone_name(17) == "LeftHandIndex1")
-	assert (skel.get_bone_name(25) == "LeftHandRing1")
-	var boneposeI1left = rpmavatardata[12]*rpmavatardata[17]
-	var boneposeR1left = rpmavatardata[12]*rpmavatardata[25]
-	var wristposleft = Vector3(0,0,0)
-	rpmavatardata["posindex1left"] = boneposeI1left.origin - wristposleft
-	rpmavatardata["posring1left"] = boneposeR1left.origin - wristposleft
-	rpmavatardata["wristlefttransinverse"] = basisfrom(rpmavatardata["posindex1left"], rpmavatardata["posring1left"]).inverse()
-	
-	return rpmavatardata
 
 func applyhandpose(handpose):
 	var hand = $Right_hand
@@ -121,7 +90,7 @@ func _ready():
 	$Right_hand/Wrist.set_process(false)
 	$Right_hand/Wrist.set_physics_process(false)
 	ovrhandrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata(ovrhandmodel)
-	rpmavatarhandrestdata = getrpmhandrestdata(rpmavatar)
+	rpmavatarhandrestdata = OpenXRtrackedhand_funcs.getrpmhandrestdata(rpmavatar)
 	applyhandpose(handposes[0])
 
 

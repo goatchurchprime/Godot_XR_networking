@@ -185,3 +185,35 @@ static func setshapetobonesRPM(h, skelarmgtrans, rpmhandspose, rpmhandrestdata, 
 	setvecstobonesG(36-di, 49-di, h["hr1"], h["hr2"], h["hr3"], h["hr4"], rpmhandrestdata, rpmhandspose, tRboneposeG36)
 	setvecstobonesG(36-di, 53-di, h["hl1"], h["hl2"], h["hl3"], h["hl4"], rpmhandrestdata, rpmhandspose, tRboneposeG36)
 
+static func getrpmhandrestdata(rpmavatar):
+	var rpmavatardata = { "rpmavatar":rpmavatar }
+	var skel = rpmavatar.get_node("Armature/Skeleton")
+	rpmavatardata["skel"] = skel
+
+	for i in range(36, 57):
+		rpmavatardata[i] = skel.get_bone_rest(i)
+	for i in range(12, 32):
+		rpmavatardata[i] = skel.get_bone_rest(i)
+		
+	assert (skel.get_bone_name(36) == "RightHand")
+	assert (skel.get_bone_name(41) == "RightHandIndex1")
+	assert (skel.get_bone_name(49) == "RightHandRing1")
+	var boneposeI1right = rpmavatardata[36]*rpmavatardata[41]
+	var boneposeR1right = rpmavatardata[36]*rpmavatardata[49]
+	var wristposright = Vector3(0,0,0)
+	rpmavatardata["posindex1right"] = boneposeI1right.origin - wristposright
+	rpmavatardata["posring1right"] = boneposeR1right.origin - wristposright
+	rpmavatardata["wristrighttransinverse"] = basisfrom(rpmavatardata["posindex1right"], rpmavatardata["posring1right"]).inverse()
+
+	assert (skel.get_bone_name(12) == "LeftHand")
+	assert (skel.get_bone_name(17) == "LeftHandIndex1")
+	assert (skel.get_bone_name(25) == "LeftHandRing1")
+	var boneposeI1left = rpmavatardata[12]*rpmavatardata[17]
+	var boneposeR1left = rpmavatardata[12]*rpmavatardata[25]
+	var wristposleft = Vector3(0,0,0)
+	rpmavatardata["posindex1left"] = boneposeI1left.origin - wristposleft
+	rpmavatardata["posring1left"] = boneposeR1left.origin - wristposleft
+	rpmavatardata["wristlefttransinverse"] = basisfrom(rpmavatardata["posindex1left"], rpmavatardata["posring1left"]).inverse()
+	
+	return rpmavatardata
+

@@ -12,50 +12,49 @@ onready var XRPoseRightHand = arvrorigin.get_node_or_null("Right_hand/XRPose")
 
 const TRACKING_CONFIDENCE_HIGH = 2
 
+const avatarbodyrotatedegspersec = 90
+const avatarbodyrotatedegseasynecklimit = 8
+
+var rpmavatarskelrestdata = null
 func _ready():
-	pass
+	rpmavatarskelrestdata = OpenXRtrackedhand_funcs.getrpmhandrestdata($readyplayerme_avatar)
 
-func PAV_processlocalavatarposition(delta):
-	transform = arvrorigin.transform
-	$HeadCam.transform = arvrorigin.get_node("ARVRCamera").transform
-
-	var skel = $readyplayerme_avatar/Armature/Skeleton
-	#skel.get_node("Wolf3D_Hair").visible = false
-	#skel.get_node("Wolf3D_Head").visible = false
+	var skel = rpmavatarskelrestdata["skel"]
 	assert (skel.get_bone_name(4) == "Neck")
 	assert (skel.get_bone_name(5) == "Head")
 	assert (skel.get_bone_name(7) == "LeftEye")
 	assert (skel.get_bone_name(8) == "RightEye")
-	
-	var headpose = skel.global_transform*skel.get_bone_global_pose(5)
 	assert (skel.get_bone_rest(7).basis.is_equal_approx(skel.get_bone_rest(8).basis))
-	var middleeyerestpose = Transform(skel.get_bone_rest(7).basis, (skel.get_bone_rest(7).origin + skel.get_bone_rest(8).origin)/2)
+	rpmavatarskelrestdata["middleeyerestpose"] = Transform(skel.get_bone_rest(7).basis, (skel.get_bone_rest(7).origin + skel.get_bone_rest(8).origin)/2)
+	rpmavatarskelrestdata["eyeballdepth"] = skel.get_node("EyeLeft").get_aabb().size.z
+	rpmavatarskelrestdata["globalheadrestpose"] = skel.get_bone_global_pose(4)*skel.get_bone_rest(5)
+
+var eyebodyangle = 0.0
+func PAV_processlocalavatarposition(delta):
+	transform = arvrorigin.transform
+	$HeadCam.transform = arvrorigin.get_node("ARVRCamera").transform
+
+	var skel = rpmavatarskelrestdata["skel"] # $readyplayerme_avatar/Armature/Skeleton
+	var vrheadcam = $HeadCam.transform
 	
-	var RPMeyeballdepth = skel.get_node("EyeLeft").get_aabb().size.z
-	#$MeshInstance_marker.transform.origin = headpose.origin
-	#var middleeyerestG = headpose*middleeyerestpose
+	if abs(eyebodyangle) > avatarbodyrotatedegseasynecklimit:
+		$readyplayerme_avatar.rotation_degrees.y += avatarbodyrotatedegspersec*delta*sign(eyebodyangle)
 	
-	var vrheadcam = $HeadCam.global_transform
 	var rpmheadcambasis = Basis(-vrheadcam.basis.x, vrheadcam.basis.y, -vrheadcam.basis.z)
-	var rpmheadcamposition = vrheadcam.origin - rpmheadcambasis.z*RPMeyeballdepth
+	var rpmheadcamposition = vrheadcam.origin - rpmheadcambasis.z*rpmavatarskelrestdata["eyeballdepth"]
 	var rpmheadcam = Transform(rpmheadcambasis, rpmheadcamposition)
-	var bp45 = skel.get_bone_global_pose(4)*skel.get_bone_rest(5)
-	# skel.global_transform*skel.get_bone_global_pose(4)*skel.get_bone_rest(5)*bonepose5*middleeyerestpose == rpmheadcam
-	var nktrans = rpmheadcam*middleeyerestpose.inverse()
-	# skel.global_transform*bp45*bonepose5 == rpmheadcam*middleeyerestpose.inverse()
+
+	var nktrans = rpmheadcam * rpmavatarskelrestdata["middleeyerestpose"].inverse()
 	
 	# (A.basis, A.origin)*(B.basis, B.origin) = (A.basis*B.basis, A.origin + A.basis*B.origin)
-	var gbasis = skel.global_transform.basis
-	# (gbasis, gpos)*(bp45.basis, bp45.pos)*(bonepose5basis, 0) = nktrans
-	# (gbasis, gpos)*(bp45.basis*bonepose5basis, bp45.pos) = (nktrans.basis, nktrans.pos)
-	# (gbasis*bp45.basis*bonepose5basis, gpos + gbasis*bp45.pos) = (nktrans.basis, nktrans.pos)
-	var gpos = nktrans.origin - gbasis.xform(bp45.origin)
-	var bonepose5basis = (gbasis*bp45.basis).inverse()*nktrans.basis
+	var skelbasis = $readyplayerme_avatar.transform.basis * $readyplayerme_avatar/Armature.transform.basis * $readyplayerme_avatar/Armature/Skeleton.transform.basis
+	var gpos = nktrans.origin - skelbasis.xform(rpmavatarskelrestdata["globalheadrestpose"].origin)
+	var bonepose5basis = (skelbasis * rpmavatarskelrestdata["globalheadrestpose"].basis).inverse()*nktrans.basis
 	
-	#$MeshInstance_marker2.transform.origin = middleeyerestG.origin + middleeyerestG.basis.z*RPMeyeballdepth
-	#$MeshInstance_marker.transform.origin = middleeyerestG.origin + Vector3(0,0.02,0)
 	$readyplayerme_avatar.transform.origin = gpos
 	skel.set_bone_pose(5, Transform(bonepose5basis, Vector3(0,0,0)))
+	
+	eyebodyangle = rad2deg(atan2(bonepose5basis.z.x, bonepose5basis.z.z)) if abs(bonepose5basis.z.y) < 0.8 else 0.0
 
 	transform.origin += Vector3(0,0,-2)
 

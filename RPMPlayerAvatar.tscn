@@ -31,3 +31,4 @@ mesh = SubResource( 3 )
 material = SubResource( 4 )
 
 [node name="readyplayerme_avatar" parent="." instance=ExtResource( 1 )]
+transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0 )

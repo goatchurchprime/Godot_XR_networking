@@ -56,7 +56,6 @@ func _input(event):
 			var hi4 = hand.get_node("Wrist/IndexMetacarpal/IndexProximal/IndexIntermediate/IndexDistal/IndexTip").global_transform
 			print(hi2.origin - hi1.origin, hi3.origin - hi2.origin, hi4.origin - hi3.origin)
 
-			
 func dumphandlocationstomqtt(hand):
 	var dat = { }
 	for hjnname in hand_joint_node_names:
