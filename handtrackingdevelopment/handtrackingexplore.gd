@@ -93,7 +93,7 @@ func _ready():
 	rpmavatarhandrestdata = OpenXRtrackedhand_funcs.getrpmhandrestdata(rpmavatar)
 	applyhandpose(handposes[0])
 
-
+# (A.basis, A.origin)*(B.basis, B.origin) = (A.basis*B.basis, A.origin + A.basis*B.origin)
 func sethandposfromnodes():
 	var h = OpenXRtrackedhand_funcs.gethandjointpositions($Right_hand)
 	#$MeshInstance_marker2.global_transform = $Right_hand/Wrist/ThumbMetacarpal/ThumbProximal/ThumbDistal/ThumbTip.global_transform
