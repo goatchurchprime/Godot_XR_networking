@@ -18,7 +18,8 @@ const avatarbodyrotatedegseasynecklimit = 30
 enum {
 	CFI_RPMAVATAR_POSITION = 70, 
 	CFI_RPMAVATAR_ROTATION = 71, 
-	CFI_RPNECK_ROTATION = 72 
+	CFI_RPMNECK_ROTATION = 72, 
+	CFI_RPMAVATAR_HANDBONES = 100 
 }
 
 var rpmavatarskelrestdata = null
@@ -34,7 +35,9 @@ func _ready():
 	rpmavatarskelrestdata["middleeyerestpose"] = Transform(skel.get_bone_rest(7).basis, (skel.get_bone_rest(7).origin + skel.get_bone_rest(8).origin)/2)
 	rpmavatarskelrestdata["eyeballdepth"] = skel.get_node("EyeLeft").get_aabb().size.z
 	rpmavatarskelrestdata["globalheadrestpose"] = skel.get_bone_global_pose(4)*skel.get_bone_rest(5)
-
+	assert (skel.get_bone_name(35) == "RightForeArm")
+	assert (skel.get_bone_name(35-24) == "LeftForeArm")
+			
 var eyebodyangle = 0.0
 func processbodyneckorientation(delta):
 	var skel = rpmavatarskelrestdata["skel"] # $readyplayerme_avatar/Armature/Skeleton
@@ -57,68 +60,40 @@ func processbodyneckorientation(delta):
 	
 	eyebodyangle = rad2deg(atan2(bonepose5basis.z.x, bonepose5basis.z.z)) if abs(bonepose5basis.z.y) < 0.8 else 0.0
 
-var handtrackingrightvisible = false
-var handtrackingleftvisible = false
-func processcontrollerhandorientation(delta):
-	$ControllerLeft.visible = LeftHandController.get_is_active()
-	if $ControllerLeft.visible:
-		$ControllerLeft.transform = LeftHandController.transform
-	$ControllerRight.visible = RightHandController.get_is_active()
-	if $ControllerRight.visible:
-		$ControllerRight.transform = RightHandController.transform
-
+func processRPMavatarhand(LR_hand, ControllerLR, rpmavatarskelrestdata, LRHandController, XRPoseLRHand, bleft):
+	var di = 24 if bleft else 0
 	var handtrackingavailable = (arvrorigin.interface != null)
-	if handtrackingavailable and is_instance_valid(Right_hand) and Right_hand.is_active():
-		var trackingconfidenceRight = XRPoseRightHand.get_tracking_confidence() # see https://github.com/GodotVR/godot_openxr/issues/221
-		var h = OpenXRtrackedhand_funcs.gethandjointpositions(Right_hand)
-		if trackingconfidenceRight == TRACKING_CONFIDENCE_HIGH and h["ht1"] != Vector3.ZERO: 
+	var handtrackinglrvisible = false
+	if handtrackingavailable and is_instance_valid(LR_hand) and LR_hand.is_active():
+		ControllerLR.visible = false
+		var trackingconfidence = XRPoseLRHand.get_tracking_confidence()
+		var h = OpenXRtrackedhand_funcs.gethandjointpositions(LR_hand)
+		if trackingconfidence == TRACKING_CONFIDENCE_HIGH and h["ht1"] != Vector3.ZERO: 
 			var rpmavatar = rpmavatarskelrestdata["rpmavatar"]
 			var skel = rpmavatarskelrestdata["skel"]
-			assert (skel.get_bone_name(35) == "RightForeArm")
-			var skelrightarmgtrans = skel.global_transform*skel.get_bone_global_pose(35)
+			var skeltrans = $readyplayerme_avatar.transform * $readyplayerme_avatar/Armature.transform * $readyplayerme_avatar/Armature/Skeleton.transform
+			var skelarmgtrans = skeltrans*skel.get_bone_global_pose(35-di)
 			var rpmhandspose = { }
-			OpenXRtrackedhand_funcs.setshapetobonesRPM(h, skelrightarmgtrans, rpmhandspose, rpmavatarskelrestdata, false)
-			for i in range(36, 57):
-				if rpmhandspose.has(i):
-					skel.set_bone_pose(i, rpmhandspose[i])
-			handtrackingrightvisible = true
-		else:
-			handtrackingrightvisible = false
+			OpenXRtrackedhand_funcs.setshapetobonesRPM(h, skelarmgtrans, rpmhandspose, rpmavatarskelrestdata, bleft)
+			for i in range(36-di, 57-di):
+				skel.set_bone_pose(i, rpmhandspose[i])
+			handtrackinglrvisible = true
+	elif LRHandController.get_is_active():
+		ControllerLR.transform = LRHandController.transform
+		ControllerLR.visible = true
 	else:
-		handtrackingrightvisible = false
+		ControllerLR.visible = false
+	
 
+var handtrackingrightvisible = false
+var handtrackingleftvisible = false
 
 func PAV_processlocalavatarposition(delta):
 	transform = arvrorigin.transform
 	$HeadCam.transform = arvrorigin.get_node("ARVRCamera").transform
 	processbodyneckorientation(delta)
-	processcontrollerhandorientation(delta)
-
-
-func processavatarhand(LR_hand, ovr_LR_hand_model, ControllerLR, ovrhandLRrestdata, LRHandController, XRPoseLRHand):
-	var handtrackingavailable = (arvrorigin.interface != null)
-	if handtrackingavailable and is_instance_valid(LR_hand) and LR_hand.is_active():
-		ControllerLR.visible = false
-		var trackingconfidence = XRPoseLRHand.get_tracking_confidence() # see https://github.com/GodotVR/godot_openxr/issues/221
-		var h = OpenXRtrackedhand_funcs.gethandjointpositions(LR_hand)
-		if trackingconfidence == TRACKING_CONFIDENCE_HIGH and h["ht1"] != Vector3.ZERO: 
-			var ovrhandpose = OpenXRtrackedhand_funcs.setshapetobonesOVR(h, ovrhandLRrestdata)
-			ovr_LR_hand_model.transform = ovrhandpose["handtransform"]
-			var skel = ovrhandLRrestdata["skel"]
-			for i in range(23):
-				skel.set_bone_pose(i, ovrhandpose[i])
-			ovr_LR_hand_model.visible = true
-		else:
-			ovr_LR_hand_model.visible = false
-	elif LRHandController.get_is_active():
-		ovr_LR_hand_model.visible = false
-		ControllerLR.transform = LRHandController.transform
-		ControllerLR.visible = true
-	else:
-		ovr_LR_hand_model.visible = false
-		ControllerLR.visible = false
-
-	#transform.origin += Vector3(0,0,-2)
+	handtrackingrightvisible = processRPMavatarhand(Right_hand, $ControllerRight, rpmavatarskelrestdata, RightHandController, XRPoseRightHand, false)
+	handtrackingleftvisible = processRPMavatarhand(Left_hand, $ControllerLeft, rpmavatarskelrestdata, LeftHandController, XRPoseLeftHand, true)
 
 func PAV_avatartoframedata():
 	var skel = rpmavatarskelrestdata["skel"]
@@ -127,24 +102,28 @@ func PAV_avatartoframedata():
 
 				CFI_RPMAVATAR_POSITION: $readyplayerme_avatar.transform.origin, 
 				CFI_RPMAVATAR_ROTATION: $readyplayerme_avatar.transform.basis.get_rotation_quat(), 
-				CFI_RPNECK_ROTATION: skel.get_bone_pose(5).basis.get_rotation_quat()
+				CFI_RPMNECK_ROTATION: skel.get_bone_pose(5).basis.get_rotation_quat()
 			 }
 			
-	if $ControllerLeft.visible:
+	if handtrackingleftvisible:
+		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE] = 0.0
+		for i in range(36-24, 57-24):
+			fd[CFI_RPMAVATAR_HANDBONES+i] = skel.get_bone_pose(i).basis.get_rotation_quat()
+	elif $ControllerLeft.visible:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE] = 1.0
 		fd[NCONSTANTS2.CFI_VRHANDLEFT_POSITION] = $ControllerLeft.transform.origin
 		fd[NCONSTANTS2.CFI_VRHANDLEFT_ROTATION] = $ControllerLeft.transform.basis.get_rotation_quat()
-	elif handtrackingleftvisible:
-		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE] = 0.0
 	else:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE] = 0.0
 			
-	if $ControllerRight.visible:
+	if handtrackingrightvisible:
+		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE] = -1.0
+		for i in range(36, 57):
+			fd[CFI_RPMAVATAR_HANDBONES+i] = skel.get_bone_pose(i).basis.get_rotation_quat()
+	elif $ControllerRight.visible:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE] = 1.0
 		fd[NCONSTANTS2.CFI_VRHANDRIGHT_POSITION] = $ControllerRight.transform.origin
 		fd[NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION] = $ControllerRight.transform.basis.get_rotation_quat()
-	elif handtrackingrightvisible:
-		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE] = 0.0
 	else:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE] = 0.0
 
@@ -163,20 +142,30 @@ func PAV_framedatatoavatar(fd):
 	transform = overwritetranform(transform, fd.get(NCONSTANTS2.CFI_VRORIGIN_ROTATION), fd.get(NCONSTANTS2.CFI_VRORIGIN_POSITION))
 	$readyplayerme_avatar.transform = overwritetranform($readyplayerme_avatar.transform, fd.get(CFI_RPMAVATAR_ROTATION), fd.get(CFI_RPMAVATAR_POSITION))
 	var skel = rpmavatarskelrestdata["skel"]
-	var hrot = fd.get(CFI_RPNECK_ROTATION)
+	var hrot = fd.get(CFI_RPMNECK_ROTATION)
 	if hrot != null:
 		skel.set_bone_pose(5, Transform(hrot))
 
 	if fd.has(NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE):
 		var hcleftfade = fd.get(NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE)
 		$ControllerLeft.visible = (hcleftfade > 0.0)
+		handtrackingleftvisible = (hcleftfade < 0.0)
 	if fd.has(NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE):
 		var hcrightfade = fd.get(NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE)
 		$ControllerRight.visible = (hcrightfade > 0.0)
+		handtrackingrightvisible = (hcrightfade < 0.0)
+		
+	if handtrackingrightvisible:
+		for i in range(36, 57):
+			var frot = fd.get(CFI_RPMAVATAR_HANDBONES+i)
+			if frot != null:
+				skel.set_bone_pose(i, Transform(frot))
+	elif $ControllerRight.visible:
+		$ControllerRight.transform = overwritetranform($ControllerRight.transform, fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_POSITION))
+
 	if $ControllerLeft.visible:
 		$ControllerLeft.transform = overwritetranform($ControllerLeft.transform, fd.get(NCONSTANTS2.CFI_VRHANDLEFT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDLEFT_POSITION))
-	if $ControllerRight.visible:
-		$ControllerRight.transform = overwritetranform($ControllerRight.transform, fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_POSITION))
+
 
 
 func PAV_initavatarlocal():

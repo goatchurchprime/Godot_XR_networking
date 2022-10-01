@@ -192,7 +192,7 @@ static func getrpmhandrestdata(rpmavatar):
 
 	for i in range(36, 57):
 		rpmavatardata[i] = skel.get_bone_rest(i)
-	for i in range(12, 32):
+	for i in range(12, 33):
 		rpmavatardata[i] = skel.get_bone_rest(i)
 		
 	assert (skel.get_bone_name(36) == "RightHand")

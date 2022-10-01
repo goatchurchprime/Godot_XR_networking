@@ -66,6 +66,9 @@ func PAV_avatartoframedata():
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE] = -1.0
 		fd[NCONSTANTS2.CFI_VRHANDLEFT_POSITION] = $ovr_left_hand_model.transform.origin
 		fd[NCONSTANTS2.CFI_VRHANDLEFT_ROTATION] = $ovr_left_hand_model.transform.basis.get_rotation_quat()
+		var skel = ovrhandleftrestdata["skel"]
+		for i in range(23):
+			fd[NCONSTANTS2.CFI_VRHANDLEFT_BONE_ROTATIONS+i] = skel.get_bone_pose(i).basis.get_rotation_quat()
 	elif $ControllerLeft.visible:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE] = 1.0
 		fd[NCONSTANTS2.CFI_VRHANDLEFT_POSITION] = $ControllerLeft.transform.origin
@@ -77,6 +80,9 @@ func PAV_avatartoframedata():
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE] = -1.0
 		fd[NCONSTANTS2.CFI_VRHANDRIGHT_POSITION] = $ovr_right_hand_model.transform.origin
 		fd[NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION] = $ovr_right_hand_model.transform.basis.get_rotation_quat()
+		var skel = ovrhandrightrestdata["skel"]
+		for i in range(23):
+			fd[NCONSTANTS2.CFI_VRHANDRIGHT_BONE_ROTATIONS+i] = skel.get_bone_pose(i).basis.get_rotation_quat()
 	elif $ControllerRight.visible:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE] = 1.0
 		fd[NCONSTANTS2.CFI_VRHANDRIGHT_POSITION] = $ControllerRight.transform.origin
@@ -85,15 +91,6 @@ func PAV_avatartoframedata():
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE] = 0.0
 
 	fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY] = $ControllerRight/PaddleBody.visible
-
-	if $ovr_left_hand_model.visible:
-		var skel = ovrhandleftrestdata["skel"]
-		for i in range(23):
-			fd[NCONSTANTS2.CFI_VRHANDLEFT_BONE_ROTATIONS+i] = skel.get_bone_pose(i).basis.get_rotation_quat()
-	if $ovr_right_hand_model.visible:
-		var skel = ovrhandrightrestdata["skel"]
-		for i in range(23):
-			fd[NCONSTANTS2.CFI_VRHANDRIGHT_BONE_ROTATIONS+i] = skel.get_bone_pose(i).basis.get_rotation_quat()
 
 	return fd
 
