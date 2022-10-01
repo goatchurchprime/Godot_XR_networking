@@ -87,12 +87,14 @@ func vr_right_button_pressed(button: int):
 			$ViewportNetworkGateway.visible = true
 			
 	if button == VR_GRIP:
-		NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(true)
+		if NetworkGateway.get_node("PlayerConnections").LocalPlayer.has_method("setpaddlebody"):
+			NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(true)
 
 	
 func vr_right_button_release(button: int):
 	if button == VR_GRIP:
-		NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(false)
+		if NetworkGateway.get_node("PlayerConnections").LocalPlayer.has_method("setpaddlebody"):
+			NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(false)
 
 func vr_left_button_pressed(button: int):
 	print("vr left button pressed ", button)
@@ -131,7 +133,6 @@ func _physics_process(delta):
 	if has_node("SportBall"):
 		if $SportBall.transform.origin.y < -3:
 			$SportBall.transform.origin = Vector3(0, 2, -3)
-
 
 
 func _process(delta):
