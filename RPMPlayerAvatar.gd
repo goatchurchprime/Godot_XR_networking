@@ -13,7 +13,13 @@ onready var XRPoseRightHand = arvrorigin.get_node_or_null("Right_hand/XRPose")
 const TRACKING_CONFIDENCE_HIGH = 2
 
 const avatarbodyrotatedegspersec = 90
-const avatarbodyrotatedegseasynecklimit = 8
+const avatarbodyrotatedegseasynecklimit = 30
+
+enum {
+	CFI_RPMAVATAR_POSITION = 70, 
+	CFI_RPMAVATAR_ROTATION = 71, 
+	CFI_RPNECK_ROTATION = 72 
+}
 
 var rpmavatarskelrestdata = null
 func _ready():
@@ -52,18 +58,23 @@ func PAV_processlocalavatarposition(delta):
 	var bonepose5basis = (skelbasis * rpmavatarskelrestdata["globalheadrestpose"].basis).inverse()*nktrans.basis
 	
 	$readyplayerme_avatar.transform.origin = gpos
-	skel.set_bone_pose(5, Transform(bonepose5basis, Vector3(0,0,0)))
+	skel.set_bone_pose(5, Transform(bonepose5basis))
 	
 	eyebodyangle = rad2deg(atan2(bonepose5basis.z.x, bonepose5basis.z.z)) if abs(bonepose5basis.z.y) < 0.8 else 0.0
 
-	transform.origin += Vector3(0,0,-2)
+	#transform.origin += Vector3(0,0,-2)
 
 func PAV_avatartoframedata():
+	var skel = rpmavatarskelrestdata["skel"]
 	var fd = {  NCONSTANTS2.CFI_VRORIGIN_POSITION: transform.origin, 
 				NCONSTANTS2.CFI_VRORIGIN_ROTATION: transform.basis.get_rotation_quat(), 
+
+				CFI_RPMAVATAR_POSITION: $readyplayerme_avatar.transform.origin, 
+				CFI_RPMAVATAR_ROTATION: $readyplayerme_avatar.transform.basis.get_rotation_quat(), 
+				CFI_RPNECK_ROTATION: skel.get_bone_pose(5).basis.get_rotation_quat()
 			 }
 	return fd
-	
+
 func overwritetranform(orgtransform, rot, pos):
 	if rot == null:
 		if pos == null:
@@ -75,6 +86,27 @@ func overwritetranform(orgtransform, rot, pos):
 
 func PAV_framedatatoavatar(fd):
 	transform = overwritetranform(transform, fd.get(NCONSTANTS2.CFI_VRORIGIN_ROTATION), fd.get(NCONSTANTS2.CFI_VRORIGIN_POSITION))
+	$readyplayerme_avatar.transform = overwritetranform($readyplayerme_avatar.transform, fd.get(CFI_RPMAVATAR_ROTATION), fd.get(CFI_RPMAVATAR_POSITION))
+	var skel = rpmavatarskelrestdata["skel"]
+	var hrot = fd.get(CFI_RPNECK_ROTATION)
+	if hrot != null:
+		skel.set_bone_pose(5, Transform(hrot))
+
+	#if fd.has(NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE):
+	#	var hcleftfade = fd.get(NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE)
+	#	$ControllerLeft.visible = (hcleftfade > 0.0)
+	#	$ovr_left_hand_model.visible = (hcleftfade < 0.0)
+	#if fd.has(NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE):
+	#	var hcrightfade = fd.get(NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE)
+	#	$ControllerRight.visible = (hcrightfade > 0.0)
+	#	$ovr_right_hand_model.visible = (hcrightfade < 0.0)
+		
+	if $ControllerLeft.visible:
+		$ControllerLeft.transform = overwritetranform($ControllerLeft.transform, fd.get(NCONSTANTS2.CFI_VRHANDLEFT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDLEFT_POSITION))
+
+	if $ControllerRight.visible:
+		$ControllerRight.transform = overwritetranform($ControllerRight.transform, fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_POSITION))
+
 
 func PAV_initavatarlocal():
 	labeltext = "ding"

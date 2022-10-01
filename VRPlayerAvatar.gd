@@ -20,6 +20,8 @@ func _ready():
 	ovrhandrightrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata($ovr_right_hand_model)
 	ovrhandleftrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata($ovr_left_hand_model)
 	
+
+
 func processavatarhand(LR_hand, ovr_LR_hand_model, ControllerLR, ovrhandLRrestdata, LRHandController, XRPoseLRHand):
 	var handtrackingavailable = (arvrorigin.interface != null)
 	if handtrackingavailable and is_instance_valid(LR_hand) and LR_hand.is_active():
