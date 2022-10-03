@@ -103,11 +103,13 @@ func sethandposfromnodes():
 	if Dapply_readyplayerme_hand:
 		var rpmavatar = rpmavatarhandrestdata["rpmavatar"]
 		var skel = rpmavatarhandrestdata["skel"]
+		assert (skel.get_bone_name(34) == "RightArm")
 		assert (skel.get_bone_name(35) == "RightForeArm")
-		var skelrightarmgtrans = skel.global_transform*skel.get_bone_global_pose(35)
+		var skelrightarmgtrans = skel.global_transform*skel.get_bone_global_pose(34)
+		var skelrightforearmgrest = skelrightarmgtrans*rpmavatarhandrestdata[35]
 		var rpmhandspose = { }
-		OpenXRtrackedhand_funcs.setshapetobonesRPM(h, skelrightarmgtrans, rpmhandspose, rpmavatarhandrestdata, false)
-		for i in range(36, 57):
+		OpenXRtrackedhand_funcs.setshapetobonesRPM(h, skelrightforearmgrest, rpmhandspose, rpmavatarhandrestdata, false)
+		for i in range(35, 57):
 			if rpmhandspose.has(i):
 				skel.set_bone_pose(i, rpmhandspose[i])
 		$MeshInstance_marker.global_transform = skel.global_transform*skel.get_bone_global_pose(40)

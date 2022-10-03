@@ -165,19 +165,31 @@ static func setshapetobonesOVR(h, ovrhandrestdata):
 	return ovrhandpose
 
 
-static func setshapetobonesRPM(h, skelarmgtrans, rpmhandspose, rpmhandrestdata, bleft):
+static func setshapetobonesRPM(h, skelforearmrest, rpmhandspose, rpmhandrestdata, bleft):
 	var handbasis = basisfrom(h["hi1"] - h["hwr"], h["hr1"] - h["hwr"])
+	if bleft:
+		handbasis = basisfrom(h["hr1"] - h["hwr"], h["hi1"] - h["hwr"])
 
 	var di = 24 if bleft else 0
 	assert (rpmhandrestdata["skel"].get_bone_name(36-di) == "LeftHand" if bleft else "RightHand")
+
 	# solve h["hwr"] = skelrightarmgtrans.origin + skelrightarmgtrans.basis*rpmhandrestdata[36].origin + skelrightarmgtrans.basis*rpmhandrestdata[36].basis*rpmhandpose[36].origin
-	var lh = h["hwr"] - skelarmgtrans.origin - skelarmgtrans.basis*rpmhandrestdata[36-di].origin 
-	var lhb = skelarmgtrans.basis*rpmhandrestdata[36-di].basis
+	# solve p35 such that p36=0
+	var p35 = skelforearmrest.basis.inverse()*(h["hwr"] - skelforearmrest.origin - skelforearmrest.basis*rpmhandrestdata[36-di].origin)
+	#p35 = Vector3(0,0,0)
+	
+	rpmhandspose[35-di] = Transform(Basis(), p35)
+
+	var skelforearmgtrans = skelforearmrest*rpmhandspose[35-di]
+
+	var lh = h["hwr"] - skelforearmgtrans.origin - skelforearmgtrans.basis*rpmhandrestdata[36-di].origin 
+	var lhb = skelforearmgtrans.basis*rpmhandrestdata[36-di].basis
+	
 	var p36 = lhb.inverse()*lh
 	var b36 = lhb.inverse()*handbasis*rpmhandrestdata["wristrighttransinverse"]
 	rpmhandspose[36-di] = Transform(b36, p36)
 
-	var tRboneposeG36 = skelarmgtrans*rpmhandrestdata[36-di]*rpmhandspose[36-di]
+	var tRboneposeG36 = skelforearmgtrans*rpmhandrestdata[36-di]*rpmhandspose[36-di]
 
 	setvecstobonesG(36-di, 37-di, h["ht0"], h["ht1"], h["ht2"], h["ht3"], rpmhandrestdata, rpmhandspose, tRboneposeG36)
 	setvecstobonesG(36-di, 41-di, h["hi1"], h["hi2"], h["hi3"], h["hi4"], rpmhandrestdata, rpmhandspose, tRboneposeG36)
@@ -190,11 +202,13 @@ static func getrpmhandrestdata(rpmavatar):
 	var skel = rpmavatar.get_node("Armature/Skeleton")
 	rpmavatardata["skel"] = skel
 
-	for i in range(36, 57):
+	for i in range(35, 57):
 		rpmavatardata[i] = skel.get_bone_rest(i)
-	for i in range(12, 33):
+	for i in range(11, 33):
 		rpmavatardata[i] = skel.get_bone_rest(i)
 		
+	assert (skel.get_bone_name(34) == "RightArm")
+	assert (skel.get_bone_name(35) == "RightForeArm")
 	assert (skel.get_bone_name(36) == "RightHand")
 	assert (skel.get_bone_name(41) == "RightHandIndex1")
 	assert (skel.get_bone_name(49) == "RightHandRing1")
@@ -205,6 +219,8 @@ static func getrpmhandrestdata(rpmavatar):
 	rpmavatardata["posring1right"] = boneposeR1right.origin - wristposright
 	rpmavatardata["wristrighttransinverse"] = basisfrom(rpmavatardata["posindex1right"], rpmavatardata["posring1right"]).inverse()
 
+	assert (skel.get_bone_name(10) == "LeftArm")
+	assert (skel.get_bone_name(11) == "LeftForeArm")
 	assert (skel.get_bone_name(12) == "LeftHand")
 	assert (skel.get_bone_name(17) == "LeftHandIndex1")
 	assert (skel.get_bone_name(25) == "LeftHandRing1")

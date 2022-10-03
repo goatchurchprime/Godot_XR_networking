@@ -24,7 +24,7 @@ albedo_color = Color( 0.741176, 0.623529, 0.584314, 1 )
 script = ExtResource( 2 )
 
 [node name="HeadCam" type="CSGMesh" parent="."]
-visible = false
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.06202, 0 )
 mesh = SubResource( 1 )
 material = SubResource( 2 )
 
@@ -34,14 +34,12 @@ mesh = SubResource( 3 )
 material = SubResource( 4 )
 
 [node name="ControllerLeft" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.307861, 0.971649, -0.346588 )
-visible = false
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.307861, 1.45455, -0.346588 )
 
 [node name="left_quest2_controller" parent="ControllerLeft" instance=ExtResource( 3 )]
 
 [node name="ControllerRight" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.319285, 1.10233, -0.39732 )
-visible = false
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.319285, 1.46837, -0.39732 )
 
 [node name="right_quest2_contoller" parent="ControllerRight" instance=ExtResource( 4 )]
 
