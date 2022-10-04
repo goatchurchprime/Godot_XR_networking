@@ -70,16 +70,11 @@ func processRPMavatarhand(LR_hand, ControllerLR, rpmavatarskelrestdata, LRHandCo
 			var rpmavatar = rpmavatarskelrestdata["rpmavatar"]
 			var skel = rpmavatarskelrestdata["skel"]
 			var skeltrans = $readyplayerme_avatar.transform * $readyplayerme_avatar/Armature.transform * $readyplayerme_avatar/Armature/Skeleton.transform
-
 			var skelshouldertrans = skeltrans*skel.get_bone_global_pose(33-di)
 			var skelarmrest = skelshouldertrans*rpmavatarskelrestdata[34-di]
-
-
-			#var skelarmgtrans = skeltrans*skel.get_bone_global_pose(34-di)
-			#var skelforearmgrest = skelarmgtrans*rpmavatarskelrestdata[35-di]
 			var rpmhandspose = { }
 			OpenXRtrackedhand_funcs.setshapetobonesRPM(h, skelarmrest, rpmhandspose, rpmavatarskelrestdata, bleft)
-			for i in range(35-di, 57-di):
+			for i in range(34-di, 57-di):
 				skel.set_bone_pose(i, rpmhandspose[i])
 			handtrackinglrvisible = true
 	elif LRHandController.get_is_active():

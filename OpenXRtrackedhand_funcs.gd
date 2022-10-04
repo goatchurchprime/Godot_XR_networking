@@ -103,9 +103,10 @@ static func setvecstobonesG(ibR, ib0, p1, p2, p3, p4, ovrhandrestdata, ovrhandpo
 	var t2bonerest = ovrhandrestdata[ib2]
 	var t3bonerest = ovrhandrestdata[ib3]
 
-#	tRboneposeG *= ovrhandrestdata[ibR]
+	#tRboneposeG *= ovrhandrestdata[ibR]
 	
 	var t0bonerestG = tRboneposeG*t0bonerest
+	# the rotation is to align within the coordinate frame of the bone (converted from the inverse of the basis tranform from global space vector)
 	var t0boneposebasis = rotationtoalign(t1bonerest.origin, t0bonerestG.basis.inverse()*vec1)
 	#var t0boneposeorigin = tRboneposeG.affine_inverse()*p1 - t0bonerest.origin
 	var t0boneposeorigin = t0bonerestG.affine_inverse()*p1
@@ -188,10 +189,16 @@ static func setshapetobonesRPM(h, skelarmrest, rpmhandspose, rpmhandrestdata, bl
 	# solve p35 such that p36=0
 	var p35 = skelforearmrest.basis.inverse()*(h["hwr"] - skelforearmrest.origin - skelforearmrest.basis*rpmhandrestdata[36-di].origin)
 	#p35 = Vector3(0,0,0)
-	
 	rpmhandspose[35-di] = Transform(Basis(), p35)
 
 	var skelforearmgtrans = skelforearmrest*rpmhandspose[35-di]
+	var elbowpos = skelforearmgtrans.origin
+
+	var skelhandrest = skelforearmgtrans*rpmhandrestdata[36-di]
+	#var skelhandtrans = skelforearmgtrans*rpmhandspose[36-di]
+	# (A.basis, A.origin)*(B.basis, B.origin) = (A.basis*B.basis, A.origin + A.basis*B.origin)
+
+	#var skelhandtrans*
 
 	var lh = h["hwr"] - skelforearmgtrans.origin - skelforearmgtrans.basis*rpmhandrestdata[36-di].origin 
 	var lhb = skelforearmgtrans.basis*rpmhandrestdata[36-di].basis
