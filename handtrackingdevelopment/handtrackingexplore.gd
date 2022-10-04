@@ -103,16 +103,23 @@ func sethandposfromnodes():
 	if Dapply_readyplayerme_hand:
 		var rpmavatar = rpmavatarhandrestdata["rpmavatar"]
 		var skel = rpmavatarhandrestdata["skel"]
+		assert (skel.get_bone_name(33) == "RightShoulder")
 		assert (skel.get_bone_name(34) == "RightArm")
 		assert (skel.get_bone_name(35) == "RightForeArm")
-		var skelrightarmgtrans = skel.global_transform*skel.get_bone_global_pose(34)
-		var skelrightforearmgrest = skelrightarmgtrans*rpmavatarhandrestdata[35]
+
+		var skelrightshouldergtrans = skel.global_transform*skel.get_bone_global_pose(33)
+		var skelrightarmrest = skelrightshouldergtrans*rpmavatarhandrestdata[34]
+
+		#var skelrightarmgtrans = skel.global_transform*skel.get_bone_global_pose(34)
+
 		var rpmhandspose = { }
-		OpenXRtrackedhand_funcs.setshapetobonesRPM(h, skelrightforearmgrest, rpmhandspose, rpmavatarhandrestdata, false)
-		for i in range(35, 57):
+		OpenXRtrackedhand_funcs.setshapetobonesRPM(h, skelrightarmrest, rpmhandspose, rpmavatarhandrestdata, false)
+		for i in range(34, 57):
 			if rpmhandspose.has(i):
 				skel.set_bone_pose(i, rpmhandspose[i])
-		$MeshInstance_marker.global_transform = skel.global_transform*skel.get_bone_global_pose(40)
+		$MeshInstance_marker.global_transform = skelrightarmrest
+		$MeshInstance_marker.global_transform = skel.global_transform*skel.get_bone_global_pose(34)
+		$MeshInstance_marker2.global_transform = skel.global_transform*skel.get_bone_global_pose(36)
 		return
 
 	var ovrhandpose = OpenXRtrackedhand_funcs.setshapetobonesOVR(h, ovrhandrestdata)	
