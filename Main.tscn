@@ -72,6 +72,8 @@ script = ExtResource( 1 )
 [node name="FPController" parent="." instance=ExtResource( 3 )]
 
 [node name="ARVRCamera" parent="FPController" index="1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, 0 )
+current = true
 far = 1000.0
 
 [node name="LeftHandController" parent="FPController" index="2"]

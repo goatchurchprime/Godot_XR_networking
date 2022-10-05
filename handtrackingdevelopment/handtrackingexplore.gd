@@ -115,10 +115,12 @@ func sethandposfromnodes():
 		var rpmhandspose = { }
 		OpenXRtrackedhand_funcs.setshapetobonesRPM(h, skelrightarmrest, rpmhandspose, rpmavatarhandrestdata, false)
 		for i in range(34, 57):
-			if rpmhandspose.has(i):
-				skel.set_bone_pose(i, rpmhandspose[i])
+			skel.set_bone_pose(i, rpmhandspose[i])
+			skel.set_bone_pose(i, Transform(rpmhandspose[i].basis))
 		$MeshInstance_marker.global_transform = skelrightarmrest
 		$MeshInstance_marker.global_transform = skel.global_transform*skel.get_bone_global_pose(34)
+		$MeshInstance_marker3.global_transform = skel.global_transform*skel.get_bone_global_pose(35)
+		print($MeshInstance_marker.global_transform.origin, $MeshInstance_marker3.global_transform.origin)
 		$MeshInstance_marker2.global_transform = skel.global_transform*skel.get_bone_global_pose(36)
 		return
 

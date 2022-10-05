@@ -172,49 +172,72 @@ static func setshapetobonesRPM(h, skelarmrest, rpmhandspose, rpmhandrestdata, bl
 		handbasis = basisfrom(h["hr1"] - h["hwr"], h["hi1"] - h["hwr"])
 
 	var di = 24 if bleft else 0
-
 	assert (rpmhandrestdata["skel"].get_bone_name(36-di) == "LeftHand" if bleft else "RightHand")
 
-	# rotation such that p35 is aligned with rpmhandspose[35].origin
-	rpmhandspose[34-di] = Transform(Basis(Vector3(0,0,1), -1.5))
-	rpmhandspose[34-di] = Transform()
+	var shoulderpos = skelarmrest.origin
+	var wristpos = h["hwr"]
+	#rpmhandspose[34-di].origin = Vector3(0,0,0)
+	#skelarmtrans = skelarmrest*rpmhandspose[34-di]
+	#shoulderpos = skelarmtrans.origin
+	#skelforearmrest = skelarmtrans*rpmhandrestdata[35-di]
+	#skelforearmtrans = skelforearmrest*rpmhandspose[35-di]
+	#elbowpos = skelforearmtrans.origin
+	#skelhandrest = skelforearmtrans*rpmhandrestdata[36-di]
+	#skelhandtrans = skelhandrest*rpmhandspose[36-di]
+	#skelhandtrans = Transform(wristbasis, wristpos)
+	var upperarmlengthSq = rpmhandrestdata[35-di].origin.length_squared()
+	var forearmlengthSq = rpmhandrestdata[36-di].origin.length_squared()
+	var armvector = wristpos - shoulderpos
+	var elbowperpN = armvector.cross(Vector3(0, -1 if bleft else 1, 0)).normalized()
+	var armvectorlengthSq = armvector.length_squared()
+	var lex = (armvectorlengthSq + upperarmlengthSq - forearmlengthSq)/(2*armvectorlengthSq)
+	var ey = sqrt(max(0.0, upperarmlengthSq - lex*lex*armvectorlengthSq))
+
+	var elbowpos = lerp(shoulderpos, wristpos, lex) + elbowperpN*ey
+	
+	var vecupperarm = elbowpos - shoulderpos
+	var vecforearm = wristpos - elbowpos
+	var skelarmposebasis = rotationtoalign(rpmhandrestdata[35-di].origin, skelarmrest.basis.inverse()*vecupperarm)
+	rpmhandspose[34-di] = Transform(skelarmposebasis, Vector3(0,0,0))
+	#rpmhandspose[34-di] = Transform()
 	
 	var skelarmtrans = skelarmrest*rpmhandspose[34-di]
+	#shoulderpos = skelarmtrans.origin
 	var skelforearmrest = skelarmtrans*rpmhandrestdata[35-di]
+	#skelforearmtrans = skelforearmrest*rpmhandspose[35-di]
+	#elbowpos = skelforearmtrans.origin
+	#skelhandrest = skelforearmtrans*rpmhandrestdata[36-di]
+	#skelhandtrans = skelhandrest*rpmhandspose[36-di]
+	#wristpos = skelhandtrans.origin
 
-	var shoulderpos = skelarmrest.origin
-
-
-	# solve h["hwr"] = skelrightarmgtrans.origin + skelrightarmgtrans.basis*rpmhandrestdata[36].origin + skelrightarmgtrans.basis*rpmhandrestdata[36].basis*rpmhandpose[36].origin
-	# solve p35 such that p36=0
-	var p35 = skelforearmrest.basis.inverse()*(h["hwr"] - skelforearmrest.origin - skelforearmrest.basis*rpmhandrestdata[36-di].origin)
-	#p35 = Vector3(0,0,0)
-	rpmhandspose[35-di] = Transform(Basis(), p35)
-
-	var skelforearmgtrans = skelforearmrest*rpmhandspose[35-di]
-	var elbowpos = skelforearmgtrans.origin
-
-	var skelhandrest = skelforearmgtrans*rpmhandrestdata[36-di]
-	#var skelhandtrans = skelforearmgtrans*rpmhandspose[36-di]
 	# (A.basis, A.origin)*(B.basis, B.origin) = (A.basis*B.basis, A.origin + A.basis*B.origin)
+	#skelforearmtrans = skelforearmrest*(skelforearmposebasis, skelforearmposeorigin)
+	#elbowpos = skelforearmtrans.origin = skelforearmrest.origin + skelforearmrest.basis*skelforearmposeorigin
+	var skelforearmposeorigin = skelforearmrest.basis.inverse()*(elbowpos - skelforearmrest.origin)
+	var skelforearmposebasis = rotationtoalign(rpmhandrestdata[36-di].origin, skelforearmrest.basis.inverse()*vecforearm)
+	rpmhandspose[35-di] = Transform(skelforearmposebasis, skelforearmposeorigin)
+	var skelforearmtrans = skelforearmrest*rpmhandspose[35-di]
+	var skelhandrest = skelforearmtrans*rpmhandrestdata[36-di]
 
-	#var skelhandtrans*
+	var restwristbasis = rpmhandrestdata["wristleftbasis" if bleft else "wristrightbasis"]
+	#skelhandrest = skelforearmtrans*rpmhandrestdata[36-di]
 
-	var lh = h["hwr"] - skelforearmgtrans.origin - skelforearmgtrans.basis*rpmhandrestdata[36-di].origin 
-	var lhb = skelforearmgtrans.basis*rpmhandrestdata[36-di].basis
-	
-	var p36 = lhb.inverse()*lh
-	var b36 = lhb.inverse()*handbasis*rpmhandrestdata["wristleftbasisinverse" if bleft else "wristrightbasisinverse"]
+	#skelhandtrans = skelhandrest*rpmhandspose[36-di]
+	#skelhandtrans = Transform(wristbasis, wristpos)
 
-	rpmhandspose[36-di] = Transform(b36, p36)
+	#wristbasis = skelhandrest.basis*skelhandposebasis
+	var skelhandposebasis = skelhandrest.basis.inverse()*handbasis*restwristbasis.inverse()
+	#skelhandtrans = skelhandrest*Transform(skelhandposebasis, skelhandposeorigin)
+	#wristpos = skelhandtrans.origin = skelhandrest.origin + skelhandrest.basis*skelhandposeorigin
+	var skelhandposeorigin = skelhandrest.basis.inverse()*(wristpos - skelhandrest.origin)
+	rpmhandspose[36-di] = Transform(skelhandposebasis, skelhandposeorigin)
+	var skelhandtrans = skelforearmtrans*rpmhandrestdata[36-di]*rpmhandspose[36-di]
 
-	var tRboneposeG36 = skelforearmgtrans*rpmhandrestdata[36-di]*rpmhandspose[36-di]
-
-	setvecstobonesG(36-di, 37-di, h["ht0"], h["ht1"], h["ht2"], h["ht3"], rpmhandrestdata, rpmhandspose, tRboneposeG36)
-	setvecstobonesG(36-di, 41-di, h["hi1"], h["hi2"], h["hi3"], h["hi4"], rpmhandrestdata, rpmhandspose, tRboneposeG36)
-	setvecstobonesG(36-di, 45-di, h["hm1"], h["hm2"], h["hm3"], h["hm4"], rpmhandrestdata, rpmhandspose, tRboneposeG36)
-	setvecstobonesG(36-di, 49-di, h["hr1"], h["hr2"], h["hr3"], h["hr4"], rpmhandrestdata, rpmhandspose, tRboneposeG36)
-	setvecstobonesG(36-di, 53-di, h["hl1"], h["hl2"], h["hl3"], h["hl4"], rpmhandrestdata, rpmhandspose, tRboneposeG36)
+	setvecstobonesG(36-di, 37-di, h["ht0"], h["ht1"], h["ht2"], h["ht3"], rpmhandrestdata, rpmhandspose, skelhandtrans)
+	setvecstobonesG(36-di, 41-di, h["hi1"], h["hi2"], h["hi3"], h["hi4"], rpmhandrestdata, rpmhandspose, skelhandtrans)
+	setvecstobonesG(36-di, 45-di, h["hm1"], h["hm2"], h["hm3"], h["hm4"], rpmhandrestdata, rpmhandspose, skelhandtrans)
+	setvecstobonesG(36-di, 49-di, h["hr1"], h["hr2"], h["hr3"], h["hr4"], rpmhandrestdata, rpmhandspose, skelhandtrans)
+	setvecstobonesG(36-di, 53-di, h["hl1"], h["hl2"], h["hl3"], h["hl4"], rpmhandrestdata, rpmhandspose, skelhandtrans)
 
 static func getrpmhandrestdata(rpmavatar):
 	var rpmavatardata = { "rpmavatar":rpmavatar }
@@ -237,6 +260,7 @@ static func getrpmhandrestdata(rpmavatar):
 	var wristposright = Vector3(0,0,0)
 	rpmavatardata["posindex1right"] = boneposeI1right.origin - wristposright
 	rpmavatardata["posring1right"] = boneposeR1right.origin - wristposright
+	rpmavatardata["wristrightbasis"] = basisfrom(rpmavatardata["posindex1right"], rpmavatardata["posring1right"])
 	rpmavatardata["wristrightbasisinverse"] = basisfrom(rpmavatardata["posindex1right"], rpmavatardata["posring1right"]).inverse()
 
 	assert (skel.get_bone_name(10) == "LeftArm")
@@ -250,6 +274,7 @@ static func getrpmhandrestdata(rpmavatar):
 	rpmavatardata["posindex1left"] = boneposeI1left.origin - wristposleft
 	rpmavatardata["posring1left"] = boneposeR1left.origin - wristposleft
 	#rpmavatardata["wristleftbasisinverse"] = basisfrom(rpmavatardata["posindex1left"], rpmavatardata["posring1left"]).inverse()
+	rpmavatardata["wristleftbasis"] = basisfrom(rpmavatardata["posring1left"], rpmavatardata["posindex1left"])
 	rpmavatardata["wristleftbasisinverse"] = basisfrom(rpmavatardata["posring1left"], rpmavatardata["posindex1left"]).inverse()
 	
 	return rpmavatardata

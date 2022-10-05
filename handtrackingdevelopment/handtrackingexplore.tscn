@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://xrassets/ovr_right_hand_model.glb" type="PackedScene" id=1]
 [ext_resource path="res://handtrackingdevelopment/handtrackingexplore.gd" type="Script" id=2]
@@ -9,6 +9,9 @@
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 0.1, 0.1, 0.1 )
 
+[sub_resource type="SpatialMaterial" id=2]
+albedo_color = Color( 0.0862745, 0.819608, 0.964706, 1 )
+
 [node name="Spatial" type="Spatial"]
 script = ExtResource( 2 )
 
@@ -16,7 +19,7 @@ script = ExtResource( 2 )
 transform = Transform( 0.470566, 0.313517, 0.824788, 0.805183, 0.229751, -0.546713, -0.3609, 0.92137, -0.144325, -0.408264, 0.10582, 0.060482 )
 
 [node name="Right_hand" parent="." instance=ExtResource( 5 )]
-transform = Transform( 0.416503, 0, -0.909134, 0, 1, 0, 0.909134, 0, 0.416503, 0, 0.268478, 0.304733 )
+transform = Transform( 0.416503, 0, -0.909134, 0, 1, 0, 0.909134, 0, 0.416503, -0.300812, 0.531738, 0.190948 )
 
 [node name="TrackballCamera" type="Camera" parent="Right_hand"]
 transform = Transform( 1, 0, 2.98023e-08, 0, 1, 0, -2.98023e-08, 0, 1, -0.129035, 0, 0.535142 )
@@ -29,17 +32,27 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.20237, 0.282288 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.928, -0.16 )
 
 [node name="MeshInstance_marker" type="Spatial" parent="."]
-transform = Transform( 15, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0.196732, 0.320114 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.196732, 0.320114 )
 
 [node name="MeshInstance_marker" type="MeshInstance" parent="MeshInstance_marker"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 mesh = SubResource( 1 )
 skeleton = NodePath("../..")
 
 [node name="MeshInstance_marker2" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.196732, 0.320114 )
+visible = false
 
 [node name="MeshInstance_marker" type="MeshInstance" parent="MeshInstance_marker2"]
 mesh = SubResource( 1 )
 skeleton = NodePath("../..")
+
+[node name="MeshInstance_marker3" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.196732, 0.320114 )
+
+[node name="MeshInstance_marker" type="MeshInstance" parent="MeshInstance_marker3"]
+mesh = SubResource( 1 )
+skeleton = NodePath("../..")
+material/0 = SubResource( 2 )
 
 [editable path="readyplayerme_avatar"]

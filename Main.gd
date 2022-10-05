@@ -2,8 +2,17 @@ extends Spatial
 
 onready var NetworkGateway = $ViewportNetworkGateway/Viewport/NetworkGateway
 
-export var webrtcroomname = "lettuce"
-export var webrtcbroker = "mqtt.dynamicdevices.co.uk"
+export var webrtcroomname = "grapefruit"
+
+#export var webrtcbroker = "mosquitto.doesliverpool.xyz"
+
+# use this one for WebXR because it can only come from HTML5 served from an https:// link
+export var webrtcbroker = "wss://mosquitto.doesliverpool.xyz:8081"  
+#export var webrtcbroker = "ws://mosquitto.doesliverpool.xyz:8080"
+#export var webrtcbroker = "ssl://mosquitto.doesliverpool.xyz:8884"
+#export var webrtcbroker = "mosquitto.doesliverpool.xyz:1883"
+
+
 # "ws://broker.mqttdashboard.com:8000"
 export var PCstartupprotocol = "webrtc"
 export var QUESTstartupprotocol = "webrtc"
