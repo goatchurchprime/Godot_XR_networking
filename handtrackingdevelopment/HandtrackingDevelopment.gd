@@ -56,7 +56,6 @@ func _input(event):
 			var hi4 = hand.get_node("Wrist/IndexMetacarpal/IndexProximal/IndexIntermediate/IndexDistal/IndexTip").global_transform
 			print(hi2.origin - hi1.origin, hi3.origin - hi2.origin, hi4.origin - hi3.origin)
 
-			
 func dumphandlocationstomqtt(hand):
 	var dat = { }
 	for hjnname in hand_joint_node_names:
@@ -76,8 +75,14 @@ func _process(delta):
 			if Input.is_action_pressed("ui_shift"):
 				arvrcamera.rotation_degrees.x = clamp(arvrcamera.rotation_degrees.x - 90*delta*dud, -89, 89)
 				arvrcamera.rotation_degrees.y = arvrcamera.rotation_degrees.y - 90*delta*dlr
+
+			elif Input.is_action_pressed("ui_control"):
+				var ftm = arvrorigin.get_node("RightHandController/Function_Turn_movement")
+				ftm._rotate_player(arvrorigin.get_node("PlayerBody"), ftm.smooth_turn_speed*delta*dlr)
+				arvrcamera.global_transform.origin += arvrcamera.global_transform.basis.z.normalized()*(dud*delta*horizontal_speed)
+
 			else:
 				arvrorigin.transform.origin += arvrcamera.global_transform.basis.x.normalized()*(dlr*delta*horizontal_speed) + \
 											   arvrcamera.global_transform.basis.z.normalized()*(dud*delta*horizontal_speed)
-			
+
 			

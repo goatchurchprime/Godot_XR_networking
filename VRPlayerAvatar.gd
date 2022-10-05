@@ -20,6 +20,8 @@ func _ready():
 	ovrhandrightrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata($ovr_right_hand_model)
 	ovrhandleftrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata($ovr_left_hand_model)
 	
+
+
 func processavatarhand(LR_hand, ovr_LR_hand_model, ControllerLR, ovrhandLRrestdata, LRHandController, XRPoseLRHand):
 	var handtrackingavailable = (arvrorigin.interface != null)
 	if handtrackingavailable and is_instance_valid(LR_hand) and LR_hand.is_active():
@@ -27,7 +29,7 @@ func processavatarhand(LR_hand, ovr_LR_hand_model, ControllerLR, ovrhandLRrestda
 		var trackingconfidence = XRPoseLRHand.get_tracking_confidence() # see https://github.com/GodotVR/godot_openxr/issues/221
 		var h = OpenXRtrackedhand_funcs.gethandjointpositions(LR_hand)
 		if trackingconfidence == TRACKING_CONFIDENCE_HIGH and h["ht1"] != Vector3.ZERO: 
-			var ovrhandpose = OpenXRtrackedhand_funcs.setshapetobones(h, ovrhandLRrestdata)
+			var ovrhandpose = OpenXRtrackedhand_funcs.setshapetobonesOVR(h, ovrhandLRrestdata)
 			ovr_LR_hand_model.transform = ovrhandpose["handtransform"]
 			var skel = ovrhandLRrestdata["skel"]
 			for i in range(23):
@@ -43,7 +45,7 @@ func processavatarhand(LR_hand, ovr_LR_hand_model, ControllerLR, ovrhandLRrestda
 		ovr_LR_hand_model.visible = false
 		ControllerLR.visible = false
 
-func processlocalavatarposition(delta):
+func PAV_processlocalavatarposition(delta):
 	transform = arvrorigin.transform
 	$HeadCam.transform = arvrorigin.get_node("ARVRCamera").transform
 	processavatarhand(Left_hand, $ovr_left_hand_model, $ControllerLeft, ovrhandleftrestdata, LeftHandController, XRPoseLeftHand)
@@ -53,7 +55,7 @@ func setpaddlebody(active):
 	$ControllerRight/PaddleBody.visible = active
 	$ControllerRight/PaddleBody/CollisionShape.disabled = not active
 
-func avatartoframedata():
+func PAV_avatartoframedata():
 	var fd = {  NCONSTANTS2.CFI_VRORIGIN_POSITION: transform.origin, 
 				NCONSTANTS2.CFI_VRORIGIN_ROTATION: transform.basis.get_rotation_quat(), 
 				NCONSTANTS2.CFI_VRHEAD_POSITION: $HeadCam.transform.origin, 
@@ -64,6 +66,9 @@ func avatartoframedata():
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE] = -1.0
 		fd[NCONSTANTS2.CFI_VRHANDLEFT_POSITION] = $ovr_left_hand_model.transform.origin
 		fd[NCONSTANTS2.CFI_VRHANDLEFT_ROTATION] = $ovr_left_hand_model.transform.basis.get_rotation_quat()
+		var skel = ovrhandleftrestdata["skel"]
+		for i in range(23):
+			fd[NCONSTANTS2.CFI_VRHANDLEFT_BONE_ROTATIONS+i] = skel.get_bone_pose(i).basis.get_rotation_quat()
 	elif $ControllerLeft.visible:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE] = 1.0
 		fd[NCONSTANTS2.CFI_VRHANDLEFT_POSITION] = $ControllerLeft.transform.origin
@@ -75,6 +80,9 @@ func avatartoframedata():
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE] = -1.0
 		fd[NCONSTANTS2.CFI_VRHANDRIGHT_POSITION] = $ovr_right_hand_model.transform.origin
 		fd[NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION] = $ovr_right_hand_model.transform.basis.get_rotation_quat()
+		var skel = ovrhandrightrestdata["skel"]
+		for i in range(23):
+			fd[NCONSTANTS2.CFI_VRHANDRIGHT_BONE_ROTATIONS+i] = skel.get_bone_pose(i).basis.get_rotation_quat()
 	elif $ControllerRight.visible:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE] = 1.0
 		fd[NCONSTANTS2.CFI_VRHANDRIGHT_POSITION] = $ControllerRight.transform.origin
@@ -83,15 +91,6 @@ func avatartoframedata():
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE] = 0.0
 
 	fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY] = $ControllerRight/PaddleBody.visible
-
-	if $ovr_left_hand_model.visible:
-		var skel = ovrhandleftrestdata["skel"]
-		for i in range(23):
-			fd[NCONSTANTS2.CFI_VRHANDLEFT_BONE_ROTATIONS+i] = skel.get_bone_pose(i).basis.get_rotation_quat()
-	if $ovr_right_hand_model.visible:
-		var skel = ovrhandrightrestdata["skel"]
-		for i in range(23):
-			fd[NCONSTANTS2.CFI_VRHANDRIGHT_BONE_ROTATIONS+i] = skel.get_bone_pose(i).basis.get_rotation_quat()
 
 	return fd
 
@@ -104,7 +103,7 @@ func overwritetranform(orgtransform, rot, pos):
 		return Transform(Basis(rot), orgtransform.origin)
 	return Transform(Basis(rot), pos)
 
-func framedatatoavatar(fd):
+func PAV_framedatatoavatar(fd):
 	transform = overwritetranform(transform, fd.get(NCONSTANTS2.CFI_VRORIGIN_ROTATION), fd.get(NCONSTANTS2.CFI_VRORIGIN_POSITION))
 	$HeadCam.transform = overwritetranform($HeadCam.transform, fd.get(NCONSTANTS2.CFI_VRHEAD_ROTATION), fd.get(NCONSTANTS2.CFI_VRHEAD_POSITION))
 
@@ -145,23 +144,23 @@ func framedatatoavatar(fd):
 
 		
 var possibleusernames = ["Alice", "Beth", "Cath", "Dan", "Earl", "Fred", "George", "Harry", "Ivan", "John", "Kevin", "Larry", "Martin", "Oliver", "Peter", "Quentin", "Robert", "Samuel", "Thomas", "Ulrik", "Victor", "Wayne", "Xavier", "Youngs", "Zephir"]
-func initavatarlocal():
+func PAV_initavatarlocal():
 	randomize()
 	labeltext = possibleusernames[randi()%len(possibleusernames)]
 	$ovr_left_hand_model/ArmatureLeft/Skeleton/l_handMeshNode.set_surface_material(0, load("res://xrassets/vrhandmaterial.tres"))
 	$ovr_right_hand_model/ArmatureRight/Skeleton/r_handMeshNode.set_surface_material(0, load("res://xrassets/vrhandmaterial.tres"))
 
-func initavatarremote(avatardata):
+func PAV_initavatarremote(avatardata):
 	labeltext = avatardata["labeltext"]
 
-func avatarinitdata():
+func PAV_avatarinitdata():
 	var avatardata = { "avatarsceneresource":filename, 
 					   "labeltext":labeltext
 					 }
 	return avatardata
 	
 
-static func changethinnedframedatafordoppelganger(fd, doppelnetoffset, isframe0):
+static func PAV_changethinnedframedatafordoppelganger(fd, doppelnetoffset, isframe0):
 	fd[NCONSTANTS.CFI_TIMESTAMP] += doppelnetoffset
 	fd[NCONSTANTS.CFI_TIMESTAMPPREV] += doppelnetoffset
 	if fd.has(NCONSTANTS2.CFI_VRORIGIN_POSITION):

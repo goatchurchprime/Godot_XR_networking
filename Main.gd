@@ -2,8 +2,17 @@ extends Spatial
 
 onready var NetworkGateway = $ViewportNetworkGateway/Viewport/NetworkGateway
 
-export var webrtcroomname = "lettuce"
-export var webrtcbroker = "mqtt.dynamicdevices.co.uk"
+export var webrtcroomname = "grapefruit"
+
+#export var webrtcbroker = "mosquitto.doesliverpool.xyz"
+
+# use this one for WebXR because it can only come from HTML5 served from an https:// link
+export var webrtcbroker = "wss://mosquitto.doesliverpool.xyz:8081"  
+#export var webrtcbroker = "ws://mosquitto.doesliverpool.xyz:8080"
+#export var webrtcbroker = "ssl://mosquitto.doesliverpool.xyz:8884"
+#export var webrtcbroker = "mosquitto.doesliverpool.xyz:1883"
+
+
 # "ws://broker.mqttdashboard.com:8000"
 export var PCstartupprotocol = "webrtc"
 export var QUESTstartupprotocol = "webrtc"
@@ -48,17 +57,7 @@ func _ready():
 	$SportBall.connect("body_entered", self, "ball_body_entered")
 	$SportBall.connect("body_exited", self, "ball_body_exited")
 
-#	var handtestL = load("res://xrassets/HandTest_L.glb").instance()
-#	var handtestLmesh = handtestL.get_node("Armature/Skeleton/mesh_Hand_L")
-#	print(handtestLmesh, handtestLmesh.mesh)
-#	print($FPController/LeftHand/HandModel/Armature001/Skeleton/vr_glove_left_slim)
-#	$FPController/LeftHand/HandModel/Armature001/Skeleton/vr_glove_left_slim.mesh = handtestLmesh.mesh
-
 	NetworkGateway.set_process_input(false)
-	
-#	var LocalPlayer = NetworkGateway.get_node("PlayerConnections").LocalPlayer
-#	LocalPlayer.get_node("ovr_left_hand_model/ArmatureLeft").visible = false
-
 #	$FPController/Left_hand/Wrist.visible = false
 #	$FPController/Right_hand/Wrist.visible = false
 
@@ -71,9 +70,10 @@ func ball_body_entered(body):
 		yield(get_tree().create_timer(0.2), "timeout")
 		body.get_node("CollisionShape/MeshInstance").get_surface_material(0).emission_enabled = false
 		
-func ball_body_exited(body):	pass
+func ball_body_exited(body):	
 	#if body.name == "PaddleBody":
 	#	body.get_node("CollisionShape/MeshInstance").get_surface_material(0).emission_enabled = false
+	pass
 		
 
 const VR_BUTTON_BY = 1
@@ -96,15 +96,17 @@ func vr_right_button_pressed(button: int):
 			$ViewportNetworkGateway.visible = true
 			
 	if button == VR_GRIP:
-		NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(true)
+		if NetworkGateway.get_node("PlayerConnections").LocalPlayer.has_method("setpaddlebody"):
+			NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(true)
 
 	
 func vr_right_button_release(button: int):
 	if button == VR_GRIP:
-		NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(false)
+		if NetworkGateway.get_node("PlayerConnections").LocalPlayer.has_method("setpaddlebody"):
+			NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(false)
 
 func vr_left_button_pressed(button: int):
-	print("vr left button pressed ", button)
+	print("vr left button pressd ", button)
 	if button == VR_BUTTON_BY:
 		$SportBall.transform.origin = $FPController/ARVRCamera.global_transform.origin + \
 									  Vector3(0, 2, 0) + \
@@ -147,4 +149,4 @@ func _process(delta):
 		$FPController/RightHandController/Function_pointer.active_button = VR_HANDTRACKING_INDEXTHUMB_PINCH
 	else:
 		$FPController/RightHandController/Function_pointer.active_button = VR_TRIGGER
-
+	
