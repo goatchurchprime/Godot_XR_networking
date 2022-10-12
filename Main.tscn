@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=2]
+[gd_scene load_steps=43 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
@@ -82,18 +82,23 @@ albedo_color = Color( 0.411765, 0.0431373, 0.94902, 1 )
 
 [sub_resource type="CylinderShape" id=16]
 margin = 0.002
-height = 0.04
+height = 0.06
 radius = 0.005
 
 [sub_resource type="CylinderMesh" id=17]
 top_radius = 0.008
 bottom_radius = 0.005
-height = 0.04
+height = 0.06
 radial_segments = 8
 rings = 1
 
 [sub_resource type="SpatialMaterial" id=18]
 albedo_color = Color( 0.964706, 0.188235, 0.188235, 1 )
+
+[sub_resource type="CylinderShape" id=26]
+margin = 0.002
+height = 0.06
+radius = 0.005
 
 [sub_resource type="CylinderMesh" id=19]
 top_radius = 0.008
@@ -257,10 +262,10 @@ transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.2058
 screen_size = Vector2( 1.5, 1 )
 viewport_size = Vector2( 600, 400 )
 scene = ExtResource( 7 )
-collision_layer = 2048
+collision_layer = 1048576
 
 [node name="AreaResetpos" type="Area" parent="LorienHandControls/ViewportLorienCanvas"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.175568, 0.0703278, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.623657, 0.0703278, 0 )
 collision_layer = 0
 collision_mask = 1024
 
@@ -289,7 +294,7 @@ collision_layer = 1025
 collision_mask = 0
 
 [node name="CollisionShape" type="CollisionShape" parent="LorienHandControls/LeftIndexFinger"]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0.02 )
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0.03 )
 shape = SubResource( 16 )
 
 [node name="MeshInstance" type="MeshInstance" parent="LorienHandControls/LeftIndexFinger/CollisionShape"]
@@ -302,15 +307,15 @@ collision_layer = 1025
 collision_mask = 0
 
 [node name="CollisionShape" type="CollisionShape" parent="LorienHandControls/RightIndexFinger"]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0.02 )
-shape = SubResource( 16 )
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0.03 )
+shape = SubResource( 26 )
 
 [node name="MeshInstance" type="MeshInstance" parent="LorienHandControls/RightIndexFinger/CollisionShape"]
 mesh = SubResource( 19 )
 material/0 = SubResource( 20 )
 
 [node name="RigidBody" type="RigidBody" parent="LorienHandControls"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.287247, 1.3112, -0.623899 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.287, 1.26401, -1.04355 )
 collision_layer = 1025
 collision_mask = 1024
 
