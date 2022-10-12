@@ -17,6 +17,8 @@ export var webrtcbroker = "wss://mosquitto.doesliverpool.xyz:8081"
 export var PCstartupprotocol = "webrtc"
 export var QUESTstartupprotocol = "webrtc"
 
+# symlinks from the addons directory
+# ln -s ../../LorienAsset/lorien/addons/LorienInfiniteCanvas/
 
 func _ready():
 	if OS.has_feature("QUEST"):
@@ -150,3 +152,4 @@ func _process(delta):
 	else:
 		$FPController/RightHandController/Function_pointer.active_button = VR_TRIGGER
 	
+

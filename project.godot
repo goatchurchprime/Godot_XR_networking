@@ -14,6 +14,56 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/godot-xr-tools/misc/ARVR_Helpers.gd"
 }, {
+"base": "Sprite",
+"class": "BaseCursor",
+"language": "GDScript",
+"path": "res://addons/LorienInfiniteCanvas/Cursor/BaseCursor.gd"
+}, {
+"base": "BaseCursor",
+"class": "BrushCursor",
+"language": "GDScript",
+"path": "res://addons/LorienInfiniteCanvas/Cursor/BrushCursor/BrushCursor.gd"
+}, {
+"base": "Node2D",
+"class": "BrushStroke",
+"language": "GDScript",
+"path": "res://addons/LorienInfiniteCanvas/BrushStroke/BrushStroke.gd"
+}, {
+"base": "Reference",
+"class": "BrushStrokeOptimizer",
+"language": "GDScript",
+"path": "res://addons/LorienInfiniteCanvas/BrushStroke/BrushStrokeOptimizer.gd"
+}, {
+"base": "CanvasTool",
+"class": "BrushTool",
+"language": "GDScript",
+"path": "res://addons/LorienInfiniteCanvas/Tools/BrushTool.gd"
+}, {
+"base": "Node",
+"class": "CanvasTool",
+"language": "GDScript",
+"path": "res://addons/LorienInfiniteCanvas/Tools/CanvasTool.gd"
+}, {
+"base": "CanvasTool",
+"class": "CircleTool",
+"language": "GDScript",
+"path": "res://addons/LorienInfiniteCanvas/Tools/CircleTool.gd"
+}, {
+"base": "Reference",
+"class": "Config",
+"language": "GDScript",
+"path": "res://addons/LorienInfiniteCanvas/Config.gd"
+}, {
+"base": "Reference",
+"class": "DSLParser",
+"language": "GDScript",
+"path": "res://addons/LorienInfiniteCanvas/Misc/DSLParser.gd"
+}, {
+"base": "CanvasTool",
+"class": "EraserTool",
+"language": "GDScript",
+"path": "res://addons/LorienInfiniteCanvas/Tools/EraserTool.gd"
+}, {
 "base": "MovementProvider",
 "class": "Function_ClimbMovement",
 "language": "GDScript",
@@ -84,6 +134,26 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/godot-xr-tools/overrides/GroundPhysicsSettings.gd"
 }, {
+"base": "Reference",
+"class": "I18nParser",
+"language": "GDScript",
+"path": "res://addons/LorienInfiniteCanvas/Misc/I18nParser.gd"
+}, {
+"base": "ViewportContainer",
+"class": "InfiniteCanvas",
+"language": "GDScript",
+"path": "res://addons/LorienInfiniteCanvas/InfiniteCanvas.gd"
+}, {
+"base": "Node2D",
+"class": "InfiniteCanvasGrid",
+"language": "GDScript",
+"path": "res://addons/LorienInfiniteCanvas/InfiniteCanvasGrid.gd"
+}, {
+"base": "CanvasTool",
+"class": "LineTool",
+"language": "GDScript",
+"path": "res://addons/LorienInfiniteCanvas/Tools/LineTool.gd"
+}, {
 "base": "Node",
 "class": "MovementProvider",
 "language": "GDScript",
@@ -109,10 +179,60 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://OpenXRtrackedhand_funcs.gd"
 }, {
+"base": "KinematicBody2D",
+"class": "Player",
+"language": "GDScript",
+"path": "res://addons/LorienInfiniteCanvas/Player/Player.gd"
+}, {
 "base": "Node",
 "class": "PlayerBody",
 "language": "GDScript",
 "path": "res://addons/godot-xr-tools/assets/PlayerBody.gd"
+}, {
+"base": "Reference",
+"class": "Project",
+"language": "GDScript",
+"path": "res://addons/LorienInfiniteCanvas/ProjectManager/Project.gd"
+}, {
+"base": "CanvasTool",
+"class": "RectangleTool",
+"language": "GDScript",
+"path": "res://addons/LorienInfiniteCanvas/Tools/RectangleTool.gd"
+}, {
+"base": "BaseCursor",
+"class": "SelectionCursor",
+"language": "GDScript",
+"path": "res://addons/LorienInfiniteCanvas/Cursor/SelectionCursor/SelectionCursor.gd"
+}, {
+"base": "Node2D",
+"class": "SelectionRectangle",
+"language": "GDScript",
+"path": "res://addons/LorienInfiniteCanvas/Tools/SelectionRectangle.gd"
+}, {
+"base": "CanvasTool",
+"class": "SelectionTool",
+"language": "GDScript",
+"path": "res://addons/LorienInfiniteCanvas/Tools/SelectionTool.gd"
+}, {
+"base": "Reference",
+"class": "Serializer",
+"language": "GDScript",
+"path": "res://addons/LorienInfiniteCanvas/ProjectManager/Serializer.gd"
+}, {
+"base": "Reference",
+"class": "StringTemplating",
+"language": "GDScript",
+"path": "res://addons/LorienInfiniteCanvas/Misc/StringTemplating.gd"
+}, {
+"base": "Reference",
+"class": "SvgExporter",
+"language": "GDScript",
+"path": "res://addons/LorienInfiniteCanvas/Misc/SvgExporter.gd"
+}, {
+"base": "Node",
+"class": "Types",
+"language": "GDScript",
+"path": "res://addons/LorienInfiniteCanvas/Misc/Types.gd"
 }, {
 "base": "Reference",
 "class": "VelocityAverager",
@@ -191,6 +311,16 @@ _global_script_classes=[ {
 } ]
 _global_script_class_icons={
 "ARVRHelpers": "",
+"BaseCursor": "res://addons/LorienInfiniteCanvas/Assets/Icons/cursor_icon.png",
+"BrushCursor": "",
+"BrushStroke": "",
+"BrushStrokeOptimizer": "",
+"BrushTool": "",
+"CanvasTool": "res://addons/LorienInfiniteCanvas/Assets/Icons/tools.png",
+"CircleTool": "",
+"Config": "",
+"DSLParser": "",
+"EraserTool": "",
 "Function_ClimbMovement": "",
 "Function_CrouchMovement": "",
 "Function_DirectMovement": "",
@@ -205,12 +335,26 @@ _global_script_class_icons={
 "Function_WindMovement": "",
 "GroundPhysics": "",
 "GroundPhysicsSettings": "",
+"I18nParser": "",
+"InfiniteCanvas": "",
+"InfiniteCanvasGrid": "",
+"LineTool": "",
 "MovementProvider": "",
 "NCONSTANTS": "",
 "NCONSTANTS2": "",
 "Object_climbable": "",
 "OpenXRtrackedhand_funcs": "",
+"Player": "",
 "PlayerBody": "res://addons/godot-xr-tools/editor/icons/XRToolsBody.svg",
+"Project": "",
+"RectangleTool": "",
+"SelectionCursor": "",
+"SelectionRectangle": "",
+"SelectionTool": "",
+"Serializer": "",
+"StringTemplating": "",
+"SvgExporter": "",
+"Types": "",
 "VelocityAverager": "",
 "VelocityAveragerLinear": "",
 "VirtualKeyboard2D": "",
@@ -237,6 +381,14 @@ config/icon="res://icon.png"
 [audio]
 
 enable_audio_input=true
+
+[autoload]
+
+Settings="*res://addons/LorienInfiniteCanvas/Misc/Settings.gd"
+Utils="*res://addons/LorienInfiniteCanvas/Misc/Utils.gd"
+BrushStrokeTexture="*res://addons/LorienInfiniteCanvas/BrushStroke/BrushStrokeTexture.gd"
+ProjectManager="*res://addons/LorienInfiniteCanvas/ProjectManager/ProjectManager.gd"
+ProjectMetadata="*res://addons/LorienInfiniteCanvas/ProjectManager/ProjectMetadata.gd"
 
 [editor_plugins]
 

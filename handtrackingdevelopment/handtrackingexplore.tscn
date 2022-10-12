@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://xrassets/ovr_right_hand_model.glb" type="PackedScene" id=1]
 [ext_resource path="res://handtrackingdevelopment/handtrackingexplore.gd" type="Script" id=2]
 [ext_resource path="res://xrassets/readyplayerme_avatar.glb" type="PackedScene" id=3]
 [ext_resource path="res://addons/goutte.camera.trackball/trackball_camera.gd" type="Script" id=4]
 [ext_resource path="res://addons/godot-openxr/scenes/right_hand_nodes.tscn" type="PackedScene" id=5]
+[ext_resource path="res://addons/godot-xr-tools/objects/Viewport_2D_in_3D.tscn" type="PackedScene" id=6]
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 0.1, 0.1, 0.1 )
@@ -35,7 +36,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.928, -0.16 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.196732, 0.320114 )
 
 [node name="MeshInstance_marker" type="MeshInstance" parent="MeshInstance_marker"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 mesh = SubResource( 1 )
 skeleton = NodePath("../..")
 
@@ -54,5 +54,8 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.196732, 0.320114 )
 mesh = SubResource( 1 )
 skeleton = NodePath("../..")
 material/0 = SubResource( 2 )
+
+[node name="Viewport2Din3D" parent="." instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.19925 )
 
 [editable path="readyplayerme_avatar"]

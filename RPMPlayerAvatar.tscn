@@ -25,6 +25,7 @@ script = ExtResource( 2 )
 
 [node name="HeadCam" type="CSGMesh" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.06202, 0 )
+visible = false
 mesh = SubResource( 1 )
 material = SubResource( 2 )
 
