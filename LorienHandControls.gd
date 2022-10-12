@@ -20,7 +20,7 @@ func _ready():
 	remotetransformrightindextip.remote_path = NodePath("../../../../../../../../../LorienHandControls/RightIndexFinger")
 
 var Dw = 2
-func _on_AreaResetpos_body_entered(body):
+func _on_AreaZoom_body_entered(body):
 	print("_on_AreaResetpos_body_entered ", body)
 	var event = InputEventMouseButton.new()
 	Dw += 1
@@ -32,5 +32,6 @@ func _on_AreaResetpos_body_entered(body):
 	#$ViewportLorienCanvas/Viewport.input(event)  # not getting cycled through as the tool event
 	$ViewportLorienCanvas/Viewport/InfiniteCanvas/Viewport/Camera2D.tool_event(event)
 
-func _on_Area_body_exited(body):
-	print("_on_Area_body_exited ", body)
+func _on_AreaResetpos_body_entered(body):
+	print("Reset position")
+	$ViewportLorienCanvas.transform.origin = $RightIndexFinger.transform.origin
