@@ -103,7 +103,7 @@ radius = 0.005
 [sub_resource type="CylinderMesh" id=19]
 top_radius = 0.008
 bottom_radius = 0.005
-height = 0.04
+height = 0.06
 radial_segments = 8
 rings = 1
 
@@ -262,7 +262,7 @@ transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.2058
 screen_size = Vector2( 1.5, 1 )
 viewport_size = Vector2( 600, 400 )
 scene = ExtResource( 7 )
-collision_layer = 1048576
+collision_layer = 1024
 
 [node name="AreaResetpos" type="Area" parent="LorienHandControls/ViewportLorienCanvas"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.623657, 0.0703278, 0 )
@@ -316,8 +316,8 @@ material/0 = SubResource( 20 )
 
 [node name="RigidBody" type="RigidBody" parent="LorienHandControls"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.287, 1.26401, -1.04355 )
-collision_layer = 1025
-collision_mask = 1024
+collision_layer = 1024
+collision_mask = 1025
 
 [node name="CollisionShape" type="CollisionShape" parent="LorienHandControls/RigidBody"]
 shape = SubResource( 21 )

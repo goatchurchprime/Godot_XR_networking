@@ -19,6 +19,9 @@ export var QUESTstartupprotocol = "webrtc"
 
 # symlinks from the addons directory
 # ln -s ../../LorienAsset/lorien/addons/LorienInfiniteCanvas/
+# ln -s ../../godot-xr-tools/addons/godot-xr-tools/ .
+#    don't forget to checkout to 2.5.0
+
 
 func _ready():
 	if OS.has_feature("QUEST"):
