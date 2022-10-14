@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=2]
+[gd_scene load_steps=45 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
@@ -68,36 +68,56 @@ albedo_color = Color( 0.980392, 0.843137, 0.858824, 1 )
 albedo_texture = SubResource( 13 )
 uv1_scale = Vector3( 10, 20, 1 )
 
+[sub_resource type="BoxShape" id=21]
+extents = Vector3( 0.05, 0.05, 0.05 )
+
+[sub_resource type="CubeMesh" id=22]
+size = Vector3( 0.04, 0.04, 0.04 )
+
+[sub_resource type="SpatialMaterial" id=23]
+albedo_color = Color( 0.764706, 0.886275, 0.0627451, 1 )
+
+[sub_resource type="SpatialMaterial" id=24]
+albedo_color = Color( 0.411765, 0.0431373, 0.94902, 1 )
+
 [sub_resource type="CylinderShape" id=16]
 margin = 0.002
-height = 0.04
+height = 0.06
 radius = 0.005
 
 [sub_resource type="CylinderMesh" id=17]
 top_radius = 0.008
 bottom_radius = 0.005
-height = 0.04
+height = 0.06
 radial_segments = 8
 rings = 1
 
 [sub_resource type="SpatialMaterial" id=18]
 albedo_color = Color( 0.964706, 0.188235, 0.188235, 1 )
 
+[sub_resource type="CubeMesh" id=27]
+size = Vector3( 0.015, 0.015, 0.015 )
+
+[sub_resource type="SpatialMaterial" id=28]
+albedo_color = Color( 0.976471, 0.890196, 0.0352941, 1 )
+
+[sub_resource type="CylinderShape" id=26]
+margin = 0.002
+height = 0.06
+radius = 0.005
+
 [sub_resource type="CylinderMesh" id=19]
 top_radius = 0.008
 bottom_radius = 0.005
-height = 0.04
+height = 0.06
 radial_segments = 8
 rings = 1
 
 [sub_resource type="SpatialMaterial" id=20]
 albedo_color = Color( 0.027451, 0.882353, 0, 1 )
 
-[sub_resource type="BoxShape" id=21]
-extents = Vector3( 0.02, 0.02, 0.02 )
-
-[sub_resource type="CubeMesh" id=22]
-size = Vector3( 0.04, 0.04, 0.04 )
+[sub_resource type="CubeMesh" id=25]
+size = Vector3( 0.1, 0.1, 0.1 )
 
 [node name="Main" type="Spatial"]
 script = ExtResource( 1 )
@@ -248,7 +268,30 @@ transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.2058
 screen_size = Vector2( 1.5, 1 )
 viewport_size = Vector2( 600, 400 )
 scene = ExtResource( 7 )
-collision_layer = 2048
+collision_layer = 1024
+
+[node name="AreaResetpos" type="Area" parent="LorienHandControls/ViewportLorienCanvas"]
+collision_layer = 0
+collision_mask = 1024
+
+[node name="CollisionShape" type="CollisionShape" parent="LorienHandControls/ViewportLorienCanvas/AreaResetpos"]
+shape = SubResource( 21 )
+
+[node name="MeshInstance" type="MeshInstance" parent="LorienHandControls/ViewportLorienCanvas/AreaResetpos/CollisionShape"]
+mesh = SubResource( 22 )
+material/0 = SubResource( 23 )
+
+[node name="AreaZoom" type="Area" parent="LorienHandControls/ViewportLorienCanvas"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.175568, 0.182592, -1.19209e-07 )
+collision_layer = 0
+collision_mask = 1024
+
+[node name="CollisionShape" type="CollisionShape" parent="LorienHandControls/ViewportLorienCanvas/AreaZoom"]
+shape = SubResource( 21 )
+
+[node name="MeshInstance" type="MeshInstance" parent="LorienHandControls/ViewportLorienCanvas/AreaZoom/CollisionShape"]
+mesh = SubResource( 22 )
+material/0 = SubResource( 24 )
 
 [node name="LeftIndexFinger" type="KinematicBody" parent="LorienHandControls"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.394745, 1.03168, -0.551758 )
@@ -256,12 +299,19 @@ collision_layer = 1025
 collision_mask = 0
 
 [node name="CollisionShape" type="CollisionShape" parent="LorienHandControls/LeftIndexFinger"]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0.02 )
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0.03 )
 shape = SubResource( 16 )
 
 [node name="MeshInstance" type="MeshInstance" parent="LorienHandControls/LeftIndexFinger/CollisionShape"]
 mesh = SubResource( 17 )
 material/0 = SubResource( 18 )
+
+[node name="ActiveMarker" type="MeshInstance" parent="LorienHandControls/LeftIndexFinger"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0.06 )
+visible = false
+mesh = SubResource( 27 )
+skeleton = NodePath("../CollisionShape/MeshInstance")
+material/0 = SubResource( 28 )
 
 [node name="RightIndexFinger" type="KinematicBody" parent="LorienHandControls"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925201, -0.671417 )
@@ -269,36 +319,32 @@ collision_layer = 1025
 collision_mask = 0
 
 [node name="CollisionShape" type="CollisionShape" parent="LorienHandControls/RightIndexFinger"]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0.02 )
-shape = SubResource( 16 )
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0.03 )
+shape = SubResource( 26 )
 
 [node name="MeshInstance" type="MeshInstance" parent="LorienHandControls/RightIndexFinger/CollisionShape"]
 mesh = SubResource( 19 )
 material/0 = SubResource( 20 )
 
+[node name="ActiveMarker" type="MeshInstance" parent="LorienHandControls/RightIndexFinger"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0.06 )
+visible = false
+mesh = SubResource( 27 )
+skeleton = NodePath("../CollisionShape/MeshInstance")
+material/0 = SubResource( 28 )
+
 [node name="RigidBody" type="RigidBody" parent="LorienHandControls"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.287247, 1.3112, -0.623899 )
-collision_layer = 1025
-collision_mask = 1024
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.287, 1.26401, -1.04355 )
+collision_layer = 1024
+collision_mask = 1025
 
 [node name="CollisionShape" type="CollisionShape" parent="LorienHandControls/RigidBody"]
 shape = SubResource( 21 )
 
 [node name="MeshInstance" type="MeshInstance" parent="LorienHandControls/RigidBody/CollisionShape"]
-mesh = SubResource( 22 )
+mesh = SubResource( 25 )
 
-[node name="AreaResetpos" type="Area" parent="LorienHandControls"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1789, -0.40799 )
-collision_layer = 0
-collision_mask = 1024
-
-[node name="CollisionShape" type="CollisionShape" parent="LorienHandControls/AreaResetpos"]
-shape = SubResource( 21 )
-
-[node name="MeshInstance" type="MeshInstance" parent="LorienHandControls/AreaResetpos/CollisionShape"]
-mesh = SubResource( 22 )
-
-[connection signal="body_entered" from="LorienHandControls/AreaResetpos" to="LorienHandControls" method="_on_AreaResetpos_body_entered"]
-[connection signal="body_exited" from="LorienHandControls/AreaResetpos" to="LorienHandControls" method="_on_Area_body_exited"]
+[connection signal="body_entered" from="LorienHandControls/ViewportLorienCanvas/AreaResetpos" to="LorienHandControls" method="_on_AreaResetpos_body_entered"]
+[connection signal="body_entered" from="LorienHandControls/ViewportLorienCanvas/AreaZoom" to="LorienHandControls" method="_on_AreaZoom_body_entered"]
 
 [editable path="FPController"]
