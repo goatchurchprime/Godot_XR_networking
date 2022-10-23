@@ -2,10 +2,6 @@ extends Node
 
 onready var arvrorigin = get_node("/root/Main/FPController")
 onready var arvrcamera = arvrorigin.get_node("ARVRCamera")
-onready var Left_hand = arvrorigin.get_node_or_null("Left_hand")
-onready var Right_hand = arvrorigin.get_node_or_null("Right_hand")
-onready var XRPoseLeftHand = arvrorigin.get_node_or_null("Left_hand/XRPose")
-onready var XRPoseRightHand = arvrorigin.get_node_or_null("Right_hand/XRPose")
 
 const horizontal_speed = 2.0
 func _process(delta):

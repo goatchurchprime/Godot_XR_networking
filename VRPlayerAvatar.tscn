@@ -81,5 +81,55 @@ material/0 = SubResource( 7 )
 [node name="ovr_right_hand_model" parent="." instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, -1, 4.37114e-08, 0, -4.37114e-08, -1, 1, -4.37114e-08, 1.91069e-15, 0.337105, -0.42626, -0.236405 )
 
+[node name="BoneAttachment" parent="ovr_right_hand_model/ArmatureRight/Skeleton" index="0"]
+transform = Transform( 0.575561, 0.67335, 0.464036, -0.739133, 0.671136, -0.0570911, -0.349873, -0.310125, 0.883975, -8.31233, 6.69126, 4.37118 )
+
+[node name="BoneAttachment2" parent="ovr_right_hand_model/ArmatureRight/Skeleton" index="1"]
+transform = Transform( 0.707382, 0.518598, 0.480278, -0.649744, 0.744603, 0.152969, -0.278287, -0.420265, 0.863674, -5.92187, 4.49557, 3.43076 )
+
+[node name="BoneAttachment3" parent="ovr_right_hand_model/ArmatureRight/Skeleton" index="2"]
+transform = Transform( 0.715415, 0.480301, 0.507437, -0.520631, 0.850801, -0.0712855, -0.465966, -0.213189, 0.858735, -3.59584, 2.80285, 1.91577 )
+
+[node name="BoneAttachment4" parent="ovr_right_hand_model/ArmatureRight/Skeleton" index="3"]
+transform = Transform( 0.989329, -0.102457, -0.103592, 0.101712, -0.023419, 0.994538, -0.104323, -0.994462, -0.012748, -9.56466, 0.172591, 0.254316 )
+
+[node name="BoneAttachment5" parent="ovr_right_hand_model/ArmatureRight/Skeleton" index="4"]
+transform = Transform( 1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0 )
+
+[node name="BoneAttachment6" parent="ovr_right_hand_model/ArmatureRight/Skeleton" index="5"]
+transform = Transform( 1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0 )
+
+[node name="BoneAttachment7" parent="ovr_right_hand_model/ArmatureRight/Skeleton" index="6"]
+transform = Transform( 1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0 )
+
+[node name="BoneAttachment8" parent="ovr_right_hand_model/ArmatureRight/Skeleton" index="7"]
+transform = Transform( 1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0 )
+
+[node name="BoneAttachment9" parent="ovr_right_hand_model/ArmatureRight/Skeleton" index="8"]
+transform = Transform( 1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0 )
+
+[node name="BoneAttachment10" parent="ovr_right_hand_model/ArmatureRight/Skeleton" index="9"]
+transform = Transform( 1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0 )
+
+[node name="BoneAttachment11" parent="ovr_right_hand_model/ArmatureRight/Skeleton" index="10"]
+transform = Transform( 1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0 )
+
+[node name="BoneAttachment12" parent="ovr_right_hand_model/ArmatureRight/Skeleton" index="11"]
+transform = Transform( 1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0 )
+
+[node name="BoneAttachment13" parent="ovr_right_hand_model/ArmatureRight/Skeleton" index="12"]
+transform = Transform( 1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0 )
+
+[node name="BoneAttachment14" parent="ovr_right_hand_model/ArmatureRight/Skeleton" index="13"]
+transform = Transform( 1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0 )
+
+[node name="BoneAttachment15" parent="ovr_right_hand_model/ArmatureRight/Skeleton" index="14"]
+transform = Transform( 1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0 )
+
+[node name="BoneAttachment16" parent="ovr_right_hand_model/ArmatureRight/Skeleton" index="15"]
+transform = Transform( 1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0, 0 )
+
 [node name="ovr_left_hand_model" parent="." instance=ExtResource( 5 )]
 transform = Transform( -4.37114e-08, -1, -4.37114e-08, 0, -4.37114e-08, 1, -1, 4.37114e-08, 1.91069e-15, -0.263509, -0.42626, -0.236405 )
+
+[editable path="ovr_right_hand_model"]

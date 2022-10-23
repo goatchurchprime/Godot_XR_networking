@@ -6,12 +6,6 @@ var labeltext = "unknown"
 
 onready var LeftHandController = arvrorigin.get_node("LeftHandController")
 onready var RightHandController = arvrorigin.get_node("RightHandController")
-onready var Left_hand = arvrorigin.get_node_or_null("Left_hand")
-onready var Right_hand = arvrorigin.get_node_or_null("Right_hand")
-onready var Configuration = arvrorigin.get_node_or_null("Configuration")
-onready var XRPoseLeftHand = arvrorigin.get_node_or_null("Left_hand/XRPose")
-onready var XRPoseRightHand = arvrorigin.get_node_or_null("Right_hand/XRPose")
-
 onready var OpenXRallhandsdata = arvrorigin.get_node_or_null("OpenXRallhandsdata")
 
 const TRACKING_CONFIDENCE_HIGH = 2
@@ -22,9 +16,7 @@ func _ready():
 	ovrhandrightrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata($ovr_right_hand_model)
 	ovrhandleftrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata($ovr_left_hand_model)
 	
-
 func processavatarhand(palm_joint_confidence, joint_transforms, ovr_LR_hand_model, ovrhandLRrestdata, ControllerLR, LRHandController):
-	var handtrackingavailable = (arvrorigin.interface != null)
 	if palm_joint_confidence != -1:
 		ControllerLR.visible = false
 		var h = OpenXRtrackedhand_funcs.gethandjointpositionsL(joint_transforms)
@@ -44,8 +36,6 @@ func processavatarhand(palm_joint_confidence, joint_transforms, ovr_LR_hand_mode
 	else:
 		ovr_LR_hand_model.visible = false
 		ControllerLR.visible = false
-
-
 
 func PAV_processlocalavatarposition(delta):
 	transform = arvrorigin.transform

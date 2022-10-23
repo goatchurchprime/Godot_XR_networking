@@ -4,11 +4,7 @@ onready var arvrorigin = get_node("/root/Main/FPController")
 var labeltext = "unknown"
 onready var LeftHandController = arvrorigin.get_node("LeftHandController")
 onready var RightHandController = arvrorigin.get_node("RightHandController")
-onready var Left_hand = arvrorigin.get_node_or_null("Left_hand")
-onready var Right_hand = arvrorigin.get_node_or_null("Right_hand")
-onready var Configuration = arvrorigin.get_node_or_null("Configuration")
-onready var XRPoseLeftHand = arvrorigin.get_node_or_null("Left_hand/XRPose")
-onready var XRPoseRightHand = arvrorigin.get_node_or_null("Right_hand/XRPose")
+onready var OpenXRallhandsdata = arvrorigin.get_node_or_null("OpenXRallhandsdata")
 
 const TRACKING_CONFIDENCE_HIGH = 2
 
@@ -58,22 +54,21 @@ func processbodyneckorientation(delta, vrheadcam):
 	
 	eyebodyangle = rad2deg(atan2(bonepose5basis.z.x, bonepose5basis.z.z)) if abs(bonepose5basis.z.y) < 0.8 else 0.0
 
-func processRPMavatarhand(LR_hand, ControllerLR, rpmavatarskelrestdata, LRHandController, XRPoseLRHand, bleft):
-	var di = 24 if bleft else 0
-	var handtrackingavailable = (arvrorigin.interface != null)
+
+func processRPMavatarhand(palm_joint_confidence, joint_transforms, rpmavatarskelrestdata, ControllerLR, LRHandController, bright):
 	var handtrackinglrvisible = false
-	if handtrackingavailable and is_instance_valid(LR_hand) and LR_hand.is_active():
+	var di = 0 if bright else 24
+	if palm_joint_confidence != -1:
 		ControllerLR.visible = false
-		var trackingconfidence = XRPoseLRHand.get_tracking_confidence()
-		var h = OpenXRtrackedhand_funcs.gethandjointpositions(LR_hand)
-		if trackingconfidence == TRACKING_CONFIDENCE_HIGH and h["ht1"] != Vector3.ZERO: 
+		var h = OpenXRtrackedhand_funcs.gethandjointpositionsL(joint_transforms)
+		if palm_joint_confidence == TRACKING_CONFIDENCE_HIGH and h["ht1"] != Vector3.ZERO: 
 			var rpmavatar = rpmavatarskelrestdata["rpmavatar"]
 			var skel = rpmavatarskelrestdata["skel"]
 			var skeltrans = $readyplayerme_avatar.transform * $readyplayerme_avatar/Armature.transform * $readyplayerme_avatar/Armature/Skeleton.transform
 			var skelshouldertrans = skeltrans*skel.get_bone_global_pose(33-di)
 			var skelarmrest = skelshouldertrans*rpmavatarskelrestdata[34-di]
 			var rpmhandspose = { }
-			OpenXRtrackedhand_funcs.setshapetobonesRPM(h, skelarmrest, rpmhandspose, rpmavatarskelrestdata, bleft)
+			OpenXRtrackedhand_funcs.setshapetobonesRPM(h, skelarmrest, rpmhandspose, rpmavatarskelrestdata, bright)
 			for i in range(34-di, 57-di):
 				skel.set_bone_pose(i, rpmhandspose[i])
 				if i <= 36-di:  # force arms not to change their length
@@ -94,8 +89,9 @@ func PAV_processlocalavatarposition(delta):
 	var vrheadcam = arvrorigin.get_node("ARVRCamera").transform
 	$HeadCam.transform = Transform(vrheadcam.basis, vrheadcam.origin+Vector3(0,0.5,0))
 	processbodyneckorientation(delta, vrheadcam)
-	handtrackingrightvisible = processRPMavatarhand(Right_hand, $ControllerRight, rpmavatarskelrestdata, RightHandController, XRPoseRightHand, false)
-	handtrackingleftvisible = processRPMavatarhand(Left_hand, $ControllerLeft, rpmavatarskelrestdata, LeftHandController, XRPoseLeftHand, true)
+
+	handtrackingleftvisible = processRPMavatarhand(OpenXRallhandsdata.palm_joint_confidence_L, OpenXRallhandsdata.joint_transforms_L, rpmavatarskelrestdata, $ControllerLeft, LeftHandController, false)
+	handtrackingrightvisible = processRPMavatarhand(OpenXRallhandsdata.palm_joint_confidence_L, OpenXRallhandsdata.joint_transforms_R, rpmavatarskelrestdata, $ControllerRight, RightHandController, true)
 
 func PAV_avatartoframedata():
 	var skel = rpmavatarskelrestdata["skel"]

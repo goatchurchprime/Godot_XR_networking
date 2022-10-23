@@ -24,21 +24,6 @@ export var QUESTstartupprotocol = "webrtc"
 
 
 func _ready():
-	if OS.has_feature("QUEST"):
-		if has_node("FPController/Right_hand"):
-			#$FPController/Left_hand/XRPose.action = "SkeletonBase"
-			#$FPController/Left_hand/XRPose.path = "/user/hand/left"
-			#$FPController/Right_hand/XRPose.action = "SkeletonBase"
-			$FPController/Right_hand/XRPose.path = "/user/hand/right"
-			$FPController/Right_hand.hand = 1
-			
-	else:
-		if has_node("FPController/Left_hand"):
-			$FPController/Left_hand/Wrist.set_process(false)
-			$FPController/Left_hand/Wrist.set_physics_process(false)
-		if has_node("FPController/Right_hand"):
-			$FPController/Right_hand/Wrist.set_process(false)
-			$FPController/Right_hand/Wrist.set_physics_process(false)
 	#$FPController/LeftHandController/Function_Direct_movement.nonVRkeyboard = true
 
 	if OS.has_feature("QUEST"):
@@ -63,8 +48,6 @@ func _ready():
 	$SportBall.connect("body_exited", self, "ball_body_exited")
 
 	NetworkGateway.set_process_input(false)
-#	$FPController/Left_hand/Wrist.visible = false
-#	$FPController/Right_hand/Wrist.visible = false
 
 
 func ball_body_entered(body):
@@ -121,9 +104,6 @@ func vr_left_button_pressed(button: int):
 		pass
 	if button == VR_BUTTON_4:
 		#$FPController/HandtrackingDevelopment.lefthandfingertap()
-		$FPController/Left_hand.visible = not $FPController/Left_hand.visible
-		$FPController/Right_hand.visible = not $FPController/Right_hand.visible
-
 		print("Publishing Right hand XR transforms to mqtt hand/pos")
 		$ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT.publish("hand/pos", var2str($FPController/OpenXRallhandsdata.joint_transforms_R))
 
@@ -154,7 +134,7 @@ func _physics_process(delta):
 
 
 func _process(delta):
-	if $FPController.interface != null and $FPController/Right_hand.is_active():
+	if $FPController.interface != null and $FPController/OpenXRallhandsdata.is_active_R:
 		$FPController/RightHandController/Function_pointer.active_button = VR_HANDTRACKING_INDEXTHUMB_PINCH
 	else:
 		$FPController/RightHandController/Function_pointer.active_button = VR_TRIGGER

@@ -10,14 +10,14 @@ func _ready():
 		$ViewportLorienCanvas/Viewport/InfiniteCanvas.use_project(project)
 
 	var remotetransformleftindextip = RemoteTransform.new()
-	var leftindextipnode = get_node("../FPController/Left_hand/Wrist/IndexMetacarpal/IndexProximal/IndexIntermediate/IndexDistal/IndexTip")
+	var leftindextipnode = get_node("../FPController/OpenXRallhandsdata/LeftTipJT")
 	leftindextipnode.add_child(remotetransformleftindextip)
-	remotetransformleftindextip.remote_path = NodePath("../../../../../../../../../LorienHandControls/LeftIndexFinger")
+	remotetransformleftindextip.remote_path = NodePath("../../../../LorienHandControls/LeftIndexFinger")
 
 	var remotetransformrightindextip = RemoteTransform.new()
-	var rightindextipnode = get_node("../FPController/Right_hand/Wrist/IndexMetacarpal/IndexProximal/IndexIntermediate/IndexDistal/IndexTip")
+	var rightindextipnode = get_node("../FPController/OpenXRallhandsdata/RightTipJT")
 	rightindextipnode.add_child(remotetransformrightindextip)
-	remotetransformrightindextip.remote_path = NodePath("../../../../../../../../../LorienHandControls/RightIndexFinger")
+	remotetransformrightindextip.remote_path = NodePath("../../../../LorienHandControls/RightIndexFinger")
 
 	$ViewportLorienCanvas/Viewport/InfiniteCanvas.enable()
 

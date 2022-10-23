@@ -173,7 +173,8 @@ static func setshapetobonesOVR(h, ovrhandrestdata):
 	return ovrhandpose
 
 
-static func setshapetobonesRPM(h, skelarmrest, rpmhandspose, rpmhandrestdata, bleft):
+static func setshapetobonesRPM(h, skelarmrest, rpmhandspose, rpmhandrestdata, bright):
+	var bleft = not bright
 	var handbasis = basisfrom(h["hi1"] - h["hwr"], h["hr1"] - h["hwr"])
 	if bleft:
 		handbasis = basisfrom(h["hr1"] - h["hwr"], h["hi1"] - h["hwr"])
