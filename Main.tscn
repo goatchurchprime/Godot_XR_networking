@@ -115,7 +115,7 @@ radial_segments = 8
 rings = 1
 
 [sub_resource type="SpatialMaterial" id=20]
-albedo_color = Color( 0.027451, 0.882353, 0, 1 )
+albedo_color = Color( 0.854902, 0, 0.882353, 1 )
 
 [sub_resource type="CubeMesh" id=25]
 size = Vector3( 0.1, 0.1, 0.1 )

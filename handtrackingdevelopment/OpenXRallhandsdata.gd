@@ -9,10 +9,15 @@ var is_active_L = false
 var is_active_R = false
 var joint_transforms_L = [ ]
 var joint_transforms_R = [ ]
-var confidence_L = 0
-var confidence_R = 0
+var palm_joint_confidence_L = -1
+var palm_joint_confidence_R = -1
 
 const XR_HAND_JOINT_COUNT_EXT = 26
+const XR_HAND_JOINTS_MOTION_RANGE_UNOBSTRUCTED_EXT = 0
+const TRACKING_CONFIDENCE_NOT_APPLICABLE = -1
+const TRACKING_CONFIDENCE_NONE = 0
+const TRACKING_CONFIDENCE_LOW = 1
+const TRACKING_CONFIDENCE_HIGH = 2
 
 func inithandposeskeletonparameters(handpalmpose, bright):
 	# for these parameters see https://github.com/GodotVR/godot_openxr/blob/master/src/gdclasses/OpenXRPose.cpp
@@ -23,7 +28,7 @@ func inithandposeskeletonparameters(handpalmpose, bright):
 	var _LR = ("_R" if bright else "_L")
 	var handskel = handpalmpose.get_child(0)
 	handskel.hand = 1 if bright else 0
-	handskel.motion_range = 0
+	handskel.motion_range = XR_HAND_JOINTS_MOTION_RANGE_UNOBSTRUCTED_EXT
 	for i in range(len(XRbone_names)):
 		handskel.add_bone(XRbone_names[i] + _LR)
 		if i >= 2:
@@ -54,31 +59,15 @@ func skel_backtoOXRjointtransforms(joint_transforms, skel):
 		joint_transforms[i] = joint_transforms[ip] * skel.get_bone_pose(i)
 	return skel.get_parent().get_tracking_confidence()
 
-var Dt = 0.0
 func _physics_process(delta):
 	is_active_L = $LeftHandPalmPose.is_active()
 	if is_active_L:
-		confidence_L = skel_backtoOXRjointtransforms(joint_transforms_L, $LeftHandPalmPose/LeftHandBlankSkeleton)
+		palm_joint_confidence_L = skel_backtoOXRjointtransforms(joint_transforms_L, $LeftHandPalmPose/LeftHandBlankSkeleton)
+	else:
+		palm_joint_confidence_L = TRACKING_CONFIDENCE_NOT_APPLICABLE
 	is_active_R = $RightHandPalmPose.is_active()
 	if is_active_R:
-		confidence_R = skel_backtoOXRjointtransforms(joint_transforms_R, $RightHandPalmPose/RightHandBlankSkeleton)
+		palm_joint_confidence_R = skel_backtoOXRjointtransforms(joint_transforms_R, $RightHandPalmPose/RightHandBlankSkeleton)
+	else:
+		palm_joint_confidence_R = TRACKING_CONFIDENCE_NOT_APPLICABLE
 	
-	Dt += delta
-	if Dt > 1.0:
-		print(is_active_L,is_active_R, " ", confidence_L, " ", confidence_R, " ", joint_transforms_L[25].origin)
-		Dt = 0.0
-
-# Notes:
-#openxr_api->transform_from_location	calls
-#TrackingConfidence _transform_from_location(const T &p_location, Transform &r_transform) {
-# these are copying from the HandTracker.joint_locations[] array of class HandTracker 	
-# this itself gets it from void XRExtHandTrackingExtensionWrapper::update_handtracking() {
-# thi callout OS function is XrResult XRExtHandTrackingExtensionWrapper::initialise_ext_hand_tracking_extension(XrInstance instance) {
-
-# once we apply the skel_tojointtransforms we get the original joint transforms 
-# from the OpenXR library.  Then we can build up and apply to our 
-# avatar rigs as we like, from the starting point.
-# first thing is to analyse the rig to try and work out its hand orientations
-# by the hook of the fingers, or some preset value
-
-# func _ready():  sethand(false)

@@ -12,6 +12,8 @@ onready var Configuration = arvrorigin.get_node_or_null("Configuration")
 onready var XRPoseLeftHand = arvrorigin.get_node_or_null("Left_hand/XRPose")
 onready var XRPoseRightHand = arvrorigin.get_node_or_null("Right_hand/XRPose")
 
+onready var OpenXRallhandsdata = arvrorigin.get_node_or_null("OpenXRallhandsdata")
+
 const TRACKING_CONFIDENCE_HIGH = 2
 
 var ovrhandrightrestdata = null
@@ -21,14 +23,12 @@ func _ready():
 	ovrhandleftrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata($ovr_left_hand_model)
 	
 
-
-func processavatarhand(LR_hand, ovr_LR_hand_model, ControllerLR, ovrhandLRrestdata, LRHandController, XRPoseLRHand):
+func processavatarhand(palm_joint_confidence, joint_transforms, ovr_LR_hand_model, ovrhandLRrestdata, ControllerLR, LRHandController):
 	var handtrackingavailable = (arvrorigin.interface != null)
-	if handtrackingavailable and is_instance_valid(LR_hand) and LR_hand.is_active():
+	if palm_joint_confidence != -1:
 		ControllerLR.visible = false
-		var trackingconfidence = XRPoseLRHand.get_tracking_confidence() # see https://github.com/GodotVR/godot_openxr/issues/221
-		var h = OpenXRtrackedhand_funcs.gethandjointpositions(LR_hand)
-		if trackingconfidence == TRACKING_CONFIDENCE_HIGH and h["ht1"] != Vector3.ZERO: 
+		var h = OpenXRtrackedhand_funcs.gethandjointpositionsL(joint_transforms)
+		if palm_joint_confidence == TRACKING_CONFIDENCE_HIGH and h["ht1"] != Vector3.ZERO: 
 			var ovrhandpose = OpenXRtrackedhand_funcs.setshapetobonesOVR(h, ovrhandLRrestdata)
 			ovr_LR_hand_model.transform = ovrhandpose["handtransform"]
 			var skel = ovrhandLRrestdata["skel"]
@@ -45,11 +45,13 @@ func processavatarhand(LR_hand, ovr_LR_hand_model, ControllerLR, ovrhandLRrestda
 		ovr_LR_hand_model.visible = false
 		ControllerLR.visible = false
 
+
+
 func PAV_processlocalavatarposition(delta):
 	transform = arvrorigin.transform
 	$HeadCam.transform = arvrorigin.get_node("ARVRCamera").transform
-	processavatarhand(Left_hand, $ovr_left_hand_model, $ControllerLeft, ovrhandleftrestdata, LeftHandController, XRPoseLeftHand)
-	processavatarhand(Right_hand, $ovr_right_hand_model, $ControllerRight, ovrhandrightrestdata, RightHandController, XRPoseRightHand)
+	processavatarhand(OpenXRallhandsdata.palm_joint_confidence_L, OpenXRallhandsdata.joint_transforms_L, $ovr_left_hand_model, ovrhandleftrestdata, $ControllerLeft, LeftHandController)
+	processavatarhand(OpenXRallhandsdata.palm_joint_confidence_R, OpenXRallhandsdata.joint_transforms_R, $ovr_right_hand_model, ovrhandrightrestdata, $ControllerRight, RightHandController)
 
 func setpaddlebody(active):
 	$ControllerRight/PaddleBody.visible = active

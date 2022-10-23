@@ -42,6 +42,13 @@ static func gethandjointpositions(hand):
 		handjointpositions[hand_joint_node_shortnames[i]] = (handtransinverse*hand.get_node(hand_joint_node_names[i]).global_transform).origin
 	return handjointpositions
 
+static func gethandjointpositionsL(joint_transforms):
+	assert (len(joint_transforms) == len(hand_joint_node_shortnames)+1)
+	var handjointpositions = { }
+	for i in range(len(hand_joint_node_names)):
+		handjointpositions[hand_joint_node_shortnames[i]] = joint_transforms[i+1].origin
+	return handjointpositions
+
 
 
 static func rotationtoalign(a, b):

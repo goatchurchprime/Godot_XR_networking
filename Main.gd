@@ -120,9 +120,13 @@ func vr_left_button_pressed(button: int):
 	if button == VR_BUTTON_AX:
 		pass
 	if button == VR_BUTTON_4:
-		$FPController/HandtrackingDevelopment.lefthandfingertap()
+		#$FPController/HandtrackingDevelopment.lefthandfingertap()
 		$FPController/Left_hand.visible = not $FPController/Left_hand.visible
 		$FPController/Right_hand.visible = not $FPController/Right_hand.visible
+
+		print("Publishing Right hand XR transforms to mqtt hand/pos")
+		$ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT.publish("hand/pos", var2str($FPController/OpenXRallhandsdata.joint_transforms_R))
+
 			
 func _input(event):
 	if event is InputEventKey and not event.echo:
