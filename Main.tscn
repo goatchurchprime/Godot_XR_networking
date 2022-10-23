@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=2]
+[gd_scene load_steps=46 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
@@ -17,6 +17,7 @@
 [ext_resource path="res://addons/godot-xr-tools/objects/Viewport_2D_in_3D.tscn" type="PackedScene" id=15]
 [ext_resource path="res://addons/godot-openxr/scenes/XRPose.tscn" type="PackedScene" id=16]
 [ext_resource path="res://LorienHandControls.gd" type="Script" id=17]
+[ext_resource path="res://handtrackingdevelopment/OpenXRallhandsdata.tscn" type="PackedScene" id=18]
 
 [sub_resource type="PlaneMesh" id=2]
 size = Vector2( 20, 20 )
@@ -121,6 +122,8 @@ size = Vector3( 0.1, 0.1, 0.1 )
 
 [node name="Main" type="Spatial"]
 script = ExtResource( 1 )
+PCstartupprotocol = "none"
+QUESTstartupprotocol = "none"
 
 [node name="FPController" parent="." instance=ExtResource( 3 )]
 
@@ -159,6 +162,8 @@ transform = Transform( 1, 2.09518e-15, 0, 1.77636e-15, 1, 0, 0, 6.51902e-15, 1, 
 
 [node name="HandtrackingDevelopment" type="Node" parent="FPController"]
 script = ExtResource( 2 )
+
+[node name="OpenXRallhandsdata" parent="FPController" instance=ExtResource( 18 )]
 
 [node name="Floor" type="StaticBody" parent="."]
 
