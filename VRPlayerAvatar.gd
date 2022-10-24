@@ -12,15 +12,25 @@ const TRACKING_CONFIDENCE_HIGH = 2
 
 var ovrhandrightrestdata = null
 var ovrhandleftrestdata = null
+var lowpolylefthandrestdata = null
+var lowpolyrighthandrestdata = null
+var Dovrhands = false
+var Dlphands = true
+
 func _ready():
 	ovrhandrightrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata($ovr_right_hand_model)
 	ovrhandleftrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata($ovr_left_hand_model)
+	lowpolyrighthandrestdata = OpenXRtrackedhand_funcs.getlowpolyhandrestdata($RightHand)
+	lowpolylefthandrestdata = OpenXRtrackedhand_funcs.getlowpolyhandrestdata($LeftHand)
+	assert ($LeftHand.get_script() == null)
+	assert ($RightHand.get_script() == null)
+	assert (not $LeftHand/AnimationTree.active and not $RightHand/AnimationTree.active)
 	
-func processavatarhand(palm_joint_confidence, joint_transforms, ovr_LR_hand_model, ovrhandLRrestdata, ControllerLR, LRHandController):
+func processavatarhand(palm_joint_confidence, joint_transforms, ovr_LR_hand_model, ovrhandLRrestdata, LRHand, lowpolyhandrestdata, ControllerLR, LRHandController, bright):
 	if palm_joint_confidence != -1:
 		ControllerLR.visible = false
 		var h = OpenXRtrackedhand_funcs.gethandjointpositionsL(joint_transforms)
-		if palm_joint_confidence == TRACKING_CONFIDENCE_HIGH and h["ht1"] != Vector3.ZERO: 
+		if Dovrhands and palm_joint_confidence == TRACKING_CONFIDENCE_HIGH: 
 			var ovrhandpose = OpenXRtrackedhand_funcs.setshapetobonesOVR(h, ovrhandLRrestdata)
 			ovr_LR_hand_model.transform = ovrhandpose["handtransform"]
 			var skel = ovrhandLRrestdata["skel"]
@@ -29,6 +39,17 @@ func processavatarhand(palm_joint_confidence, joint_transforms, ovr_LR_hand_mode
 			ovr_LR_hand_model.visible = true
 		else:
 			ovr_LR_hand_model.visible = false
+
+		if Dlphands and palm_joint_confidence == TRACKING_CONFIDENCE_HIGH: 
+			var lowpolyhandpose = OpenXRtrackedhand_funcs.setshapetobonesLowPoly(joint_transforms, lowpolyhandrestdata, bright)
+			LRHand.transform = lowpolyhandpose["handtransform"]
+			var skel = lowpolyhandrestdata["skel"]
+			for i in range(20):
+				skel.set_bone_pose(i, lowpolyhandpose[i])
+			LRHand.visible = true
+		else:
+			LRHand.visible = false
+
 	elif LRHandController.get_is_active():
 		ovr_LR_hand_model.visible = false
 		ControllerLR.transform = LRHandController.transform
@@ -40,8 +61,8 @@ func processavatarhand(palm_joint_confidence, joint_transforms, ovr_LR_hand_mode
 func PAV_processlocalavatarposition(delta):
 	transform = arvrorigin.transform
 	$HeadCam.transform = arvrorigin.get_node("ARVRCamera").transform
-	processavatarhand(OpenXRallhandsdata.palm_joint_confidence_L, OpenXRallhandsdata.joint_transforms_L, $ovr_left_hand_model, ovrhandleftrestdata, $ControllerLeft, LeftHandController)
-	processavatarhand(OpenXRallhandsdata.palm_joint_confidence_R, OpenXRallhandsdata.joint_transforms_R, $ovr_right_hand_model, ovrhandrightrestdata, $ControllerRight, RightHandController)
+	processavatarhand(OpenXRallhandsdata.palm_joint_confidence_L, OpenXRallhandsdata.joint_transforms_L, $ovr_left_hand_model, ovrhandleftrestdata, $LeftHand, lowpolylefthandrestdata, $ControllerLeft, LeftHandController, false)
+	processavatarhand(OpenXRallhandsdata.palm_joint_confidence_R, OpenXRallhandsdata.joint_transforms_R, $ovr_right_hand_model, ovrhandrightrestdata, $RightHand, lowpolyrighthandrestdata, $ControllerRight, RightHandController, true)
 
 func setpaddlebody(active):
 	$ControllerRight/PaddleBody.visible = active

@@ -61,7 +61,7 @@ func processRPMavatarhand(palm_joint_confidence, joint_transforms, rpmavatarskel
 	if palm_joint_confidence != -1:
 		ControllerLR.visible = false
 		var h = OpenXRtrackedhand_funcs.gethandjointpositionsL(joint_transforms)
-		if palm_joint_confidence == TRACKING_CONFIDENCE_HIGH and h["ht1"] != Vector3.ZERO: 
+		if palm_joint_confidence == TRACKING_CONFIDENCE_HIGH: 
 			var rpmavatar = rpmavatarskelrestdata["rpmavatar"]
 			var skel = rpmavatarskelrestdata["skel"]
 			var skeltrans = $readyplayerme_avatar.transform * $readyplayerme_avatar/Armature.transform * $readyplayerme_avatar/Armature/Skeleton.transform

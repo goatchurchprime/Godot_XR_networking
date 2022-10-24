@@ -5,7 +5,7 @@ onready var ovrhandmodel = $ovr_right_hand_model
 #onready var skel = $ovr_right_hand_model/ArmatureRight/Skeleton
 onready var rpmavatar = $readyplayerme_avatar
 
-const Dapply_readyplayerme_hand = true
+const Dapply_readyplayerme_hand = false
 
 func _process(delta):
 	pass
@@ -20,33 +20,6 @@ var jointransforms2 = str2var("[ Transform( 0.0568722, 0.997616, -0.039092, -0.9
 var jointransforms3 = str2var("[ Transform( 0.0634282, -0.993399, 0.0955754, 0.996042, 0.0570382, -0.0681709, 0.0622695, 0.0995211, 0.993085, -0.0555168, 0.998378, -0.357373 ), Transform( 0.0634282, -0.993399, 0.0955754, 0.996042, 0.0570382, -0.0681709, 0.0622695, 0.0995211, 0.993085, -0.0520461, 0.995975, -0.308161 ), Transform( -0.815712, 0.0340706, -0.577454, -0.177378, -0.964906, 0.193633, -0.550591, 0.260377, 0.793129, -0.0323824, 0.974704, -0.351154 ), Transform( -0.88338, 0.00535922, -0.468628, -0.00120317, -0.999957, -0.00916749, -0.468657, -0.00753447, 0.883348, -0.0130018, 0.968205, -0.377773 ), Transform( -0.815848, 0.328598, -0.475832, -0.131924, -0.906924, -0.400106, -0.563018, -0.263652, 0.783262, 0.00334567, 0.968525, -0.408588 ), Transform( -0.815848, 0.328598, -0.475832, -0.131924, -0.906924, -0.400106, -0.563018, -0.263652, 0.783262, 0.0152082, 0.977628, -0.429139 ), Transform( 0.0634282, -0.993399, 0.0955754, 0.996042, 0.0570382, -0.0681709, 0.0622694, 0.0995211, 0.993085, -0.0429163, 0.981761, -0.349793 ), Transform( -0.0101328, -0.84282, -0.5381, 0.985753, 0.0819322, -0.146892, 0.167891, -0.531923, 0.829983, -0.0555563, 0.978085, -0.408836 ), Transform( 0.0247917, -0.231541, -0.972509, 0.978265, 0.205954, -0.0240966, 0.205872, -0.950774, 0.231615, -0.034489, 0.983836, -0.441331 ), Transform( -0.0188001, 0.0452657, -0.998798, 0.969811, 0.243751, -0.00720771, 0.243132, -0.968781, -0.0484818, -0.0100907, 0.98444, -0.447141 ), Transform( -0.0188001, 0.0452657, -0.998798, 0.969811, 0.243751, -0.00720775, 0.243132, -0.968781, -0.0484817, 0.0130088, 0.98516, -0.446973 ), Transform( 0.0634282, -0.993399, 0.0955754, 0.996042, 0.0570382, -0.0681709, 0.0622694, 0.0995211, 0.993085, -0.0456384, 0.998505, -0.346133 ), Transform( 0.0908061, -0.951679, -0.293362, 0.93566, 0.182404, -0.302107, 0.341019, -0.247054, 0.907012, -0.0589876, 1.00078, -0.406584 ), Transform( 0.110386, -0.740131, -0.66334, 0.92842, 0.315014, -0.196984, 0.354755, -0.594114, 0.721926, -0.0459881, 1.01417, -0.446776 ), Transform( 0.181654, -0.642287, -0.744627, 0.892475, 0.425633, -0.149413, 0.412904, -0.63742, 0.650543, -0.0271236, 1.01977, -0.467307 ), Transform( 0.181654, -0.642287, -0.744627, 0.892475, 0.425633, -0.149413, 0.412904, -0.63742, 0.650543, -0.00863028, 1.0244, -0.484688 ), Transform( 0.0634282, -0.993399, 0.0955754, 0.996042, 0.0570382, -0.0681709, 0.0622694, 0.0995211, 0.993085, -0.0483265, 1.01348, -0.343465 ), Transform( 0.173889, -0.96557, -0.193489, 0.839972, 0.247987, -0.482648, 0.514013, -0.0785985, 0.854174, -0.0529575, 1.01979, -0.398633 ), Transform( 0.247053, -0.721639, -0.646685, 0.813658, 0.516921, -0.265993, 0.526236, -0.460466, 0.714875, -0.0451687, 1.03922, -0.433017 ), Transform( 0.29998, -0.594921, -0.745709, 0.815732, 0.565244, -0.122799, 0.494563, -0.571462, 0.654858, -0.0274295, 1.04651, -0.452627 ), Transform( 0.29998, -0.594921, -0.745709, 0.815732, 0.565244, -0.122799, 0.494563, -0.571462, 0.654858, -0.00961157, 1.05075, -0.469888 ), Transform( 0.475273, -0.879655, -0.0179547, 0.829807, 0.454937, -0.323191, 0.292464, 0.138705, 0.946164, -0.0442423, 1.02146, -0.342581 ), Transform( 0.246481, -0.958103, -0.145895, 0.619519, 0.271531, -0.736524, 0.745281, 0.0911544, 0.66049, -0.0433964, 1.03669, -0.387168 ), Transform( 0.329488, -0.660259, -0.674904, 0.517153, 0.72426, -0.45607, 0.789931, -0.198759, 0.58009, -0.0387697, 1.06005, -0.408114 ), Transform( 0.392193, -0.682388, -0.616873, 0.561594, 0.708741, -0.426964, 0.728558, -0.17898, 0.661188, -0.0246191, 1.06961, -0.420276 ), Transform( 0.392193, -0.682388, -0.616873, 0.561594, 0.708741, -0.426964, 0.728558, -0.17898, 0.661188, -0.0116157, 1.08002, -0.435649 ) ]")
 var jointtransforms = [jointransforms1,jointransforms2,jointransforms3]
 
-var hand_joint_node_names = [
-	"Wrist",
-	"Wrist/ThumbMetacarpal",
-	"Wrist/ThumbMetacarpal/ThumbProximal",
-	"Wrist/ThumbMetacarpal/ThumbProximal/ThumbDistal",
-	"Wrist/ThumbMetacarpal/ThumbProximal/ThumbDistal/ThumbTip",
-	"Wrist/IndexMetacarpal",
-	"Wrist/IndexMetacarpal/IndexProximal",
-	"Wrist/IndexMetacarpal/IndexProximal/IndexIntermediate",
-	"Wrist/IndexMetacarpal/IndexProximal/IndexIntermediate/IndexDistal",
-	"Wrist/IndexMetacarpal/IndexProximal/IndexIntermediate/IndexDistal/IndexTip",
-	"Wrist/MiddleMetacarpal",
-	"Wrist/MiddleMetacarpal/MiddleProximal",
-	"Wrist/MiddleMetacarpal/MiddleProximal/MiddleIntermediate",
-	"Wrist/MiddleMetacarpal/MiddleProximal/MiddleIntermediate/MiddleDistal",
-	"Wrist/MiddleMetacarpal/MiddleProximal/MiddleIntermediate/MiddleDistal/MiddleTip",
-	"Wrist/RingMetacarpal",
-	"Wrist/RingMetacarpal/RingProximal",
-	"Wrist/RingMetacarpal/RingProximal/RingIntermediate",
-	"Wrist/RingMetacarpal/RingProximal/RingIntermediate/RingDistal",
-	"Wrist/RingMetacarpal/RingProximal/RingIntermediate/RingDistal/RingTip",
-	"Wrist/LittleMetacarpal",
-	"Wrist/LittleMetacarpal/LittleProximal",
-	"Wrist/LittleMetacarpal/LittleProximal/LittleIntermediate",
-	"Wrist/LittleMetacarpal/LittleProximal/LittleIntermediate/LittleDistal",
-	"Wrist/LittleMetacarpal/LittleProximal/LittleIntermediate/LittleDistal/LittleTip"
-]
 var hand_joint_node_shortnames = [ "hwr", 
 	"ht0", "ht1", "ht2", "ht3",
 	"hi0", "hi1", "hi2", "hi3", "hi4", 
@@ -82,9 +55,11 @@ func applyjointpose(jointtransform):
 	sethandposfromnodes()
 	
 var ovrhandrestdata = null
+var lowpolyhandrestdata = null
 var rpmavatarhandrestdata = null
 func _ready():
 	ovrhandrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata(ovrhandmodel)
+	lowpolyhandrestdata = OpenXRtrackedhand_funcs.getlowpolyhandrestdata($RightHand)
 	rpmavatarhandrestdata = OpenXRtrackedhand_funcs.getrpmhandrestdata(rpmavatar)
 
 	var mi = $quickjointnodes.get_child(0)
@@ -96,12 +71,37 @@ func _ready():
 
 # (A.basis, A.origin)*(B.basis, B.origin) = (A.basis*B.basis, A.origin + A.basis*B.origin)
 func sethandposfromnodes():
-	#var h = OpenXRtrackedhand_funcs.gethandjointpositions($Right_hand)
-	var h = OpenXRtrackedhand_funcs.gethandjointpositionsL(jointtransforms[0])
-
+	var joint_transforms = jointtransforms[0]
+	var h = OpenXRtrackedhand_funcs.gethandjointpositionsL(joint_transforms)
+	
 	#$MeshInstance_marker2.global_transform = $Right_hand/Wrist/ThumbMetacarpal/ThumbProximal/ThumbDistal/ThumbTip.global_transform
 #	$MeshInstance_marker2.global_transform = $Right_hand/Wrist/ThumbMetacarpal/ThumbProximal/ThumbDistal.global_transform
 	$MeshInstance_marker2.global_transform.origin = h["ht3"]
+
+	if $RightHand.visible:
+		var lowpolyhandpose = OpenXRtrackedhand_funcs.setshapetobonesLowPoly(joint_transforms, lowpolyhandrestdata)
+		var skel = lowpolyhandrestdata["skel"]
+
+		print("sdfsf")
+		print(skel.get_bone_rest(0)*skel.get_bone_pose(0))
+		print(skel.get_bone_global_pose(0))
+		print(skel.get_bone_rest(0)*skel.get_bone_pose(0)*skel.get_bone_rest(4)*skel.get_bone_pose(4))
+		print(skel.get_bone_global_pose(4))
+
+		for i in range(20):
+			skel.set_bone_pose(i, lowpolyhandpose[i])
+		print(skel.get_bone_pose(4))
+		print(lowpolyhandpose[4])
+		print("ggg")
+		print(skel.get_bone_rest(0)*skel.get_bone_pose(0)*skel.get_bone_rest(4)*skel.get_bone_pose(4))
+		print(skel.get_bone_global_pose(4))
+
+		$RightHand.transform = lowpolyhandpose["handtransform"]
+		$MeshInstance_marker.global_transform = skel.global_transform*skel.get_bone_global_pose(6)
+		
+#		$MeshInstance_marker.global_transform = skel.global_transform*skel.get_bone_global_pose(4)
+		$MeshInstance_marker/MeshInstance_marker.scale = Vector3(0.1,0.1,1)
+		return 		
 
 	if Dapply_readyplayerme_hand:
 		var rpmavatar = rpmavatarhandrestdata["rpmavatar"]
@@ -116,7 +116,7 @@ func sethandposfromnodes():
 		#var skelrightarmgtrans = skel.global_transform*skel.get_bone_global_pose(34)
 
 		var rpmhandspose = { }
-		OpenXRtrackedhand_funcs.setshapetobonesRPM(h, skelrightarmrest, rpmhandspose, rpmavatarhandrestdata, false)
+		OpenXRtrackedhand_funcs.setshapetobonesRPM(h, skelrightarmrest, rpmhandspose, rpmavatarhandrestdata, true)
 		for i in range(34, 57):
 			skel.set_bone_pose(i, rpmhandspose[i])
 			skel.set_bone_pose(i, Transform(rpmhandspose[i].basis))

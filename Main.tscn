@@ -126,7 +126,7 @@ size = Vector3( 0.1, 0.1, 0.1 )
 
 [node name="Main" type="Spatial"]
 script = ExtResource( 1 )
-PCstartupprotocol = "none"
+webrtcroomname = "lettuce"
 QUESTstartupprotocol = "none"
 
 [node name="FPController" parent="." instance=ExtResource( 3 )]
@@ -253,6 +253,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.86959, 0 )
 shape = SubResource( 10 )
 
 [node name="MeshInstance" type="MeshInstance" parent="Wall3/CollisionShape"]
+visible = false
 use_in_baked_light = true
 mesh = SubResource( 11 )
 material/0 = SubResource( 14 )
@@ -271,13 +272,14 @@ extents = Vector3( 12, 10, 13 )
 script = ExtResource( 17 )
 
 [node name="ViewportLorienCanvas" parent="LorienHandControls" instance=ExtResource( 15 )]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.205814, 0.758805, -0.772114 )
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.206, 0.945178, -0.476 )
 screen_size = Vector2( 1.5, 1 )
 viewport_size = Vector2( 600, 400 )
 scene = ExtResource( 7 )
 collision_layer = 1024
 
 [node name="AreaResetpos" type="Area" parent="LorienHandControls/ViewportLorienCanvas"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.279874, 1.19209e-07 )
 collision_layer = 0
 collision_mask = 1024
 
@@ -289,7 +291,7 @@ mesh = SubResource( 22 )
 material/0 = SubResource( 23 )
 
 [node name="AreaZoom" type="Area" parent="LorienHandControls/ViewportLorienCanvas"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.175568, 0.182592, -1.19209e-07 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.175568, -0.27263, 0 )
 collision_layer = 0
 collision_mask = 1024
 

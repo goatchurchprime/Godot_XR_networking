@@ -86,6 +86,8 @@ func skel_backtoOXRjointtransforms(joint_transforms, skel):
 	for i in range(2, XR_HAND_JOINT_COUNT_EXT):
 		var ip = boneparentsToWrist[i]
 		joint_transforms[i] = joint_transforms[ip] * skel.get_bone_pose(i)
+	if joint_transforms[XR_HAND_JOINT_THUMB_PROXIMAL_EXT].origin == Vector3.ZERO:
+		return TRACKING_CONFIDENCE_NONE
 	return skel.get_parent().get_tracking_confidence()
 
 func _physics_process(delta):
