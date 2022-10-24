@@ -8,7 +8,7 @@
 [ext_resource path="res://addons/godot-xr-tools/functions/Function_pointer.tscn" type="PackedScene" id=6]
 [ext_resource path="res://addons/LorienInfiniteCanvas/InfiniteCanvas.tscn" type="PackedScene" id=7]
 [ext_resource path="res://addons/godot-xr-tools/functions/Function_Turn_movement.tscn" type="PackedScene" id=8]
-[ext_resource path="res://RPMPlayerAvatar.tscn" type="PackedScene" id=9]
+[ext_resource path="res://LPVRPlayerAvatar.tscn" type="PackedScene" id=9]
 [ext_resource path="res://addons/player-networking/NetworkGateway.tscn" type="PackedScene" id=11]
 [ext_resource path="res://addons/godot-xr-tools/objects/Object_pickable.gd" type="Script" id=12]
 [ext_resource path="res://click04.wav" type="AudioStream" id=14]
@@ -148,6 +148,7 @@ visible = true
 
 [node name="Function_pointer" parent="FPController/RightHandController" index="0" instance=ExtResource( 6 )]
 show_target = true
+collision_mask = 523263
 
 [node name="Function_Turn_movement" parent="FPController/RightHandController" index="1" instance=ExtResource( 8 )]
 step_turn_angle = 30.0
@@ -185,7 +186,7 @@ scene = ExtResource( 11 )
 
 [node name="Players" type="Spatial" parent="."]
 
-[node name="RPMPlayerAvatar" parent="Players" instance=ExtResource( 9 )]
+[node name="LPVRPlayerAvatar" parent="Players" instance=ExtResource( 9 )]
 
 [node name="SportBall" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.54476, 1.91887, -4.03967 )
