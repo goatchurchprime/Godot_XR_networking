@@ -48,7 +48,8 @@ func _ready():
 	$SportBall.connect("body_exited", self, "ball_body_exited")
 
 	NetworkGateway.set_process_input(false)
-
+	if webrtcroomname:
+		NetworkGateway.get_node("MQTTsignalling/roomname").text = webrtcroomname
 
 func ball_body_entered(body):
 	#print("ball_body_entered ", body)
