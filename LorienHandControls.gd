@@ -1,5 +1,6 @@
 extends Spatial
 
+onready var OpenXRallhandsdata = get_node("../FPController/OpenXRallhandsdata")
 
 func _ready():
 	if has_node("ViewportLorienCanvas"):
@@ -10,12 +11,12 @@ func _ready():
 		$ViewportLorienCanvas/Viewport/InfiniteCanvas.use_project(project)
 
 	var remotetransformleftindextip = RemoteTransform.new()
-	var leftindextipnode = get_node("../FPController/OpenXRallhandsdata/LeftTipJT")
+	var leftindextipnode = OpenXRallhandsdata.get_node("LeftTipJT")
 	leftindextipnode.add_child(remotetransformleftindextip)
 	remotetransformleftindextip.remote_path = NodePath("../../../../LorienHandControls/LeftIndexFinger")
 
 	var remotetransformrightindextip = RemoteTransform.new()
-	var rightindextipnode = get_node("../FPController/OpenXRallhandsdata/RightTipJT")
+	var rightindextipnode = OpenXRallhandsdata.get_node("RightTipJT")
 	rightindextipnode.add_child(remotetransformrightindextip)
 	remotetransformrightindextip.remote_path = NodePath("../../../../LorienHandControls/RightIndexFinger")
 
@@ -46,9 +47,22 @@ var indexfingerActive = false
 var LvpfingerposPrev = Vector2(0,0)
 var LindexfingerActive = false
 
-func _process(delta):
+func detecthandintent():
+	var bb = OpenXRallhandsdata.boundingbox_R
+	if bb:
+		var Lcanvaspos = $ViewportLorienCanvas.transform.origin
+		if abs(bb.position.y - Lcanvaspos.y) < activefingerheight and bb.size.x < 0.08  and bb.size.y > 0.09:
+			$FistPlate.translation = Vector3(bb.position.x + bb.size.x*0.5, bb.position.y, bb.position.z + bb.size.z*0.5)
+			$FistPlate.visible = true
+		else:
+			$FistPlate.visible = false
+	else:
+		$FistPlate.visible = false
+		
+func _physics_process(delta):
 	var p_at = $RightIndexFinger.transform.origin
 	var indexfingerpos = $ViewportLorienCanvas.transform.xform_inv(p_at)
+	detecthandintent()
 
 	if indexfingerpos.z > -activefingerheight and indexfingerpos.z < activefingerheight:
 		var screen_size = $ViewportLorienCanvas.screen_size
@@ -69,7 +83,7 @@ func _process(delta):
 			$RightIndexFinger/ActiveMarker.visible = true
 			
 		var vpfingervec = vpfingerpos - vpfingerposPrev 
-		if vpfingervec.length() > 0.001:
+		if vpfingervec.length() > 0.004:
 			var event = InputEventMouseMotion.new()
 			event.set_position(vpfingerpos)
 			event.set_global_position(vpfingerpos)

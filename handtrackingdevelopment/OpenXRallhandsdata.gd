@@ -7,6 +7,8 @@ var joint_transforms_L = [ ]
 var joint_transforms_R = [ ]
 var palm_joint_confidence_L = -1
 var palm_joint_confidence_R = -1
+var boundingbox_L = null
+var boundingbox_R = null
 
 const XR_HAND_JOINT_COUNT_EXT = 26
 const XR_HAND_JOINTS_MOTION_RANGE_UNOBSTRUCTED_EXT = 0
@@ -90,6 +92,24 @@ func skel_backtoOXRjointtransforms(joint_transforms, skel):
 		return TRACKING_CONFIDENCE_NONE
 	return skel.get_parent().get_tracking_confidence()
 
+func calcboundingbox(joint_transforms):
+	var p0 = joint_transforms[0].origin
+	var xlo = p0.x
+	var xhi = xlo
+	var ylo = p0.y
+	var yhi = ylo
+	var zlo = p0.z
+	var zhi = zlo
+	for i in range(1, XR_HAND_JOINT_COUNT_EXT):
+		var p = joint_transforms[i].origin
+		if   p.x < xlo:  xlo = p.x
+		elif p.x > xhi:  xhi = p.x
+		if   p.y < ylo:  ylo = p.y
+		elif p.y > yhi:  yhi = p.y
+		if   p.z < zlo:  zlo = p.z
+		elif p.z > zhi:  zhi = p.z
+	return AABB(Vector3(xlo, ylo, zlo), Vector3(xhi-xlo, yhi-ylo, zhi-zlo))
+
 func _physics_process(delta):
 	is_active_L = $LeftHandPalmPose.is_active()
 	is_active_R = $RightHandPalmPose.is_active()
@@ -97,4 +117,5 @@ func _physics_process(delta):
 	palm_joint_confidence_R = skel_backtoOXRjointtransforms(joint_transforms_R, $RightHandPalmPose/RightHandBlankSkeleton) if is_active_R else TRACKING_CONFIDENCE_NOT_APPLICABLE
 	$LeftTipJT.transform = joint_transforms_L[XR_HAND_JOINT_INDEX_TIP_EXT]
 	$RightTipJT.transform = joint_transforms_R[XR_HAND_JOINT_INDEX_TIP_EXT]
-	
+	boundingbox_L = calcboundingbox(joint_transforms_L)
+	boundingbox_R = calcboundingbox(joint_transforms_R)

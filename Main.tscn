@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=2]
+[gd_scene load_steps=47 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
@@ -123,6 +123,13 @@ albedo_color = Color( 0.854902, 0, 0.882353, 1 )
 
 [sub_resource type="CubeMesh" id=25]
 size = Vector3( 0.1, 0.1, 0.1 )
+
+[sub_resource type="CubeMesh" id=31]
+size = Vector3( 0.08, 0.02, 0.09 )
+
+[sub_resource type="SpatialMaterial" id=32]
+flags_transparent = true
+albedo_color = Color( 0.929412, 0.87451, 0.431373, 0.509804 )
 
 [node name="Main" type="Spatial"]
 script = ExtResource( 1 )
@@ -355,6 +362,11 @@ shape = SubResource( 21 )
 
 [node name="MeshInstance" type="MeshInstance" parent="LorienHandControls/RigidBody/CollisionShape"]
 mesh = SubResource( 25 )
+
+[node name="FistPlate" type="MeshInstance" parent="LorienHandControls"]
+visible = false
+mesh = SubResource( 31 )
+material/0 = SubResource( 32 )
 
 [connection signal="body_entered" from="LorienHandControls/ViewportLorienCanvas/AreaResetpos" to="LorienHandControls" method="_on_AreaResetpos_body_entered"]
 [connection signal="body_entered" from="LorienHandControls/ViewportLorienCanvas/AreaZoom" to="LorienHandControls" method="_on_AreaZoom_body_entered"]
