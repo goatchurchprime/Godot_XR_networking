@@ -3,8 +3,8 @@
 [ext_resource path="res://xrassets/right_quest2_contoller.tscn" type="PackedScene" id=1]
 [ext_resource path="res://LPVRPlayerAvatar.gd" type="Script" id=2]
 [ext_resource path="res://xrassets/left_quest2_controller.tscn" type="PackedScene" id=3]
-[ext_resource path="res://addons/godot-xr-tools/assets/LeftHand.tscn" type="PackedScene" id=5]
-[ext_resource path="res://addons/godot-xr-tools/assets/RightHand.tscn" type="PackedScene" id=6]
+[ext_resource path="res://addons/godot-xr-tools/assets/left_hand.tscn" type="PackedScene" id=5]
+[ext_resource path="res://addons/godot-xr-tools/assets/right_hand.tscn" type="PackedScene" id=6]
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 0.2, 0.1, 0.1 )
@@ -79,12 +79,14 @@ mesh = SubResource( 6 )
 material/0 = SubResource( 7 )
 
 [node name="LeftHand" parent="." instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.316681, -0.235588, 0 )
 script = null
 
 [node name="AnimationTree" parent="LeftHand" index="1"]
 active = false
 
 [node name="RightHand" parent="." instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.236969, -0.264137, 0 )
 script = null
 
 [node name="AnimationTree" parent="RightHand" index="1"]
