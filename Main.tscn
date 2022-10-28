@@ -125,11 +125,11 @@ albedo_color = Color( 0.854902, 0, 0.882353, 1 )
 size = Vector3( 0.1, 0.1, 0.1 )
 
 [sub_resource type="CubeMesh" id=31]
-size = Vector3( 0.08, 0.02, 0.09 )
+size = Vector3( 1, 1, 1 )
 
 [sub_resource type="SpatialMaterial" id=32]
 flags_transparent = true
-albedo_color = Color( 0.929412, 0.87451, 0.431373, 0.509804 )
+albedo_color = Color( 0.862745, 0.752941, 0.141176, 0.313726 )
 
 [node name="Main" type="Spatial"]
 script = ExtResource( 1 )
@@ -364,7 +364,6 @@ shape = SubResource( 21 )
 mesh = SubResource( 25 )
 
 [node name="FistPlate" type="MeshInstance" parent="LorienHandControls"]
-visible = false
 mesh = SubResource( 31 )
 material/0 = SubResource( 32 )
 

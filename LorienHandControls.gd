@@ -47,17 +47,57 @@ var indexfingerActive = false
 var LvpfingerposPrev = Vector2(0,0)
 var LindexfingerActive = false
 
+var bfistdetected = false
+
+func detectfingersext(joint_transforms, vec, xrlist):
+	var lo = 0.0
+	var hi = 0.0
+	for i in range(len(xrlist)):
+		var v = vec.dot(joint_transforms[xrlist[i]].origin)
+		if i == 0 or v < lo:  lo = v
+		if i == 0 or v > hi:  hi = v
+	return hi - lo
+
+var LvpknuckleposPrev = Vector2(0,0)
 func detecthandintent():
-	var bb = OpenXRallhandsdata.boundingbox_R
-	if bb:
-		var Lcanvaspos = $ViewportLorienCanvas.transform.origin
-		if abs(bb.position.y - Lcanvaspos.y) < activefingerheight and bb.size.x < 0.08  and bb.size.y > 0.09:
-			$FistPlate.translation = Vector3(bb.position.x + bb.size.x*0.5, bb.position.y, bb.position.z + bb.size.z*0.5)
-			$FistPlate.visible = true
+	if not OpenXRallhandsdata.is_active_R:
+		return
+	var joint_transforms = OpenXRallhandsdata.joint_transforms_R
+	var palmbasis = joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_PALM_EXT].basis
+	var vheight = Vector3(0,1,0)
+	var vsidewid = palmbasis.y
+	var vvwid = palmbasis.x
+	var vext = palmbasis.z
+	var hheight = detectfingersext(joint_transforms, vheight, OpenXRallhandsdata.xrfingers)
+	var hsidewidth = detectfingersext(joint_transforms, vsidewid, OpenXRallhandsdata.xrfingers)
+	var hext = detectfingersext(joint_transforms, vext, OpenXRallhandsdata.xrfingers)
+	$FistPlate.scale = Vector3(hsidewidth, hheight, hext)
+	var littleknucklepos = joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_LITTLE_PROXIMAL_EXT].origin
+	$FistPlate.translation = Vector3(littleknucklepos.x, littleknucklepos.y + $FistPlate.scale.y*0.5, littleknucklepos.z)
+	var Lcanvaspos = $ViewportLorienCanvas.transform.origin
+	var lbfistdetected = abs(littleknucklepos.y - Lcanvaspos.y) < activefingerheight and vvwid.y < -0.8 and hheight > 0.08 and hext > 0.05
+	if lbfistdetected:
+		var Llittleknucklepos = $ViewportLorienCanvas.transform.xform_inv(littleknucklepos)
+		var screen_size = $ViewportLorienCanvas.screen_size
+		var viewport_size = $ViewportLorienCanvas.viewport_size
+		var ax = ((Llittleknucklepos.x / screen_size.x) + 0.5) * viewport_size.x
+		var ay = (0.5 - (Llittleknucklepos.y / screen_size.y)) * viewport_size.y
+		var Lvpknucklepos = Vector2(ax, ay)
+		if bfistdetected:
+			var Lvpfingervec = Lvpknucklepos - LvpknuckleposPrev 
+			if Lvpfingervec.length() > 0.001:
+				$ViewportLorienCanvas/Viewport/InfiniteCanvas/Viewport/Camera2D._do_pan(Lvpfingervec*1.1)
 		else:
-			$FistPlate.visible = false
+			$FistPlate.get_surface_material(0).albedo_color.a = 0.7
+			bfistdetected = true
+		LvpknuckleposPrev = Lvpknucklepos
+
 	else:
-		$FistPlate.visible = false
+		if bfistdetected:
+			$FistPlate.get_surface_material(0).albedo_color.a = 0.3
+			bfistdetected = false
+
+			
 		
 func _physics_process(delta):
 	var p_at = $RightIndexFinger.transform.origin
