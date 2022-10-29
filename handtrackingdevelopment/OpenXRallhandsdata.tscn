@@ -18,7 +18,3 @@ script = ExtResource( 1 )
 
 [node name="RightHandBlankSkeleton" type="Skeleton" parent="RightHandPalmPose"]
 script = ExtResource( 3 )
-
-[node name="LeftTipJT" type="Spatial" parent="."]
-
-[node name="RightTipJT" type="Spatial" parent="."]

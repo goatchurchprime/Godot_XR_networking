@@ -1,4 +1,4 @@
-[gd_scene load_steps=47 format=2]
+[gd_scene load_steps=51 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
@@ -79,9 +79,6 @@ extents = Vector3( 0.05, 0.05, 0.05 )
 [sub_resource type="CubeMesh" id=22]
 size = Vector3( 0.04, 0.04, 0.04 )
 
-[sub_resource type="SpatialMaterial" id=23]
-albedo_color = Color( 0.764706, 0.886275, 0.0627451, 1 )
-
 [sub_resource type="SpatialMaterial" id=24]
 albedo_color = Color( 0.411765, 0.0431373, 0.94902, 1 )
 
@@ -124,15 +121,43 @@ albedo_color = Color( 0.854902, 0, 0.882353, 1 )
 [sub_resource type="CubeMesh" id=25]
 size = Vector3( 0.1, 0.1, 0.1 )
 
-[sub_resource type="CubeMesh" id=31]
-size = Vector3( 1, 1, 1 )
-
-[sub_resource type="SpatialMaterial" id=32]
+[sub_resource type="SpatialMaterial" id=35]
 flags_transparent = true
-albedo_color = Color( 0.862745, 0.752941, 0.141176, 0.313726 )
+flags_unshaded = true
+flags_no_depth_test = true
+flags_do_not_receive_shadows = true
+albedo_color = Color( 0.027451, 0.607843, 0.796078, 0.764706 )
+
+[sub_resource type="CylinderMesh" id=36]
+material = SubResource( 35 )
+top_radius = 0.1
+bottom_radius = 0.1
+height = 0.01
+rings = 0
+
+[sub_resource type="SpatialMaterial" id=37]
+flags_transparent = true
+flags_unshaded = true
+flags_no_depth_test = true
+albedo_color = Color( 0.141176, 0.811765, 0.862745, 0.556863 )
+
+[sub_resource type="CubeMesh" id=33]
+size = Vector3( 0.1, 0.2, 0.15 )
+
+[sub_resource type="SpatialMaterial" id=34]
+flags_transparent = true
+albedo_color = Color( 0.862745, 0.541176, 0.141176, 0.313726 )
+
+[sub_resource type="CubeMesh" id=38]
+size = Vector3( 0.1, 0.2, 0.15 )
+
+[sub_resource type="SpatialMaterial" id=39]
+flags_transparent = true
+albedo_color = Color( 0.862745, 0.541176, 0.141176, 0.313726 )
 
 [node name="Main" type="Spatial"]
 script = ExtResource( 1 )
+PCstartupprotocol = "none"
 QUESTstartupprotocol = "none"
 
 [node name="FPController" parent="." instance=ExtResource( 3 )]
@@ -288,18 +313,6 @@ viewport_size = Vector2( 600, 400 )
 scene = ExtResource( 7 )
 collision_layer = 1024
 
-[node name="AreaResetpos" type="Area" parent="LorienHandControls/ViewportLorienCanvas"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.279874, 1.19209e-07 )
-collision_layer = 0
-collision_mask = 1024
-
-[node name="CollisionShape" type="CollisionShape" parent="LorienHandControls/ViewportLorienCanvas/AreaResetpos"]
-shape = SubResource( 21 )
-
-[node name="MeshInstance" type="MeshInstance" parent="LorienHandControls/ViewportLorienCanvas/AreaResetpos/CollisionShape"]
-mesh = SubResource( 22 )
-material/0 = SubResource( 23 )
-
 [node name="AreaZoom" type="Area" parent="LorienHandControls/ViewportLorienCanvas"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.175568, -0.27263, 0 )
 collision_layer = 0
@@ -363,11 +376,24 @@ shape = SubResource( 21 )
 [node name="MeshInstance" type="MeshInstance" parent="LorienHandControls/RigidBody/CollisionShape"]
 mesh = SubResource( 25 )
 
-[node name="FistPlate" type="MeshInstance" parent="LorienHandControls"]
-mesh = SubResource( 31 )
-material/0 = SubResource( 32 )
+[node name="flathandmarker" type="MeshInstance" parent="LorienHandControls"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.897766, 0.164688, 0 )
+visible = false
+mesh = SubResource( 36 )
+material/0 = SubResource( 37 )
 
-[connection signal="body_entered" from="LorienHandControls/ViewportLorienCanvas/AreaResetpos" to="LorienHandControls" method="_on_AreaResetpos_body_entered"]
+[node name="fistdragmarkerL" type="MeshInstance" parent="LorienHandControls"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0, 0 )
+visible = false
+mesh = SubResource( 33 )
+material/0 = SubResource( 34 )
+
+[node name="fistdragmarkerR" type="MeshInstance" parent="LorienHandControls"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0, 0 )
+visible = false
+mesh = SubResource( 38 )
+material/0 = SubResource( 39 )
+
 [connection signal="body_entered" from="LorienHandControls/ViewportLorienCanvas/AreaZoom" to="LorienHandControls" method="_on_AreaZoom_body_entered"]
 
 [editable path="FPController"]
