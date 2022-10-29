@@ -129,20 +129,24 @@ func sidehanddragdetection():
 
 	var svec = Vector2(0,0)
 
-	if flathandscoreL > 0.0:
+	if flathandscoreL >= 0.4:
 		var littleknuckleposL = FPController.global_transform*OpenXRallhandsdata.joint_transforms_L[OpenXRallhandsdata.XR_HAND_JOINT_LITTLE_PROXIMAL_EXT].origin
 		if abs(littleknuckleposL.y - $ViewportLorienCanvas.translation.y) < lorientcanvasknucklethickness:
 			svec += sidehandvector(littleknuckleposL, $fistdragmarkerL)
-		$fistdragmarkerL.get_surface_material(0).albedo_color.a = flathandscoreL
-	else:
+			$fistdragmarkerL.get_surface_material(0).albedo_color.a = flathandscoreL
+		else:
+			flathandscoreL = 0.0
+	if flathandscoreL < 0.4:
 		$fistdragmarkerL.visible = false
 
-	if flathandscoreR > 0.0:
-		var littleknuckleposR = FPController.global_transform*OpenXRallhandsdata.joint_transforms_L[OpenXRallhandsdata.XR_HAND_JOINT_LITTLE_PROXIMAL_EXT].origin
+	if flathandscoreR >= 0.4:
+		var littleknuckleposR = FPController.global_transform*OpenXRallhandsdata.joint_transforms_R[OpenXRallhandsdata.XR_HAND_JOINT_LITTLE_PROXIMAL_EXT].origin
 		if abs(littleknuckleposR.y - $ViewportLorienCanvas.translation.y) < lorientcanvasknucklethickness:
 			svec += sidehandvector(littleknuckleposR, $fistdragmarkerR)
-		$fistdragmarkerR.get_surface_material(0).albedo_color.a = flathandscoreL
-	else:
+			$fistdragmarkerR.get_surface_material(0).albedo_color.a = flathandscoreR
+		else:
+			flathandscoreR = 0.0
+	if flathandscoreR < 0.4:
 		$fistdragmarkerR.visible = false
 
 	if svec.length() > 0.001:
@@ -160,7 +164,6 @@ func _physics_process(delta):
 	
 	var p_at = $RightIndexFinger.transform.origin
 	var indexfingerpos = $ViewportLorienCanvas.transform.xform_inv(p_at)
-
 
 	if indexfingerpos.z > -activefingerheight and indexfingerpos.z < activefingerheight:
 		var screen_size = $ViewportLorienCanvas.screen_size
@@ -202,23 +205,3 @@ func _physics_process(delta):
 		indexfingerActive = false
 		$RightIndexFinger/ActiveMarker.visible = false
 
-	var Lp_at = $LeftIndexFinger.transform.origin
-	var Lindexfingerpos = $ViewportLorienCanvas.transform.xform_inv(Lp_at)
-	if  Lindexfingerpos.z > -activefingerheight and  Lindexfingerpos.z < activefingerheight:
-		var screen_size = $ViewportLorienCanvas.screen_size
-		var viewport_size = $ViewportLorienCanvas.viewport_size
-		var ax = ((Lindexfingerpos.x / screen_size.x) + 0.5) * viewport_size.x
-		var ay = (0.5 - (Lindexfingerpos.y / screen_size.y)) * viewport_size.y
-		var Lvpfingerpos = Vector2(ax, ay)
-		if LindexfingerActive:
-			var Lvpfingervec = Lvpfingerpos - LvpfingerposPrev 
-			if Lvpfingervec.length() > 0.001:
-				$ViewportLorienCanvas/Viewport/InfiniteCanvas/Viewport/Camera2D._do_pan(Lvpfingervec)
-		else:
-			LindexfingerActive = true
-			$LeftIndexFinger/ActiveMarker.visible = true
-		LvpfingerposPrev = Lvpfingerpos
-			
-	elif LindexfingerActive:
-		LindexfingerActive = false
-		$LeftIndexFinger/ActiveMarker.visible = false

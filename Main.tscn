@@ -142,14 +142,14 @@ flags_no_depth_test = true
 albedo_color = Color( 0.141176, 0.811765, 0.862745, 0.556863 )
 
 [sub_resource type="CubeMesh" id=33]
-size = Vector3( 0.1, 0.2, 0.15 )
+size = Vector3( 0.1, 0.02, 0.15 )
 
 [sub_resource type="SpatialMaterial" id=34]
 flags_transparent = true
 albedo_color = Color( 0.862745, 0.541176, 0.141176, 0.313726 )
 
 [sub_resource type="CubeMesh" id=38]
-size = Vector3( 0.1, 0.2, 0.15 )
+size = Vector3( 0.1, 0.02, 0.15 )
 
 [sub_resource type="SpatialMaterial" id=39]
 flags_transparent = true
