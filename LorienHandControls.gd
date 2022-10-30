@@ -3,6 +3,8 @@ extends Spatial
 onready var FPController = get_node("../FPController")
 onready var OpenXRallhandsdata = get_node("../FPController/OpenXRallhandsdata")
 
+var loriencavassizescalingfac = Vector2(1, 1)
+
 func _ready():
 	if has_node("ViewportLorienCanvas"):
 #		$ViewportLorienCanvas.connect("pointer_entered", $ViewportLorienCanvas/Viewport/InfiniteCanvas, "enable")
@@ -12,16 +14,9 @@ func _ready():
 		$ViewportLorienCanvas/Viewport/InfiniteCanvas.use_project(project)
 
 	$ViewportLorienCanvas/Viewport/InfiniteCanvas.enable()
-
-	print($ViewportLorienCanvas/Viewport.world_2d)
-	print($ViewportLorienCanvas/Viewport/InfiniteCanvas/Viewport.world_2d)
-	var camfar = Camera2D.new()
-	camfar.zoom = Vector2(5, 5)
-	camfar.offset = Vector2(200, 300)
-	$ViewportLCFar/Viewport.add_child(camfar)
-	camfar.current = true
-	$ViewportLCFar/Viewport.world_2d = $ViewportLorienCanvas/Viewport/InfiniteCanvas/Viewport.world_2d
-	$ViewportLCFar/Viewport.transparent_bg = false
+	var screen_size = $ViewportLorienCanvas.screen_size
+	var viewport_size = $ViewportLorienCanvas.viewport_size
+	loriencavassizescalingfac = Vector2(viewport_size.x/screen_size.x, -viewport_size.y/screen_size.y)
 
 var Dw = 2
 
@@ -76,85 +71,102 @@ func flathandresetdetection(joint_transforms, flathandscore, delta):
 					print("Reset position ", palmtransform.origin)
 					$ViewportLorienCanvas.translation = palmtransform.origin - Vector3(0, flathandsurfacedepth, 0)
 					$flathandmarker.visible = false
+					return true
 	if flathandscore < 0.5:
 		if $flathandmarker.scale.z != 0.0:
 			$flathandmarker.scale.z = max(0.0, $flathandmarker.scale.z - delta/0.5)
 			if $flathandmarker.scale.z == 0.0:
 				$flathandmarker.visible = false
+	return false
+	
+var panvec = Vector2(0,0)
+func setshrinkavatartransform():
+	return
+	var LocalPlayer = get_node("..").NetworkGateway.get_node("PlayerConnections").LocalPlayer
+	var shrinkfactor = 0.2
+	var shrinkorigin = $ViewportLorienCanvas.translation + Vector3(panvec.x, 0, panvec.y)
+	$shrinkavatartransform.transform = Transform(Basis().scaled(Vector3(shrinkfactor,shrinkfactor,shrinkfactor)), shrinkorigin*(1 - shrinkfactor))
+	LocalPlayer.shrinkavatartransform = $shrinkavatartransform.transform
+	LocalPlayer.get_node("HeadCam").visible = false
+
 
 var flathandactive = 0
 func flathandsresetdetection(delta):
 	var flathandscoreL = flathandscore(OpenXRallhandsdata.joint_transforms_L) if (OpenXRallhandsdata.is_active_L and OpenXRallhandsdata.palm_joint_confidence_L == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH) else 0.0
 	var flathandscoreR = flathandscore(OpenXRallhandsdata.joint_transforms_R) if (OpenXRallhandsdata.is_active_R and OpenXRallhandsdata.palm_joint_confidence_R == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH) else 0.0
+	var resetflat = false
 	if flathandactive != 2:
-		flathandresetdetection(OpenXRallhandsdata.joint_transforms_L, flathandscoreL, delta)
+		resetflat = flathandresetdetection(OpenXRallhandsdata.joint_transforms_L, flathandscoreL, delta)
 		flathandactive = 0 if $flathandmarker.scale.z == 0.0 else 1 
 	if flathandactive != 1:
-		flathandresetdetection(OpenXRallhandsdata.joint_transforms_R, flathandscoreR, delta)
+		resetflat = flathandresetdetection(OpenXRallhandsdata.joint_transforms_R, flathandscoreR, delta)
 		flathandactive = 0 if $flathandmarker.scale.z == 0.0 else 2 
+	if resetflat:
+		setshrinkavatartransform()
 
 var sinpalmsidedirectionrange = sin(deg2rad(20))
-var sidehandheighttarget = 0.9
-func sidehandscore(joint_transforms):
-	var palmbasis = joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_PALM_EXT].basis
+var sidehandheighttarget = 0.09
+func sidehandvector(joint_transforms, fistdragmarker, delta):
+	var palmbasis = FPController.global_transform.basis*joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_PALM_EXT].basis
 	var palmsidedirectionscore = clamp(inverse_lerp(sinpalmsidedirectionrange, 0, abs(palmbasis.y.y)), 0, 1)
+	var littleknucklepos = null 
+	var flathandscore = 0.0
 	if palmsidedirectionscore > 0.0:
 		var handheight = detectfingersext(joint_transforms, palmbasis.x, OpenXRallhandsdata.xrbones_necessary_to_measure_extent)
 		var handheightscore = clamp(inverse_lerp(sidehandheighttarget*0.75, sidehandheighttarget, handheight), 0, 1)
 		if handheightscore > 0.0:
-			return (palmsidedirectionscore + handheightscore)/2
-	return 0.0
+			littleknucklepos = FPController.global_transform*joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_LITTLE_PROXIMAL_EXT].origin
+			var handposabovetable = littleknucklepos.y - $ViewportLorienCanvas.translation.y
+			var handposscore = clamp(1 - abs(handposabovetable)/lorientcanvasknucklethickness, 0, 1)
+			if handposscore > 0.0:
+				flathandscore = (palmsidedirectionscore + handheightscore + handposscore)/3
+			
+	fistdragmarker.get_surface_material(0).albedo_color.a = flathandscore
+	if flathandscore >= 0.4 and littleknucklepos != null:
+		var kpvec = null
+		fistdragmarker.scale.z = 1.0
+		if fistdragmarker.visible:
+			kpvec = littleknucklepos - fistdragmarker.translation
+			if kpvec.length() < 0.001:
+				return null
+		else:
+			fistdragmarker.visible = true
+		fistdragmarker.translation = Vector3(littleknucklepos.x, littleknucklepos.y + fistdragmarker.scale.y*fistdragmarker.mesh.size.y*0.5, littleknucklepos.z)
+		return kpvec
 
-func sidehandvector(littleknucklepos, fistdragmarker):
-	var svecL = Vector2(0,0)
 	if fistdragmarker.visible:
-		var kpvec = littleknucklepos - fistdragmarker.translation
-		var kvec = $ViewportLorienCanvas.transform.basis.xform_inv(kpvec)
-		svecL = Vector2(kvec.x*loriencavassizescalingfac.x, kvec.y*loriencavassizescalingfac.y)
-	else:
-		fistdragmarker.visible = true
-		var screen_size = $ViewportLorienCanvas.screen_size
-		var viewport_size = $ViewportLorienCanvas.viewport_size
-		loriencavassizescalingfac = Vector2(viewport_size.x/screen_size.x, -viewport_size.y/screen_size.y)
-	fistdragmarker.translation = Vector3(littleknucklepos.x, littleknucklepos.y + fistdragmarker.scale.y*fistdragmarker.mesh.size.y*0.5, littleknucklepos.z)
-	return svecL
+		fistdragmarker.scale.z = max(0.0, fistdragmarker.scale.z - delta/0.3)
+		if fistdragmarker.scale.z == 0.0:
+			fistdragmarker.visible = false
+	return null
 
-var loriencavassizescalingfac = Vector2(1, 1)
+
+
 var lorientcanvasknucklethickness = 0.02
-func sidehanddragdetection():
-	var flathandscoreL = sidehandscore(OpenXRallhandsdata.joint_transforms_L) if (OpenXRallhandsdata.is_active_L and OpenXRallhandsdata.palm_joint_confidence_L == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH) else 0.0
-	var flathandscoreR = sidehandscore(OpenXRallhandsdata.joint_transforms_R) if (OpenXRallhandsdata.is_active_R and OpenXRallhandsdata.palm_joint_confidence_R == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH) else 0.0
+func sidehanddragdetection(delta):
+	var kpvecL = sidehandvector(OpenXRallhandsdata.joint_transforms_L, $shrinkavatartransform/fistdragmarkerL, delta) if (OpenXRallhandsdata.is_active_L and OpenXRallhandsdata.palm_joint_confidence_L == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH) else null
+	var kpvecR = sidehandvector(OpenXRallhandsdata.joint_transforms_R, $shrinkavatartransform/fistdragmarkerR, delta) if (OpenXRallhandsdata.is_active_R and OpenXRallhandsdata.palm_joint_confidence_R == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH) else null
 
-	var svec = Vector2(0,0)
-
-	if flathandscoreL >= 0.4:
-		var littleknuckleposL = FPController.global_transform*OpenXRallhandsdata.joint_transforms_L[OpenXRallhandsdata.XR_HAND_JOINT_LITTLE_PROXIMAL_EXT].origin
-		if abs(littleknuckleposL.y - $ViewportLorienCanvas.translation.y) < lorientcanvasknucklethickness:
-			svec += sidehandvector(littleknuckleposL, $fistdragmarkerL)
-			$fistdragmarkerL.get_surface_material(0).albedo_color.a = flathandscoreL
-		else:
-			flathandscoreL = 0.0
-	if flathandscoreL < 0.4:
-		$fistdragmarkerL.visible = false
-
-	if flathandscoreR >= 0.4:
-		var littleknuckleposR = FPController.global_transform*OpenXRallhandsdata.joint_transforms_R[OpenXRallhandsdata.XR_HAND_JOINT_LITTLE_PROXIMAL_EXT].origin
-		if abs(littleknuckleposR.y - $ViewportLorienCanvas.translation.y) < lorientcanvasknucklethickness:
-			svec += sidehandvector(littleknuckleposR, $fistdragmarkerR)
-			$fistdragmarkerR.get_surface_material(0).albedo_color.a = flathandscoreR
-		else:
-			flathandscoreR = 0.0
-	if flathandscoreR < 0.4:
-		$fistdragmarkerR.visible = false
-
-	if svec.length() > 0.001:
+	if kpvecL != null or kpvecR != null:
+		var kpvec = (kpvecL if kpvecL != null else Vector3(0,0,0)) + (kpvecR if kpvecR != null else Vector3(0,0,0))
+		var kvec = $ViewportLorienCanvas.transform.basis.xform_inv(kpvec)
+		var svec = Vector2(kvec.x*loriencavassizescalingfac.x, kvec.y*loriencavassizescalingfac.y)
 		$ViewportLorienCanvas/Viewport/InfiniteCanvas/Viewport/Camera2D._do_pan(svec)
+		#print("ss ", svec)
+#			panvec += svec
+#			var LocalPlayer = get_node("..").NetworkGateway.get_node("PlayerConnections").LocalPlayer
+#			var shrinkfactor = 0.2
+#			var shrinkorigin = $ViewportLorienCanvas.translation + Vector3(panvec.x, 0, panvec.y)
+#			$shrinkavatartransform.transform = Transform(Basis().scaled(Vector3(shrinkfactor,shrinkfactor,shrinkfactor)), shrinkorigin*(1 - shrinkfactor))
+#			LocalPlayer.shrinkavatartransform = $shrinkavatartransform.transform
+#			LocalPlayer.get_node("HeadCam").visible = false
+
 
 
 
 func _physics_process(delta):
 	flathandsresetdetection(delta)
-	sidehanddragdetection()
+	sidehanddragdetection(delta)
 	
 	if OpenXRallhandsdata.is_active_R:
 		$RightIndexFinger.global_transform = FPController.global_transform*OpenXRallhandsdata.joint_transforms_R[OpenXRallhandsdata.XR_HAND_JOINT_INDEX_TIP_EXT]

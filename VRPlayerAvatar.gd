@@ -13,6 +13,8 @@ const TRACKING_CONFIDENCE_HIGH = 2
 var ovrhandrightrestdata = null
 var ovrhandleftrestdata = null
 
+var shrinkavatartransform = Transform()
+
 func _ready():
 	ovrhandrightrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata($ovr_right_hand_model)
 	ovrhandleftrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata($ovr_left_hand_model)
@@ -40,7 +42,7 @@ func processavatarhand(palm_joint_confidence, joint_transforms, ovr_LR_hand_mode
 		ControllerLR.visible = false
 
 func PAV_processlocalavatarposition(delta):
-	transform = arvrorigin.transform
+	transform = shrinkavatartransform*arvrorigin.transform
 	$HeadCam.transform = arvrorigin.get_node("ARVRCamera").transform
 	processavatarhand(OpenXRallhandsdata.palm_joint_confidence_L, OpenXRallhandsdata.joint_transforms_L, $ovr_left_hand_model, ovrhandleftrestdata, $ControllerLeft, LeftHandController)
 	processavatarhand(OpenXRallhandsdata.palm_joint_confidence_R, OpenXRallhandsdata.joint_transforms_R, $ovr_right_hand_model, ovrhandrightrestdata, $ControllerRight, RightHandController)

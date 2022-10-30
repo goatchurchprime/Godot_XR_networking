@@ -8,7 +8,7 @@
 [ext_resource path="res://addons/godot-xr-tools/functions/function_pointer.tscn" type="PackedScene" id=6]
 [ext_resource path="res://addons/LorienInfiniteCanvas/InfiniteCanvas.tscn" type="PackedScene" id=7]
 [ext_resource path="res://addons/godot-xr-tools/functions/movement_turn.tscn" type="PackedScene" id=8]
-[ext_resource path="res://LPVRPlayerAvatar.tscn" type="PackedScene" id=9]
+[ext_resource path="res://VRPlayerAvatar.tscn" type="PackedScene" id=9]
 [ext_resource path="res://addons/player-networking/NetworkGateway.tscn" type="PackedScene" id=11]
 [ext_resource path="res://addons/godot-xr-tools/objects/pickable.gd" type="Script" id=12]
 [ext_resource path="res://click04.wav" type="AudioStream" id=14]
@@ -108,6 +108,20 @@ extents = Vector3( 0.05, 0.05, 0.05 )
 [sub_resource type="CubeMesh" id=25]
 size = Vector3( 0.1, 0.1, 0.1 )
 
+[sub_resource type="CubeMesh" id=33]
+size = Vector3( 0.1, 0.02, 0.15 )
+
+[sub_resource type="SpatialMaterial" id=34]
+flags_transparent = true
+albedo_color = Color( 0.862745, 0.541176, 0.141176, 0.313726 )
+
+[sub_resource type="CubeMesh" id=38]
+size = Vector3( 0.1, 0.02, 0.15 )
+
+[sub_resource type="SpatialMaterial" id=39]
+flags_transparent = true
+albedo_color = Color( 0.862745, 0.541176, 0.141176, 0.313726 )
+
 [sub_resource type="SpatialMaterial" id=35]
 flags_transparent = true
 flags_unshaded = true
@@ -127,20 +141,6 @@ flags_transparent = true
 flags_unshaded = true
 flags_no_depth_test = true
 albedo_color = Color( 0.141176, 0.811765, 0.862745, 0.556863 )
-
-[sub_resource type="CubeMesh" id=33]
-size = Vector3( 0.1, 0.02, 0.15 )
-
-[sub_resource type="SpatialMaterial" id=34]
-flags_transparent = true
-albedo_color = Color( 0.862745, 0.541176, 0.141176, 0.313726 )
-
-[sub_resource type="CubeMesh" id=38]
-size = Vector3( 0.1, 0.02, 0.15 )
-
-[sub_resource type="SpatialMaterial" id=39]
-flags_transparent = true
-albedo_color = Color( 0.862745, 0.541176, 0.141176, 0.313726 )
 
 [node name="Main" type="Spatial"]
 script = ExtResource( 1 )
@@ -198,8 +198,7 @@ scene = ExtResource( 11 )
 
 [node name="Players" type="Spatial" parent="."]
 
-[node name="LPVRPlayerAvatar" parent="Players" instance=ExtResource( 9 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.15446, 0 )
+[node name="VRPlayerAvatar" parent="Players" instance=ExtResource( 9 )]
 
 [node name="SportBall" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.54476, 1.91887, -4.03967 )
@@ -292,11 +291,6 @@ viewport_size = Vector2( 600, 400 )
 scene = ExtResource( 7 )
 collision_layer = 1024
 
-[node name="ViewportLCFar" parent="LorienHandControls" instance=ExtResource( 15 )]
-transform = Transform( 1, 0, 0, 0, 0.863228, 0.504814, 0, -0.504814, 0.863228, 0, 0.699715, -0.87456 )
-screen_size = Vector2( 1.5, 1 )
-viewport_size = Vector2( 2400, 1600 )
-
 [node name="LeftIndexFinger" type="KinematicBody" parent="LorienHandControls"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.394745, 1.03168, -0.551758 )
 collision_layer = 1025
@@ -348,23 +342,27 @@ shape = SubResource( 21 )
 [node name="MeshInstance" type="MeshInstance" parent="LorienHandControls/RigidBody/CollisionShape"]
 mesh = SubResource( 25 )
 
+[node name="shrinkavatartransform" type="Spatial" parent="LorienHandControls"]
+
+[node name="fistdragmarkerL" type="MeshInstance" parent="LorienHandControls/shrinkavatartransform"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0, 0 )
+visible = false
+mesh = SubResource( 33 )
+skeleton = NodePath("../..")
+material/0 = SubResource( 34 )
+
+[node name="fistdragmarkerR" type="MeshInstance" parent="LorienHandControls/shrinkavatartransform"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0, 0 )
+visible = false
+mesh = SubResource( 38 )
+skeleton = NodePath("../..")
+material/0 = SubResource( 39 )
+
 [node name="flathandmarker" type="MeshInstance" parent="LorienHandControls"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.897766, 0.164688, 0 )
 visible = false
 mesh = SubResource( 36 )
 material/0 = SubResource( 37 )
-
-[node name="fistdragmarkerL" type="MeshInstance" parent="LorienHandControls"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0, 0 )
-visible = false
-mesh = SubResource( 33 )
-material/0 = SubResource( 34 )
-
-[node name="fistdragmarkerR" type="MeshInstance" parent="LorienHandControls"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0, 0 )
-visible = false
-mesh = SubResource( 38 )
-material/0 = SubResource( 39 )
 
 [editable path="FPController"]
 [editable path="FPController/OpenXRallhandsdata"]
