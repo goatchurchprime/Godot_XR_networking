@@ -13,18 +13,17 @@ func _ready():
 
 	$ViewportLorienCanvas/Viewport/InfiniteCanvas.enable()
 
+	print($ViewportLorienCanvas/Viewport.world_2d)
+	print($ViewportLorienCanvas/Viewport/InfiniteCanvas/Viewport.world_2d)
+	var camfar = Camera2D.new()
+	camfar.zoom = Vector2(5, 5)
+	camfar.offset = Vector2(200, 300)
+	$ViewportLCFar/Viewport.add_child(camfar)
+	camfar.current = true
+	$ViewportLCFar/Viewport.world_2d = $ViewportLorienCanvas/Viewport/InfiniteCanvas/Viewport.world_2d
+	$ViewportLCFar/Viewport.transparent_bg = false
+
 var Dw = 2
-func _on_AreaZoom_body_entered(body):
-	print("_on_AreaResetpos_body_entered ", body)
-	var event = InputEventMouseButton.new()
-	Dw += 1
-	event.set_button_index(BUTTON_WHEEL_DOWN if (Dw%10)<5 else BUTTON_WHEEL_UP)
-	event.set_position(Vector2(300,200))
-	event.set_global_position(Vector2(300,200))
-	event.set_pressed(true)
-	event.set_button_mask(0)
-	#$ViewportLorienCanvas/Viewport.input(event)  # not getting cycled through as the tool event
-	$ViewportLorienCanvas/Viewport/InfiniteCanvas/Viewport/Camera2D.tool_event(event)
 
 var activefingerheight = 0.018
 var vpfingerposPrev = Vector2(0,0)
@@ -32,7 +31,6 @@ var indexfingerActive = false
 var LvpfingerposPrev = Vector2(0,0)
 var LindexfingerActive = false
 
-var bfistdetected = false
 
 func detectfingersext(joint_transforms, vec, xrlist):
 	var lo = 0.0
@@ -96,7 +94,7 @@ func flathandsresetdetection(delta):
 		flathandactive = 0 if $flathandmarker.scale.z == 0.0 else 2 
 
 var sinpalmsidedirectionrange = sin(deg2rad(20))
-var sidehandheighttarget = 0.10
+var sidehandheighttarget = 0.9
 func sidehandscore(joint_transforms):
 	var palmbasis = joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_PALM_EXT].basis
 	var palmsidedirectionscore = clamp(inverse_lerp(sinpalmsidedirectionrange, 0, abs(palmbasis.y.y)), 0, 1)
@@ -151,6 +149,7 @@ func sidehanddragdetection():
 
 	if svec.length() > 0.001:
 		$ViewportLorienCanvas/Viewport/InfiniteCanvas/Viewport/Camera2D._do_pan(svec)
+
 
 
 func _physics_process(delta):

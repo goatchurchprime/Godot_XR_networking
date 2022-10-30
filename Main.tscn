@@ -1,4 +1,4 @@
-[gd_scene load_steps=51 format=2]
+[gd_scene load_steps=47 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
@@ -15,13 +15,6 @@
 [ext_resource path="res://addons/godot-xr-tools/objects/viewport_2d_in_3d.tscn" type="PackedScene" id=15]
 [ext_resource path="res://LorienHandControls.gd" type="Script" id=17]
 [ext_resource path="res://handtrackingdevelopment/OpenXRallhandsdata.tscn" type="PackedScene" id=18]
-
-[sub_resource type="SphereMesh" id=29]
-radius = 0.03
-height = 0.06
-
-[sub_resource type="SpatialMaterial" id=30]
-albedo_color = Color( 0.0666667, 0.666667, 0.819608, 1 )
 
 [sub_resource type="PlaneMesh" id=2]
 size = Vector2( 20, 20 )
@@ -73,15 +66,6 @@ albedo_color = Color( 0.980392, 0.843137, 0.858824, 1 )
 albedo_texture = SubResource( 13 )
 uv1_scale = Vector3( 10, 20, 1 )
 
-[sub_resource type="BoxShape" id=21]
-extents = Vector3( 0.05, 0.05, 0.05 )
-
-[sub_resource type="CubeMesh" id=22]
-size = Vector3( 0.04, 0.04, 0.04 )
-
-[sub_resource type="SpatialMaterial" id=24]
-albedo_color = Color( 0.411765, 0.0431373, 0.94902, 1 )
-
 [sub_resource type="CylinderShape" id=16]
 margin = 0.002
 height = 0.06
@@ -117,6 +101,9 @@ rings = 1
 
 [sub_resource type="SpatialMaterial" id=20]
 albedo_color = Color( 0.854902, 0, 0.882353, 1 )
+
+[sub_resource type="BoxShape" id=21]
+extents = Vector3( 0.05, 0.05, 0.05 )
 
 [sub_resource type="CubeMesh" id=25]
 size = Vector3( 0.1, 0.1, 0.1 )
@@ -190,14 +177,6 @@ step_turn_angle = 30.0
 enabled = false
 
 [node name="OpenXRallhandsdata" parent="FPController" instance=ExtResource( 18 )]
-
-[node name="LeftTipJT" parent="FPController/OpenXRallhandsdata" index="2"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.284904, 0.50721 )
-
-[node name="MeshInstance" type="MeshInstance" parent="FPController/OpenXRallhandsdata/LeftTipJT" index="0"]
-visible = false
-mesh = SubResource( 29 )
-material/0 = SubResource( 30 )
 
 [node name="HandtrackingDevelopment" type="Node" parent="FPController"]
 script = ExtResource( 2 )
@@ -307,23 +286,16 @@ extents = Vector3( 12, 10, 13 )
 script = ExtResource( 17 )
 
 [node name="ViewportLorienCanvas" parent="LorienHandControls" instance=ExtResource( 15 )]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.206, 0.945178, -0.476 )
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.206, 0.7, -0.476 )
 screen_size = Vector2( 1.5, 1 )
 viewport_size = Vector2( 600, 400 )
 scene = ExtResource( 7 )
 collision_layer = 1024
 
-[node name="AreaZoom" type="Area" parent="LorienHandControls/ViewportLorienCanvas"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.175568, -0.27263, 0 )
-collision_layer = 0
-collision_mask = 1024
-
-[node name="CollisionShape" type="CollisionShape" parent="LorienHandControls/ViewportLorienCanvas/AreaZoom"]
-shape = SubResource( 21 )
-
-[node name="MeshInstance" type="MeshInstance" parent="LorienHandControls/ViewportLorienCanvas/AreaZoom/CollisionShape"]
-mesh = SubResource( 22 )
-material/0 = SubResource( 24 )
+[node name="ViewportLCFar" parent="LorienHandControls" instance=ExtResource( 15 )]
+transform = Transform( 1, 0, 0, 0, 0.863228, 0.504814, 0, -0.504814, 0.863228, 0, 0.699715, -0.87456 )
+screen_size = Vector2( 1.5, 1 )
+viewport_size = Vector2( 2400, 1600 )
 
 [node name="LeftIndexFinger" type="KinematicBody" parent="LorienHandControls"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.394745, 1.03168, -0.551758 )
@@ -393,8 +365,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0, 0 )
 visible = false
 mesh = SubResource( 38 )
 material/0 = SubResource( 39 )
-
-[connection signal="body_entered" from="LorienHandControls/ViewportLorienCanvas/AreaZoom" to="LorienHandControls" method="_on_AreaZoom_body_entered"]
 
 [editable path="FPController"]
 [editable path="FPController/OpenXRallhandsdata"]
