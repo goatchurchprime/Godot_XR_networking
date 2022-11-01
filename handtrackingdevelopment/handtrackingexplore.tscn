@@ -4,8 +4,8 @@
 [ext_resource path="res://handtrackingdevelopment/handtrackingexplore.gd" type="Script" id=2]
 [ext_resource path="res://xrassets/readyplayerme_avatar.glb" type="PackedScene" id=3]
 [ext_resource path="res://addons/goutte.camera.trackball/trackball_camera.gd" type="Script" id=4]
-[ext_resource path="res://addons/godot-xr-tools/assets/RightHand.tscn" type="PackedScene" id=5]
-[ext_resource path="res://addons/godot-xr-tools/objects/Viewport_2D_in_3D.tscn" type="PackedScene" id=6]
+[ext_resource path="res://addons/godot-xr-tools/assets/right_hand.tscn" type="PackedScene" id=5]
+[ext_resource path="res://addons/godot-xr-tools/objects/viewport_2d_in_3d.tscn" type="PackedScene" id=6]
 [ext_resource path="res://xrassets/vrhandmaterial.tres" type="Material" id=7]
 
 [sub_resource type="CubeMesh" id=3]
@@ -37,6 +37,13 @@ transform = Transform( 0.470566, 0.313517, 0.824788, 0.805183, 0.229751, -0.5467
 
 [node name="ArmatureRight" parent="ovr_right_hand_model" index="0"]
 visible = false
+
+[node name="Skeleton" parent="ovr_right_hand_model/ArmatureRight" index="0"]
+bones/0/bound_children = [ NodePath("BoneAttachment5"), NodePath("BoneAttachment6"), NodePath("BoneAttachment7"), NodePath("BoneAttachment8"), NodePath("BoneAttachment9"), NodePath("BoneAttachment10"), NodePath("BoneAttachment11"), NodePath("BoneAttachment12"), NodePath("BoneAttachment13"), NodePath("BoneAttachment14"), NodePath("BoneAttachment15"), NodePath("BoneAttachment16") ]
+bones/2/bound_children = [ NodePath("BoneAttachment3") ]
+bones/3/bound_children = [ NodePath("BoneAttachment2") ]
+bones/4/bound_children = [ NodePath("BoneAttachment") ]
+bones/10/bound_children = [ NodePath("BoneAttachment4") ]
 
 [node name="BoneAttachment" parent="ovr_right_hand_model/ArmatureRight/Skeleton" index="0"]
 transform = Transform( 0.575561, 0.67335, 0.464036, -0.739133, 0.671136, -0.0570911, -0.349873, -0.310125, 0.883975, -8.31233, 6.69126, 4.37118 )
@@ -131,6 +138,7 @@ script = ExtResource( 4 )
 
 [node name="RightHand" parent="." instance=ExtResource( 5 )]
 transform = Transform( 0.999678, 0.0253744, 0, -0.0253744, 0.999678, 0, 0, 0, 1, 0, 0, 0.289581 )
+visible = false
 script = null
 
 [node name="Hand_Left" parent="RightHand/RightHand/Armature_Left/Skeleton" index="0"]

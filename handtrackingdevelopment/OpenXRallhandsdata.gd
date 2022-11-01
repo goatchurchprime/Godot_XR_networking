@@ -7,6 +7,7 @@ var joint_transforms_L = [ ]
 var joint_transforms_R = [ ]
 var palm_joint_confidence_L = -1
 var palm_joint_confidence_R = -1
+var boundingbox_L = null
 
 const XR_HAND_JOINT_COUNT_EXT = 26
 const XR_HAND_JOINTS_MOTION_RANGE_UNOBSTRUCTED_EXT = 0
@@ -47,6 +48,22 @@ enum {
 	XR_HAND_JOINT_LITTLE_DISTAL_EXT = 24,
 	XR_HAND_JOINT_LITTLE_TIP_EXT = 25
 }
+
+var xrfingers = [
+	XR_HAND_JOINT_THUMB_PROXIMAL_EXT, XR_HAND_JOINT_THUMB_DISTAL_EXT, XR_HAND_JOINT_THUMB_TIP_EXT, 
+	XR_HAND_JOINT_INDEX_PROXIMAL_EXT, XR_HAND_JOINT_INDEX_INTERMEDIATE_EXT, XR_HAND_JOINT_INDEX_DISTAL_EXT, XR_HAND_JOINT_INDEX_TIP_EXT, 
+	XR_HAND_JOINT_MIDDLE_PROXIMAL_EXT, XR_HAND_JOINT_MIDDLE_INTERMEDIATE_EXT, XR_HAND_JOINT_MIDDLE_DISTAL_EXT, XR_HAND_JOINT_MIDDLE_TIP_EXT, 
+	XR_HAND_JOINT_RING_PROXIMAL_EXT, XR_HAND_JOINT_RING_INTERMEDIATE_EXT, XR_HAND_JOINT_RING_DISTAL_EXT, XR_HAND_JOINT_RING_TIP_EXT, 
+	XR_HAND_JOINT_LITTLE_PROXIMAL_EXT, XR_HAND_JOINT_LITTLE_INTERMEDIATE_EXT, XR_HAND_JOINT_LITTLE_DISTAL_EXT, XR_HAND_JOINT_LITTLE_TIP_EXT 
+]
+
+var xrbones_necessary_to_measure_extent = [
+	XR_HAND_JOINT_PALM_EXT, 
+	XR_HAND_JOINT_THUMB_TIP_EXT, 
+	XR_HAND_JOINT_INDEX_PROXIMAL_EXT, XR_HAND_JOINT_INDEX_TIP_EXT, 
+	XR_HAND_JOINT_LITTLE_PROXIMAL_EXT, XR_HAND_JOINT_LITTLE_TIP_EXT 
+]
+
 
 func setupopenxrpluginhandskeleton(handpalmpose, bright):
 	# for these parameters see https://github.com/GodotVR/godot_openxr/blob/master/src/gdclasses/OpenXRPose.cpp
@@ -95,6 +112,3 @@ func _physics_process(delta):
 	is_active_R = $RightHandPalmPose.is_active()
 	palm_joint_confidence_L = skel_backtoOXRjointtransforms(joint_transforms_L, $LeftHandPalmPose/LeftHandBlankSkeleton) if is_active_L else TRACKING_CONFIDENCE_NOT_APPLICABLE
 	palm_joint_confidence_R = skel_backtoOXRjointtransforms(joint_transforms_R, $RightHandPalmPose/RightHandBlankSkeleton) if is_active_R else TRACKING_CONFIDENCE_NOT_APPLICABLE
-	$LeftTipJT.transform = joint_transforms_L[XR_HAND_JOINT_INDEX_TIP_EXT]
-	$RightTipJT.transform = joint_transforms_R[XR_HAND_JOINT_INDEX_TIP_EXT]
-	

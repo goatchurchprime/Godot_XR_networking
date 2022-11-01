@@ -5,7 +5,7 @@ onready var ovrhandmodel = $ovr_right_hand_model
 #onready var skel = $ovr_right_hand_model/ArmatureRight/Skeleton
 onready var rpmavatar = $readyplayerme_avatar
 
-const Dapply_readyplayerme_hand = false
+const Dapply_readyplayerme_hand = true
 
 func _process(delta):
 	pass
