@@ -390,10 +390,11 @@ mesh = SubResource( 42 )
 skeleton = NodePath("../CollisionShape/MeshInstance")
 material/0 = SubResource( 43 )
 
-[node name="flathandmarker" type="MeshInstance" parent="LorienHandControls"]
+[node name="flathandmarker" type="MeshInstance" parent="LorienHandControls/shrinkavatartransform"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.897766, 0.164688, 0 )
 visible = false
 mesh = SubResource( 36 )
+skeleton = NodePath("../..")
 material/0 = SubResource( 37 )
 
 [editable path="FPController"]
