@@ -85,8 +85,8 @@ func vr_right_button_pressed(button: int):
 			$ViewportNetworkGateway.visible = true
 			
 	if button == VR_GRIP:
-		if NetworkGateway.get_node("PlayerConnections").LocalPlayer.has_method("setpaddlebody"):
-			NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(true)
+		pass #if NetworkGateway.get_node("PlayerConnections").LocalPlayer.has_method("setpaddlebody"):
+		#	NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(true)
 
 	
 func vr_right_button_release(button: int):
@@ -136,8 +136,8 @@ func _physics_process(delta):
 
 func _process(delta):
 	if $FPController.interface != null and $FPController/OpenXRallhandsdata.is_active_R:
-		$FPController/RightHandController/Function_pointer.active_button = VR_HANDTRACKING_INDEXTHUMB_PINCH
+		$FPController/RightHandController/FunctionPointer.active_button = VR_HANDTRACKING_INDEXTHUMB_PINCH
 	else:
-		$FPController/RightHandController/Function_pointer.active_button = VR_TRIGGER
+		$FPController/RightHandController/FunctionPointer.active_button = VR_TRIGGER
 	
 
