@@ -1,4 +1,4 @@
-[gd_scene load_steps=57 format=2]
+[gd_scene load_steps=55 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
@@ -15,7 +15,6 @@
 [ext_resource path="res://addons/godot-xr-tools/functions/function_pickup.tscn" type="PackedScene" id=13]
 [ext_resource path="res://click04.wav" type="AudioStream" id=14]
 [ext_resource path="res://addons/godot-xr-tools/objects/viewport_2d_in_3d.tscn" type="PackedScene" id=15]
-[ext_resource path="res://tensegrityexperiments/pickableball.tscn" type="PackedScene" id=16]
 [ext_resource path="res://LorienHandControls.gd" type="Script" id=17]
 [ext_resource path="res://handtrackingdevelopment/OpenXRallhandsdata.tscn" type="PackedScene" id=18]
 
@@ -161,17 +160,12 @@ flags_unshaded = true
 flags_no_depth_test = true
 albedo_color = Color( 0.141176, 0.811765, 0.862745, 0.556863 )
 
-[sub_resource type="SphereShape" id=44]
-radius = 0.05
+[sub_resource type="CubeMesh" id=44]
+size = Vector3( 0.01, 0.02, 1 )
 
-[sub_resource type="SphereMesh" id=45]
-radius = 0.05
-height = 0.1
-radial_segments = 16
-rings = 8
-
-[sub_resource type="SpatialMaterial" id=46]
-albedo_color = Color( 0.117647, 0.815686, 0.196078, 1 )
+[sub_resource type="SpatialMaterial" id=45]
+resource_local_to_scene = true
+albedo_color = Color( 0.74902, 0.670588, 0.196078, 1 )
 
 [node name="Main" type="Spatial"]
 script = ExtResource( 1 )
@@ -189,6 +183,8 @@ far = 1000.0
 visible = true
 
 [node name="MovementDirect" parent="FPController/LeftHandController" index="0" instance=ExtResource( 5 )]
+max_speed = 3.0
+strafe = true
 
 [node name="FunctionPickup" parent="FPController/LeftHandController" index="1" instance=ExtResource( 13 )]
 
@@ -196,6 +192,8 @@ visible = true
 visible = true
 
 [node name="FunctionPickup" parent="FPController/RightHandController" index="0" instance=ExtResource( 13 )]
+grab_collision_mask = 4097
+ranged_collision_mask = 4097
 
 [node name="MovementTurn" parent="FPController/RightHandController" index="1" instance=ExtResource( 8 )]
 
@@ -238,7 +236,6 @@ contact_monitor = true
 can_sleep = false
 angular_velocity = Vector3( 5, 0, 0 )
 script = ExtResource( 12 )
-reset_transform_on_pickup = false
 
 [node name="CollisionShape" type="CollisionShape" parent="SportBall"]
 shape = SubResource( 7 )
@@ -412,24 +409,17 @@ material/0 = SubResource( 37 )
 [node name="TensegrityExperiments" type="Spatial" parent="."]
 script = ExtResource( 10 )
 
-[node name="EndBalls" type="Spatial" parent="TensegrityExperiments"]
+[node name="Balls" type="Spatial" parent="TensegrityExperiments"]
 
-[node name="StaticBall" type="RigidBody" parent="TensegrityExperiments/EndBalls"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.47052, -0.88475 )
-mode = 1
+[node name="Wires" type="Spatial" parent="TensegrityExperiments"]
 
-[node name="CollisionShape" type="CollisionShape" parent="TensegrityExperiments/EndBalls/StaticBall"]
-shape = SubResource( 44 )
+[node name="Struts" type="Spatial" parent="TensegrityExperiments"]
 
-[node name="MeshInstance" type="MeshInstance" parent="TensegrityExperiments/EndBalls/StaticBall"]
-mesh = SubResource( 45 )
-skeleton = NodePath("../CollisionShape")
-material/0 = SubResource( 46 )
-
-[node name="GrabBall" parent="TensegrityExperiments/EndBalls" instance=ExtResource( 16 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.17757, -0.9258 )
-
-[node name="PinRods" type="Spatial" parent="TensegrityExperiments"]
+[node name="MeshBallLine" type="MeshInstance" parent="TensegrityExperiments"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 0.3, 0, 0, 0 )
+visible = false
+mesh = SubResource( 44 )
+material/0 = SubResource( 45 )
 
 [editable path="FPController"]
 [editable path="FPController/OpenXRallhandsdata"]
