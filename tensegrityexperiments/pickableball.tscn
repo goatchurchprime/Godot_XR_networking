@@ -8,8 +8,8 @@ radius = 0.05
 
 [sub_resource type="SphereMesh" id=45]
 resource_local_to_scene = true
-radius = 0.05
-height = 0.1
+radius = 0.025
+height = 0.05
 radial_segments = 16
 rings = 8
 

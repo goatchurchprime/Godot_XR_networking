@@ -3,7 +3,7 @@ class_name XRPickableStrut
 extends XRToolsPickable
 
 
-export var strut_length : float = 0.4
+export var strut_length : float = 0.6
 var EndBallA = null
 var EndBallB = null
 

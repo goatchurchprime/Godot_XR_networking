@@ -16,7 +16,7 @@ rings = 0
 
 [sub_resource type="SpatialMaterial" id=3]
 resource_local_to_scene = true
-albedo_color = Color( 0.18, 0.13, 0.2, 1 )
+albedo_color = Color( 0.180392, 0.129412, 0.2, 1 )
 
 [sub_resource type="CylinderMesh" id=5]
 resource_local_to_scene = true
@@ -38,14 +38,20 @@ min_wirelength = 0.4
 [node name="CollisionShape" parent="." index="1"]
 shape = SubResource( 4 )
 
-[node name="MeshWire" type="MeshInstance" parent="." index="2"]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -0.1, 0, 1, -4.37114e-09, 0, 0, 0 )
+[node name="SMeshWire" type="Spatial" parent="." index="2"]
+
+[node name="MeshWire" type="MeshInstance" parent="SMeshWire" index="0"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
 mesh = SubResource( 6 )
+skeleton = NodePath("../..")
 material/0 = SubResource( 3 )
 
-[node name="MeshWire2" type="MeshInstance" parent="." index="3"]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -0.1, 0, 1, -4.37114e-09, 0, 0, 0 )
+[node name="SMeshWire2" type="Spatial" parent="." index="3"]
+
+[node name="MeshWire2" type="MeshInstance" parent="SMeshWire2" index="0"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
 mesh = SubResource( 5 )
+skeleton = NodePath("../..")
 material/0 = SubResource( 3 )
 
 [connection signal="highlight_updated" from="." to="." method="_on_PickableStrut_highlight_updated"]

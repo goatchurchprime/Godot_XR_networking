@@ -10,11 +10,32 @@ onready var lefthandcontroller = get_node("/root/Main/FPController/LeftHandContr
 func _ready():
 	righthandcontroller.connect("button_pressed", self, "vr_right_button_pressed")
 	righthandcontroller.connect("button_release", self, "vr_right_button_release")
+	righthandcontroller.get_node("FunctionPickup").connect("has_picked_up", self, "vr_right_picked_up")
+	righthandcontroller.get_node("FunctionPickup").connect("has_dropped", self, "vr_right_dropped")
 	var strut1 = addnewstrut(Transform(Basis(Vector3(0,1,0), deg2rad(45)), Vector3(0,1.15,-0.6)))
 	var strut2 = addnewstrut(Transform(Basis(Vector3(0,1,0), deg2rad(45)), Vector3(0.4,1.15,-0.6)))
 	addnewwire(strut1.EndBallA, strut2.EndBallB)
 	
 var ballfromline = null
+var pickedwire = null
+var pickedwirecontrollerinvbasis = Basis()
+
+func vr_right_picked_up(what):
+	if what.get_class() == "XRPickableWire":
+		pickedwire = what
+		pickedwirecontrollerinvbasis = righthandcontroller.global_transform.basis.inverse()
+		$MeshBallLine.transform = pickedwire.transform
+		$MeshBallLine.scale.z = pickedwire.min_wirelength
+		$MeshBallLine.visible = true
+		pickedwire.bpulledsolid = false
+		
+func vr_right_dropped():
+	if pickedwire != null:
+		if righthandcontroller.is_button_pressed(VR_BUTTON_AX):
+			pickedwire.min_wirelength = $MeshBallLine.scale.z
+		$MeshBallLine.visible = false
+		pickedwire = null
+
 
 const VR_BUTTON_AX = 7
 func vr_right_button_pressed(button: int):
@@ -32,21 +53,42 @@ func vr_right_button_pressed(button: int):
 			
 		elif righthandobject:
 			print("** ", righthandobject.get_class())
-
+				
 		elif righthandclosestobject:
 			if righthandclosestobject.get_class() == "XRPickableBall":
 				ballfromline = righthandclosestobject
 				print("ballfromline ", ballfromline)
 				$MeshBallLine.visible = true
+			if righthandclosestobject.get_class() == "XRPickableWire":
+				righthandclosestobject.min_wirelength = (righthandclosestobject.EndBallB.translation - righthandclosestobject.EndBallA.translation).length()
+				righthandclosestobject.bpulledsolid = true
 				
 		else:
 			addnewstrut(righthandcontroller.global_transform)
 
+
+		
+
+var Dwr = 0
 func _physics_process(delta):
 	if ballfromline:
 		var mpt = (ballfromline.translation + righthandcontroller.global_transform.origin)/2
 		$MeshBallLine.look_at_from_position(mpt, righthandcontroller.global_transform.origin, Vector3(0,1,0))
 		$MeshBallLine.scale.z = (righthandcontroller.global_transform.origin - ballfromline.translation).length()
+	if pickedwire:
+		if righthandcontroller.is_button_pressed(VR_BUTTON_AX):
+			var righthandrot = righthandcontroller.global_transform.basis*pickedwirecontrollerinvbasis
+			var wr = rad2deg(Vector2(righthandrot.x.x, righthandrot.x.y).angle())
+			if abs(wr - Dwr) > 5:
+				print(wr)
+				Dwr = wr
+			var swr = -wr/180
+			if swr > 0.0:
+				$MeshBallLine.scale.z = pickedwire.min_wirelength*(1 + swr*3)
+			else:
+				$MeshBallLine.scale.z = pickedwire.min_wirelength*(1 + swr*0.8)
+		else:
+			$MeshBallLine.scale.z = pickedwire.min_wirelength
 
 func vr_right_button_release(button: int):
 	print("--vr right button release ", button)
@@ -70,6 +112,8 @@ func addnewstrut(stransform):
 	$Balls.add_child(pickablestrut.EndBallB)
 	$Struts.add_child(pickablestrut)
 	return pickablestrut
+
+
 
 func addnewwire(ballA, ballB):
 	for wire in $Wires.get_children():
