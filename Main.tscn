@@ -1,4 +1,4 @@
-[gd_scene load_steps=55 format=2]
+[gd_scene load_steps=53 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
@@ -9,7 +9,7 @@
 [ext_resource path="res://addons/LorienInfiniteCanvas/InfiniteCanvas.tscn" type="PackedScene" id=7]
 [ext_resource path="res://addons/godot-xr-tools/functions/movement_turn.tscn" type="PackedScene" id=8]
 [ext_resource path="res://VRPlayerAvatar.tscn" type="PackedScene" id=9]
-[ext_resource path="res://tensegrityexperiments/TensegrityExperiments.gd" type="Script" id=10]
+[ext_resource path="res://tensegrityexperiments/TensegrityExperiments.tscn" type="PackedScene" id=10]
 [ext_resource path="res://addons/player-networking/NetworkGateway.tscn" type="PackedScene" id=11]
 [ext_resource path="res://addons/godot-xr-tools/objects/pickable.gd" type="Script" id=12]
 [ext_resource path="res://addons/godot-xr-tools/functions/function_pickup.tscn" type="PackedScene" id=13]
@@ -159,13 +159,6 @@ flags_transparent = true
 flags_unshaded = true
 flags_no_depth_test = true
 albedo_color = Color( 0.141176, 0.811765, 0.862745, 0.556863 )
-
-[sub_resource type="CubeMesh" id=44]
-size = Vector3( 0.01, 0.02, 1 )
-
-[sub_resource type="SpatialMaterial" id=45]
-resource_local_to_scene = true
-albedo_color = Color( 0.74902, 0.670588, 0.196078, 1 )
 
 [node name="Main" type="Spatial"]
 script = ExtResource( 1 )
@@ -406,20 +399,7 @@ mesh = SubResource( 36 )
 skeleton = NodePath("../..")
 material/0 = SubResource( 37 )
 
-[node name="TensegrityExperiments" type="Spatial" parent="."]
-script = ExtResource( 10 )
-
-[node name="Balls" type="Spatial" parent="TensegrityExperiments"]
-
-[node name="Wires" type="Spatial" parent="TensegrityExperiments"]
-
-[node name="Struts" type="Spatial" parent="TensegrityExperiments"]
-
-[node name="MeshBallLine" type="MeshInstance" parent="TensegrityExperiments"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 0.3, 0, 0, 0 )
-visible = false
-mesh = SubResource( 44 )
-material/0 = SubResource( 45 )
+[node name="TensegrityExperiments" parent="." instance=ExtResource( 10 )]
 
 [editable path="FPController"]
 [editable path="FPController/OpenXRallhandsdata"]

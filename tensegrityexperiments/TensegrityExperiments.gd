@@ -12,8 +12,8 @@ func _ready():
 	righthandcontroller.connect("button_release", self, "vr_right_button_release")
 	righthandcontroller.get_node("FunctionPickup").connect("has_picked_up", self, "vr_right_picked_up")
 	righthandcontroller.get_node("FunctionPickup").connect("has_dropped", self, "vr_right_dropped")
-	var strut1 = addnewstrut(Transform(Basis(Vector3(0,1,0), deg2rad(45)), Vector3(0,1.15,-0.6)))
-	var strut2 = addnewstrut(Transform(Basis(Vector3(0,1,0), deg2rad(45)), Vector3(0.4,1.15,-0.6)))
+	var strut1 = addnewstrut(Transform(Basis(Vector3(1,1,0), deg2rad(45)), Vector3(1,1.15,-0.6)))
+	var strut2 = addnewstrut(Transform(Basis(Vector3(1,1,0), deg2rad(45)), Vector3(1.4,1.15,-0.6)))
 	addnewwire(strut1.EndBallA, strut2.EndBallB)
 	
 var ballfromline = null
@@ -89,6 +89,22 @@ func _physics_process(delta):
 				$MeshBallLine.scale.z = pickedwire.min_wirelength*(1 + swr*0.8)
 		else:
 			$MeshBallLine.scale.z = pickedwire.min_wirelength
+	ballwires(delta)
+
+var ballsumvec = Vector3(0,0,0)
+var ballsumN = 0
+var ballsumFrame = 0
+var pullingspeed = 0.2
+var ballFrameN = 0
+func ballwires(delta):
+	ballFrameN += 1
+	var ds = pullingspeed*delta
+	for wire in $Wires.get_children():
+		if not wire.is_picked_up():
+			wire.recpulledwire(ballFrameN, ds)
+	for ball in $Balls.get_children():
+		ball.settosumpt(ballFrameN)
+
 
 func vr_right_button_release(button: int):
 	print("--vr right button release ", button)
@@ -132,6 +148,3 @@ func _input(event):
 			if event.scancode == KEY_2:
 				$Balls/Ball.translation += Vector3(0.5,0,0)
 			
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
