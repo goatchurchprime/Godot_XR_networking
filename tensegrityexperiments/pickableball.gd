@@ -18,10 +18,11 @@ func addsumpt(pt, ballFrameN):
 		ballsumN = 1
 		ballsumvec = pt
 
-func settosumpt(ballFrameN):
+func getsumpt(ballFrameN):
 	if ballsumFrameN == ballFrameN:
-		translation = ballsumvec/ballsumN
-
+		return ballsumvec/ballsumN
+	return translation
+	
 func _ready() -> void:
 	set_mode(RigidBody.MODE_KINEMATIC)
 	reset_transform_on_pickup = false

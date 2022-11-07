@@ -16,6 +16,12 @@ func _ready():
 	var strut2 = addnewstrut(Transform(Basis(Vector3(1,1,0), deg2rad(45)), Vector3(1.4,1.15,-0.6)))
 	addnewwire(strut1.EndBallA, strut2.EndBallB)
 	
+	var handuihook = lefthandcontroller.get_node("HandUIHook")
+	handuihook.remote_path = handuihook.get_path_to($tensegrityUI)
+
+	$tensegrityUI/Viewport/Control/strutplus.connect("pressed", self, "strutplusbutton")
+	
+	
 var ballfromline = null
 var pickedwire = null
 var pickedwirecontrollerinvbasis = Basis()
@@ -66,8 +72,13 @@ func vr_right_button_pressed(button: int):
 		else:
 			addnewstrut(righthandcontroller.global_transform)
 
-
-		
+func strutplusbutton():
+	print("extending all struts by 0.1")
+	for wire in $Wires.get_children():
+		wire.bpulledsolid = false
+	for strut in $Struts.get_children():
+		strut.strut_length += 0.1
+		strut.get_node("MeshStrut").scale.z = strut.strut_length
 
 var Dwr = 0
 func _physics_process(delta):
@@ -102,8 +113,8 @@ func ballwires(delta):
 	for wire in $Wires.get_children():
 		if not wire.is_picked_up():
 			wire.recpulledwire(ballFrameN, ds)
-	for ball in $Balls.get_children():
-		ball.settosumpt(ballFrameN)
+	for strut in $Struts.get_children():
+		strut.setstrutends(ballFrameN)
 
 
 func vr_right_button_release(button: int):
@@ -147,4 +158,5 @@ func _input(event):
 		if event.pressed:
 			if event.scancode == KEY_2:
 				$Balls/Ball.translation += Vector3(0.5,0,0)
-			
+				for wire in $Wires.get_children():
+					wire.bpulledsolid = false

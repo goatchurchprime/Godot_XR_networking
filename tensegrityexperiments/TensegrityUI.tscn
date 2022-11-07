@@ -1,0 +1,21 @@
+[gd_scene format=2]
+
+[node name="Control" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="strutplus" type="Button" parent="."]
+margin_left = 21.0
+margin_top = 12.0
+margin_right = 87.0
+margin_bottom = 32.0
+text = "strut+"
+
+[node name="OptionButton" type="OptionButton" parent="."]
+margin_left = 113.0
+margin_top = 12.0
+margin_right = 236.0
+margin_bottom = 32.0
+text = "no-group"
+items = [ "no-group", null, false, 0, null, "wiregroup 1", null, false, 1, null, "wiregroup 2", null, false, 2, null ]
+selected = 0

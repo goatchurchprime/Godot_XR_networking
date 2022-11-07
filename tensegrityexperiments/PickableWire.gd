@@ -13,12 +13,14 @@ const colwire = Color(0.18, 0.13, 0.2, 1.0)
 const colwiresolid = Color(0.18, 0.13, 0.5, 1.0)
 const colwiresolidslack = Color(0.38, 0.13, 0.2, 1.0)
 
+var bpulledsolid = false
+var bslack = false
+var rotprism = Basis(Vector3(0,1,0), deg2rad(90))
+
 func _ready() -> void:
 	set_mode(RigidBody.MODE_KINEMATIC)
 	reset_transform_on_pickup = false
 	ranged_grab_method = RangedMethod.LERP
-#	$SMeshWire/MeshWire.get_surface_material(0).albedo_color = colwire
-#	$SMeshWire/MeshWire.scale.z = 0.1
 
 
 func recpulledwire(ballFrameN, ds):
@@ -29,8 +31,9 @@ func recpulledwire(ballFrameN, ds):
 	$CollisionShape.shape.extents.z = veclen
 
 	if not bpulledsolid and veclen - ds >= min_wirelength:
-		EndBallA.addsumpt(EndBallA.translation + vec*(ds/veclen), ballFrameN)
-		EndBallB.addsumpt(EndBallB.translation - vec*(ds/veclen), ballFrameN)
+		var evec = vec*(ds/min_wirelength)
+		EndBallA.addsumpt(EndBallA.translation + evec, ballFrameN)
+		EndBallB.addsumpt(EndBallB.translation - evec, ballFrameN)
 	else:
 		bpulledsolid = true
 		bslack = (veclen < min_wirelength + ds)
@@ -41,10 +44,6 @@ func recpulledwire(ballFrameN, ds):
 	$SMeshWire.transform = Transform(Basis(), Vector3(0,0,0))
 	$SMeshWire/MeshWire.scale.y = veclen
 	$SMeshWire2.visible = false
-
-var bpulledsolid = false
-var bslack = false
-var rotprism = Basis(Vector3(0,1,0), deg2rad(90))
 
 
 func _physics_process(delta):
