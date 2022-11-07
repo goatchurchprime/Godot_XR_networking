@@ -8,6 +8,11 @@ onready var righthandcontroller = get_node("/root/Main/FPController/RightHandCon
 onready var lefthandcontroller = get_node("/root/Main/FPController/LeftHandController")
 
 func _ready():
+	if not visible:
+		set_physics_process(false)
+		$tensegrityUI.enabled = false
+		return
+		
 	righthandcontroller.connect("button_pressed", self, "vr_right_button_pressed")
 	righthandcontroller.connect("button_release", self, "vr_right_button_release")
 	righthandcontroller.get_node("FunctionPickup").connect("has_picked_up", self, "vr_right_picked_up")

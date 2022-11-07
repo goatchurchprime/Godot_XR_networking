@@ -21,6 +21,14 @@ func _ready():
 	loriencavassizescalingfac = Vector2(loriencanvasviewportsize.x/loriencavasscreensize.x, -loriencanvasviewportsize.y/loriencavasscreensize.y)
 	$ViewportLorienCanvas/Viewport/InfiniteCanvas.set_brush_size(4.0)
 
+	var handuihook = FPController.get_node("LeftHandController/HandUIHook")
+	handuihook.remote_path = handuihook.get_path_to($lorienUI)
+
+	$lorienUI/Viewport/Control/record.connect("toggled", self, "recordbutton")
+
+func recordbutton(button_pressed: bool):
+	print("recordbuttonrecordbutton ", button_pressed)
+	
 
 var Dw = 2
 
