@@ -1,4 +1,4 @@
-[gd_scene load_steps=51 format=2]
+[gd_scene load_steps=53 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
@@ -9,8 +9,10 @@
 [ext_resource path="res://addons/LorienInfiniteCanvas/InfiniteCanvas.tscn" type="PackedScene" id=7]
 [ext_resource path="res://addons/godot-xr-tools/functions/movement_turn.tscn" type="PackedScene" id=8]
 [ext_resource path="res://VRPlayerAvatar.tscn" type="PackedScene" id=9]
+[ext_resource path="res://tensegrityexperiments/TensegrityExperiments.tscn" type="PackedScene" id=10]
 [ext_resource path="res://addons/player-networking/NetworkGateway.tscn" type="PackedScene" id=11]
 [ext_resource path="res://addons/godot-xr-tools/objects/pickable.gd" type="Script" id=12]
+[ext_resource path="res://addons/godot-xr-tools/functions/function_pickup.tscn" type="PackedScene" id=13]
 [ext_resource path="res://click04.wav" type="AudioStream" id=14]
 [ext_resource path="res://addons/godot-xr-tools/objects/viewport_2d_in_3d.tscn" type="PackedScene" id=15]
 [ext_resource path="res://LorienHandControls.gd" type="Script" id=17]
@@ -173,24 +175,29 @@ far = 1000.0
 [node name="LeftHandController" parent="FPController" index="2"]
 visible = true
 
-[node name="Function_Direct_movement" parent="FPController/LeftHandController" index="0" instance=ExtResource( 5 )]
-enabled = true
-order = 10
-max_speed = 5.0
+[node name="MovementDirect" parent="FPController/LeftHandController" index="0" instance=ExtResource( 5 )]
+max_speed = 3.0
 strafe = true
+
+[node name="FunctionPickup" parent="FPController/LeftHandController" index="1" instance=ExtResource( 13 )]
+grab_collision_mask = 4097
+ranged_collision_mask = 4097
+
+[node name="HandUIHook" type="RemoteTransform" parent="FPController/LeftHandController" index="2"]
+transform = Transform( -4.37114e-08, -1, 0, 0.707107, -3.09086e-08, 0.707107, -0.707107, 3.09086e-08, 0.707107, -0.1, 0, 0 )
 
 [node name="RightHandController" parent="FPController" index="3"]
 visible = true
 
-[node name="Function_pointer" parent="FPController/RightHandController" index="0" instance=ExtResource( 6 )]
-show_target = true
-collision_mask = 523263
+[node name="FunctionPickup" parent="FPController/RightHandController" index="0" instance=ExtResource( 13 )]
+grab_collision_mask = 4097
+ranged_collision_mask = 4097
 
-[node name="Function_Turn_movement" parent="FPController/RightHandController" index="1" instance=ExtResource( 8 )]
-step_turn_angle = 30.0
+[node name="MovementTurn" parent="FPController/RightHandController" index="1" instance=ExtResource( 8 )]
+
+[node name="FunctionPointer" parent="FPController/RightHandController" index="2" instance=ExtResource( 6 )]
 
 [node name="PlayerBody" parent="FPController" instance=ExtResource( 4 )]
-enabled = false
 
 [node name="OpenXRallhandsdata" parent="FPController" instance=ExtResource( 18 )]
 
@@ -227,7 +234,6 @@ contact_monitor = true
 can_sleep = false
 angular_velocity = Vector3( 5, 0, 0 )
 script = ExtResource( 12 )
-reset_transform_on_pickup = false
 
 [node name="CollisionShape" type="CollisionShape" parent="SportBall"]
 shape = SubResource( 7 )
@@ -299,6 +305,7 @@ visible = false
 extents = Vector3( 12, 10, 13 )
 
 [node name="LorienHandControls" type="Spatial" parent="."]
+visible = false
 script = ExtResource( 17 )
 
 [node name="ViewportLorienCanvas" parent="LorienHandControls" instance=ExtResource( 15 )]
@@ -396,6 +403,8 @@ visible = false
 mesh = SubResource( 36 )
 skeleton = NodePath("../..")
 material/0 = SubResource( 37 )
+
+[node name="TensegrityExperiments" parent="." instance=ExtResource( 10 )]
 
 [editable path="FPController"]
 [editable path="FPController/OpenXRallhandsdata"]

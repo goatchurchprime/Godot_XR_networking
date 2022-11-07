@@ -1,0 +1,37 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://addons/godot-xr-tools/objects/pickable.tscn" type="PackedScene" id=1]
+[ext_resource path="res://tensegrityexperiments/PickableStrut.gd" type="Script" id=2]
+
+[sub_resource type="BoxShape" id=1]
+extents = Vector3( 0.01, 0.01, 0.15 )
+
+[sub_resource type="CubeMesh" id=2]
+size = Vector3( 0.02, 0.02, 1 )
+
+[sub_resource type="SpatialMaterial" id=3]
+resource_local_to_scene = true
+albedo_color = Color( 0.298039, 0.717647, 0.972549, 1 )
+
+[node name="Strut" instance=ExtResource( 1 )]
+collision_layer = 4096
+collision_mask = 4096
+mode = 3
+script = ExtResource( 2 )
+snap_distance = 0.3
+
+[node name="CollisionShape" parent="." index="1"]
+shape = SubResource( 1 )
+
+[node name="MeshStrut" type="MeshInstance" parent="." index="2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 0.3, 0, 0, 0 )
+mesh = SubResource( 2 )
+material/0 = SubResource( 3 )
+
+[node name="MeshStrut2" type="MeshInstance" parent="." index="3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 0.3, 0, 0, 0 )
+visible = false
+mesh = SubResource( 2 )
+material/0 = SubResource( 3 )
+
+[connection signal="highlight_updated" from="." to="." method="_on_PickableStrut_highlight_updated"]
