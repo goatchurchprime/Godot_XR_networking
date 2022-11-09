@@ -159,9 +159,10 @@ func addnewwire(ballA, ballB):
 	$Wires.add_child(pickablewire)
 
 func _input(event):
-	if event is InputEventKey:
-		if event.pressed:
-			if event.scancode == KEY_2:
-				$Balls/Ball.translation += Vector3(0.5,0,0)
-				for wire in $Wires.get_children():
-					wire.bpulledsolid = false
+	if visible:
+		if event is InputEventKey:
+			if event.pressed:
+				if event.scancode == KEY_2:
+					$Balls/Ball.translation += Vector3(0.5,0,0)
+					for wire in $Wires.get_children():
+						wire.bpulledsolid = false
