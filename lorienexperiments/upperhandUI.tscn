@@ -47,16 +47,19 @@ margin_bottom = 1.0
 text = "Pen Color
 "
 
-[node name="TableY" type="VSlider" parent="."]
+[node name="Flathandsurfacedepth" type="VSlider" parent="."]
 margin_left = 13.0
 margin_top = 22.0
 margin_right = 29.0
 margin_bottom = 226.0
-value = 50.0
-tick_count = 3
+min_value = -0.05
+max_value = 0.05
+step = 0.001
+value = -0.02
+tick_count = 21
 ticks_on_borders = true
 
-[node name="Label" type="Label" parent="TableY"]
+[node name="Label" type="Label" parent="Flathandsurfacedepth"]
 margin_left = -10.0
 margin_top = -18.0
 margin_right = 31.0
@@ -68,7 +71,8 @@ margin_left = 65.0
 margin_top = 22.0
 margin_right = 81.0
 margin_bottom = 221.0
-tick_count = 12
+max_value = 200.0
+tick_count = 21
 ticks_on_borders = true
 
 [node name="Label" type="Label" parent="ActiveDY"]
@@ -77,3 +81,37 @@ margin_top = -18.0
 margin_right = 42.0
 margin_bottom = -4.0
 text = "Active dY"
+
+[node name="precolors" type="Control" parent="."]
+margin_left = 238.0
+margin_top = 52.0
+margin_right = 282.0
+margin_bottom = 110.0
+
+[node name="Precolor1" type="Button" parent="precolors"]
+margin_left = -5.0
+margin_top = 4.0
+margin_right = 37.0
+margin_bottom = 29.0
+text = "     "
+
+[node name="ColorRect" type="ColorRect" parent="precolors/Precolor1"]
+margin_left = 7.0
+margin_top = 5.0
+margin_right = 37.0
+margin_bottom = 20.0
+color = Color( 0.909804, 0.0627451, 0.0627451, 1 )
+
+[node name="Precolor2" type="Button" parent="precolors"]
+margin_left = -4.0
+margin_top = 33.0
+margin_right = 35.0
+margin_bottom = 58.0
+text = "     "
+
+[node name="ColorRect" type="ColorRect" parent="precolors/Precolor2"]
+margin_left = 5.0
+margin_top = 4.0
+margin_right = 35.0
+margin_bottom = 19.0
+color = Color( 0.0627451, 0.831373, 0.909804, 1 )

@@ -218,9 +218,11 @@ sides = 16
 
 [node name="ClickPress" type="AudioStreamPlayer3D" parent="upperhandUI/Cursor"]
 stream = ExtResource( 2 )
+unit_db = -18.0
 pitch_scale = 1.27
 
 [node name="ClickRelease" type="AudioStreamPlayer3D" parent="upperhandUI/Cursor"]
 stream = ExtResource( 2 )
+unit_db = -18.0
 
 [editable path="upperhandUI"]
