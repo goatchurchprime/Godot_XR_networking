@@ -20,10 +20,8 @@ func _ready():
 	loriencanvasOrigin = $ViewportLorienCanvas.translation
 	$ViewportLorienCanvas/Viewport/InfiniteCanvas.set_brush_size(4.0)
 
-	var handuihook = FPController.get_node("LeftHandController/HandUIHook")
-	handuihook.remote_path = handuihook.get_path_to($lorienUI)
-
-	$lorienUI/Viewport/Control/record.connect("toggled", self, "recordbutton")
+	$upperhandUI/Viewport/Control/record.connect("toggled", self, "recordbutton")
+	$upperhandUI/Viewport/Control/Halfsize.connect("toggled", self, "onhalfsizetoggled")
 
 	$shrinkavatartransform/pencircleR.inner_radius = pencircleRad
 	$shrinkavatartransform/pencircleR.outer_radius = pencircleRad*1.1
@@ -128,6 +126,11 @@ func setshrinkavatartransform():
 	LocalPlayer.shrinkavatartransform = $shrinkavatartransform.transform
 	LocalPlayer.get_node("HeadCam").visible = false
 
+func onhalfsizetoggled(button_pressed: bool):
+	shrinkfactor = 0.5 if button_pressed else 1.0
+	panvec = Vector2(0,0)
+	setshrinkavatartransform()
+
 var flathandactive = 0
 func flathandsresetdetection(delta):
 	var flathandscoreL = flathandscore(OpenXRallhandsdata.joint_transforms_L) if (OpenXRallhandsdata.is_active_L and OpenXRallhandsdata.palm_joint_confidence_L == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH) else 0.0
@@ -140,11 +143,6 @@ func flathandsresetdetection(delta):
 		resetflat = flathandresetdetection(OpenXRallhandsdata.joint_transforms_R, flathandscoreR, delta)
 		flathandactive = 0 if $shrinkavatartransform/flathandmarker.scale.z == 0.0 else 2 
 	if resetflat:
-		if shrinkfactor == 1.0:
-			shrinkfactor = 0.5
-		else:
-			shrinkfactor = 1.0
-			panvec = Vector2(0,0)
 		setshrinkavatartransform()
 
 var sinpalmsidedirectionrange = sin(deg2rad(20))
@@ -179,11 +177,14 @@ func sidehandknuckle(joint_transforms, fistdragmarker, delta):
 	return null
 
 
+
+
 var lorientcanvasknucklethickness = 0.02
 var panningspeedfactor = 1.5
 
 var sidehandknuckleposL = null
 var sidehandknuckleposR = null
+
 
 func sidehanddragdetection(delta):
 	var NsidehandknuckleposL = sidehandknuckle(OpenXRallhandsdata.joint_transforms_L, $shrinkavatartransform/fistdragmarkerL, delta) if (OpenXRallhandsdata.is_active_L and OpenXRallhandsdata.palm_joint_confidence_L == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH) else null
@@ -268,9 +269,65 @@ func getpenindexfingertransform(bleft):
 					return indexfingertransform
 	return null
 
+var sinpalmtrigger = sin(deg2rad(55))
+var sinpalmkeep = sin(deg2rad(25))
+
+var indexupper_last_collided_at = Vector3(0,0,0)
+var indexpressed = false
+var upperhandUIheight = 0.05
+var upperhandUIcontactdistance = -0.005
+var upperhandUIcontactdistancedetach = 0.01
+func upperhanddetection(delta):
+	if not (OpenXRallhandsdata.is_active_R and OpenXRallhandsdata.palm_joint_confidence_R == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH):
+		return
+	var joint_transforms = OpenXRallhandsdata.joint_transforms_R
+	var palmupbasisy = -joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_PALM_EXT].basis.y.y
+
+	if not $upperhandUI.visible and palmupbasisy > sinpalmtrigger:
+		$upperhandUI.translation = FPController.global_transform.xform(joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_INDEX_TIP_EXT].origin + Vector3(0.0 ,upperhandUIheight, 0.0))
+		$upperhandUI.visible = true
+		$upperhandUI.enabled = true
+		indexupper_last_collided_at = $upperhandUI.translation
+		$upperhandUI/StaticBody.emit_signal("pointer_entered")
+		$upperhandUI/StaticBody.emit_signal("pointer_moved", indexupper_last_collided_at, indexupper_last_collided_at)
+		$upperhandUI/Cursor.visible = true
+
+	if $upperhandUI.visible:
+		if palmupbasisy > sinpalmkeep:
+			var indexupper_new_at = FPController.global_transform.xform(joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_INDEX_TIP_EXT].origin)
+			if indexupper_last_collided_at != indexupper_new_at:
+				$upperhandUI/StaticBody.emit_signal("pointer_moved", indexupper_last_collided_at, indexupper_new_at)
+				var cpos = $upperhandUI.transform.xform_inv(indexupper_new_at)
+				$upperhandUI/Cursor.translation = Vector3(cpos.x, cpos.y, 0.0)
+				indexupper_last_collided_at = indexupper_new_at
+				
+			var ybelow = $upperhandUI.translation.y - indexupper_new_at.y 
+			if not indexpressed:
+				if ybelow < upperhandUIcontactdistance:
+					$upperhandUI/StaticBody.emit_signal("pointer_pressed", indexupper_new_at)
+					indexpressed = true
+					$upperhandUI/Cursor.visible = false
+					$upperhandUI/Cursor/ClickPress.play()
+			else:
+				if ybelow > upperhandUIcontactdistancedetach:
+					$upperhandUI/StaticBody.emit_signal("pointer_released", indexupper_new_at)
+					$upperhandUI/Cursor/ClickRelease.play()
+					indexpressed = false
+					$upperhandUI/Cursor.visible = true
+				
+		else:
+			if indexpressed:
+				$upperhandUI/StaticBody.emit_signal("pointer_released", indexupper_last_collided_at)
+				indexpressed = true
+			$upperhandUI/StaticBody.emit_signal("pointer_exited")
+			$upperhandUI.visible = false
+			$upperhandUI.enabled = false
+
 func _physics_process(delta):
 	flathandsresetdetection(delta)
 	sidehanddragdetection(delta)
+	upperhanddetection(delta)
+	
 	var bflathandmarkeractive = ($shrinkavatartransform/flathandmarker.scale.z != 0.0)
 
 	var rightindexfingertransform = getpenindexfingertransform(false) if not bflathandmarkeractive else null

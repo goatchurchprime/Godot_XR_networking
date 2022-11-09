@@ -1,0 +1,79 @@
+[gd_scene format=2]
+
+[node name="Control" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -724.0
+margin_bottom = -300.0
+
+[node name="record" type="Button" parent="."]
+margin_left = 209.0
+margin_top = 140.0
+margin_right = 301.0
+margin_bottom = 183.0
+toggle_mode = true
+text = "record finger"
+
+[node name="OptionButton" type="OptionButton" parent="."]
+margin_left = 170.0
+margin_top = 211.0
+margin_right = 293.0
+margin_bottom = 231.0
+text = "no-group"
+items = [ "no-group", null, false, 0, null, "wiregroup 1", null, false, 1, null, "wiregroup 2", null, false, 2, null ]
+selected = 0
+
+[node name="Halfsize" type="CheckBox" parent="."]
+margin_left = 10.0
+margin_top = 248.0
+margin_right = 93.0
+margin_bottom = 272.0
+text = "Half size"
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="."]
+margin_left = 242.0
+margin_top = 23.0
+margin_right = 319.0
+margin_bottom = 71.0
+rect_scale = Vector2( 0.5, 0.5 )
+text = "pencil"
+color = Color( 1, 1, 1, 1 )
+edit_alpha = false
+
+[node name="Label" type="Label" parent="ColorPickerButton"]
+margin_top = -30.0
+margin_right = 40.0
+margin_bottom = 1.0
+text = "Pen Color
+"
+
+[node name="TableY" type="VSlider" parent="."]
+margin_left = 13.0
+margin_top = 22.0
+margin_right = 29.0
+margin_bottom = 226.0
+value = 50.0
+tick_count = 3
+ticks_on_borders = true
+
+[node name="Label" type="Label" parent="TableY"]
+margin_left = -10.0
+margin_top = -18.0
+margin_right = 31.0
+margin_bottom = -4.0
+text = "TableY"
+
+[node name="ActiveDY" type="VSlider" parent="."]
+margin_left = 65.0
+margin_top = 22.0
+margin_right = 81.0
+margin_bottom = 221.0
+tick_count = 12
+ticks_on_borders = true
+
+[node name="Label" type="Label" parent="ActiveDY"]
+margin_left = -17.0
+margin_top = -18.0
+margin_right = 42.0
+margin_bottom = -4.0
+text = "Active dY"

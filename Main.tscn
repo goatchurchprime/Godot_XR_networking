@@ -103,6 +103,7 @@ ranged_collision_mask = 4097
 [node name="MovementTurn" parent="FPController/RightHandController" index="1" instance=ExtResource( 8 )]
 
 [node name="FunctionPointer" parent="FPController/RightHandController" index="2" instance=ExtResource( 6 )]
+collision_mask = 515071
 
 [node name="PlayerBody" parent="FPController" instance=ExtResource( 4 )]
 
