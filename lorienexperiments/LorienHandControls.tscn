@@ -196,7 +196,8 @@ outer_radius = 0.011
 sides = 16
 
 [node name="upperhandUI" parent="." instance=ExtResource( 3 )]
-transform = Transform( -4.37114e-08, 1, 4.37114e-08, 0, -4.37114e-08, 1, 1, 4.37114e-08, 1.91069e-15, 0, 0.938095, -0.831724 )
+transform = Transform( -0.544639, -0.838671, -3.66595e-08, 0, -4.37114e-08, 1, -0.838671, 0.544639, 2.38069e-08, 0, 0.938095, -0.831724 )
+visible = false
 enabled = false
 screen_size = Vector2( 0.15, 0.15 )
 viewport_size = Vector2( 300, 300 )

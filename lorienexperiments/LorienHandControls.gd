@@ -130,6 +130,7 @@ func flathandresetdetection(joint_transforms, flathandscore, delta):
 					flathandOrigin = palmtransform.origin
 					loriencanvasOrigin = flathandOrigin - Vector3(0, flathandsurfacedepth, 0)
 					$ViewportLorienCanvas.translation = loriencanvasOrigin
+					$ViewportLorienCanvas.rotation_degrees.y = flathandmarker.rotation_degrees.y
 					flathandmarker.visible = false
 					return true
 	if flathandscore < 0.5:
@@ -331,6 +332,8 @@ func upperhanddetection(delta):
 
 	if not $upperhandUI.visible and palmupbasisy > sinpalmtrigger:
 		$upperhandUI.translation = $shrinkavatartransform.transform.xform(FPController.global_transform.xform(joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_INDEX_TIP_EXT].origin + Vector3(0.0 ,upperhandUIheight, 0.0)))
+		var arvrcameratransform = FPController.get_node("ARVRCamera").global_transform
+		$upperhandUI.rotation_degrees.y = 90-rad2deg(Vector2(arvrcameratransform.basis.z.x, arvrcameratransform.basis.z.z).angle())
 		$upperhandUI.visible = true
 		$upperhandUI.enabled = true
 		indexupper_last_collided_at = $upperhandUI.translation
