@@ -126,6 +126,7 @@ shape = SubResource( 6 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.401293, 1.48204, -2.6145 )
 viewport_size = Vector2( 550, 400 )
 scene = ExtResource( 11 )
+collision_layer = 8704
 
 [node name="Players" type="Spatial" parent="."]
 

@@ -18,14 +18,14 @@ var flathandsurfacedepth = 0.020
 
 var pencircleRad = 0.01
 
-
+var lorienproject = null
 func _ready():
 	if has_node("ViewportLorienCanvas"):
 #		$ViewportLorienCanvas.connect("pointer_entered", $ViewportLorienCanvas/Viewport/InfiniteCanvas, "enable")
 #		$ViewportLorienCanvas.connect("pointer_exited", $ViewportLorienCanvas/Viewport/InfiniteCanvas, "disable")
-		var project = LorAL.ProjectManager.add_project()
-		LorAL.ProjectManager.make_project_active(project)
-		$ViewportLorienCanvas/Viewport/InfiniteCanvas.use_project(project)
+		lorienproject = LorAL.ProjectManager.add_project()
+		LorAL.ProjectManager.make_project_active(lorienproject)
+		$ViewportLorienCanvas/Viewport/InfiniteCanvas.use_project(lorienproject)
 
 	$ViewportLorienCanvas/Viewport/InfiniteCanvas.enable()
 	loriencanvasOrigin = $ViewportLorienCanvas.translation
@@ -234,6 +234,24 @@ func sidehanddragdetection(delta):
 		#panvec += -shrinkfactor*Vector2(kpvec.x, kpvec.z)
 		#setshrinkavatartransform()
 
+var thumbontable = false
+func thumbdownundodetection(delta):
+	if not (OpenXRallhandsdata.is_active_R and OpenXRallhandsdata.palm_joint_confidence_R == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH):
+		return
+	var joint_transforms = OpenXRallhandsdata.joint_transforms_R
+	var thumbpos = FPController.global_transform.xform(joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_THUMB_TIP_EXT].origin)
+	var thumbabovetable = thumbpos.y - loriencanvasOrigin.y
+	if not thumbontable:
+		if thumbabovetable < activefingerheight:
+			var thumbfingerbasis = FPController.global_transform.basis*joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_THUMB_DISTAL_EXT].basis
+			if thumbfingerbasis.z.y > 0.7:
+				print("\nThumb table jab!!!")	
+				lorienproject.undo_redo.undo()
+			thumbontable = true
+	else:
+		if thumbabovetable > activefingerheight*2:
+			thumbontable = false
+	
 
 var mpos = Vector2(0,0)
 var buttonmask = 0
@@ -282,6 +300,7 @@ func penmarkerdetection(indexfingertransform, pencircle, delta):
 		mousemotionevent.set_relative(sposvec)
 		mousemotionevent.set_button_mask(buttonmask)
 		mousemotionevent.set_pressure(1.0)
+		#mousemotionevent.set_tilt()
 		$ViewportLorienCanvas/Viewport.input(mousemotionevent)
 		mpos = spos
 
@@ -374,5 +393,8 @@ func _physics_process(delta):
 	sidehanddragdetection(delta)
 	upperhanddetection(delta)
 	fingerdrawing(delta)
-	
+	var bflathandmarkeractive = ($shrinkavatartransform/flathandmarker.scale.z != 0.0)
+	if buttonmask == 0 and not bflathandmarkeractive:
+		thumbdownundodetection(delta)
+
 
