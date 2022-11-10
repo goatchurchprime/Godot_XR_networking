@@ -7,28 +7,30 @@ margin_right = -724.0
 margin_bottom = -300.0
 
 [node name="record" type="Button" parent="."]
-margin_left = 209.0
-margin_top = 140.0
-margin_right = 301.0
-margin_bottom = 183.0
+margin_left = 346.0
+margin_top = 179.0
+margin_right = 439.0
+margin_bottom = 201.0
 toggle_mode = true
 text = "record finger"
 
-[node name="OptionButton" type="OptionButton" parent="."]
-margin_left = 170.0
-margin_top = 211.0
-margin_right = 293.0
-margin_bottom = 231.0
-text = "no-group"
-items = [ "no-group", null, false, 0, null, "wiregroup 1", null, false, 1, null, "wiregroup 2", null, false, 2, null ]
+[node name="ToolSelection" type="OptionButton" parent="."]
+margin_left = 148.0
+margin_top = 235.0
+margin_right = 301.0
+margin_bottom = 281.0
+text = "Brush"
+items = [ "Brush", null, false, 0, null, "Rectangle", null, false, 1, null, "Circle", null, false, 2, null, "Line", null, false, 3, null, "Eraser", null, false, 4, null ]
 selected = 0
 
-[node name="Halfsize" type="CheckBox" parent="."]
-margin_left = 10.0
-margin_top = 248.0
-margin_right = 93.0
-margin_bottom = 272.0
-text = "Half size"
+[node name="Scalesize" type="OptionButton" parent="."]
+margin_left = 12.0
+margin_top = 239.0
+margin_right = 135.0
+margin_bottom = 276.0
+text = "Scale 1"
+items = [ "Scale 1", null, false, 0, null, "Scale 0.5", null, false, 1, null, "Scale 0.25", null, false, 2, null ]
+selected = 0
 
 [node name="ColorPickerButton" type="ColorPickerButton" parent="."]
 margin_left = 242.0
@@ -100,6 +102,7 @@ margin_left = 7.0
 margin_top = 5.0
 margin_right = 37.0
 margin_bottom = 20.0
+mouse_filter = 1
 color = Color( 0.909804, 0.0627451, 0.0627451, 1 )
 
 [node name="Precolor2" type="Button" parent="precolors"]
@@ -114,4 +117,34 @@ margin_left = 5.0
 margin_top = 4.0
 margin_right = 35.0
 margin_bottom = 19.0
+mouse_filter = 1
 color = Color( 0.0627451, 0.831373, 0.909804, 1 )
+
+[node name="Precolor3" type="Button" parent="precolors"]
+margin_left = -3.0
+margin_top = 61.0
+margin_right = 36.0
+margin_bottom = 86.0
+text = "     "
+
+[node name="ColorRect" type="ColorRect" parent="precolors/Precolor3"]
+margin_left = 5.0
+margin_top = 4.0
+margin_right = 35.0
+margin_bottom = 19.0
+mouse_filter = 1
+color = Color( 0.823529, 0.909804, 0.0627451, 1 )
+
+[node name="Precolor4" type="Button" parent="precolors"]
+margin_left = -3.0
+margin_top = 91.0
+margin_right = 36.0
+margin_bottom = 116.0
+text = "     "
+
+[node name="ColorRect" type="ColorRect" parent="precolors/Precolor4"]
+margin_left = 5.0
+margin_top = 4.0
+margin_right = 35.0
+margin_bottom = 19.0
+mouse_filter = 1

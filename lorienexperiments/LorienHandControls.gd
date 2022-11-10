@@ -23,8 +23,8 @@ func _ready():
 	if has_node("ViewportLorienCanvas"):
 #		$ViewportLorienCanvas.connect("pointer_entered", $ViewportLorienCanvas/Viewport/InfiniteCanvas, "enable")
 #		$ViewportLorienCanvas.connect("pointer_exited", $ViewportLorienCanvas/Viewport/InfiniteCanvas, "disable")
-		var project = ProjectManager.add_project()
-		ProjectManager.make_project_active(project)
+		var project = LorAL.ProjectManager.add_project()
+		LorAL.ProjectManager.make_project_active(project)
 		$ViewportLorienCanvas/Viewport/InfiniteCanvas.use_project(project)
 
 	$ViewportLorienCanvas/Viewport/InfiniteCanvas.enable()
@@ -34,7 +34,7 @@ func _ready():
 	$ViewportLorienCanvas/Viewport/InfiniteCanvas.set_brush_size(4.0)
 
 	$upperhandUI/Viewport/Control/record.connect("toggled", self, "recordbutton")
-	$upperhandUI/Viewport/Control/Halfsize.connect("toggled", self, "onhalfsizetoggled")
+	$upperhandUI/Viewport/Control/Scalesize.connect("item_selected", self, "onscalesizeitemselected")
 	$upperhandUI/Viewport/Control/ActiveDY.value = activefingerheight*10000
 	$upperhandUI/Viewport/Control/ActiveDY.connect("value_changed", self, "onactivedyvaluechanged")
 	$upperhandUI/Viewport/Control/Flathandsurfacedepth.value = flathandsurfacedepth
@@ -42,6 +42,7 @@ func _ready():
 	$upperhandUI/Viewport/Control/ColorPickerButton.connect("color_changed", $ViewportLorienCanvas/Viewport/InfiniteCanvas, "set_brush_color")
 	for precolor in $upperhandUI/Viewport/Control/precolors.get_children():
 		precolor.connect("pressed", $ViewportLorienCanvas/Viewport/InfiniteCanvas, "set_brush_color", [precolor.get_child(0).color])
+	$upperhandUI/Viewport/Control/ToolSelection.connect("item_selected", $ViewportLorienCanvas/Viewport/InfiniteCanvas, "use_tool")
 
 	$shrinkavatartransform/pencircleR.inner_radius = pencircleRad
 	$shrinkavatartransform/pencircleR.outer_radius = pencircleRad*1.1
@@ -148,8 +149,8 @@ func setshrinkavatartransform():
 	LocalPlayer.shrinkavatartransform = $shrinkavatartransform.transform
 	LocalPlayer.get_node("HeadCam").visible = false
 
-func onhalfsizetoggled(button_pressed: bool):
-	shrinkfactor = 0.5 if button_pressed else 1.0
+func onscalesizeitemselected(index: int):
+	shrinkfactor = 1.0 if index == 0 else 0.5 if index == 1 else 0.25
 	panvec = Vector2(0,0)
 	setshrinkavatartransform()
 
@@ -199,7 +200,8 @@ func sidehandknuckle(joint_transforms, fistdragmarker, delta):
 		fistdragmarker.scale.z = 1.0
 		fistdragmarker.visible = true
 		fistdragmarker.translation = Vector3(littleknucklepos.x, littleknucklepos.y + fistdragmarker.scale.y*fistdragmarker.mesh.size.y*0.5, littleknucklepos.z)
-		return $ViewportLorienCanvas/StaticBody.global_to_viewport(littleknucklepos)
+		var plittleknucklepos = $shrinkavatartransform.transform.xform(littleknucklepos)
+		return $ViewportLorienCanvas/StaticBody.global_to_viewport(plittleknucklepos)
 
 	if fistdragmarker.visible:
 		fistdragmarker.scale.z = max(0.0, fistdragmarker.scale.z - delta/0.3)
@@ -348,11 +350,7 @@ func upperhanddetection(delta):
 			$upperhandUI.visible = false
 			$upperhandUI.enabled = false
 
-func _physics_process(delta):
-	flathandsresetdetection(delta)
-	sidehanddragdetection(delta)
-	upperhanddetection(delta)
-	
+func fingerdrawing(delta):
 	var bflathandmarkeractive = ($shrinkavatartransform/flathandmarker.scale.z != 0.0)
 
 	var rightindexfingertransform = getpenindexfingertransform(false) if not bflathandmarkeractive else null
@@ -369,4 +367,12 @@ func _physics_process(delta):
 		$shrinkavatartransform/LeftIndexFinger.visible = true
 	else:
 		$shrinkavatartransform/LeftIndexFinger.visible = false
+
+
+func _physics_process(delta):
+	flathandsresetdetection(delta)
+	sidehanddragdetection(delta)
+	upperhanddetection(delta)
+	fingerdrawing(delta)
+	
 

@@ -456,11 +456,7 @@ enable_audio_input=true
 
 [autoload]
 
-Settings="*res://addons/LorienInfiniteCanvas/Misc/Settings.gd"
-Utils="*res://addons/LorienInfiniteCanvas/Misc/Utils.gd"
-BrushStrokeTexture="*res://addons/LorienInfiniteCanvas/BrushStroke/BrushStrokeTexture.gd"
-ProjectManager="*res://addons/LorienInfiniteCanvas/ProjectManager/ProjectManager.gd"
-ProjectMetadata="*res://addons/LorienInfiniteCanvas/ProjectManager/ProjectMetadata.gd"
+LorAL="*res://addons/LorienInfiniteCanvas/LorAL.tscn"
 
 [editor_plugins]
 
