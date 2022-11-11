@@ -363,7 +363,7 @@ func upperhanddetection(delta):
 					$upperhandUI/StaticBody.emit_signal("pointer_pressed", indexupper_new_at)
 					indexpressed = true
 					#$upperhandUI/Cursor.visible = false
-					$upperhandUI/Cursor.scale = Vector3(5,1,5)
+					$upperhandUI/Cursor.scale = Vector3(2,1,2)
 					$upperhandUI/Cursor/ClickPress.play()
 			else:
 				if ybelow > upperhandUIcontactdistancedetach:
