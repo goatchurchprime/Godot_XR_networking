@@ -8,6 +8,11 @@ onready var righthandcontroller = get_node("/root/Main/FPController/RightHandCon
 onready var lefthandcontroller = get_node("/root/Main/FPController/LeftHandController")
 
 func _ready():
+	if not visible:
+		set_physics_process(false)
+		$tensegrityUI.enabled = false
+		return
+		
 	righthandcontroller.connect("button_pressed", self, "vr_right_button_pressed")
 	righthandcontroller.connect("button_release", self, "vr_right_button_release")
 	righthandcontroller.get_node("FunctionPickup").connect("has_picked_up", self, "vr_right_picked_up")
@@ -154,9 +159,10 @@ func addnewwire(ballA, ballB):
 	$Wires.add_child(pickablewire)
 
 func _input(event):
-	if event is InputEventKey:
-		if event.pressed:
-			if event.scancode == KEY_2:
-				$Balls/Ball.translation += Vector3(0.5,0,0)
-				for wire in $Wires.get_children():
-					wire.bpulledsolid = false
+	if visible:
+		if event is InputEventKey:
+			if event.pressed:
+				if event.scancode == KEY_2:
+					$Balls/Ball.translation += Vector3(0.5,0,0)
+					for wire in $Wires.get_children():
+						wire.bpulledsolid = false

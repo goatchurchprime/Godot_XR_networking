@@ -1,0 +1,237 @@
+[gd_scene load_steps=29 format=2]
+
+[ext_resource path="res://addons/LorienInfiniteCanvas/InfiniteCanvas.tscn" type="PackedScene" id=1]
+[ext_resource path="res://click04.wav" type="AudioStream" id=2]
+[ext_resource path="res://addons/godot-xr-tools/objects/viewport_2d_in_3d.tscn" type="PackedScene" id=3]
+[ext_resource path="res://lorienexperiments/LorienHandControls.gd" type="Script" id=4]
+[ext_resource path="res://lorienexperiments/upperhandUI.tscn" type="PackedScene" id=5]
+
+[sub_resource type="BoxShape" id=21]
+extents = Vector3( 0.05, 0.05, 0.05 )
+
+[sub_resource type="CubeMesh" id=25]
+size = Vector3( 0.1, 0.1, 0.1 )
+
+[sub_resource type="CubeMesh" id=33]
+size = Vector3( 0.1, 0.02, 0.15 )
+
+[sub_resource type="SpatialMaterial" id=34]
+flags_transparent = true
+albedo_color = Color( 0.862745, 0.541176, 0.141176, 0.313726 )
+
+[sub_resource type="CubeMesh" id=38]
+size = Vector3( 0.1, 0.02, 0.15 )
+
+[sub_resource type="SpatialMaterial" id=39]
+flags_transparent = true
+albedo_color = Color( 0.862745, 0.541176, 0.141176, 0.313726 )
+
+[sub_resource type="CylinderShape" id=26]
+margin = 0.002
+height = 0.06
+radius = 0.005
+
+[sub_resource type="CylinderMesh" id=19]
+top_radius = 0.008
+bottom_radius = 0.005
+height = 0.06
+radial_segments = 8
+rings = 1
+
+[sub_resource type="SpatialMaterial" id=20]
+albedo_color = Color( 0.854902, 0, 0.882353, 1 )
+
+[sub_resource type="CubeMesh" id=27]
+size = Vector3( 0.015, 0.015, 0.015 )
+
+[sub_resource type="SpatialMaterial" id=28]
+albedo_color = Color( 0.976471, 0.890196, 0.0352941, 1 )
+
+[sub_resource type="CylinderShape" id=16]
+margin = 0.002
+height = 0.06
+radius = 0.005
+
+[sub_resource type="CylinderMesh" id=17]
+top_radius = 0.008
+bottom_radius = 0.005
+height = 0.06
+radial_segments = 8
+rings = 1
+
+[sub_resource type="SpatialMaterial" id=18]
+albedo_color = Color( 0.964706, 0.188235, 0.188235, 1 )
+
+[sub_resource type="SpatialMaterial" id=35]
+flags_transparent = true
+flags_unshaded = true
+flags_no_depth_test = true
+flags_do_not_receive_shadows = true
+albedo_color = Color( 0.027451, 0.607843, 0.796078, 0.764706 )
+
+[sub_resource type="CylinderMesh" id=36]
+material = SubResource( 35 )
+top_radius = 0.1
+bottom_radius = 0.1
+height = 0.01
+rings = 0
+
+[sub_resource type="SpatialMaterial" id=37]
+flags_transparent = true
+flags_unshaded = true
+flags_no_depth_test = true
+albedo_color = Color( 0.141176, 0.811765, 0.862745, 0.556863 )
+
+[sub_resource type="SpatialMaterial" id=44]
+albedo_color = Color( 0.67451, 0.905882, 0.211765, 1 )
+
+[sub_resource type="QuadMesh" id=45]
+resource_local_to_scene = true
+size = Vector2( 0.15, 0.15 )
+
+[sub_resource type="ViewportTexture" id=50]
+flags = 4
+
+[sub_resource type="SpatialMaterial" id=51]
+flags_transparent = true
+params_cull_mode = 2
+albedo_texture = SubResource( 50 )
+
+[sub_resource type="BoxShape" id=48]
+resource_local_to_scene = true
+extents = Vector3( 0.075, 0.075, 0.01 )
+
+[sub_resource type="SpatialMaterial" id=49]
+albedo_color = Color( 0.858824, 0.933333, 0.0941176, 1 )
+
+[node name="LorienHandControls" type="Spatial"]
+script = ExtResource( 4 )
+
+[node name="ViewportLorienCanvas" parent="." instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.250238, 0.829448, -0.846998 )
+screen_size = Vector2( 1, 1 )
+viewport_size = Vector2( 1600, 1600 )
+transparent = 0
+unshaded = true
+scene = ExtResource( 1 )
+collision_layer = 1024
+
+[node name="RigidBody" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.287, 1.26401, -1.04355 )
+collision_layer = 1024
+collision_mask = 1025
+
+[node name="CollisionShape" type="CollisionShape" parent="RigidBody"]
+shape = SubResource( 21 )
+
+[node name="MeshInstance" type="MeshInstance" parent="RigidBody/CollisionShape"]
+mesh = SubResource( 25 )
+
+[node name="shrinkavatartransform" type="Spatial" parent="."]
+
+[node name="fistdragmarkerL" type="MeshInstance" parent="shrinkavatartransform"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0, 0 )
+visible = false
+mesh = SubResource( 33 )
+skeleton = NodePath("../..")
+material/0 = SubResource( 34 )
+
+[node name="fistdragmarkerR" type="MeshInstance" parent="shrinkavatartransform"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0, 0 )
+visible = false
+mesh = SubResource( 38 )
+skeleton = NodePath("../..")
+material/0 = SubResource( 39 )
+
+[node name="RightIndexFinger" type="KinematicBody" parent="shrinkavatartransform"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925201, -0.671417 )
+collision_layer = 5120
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="shrinkavatartransform/RightIndexFinger"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0.03 )
+shape = SubResource( 26 )
+
+[node name="MeshInstance" type="MeshInstance" parent="shrinkavatartransform/RightIndexFinger/CollisionShape"]
+mesh = SubResource( 19 )
+material/0 = SubResource( 20 )
+
+[node name="ActiveMarker" type="MeshInstance" parent="shrinkavatartransform/RightIndexFinger"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0.06 )
+visible = false
+mesh = SubResource( 27 )
+skeleton = NodePath("../CollisionShape/MeshInstance")
+material/0 = SubResource( 28 )
+
+[node name="LeftIndexFinger" type="KinematicBody" parent="shrinkavatartransform"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.394745, 1.03168, -0.551758 )
+collision_layer = 5120
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="shrinkavatartransform/LeftIndexFinger"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0.03 )
+shape = SubResource( 16 )
+
+[node name="MeshInstance" type="MeshInstance" parent="shrinkavatartransform/LeftIndexFinger/CollisionShape"]
+mesh = SubResource( 17 )
+material/0 = SubResource( 18 )
+
+[node name="ActiveMarker" type="MeshInstance" parent="shrinkavatartransform/LeftIndexFinger"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0.06 )
+visible = false
+mesh = SubResource( 27 )
+skeleton = NodePath("../CollisionShape/MeshInstance")
+material/0 = SubResource( 28 )
+
+[node name="flathandmarker" type="MeshInstance" parent="shrinkavatartransform"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.897766, 0.164688, 0 )
+visible = false
+mesh = SubResource( 36 )
+skeleton = NodePath("../..")
+material/0 = SubResource( 37 )
+
+[node name="pencircleR" type="CSGTorus" parent="shrinkavatartransform"]
+material_override = SubResource( 44 )
+inner_radius = 0.01
+outer_radius = 0.011
+sides = 16
+
+[node name="upperhandUI" parent="." instance=ExtResource( 3 )]
+transform = Transform( -0.544639, -0.838671, -3.66595e-08, 0, -4.37114e-08, 1, -0.838671, 0.544639, 2.38069e-08, 0, 0.938095, -0.831724 )
+visible = false
+enabled = false
+screen_size = Vector2( 0.15, 0.15 )
+viewport_size = Vector2( 300, 300 )
+scene = ExtResource( 5 )
+
+[node name="Viewport" parent="upperhandUI" index="0"]
+size = Vector2( 300, 300 )
+
+[node name="Screen" parent="upperhandUI" index="1"]
+mesh = SubResource( 45 )
+material/0 = SubResource( 51 )
+
+[node name="StaticBody" parent="upperhandUI" index="2"]
+screen_size = Vector2( 0.15, 0.15 )
+viewport_size = Vector2( 300, 300 )
+
+[node name="CollisionShape" parent="upperhandUI/StaticBody" index="0"]
+shape = SubResource( 48 )
+
+[node name="Cursor" type="CSGTorus" parent="upperhandUI"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -5.22181e-09, 0.119461 )
+material_override = SubResource( 49 )
+inner_radius = 0.002
+outer_radius = 0.003
+sides = 16
+
+[node name="ClickPress" type="AudioStreamPlayer3D" parent="upperhandUI/Cursor"]
+stream = ExtResource( 2 )
+unit_db = -18.0
+pitch_scale = 1.27
+
+[node name="ClickRelease" type="AudioStreamPlayer3D" parent="upperhandUI/Cursor"]
+stream = ExtResource( 2 )
+unit_db = -18.0
+
+[editable path="upperhandUI"]

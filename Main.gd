@@ -20,6 +20,8 @@ export var QUESTstartupprotocol = "webrtc"
 # symlinks from the addons directory
 # ln -s ../../LorienAsset/lorien/addons/LorienInfiniteCanvas/
 # ln -s ../../godot-xr-tools/addons/godot-xr-tools/ .
+# ln -s ../../godot-xr-tools-stable/addons/godot-xr-tools/ .
+
 #    don't forget to checkout to 2.5.0
 
 
@@ -104,9 +106,10 @@ func vr_left_button_pressed(button: int):
 	if button == VR_BUTTON_AX:
 		pass
 	if button == VR_BUTTON_4:
+		pass
 		#$FPController/HandtrackingDevelopment.lefthandfingertap()
-		print("Publishing Right hand XR transforms to mqtt hand/pos")
-		$ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT.publish("hand/pos", var2str($FPController/OpenXRallhandsdata.joint_transforms_R))
+		#print("Publishing Right hand XR transforms to mqtt hand/pos")
+		#$ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT.publish("hand/pos", var2str($FPController/OpenXRallhandsdata.joint_transforms_R))
 
 			
 func _input(event):

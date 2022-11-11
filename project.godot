@@ -164,6 +164,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://tensegrityexperiments/PickableWire.gd"
 }, {
+"base": "Node",
+"class": "XRTools",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/xr_tools.gd"
+}, {
 "base": "Spatial",
 "class": "XRToolsClimbable",
 "language": "GDScript",
@@ -334,7 +339,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/godot-xr-tools/assets/physics_hand.gd"
 }, {
-"base": "RigidBody",
+"base": "Reference",
 "class": "XRToolsPickable",
 "language": "GDScript",
 "path": "res://addons/godot-xr-tools/objects/pickable.gd"
@@ -344,10 +349,25 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/godot-xr-tools/assets/player_body.gd"
 }, {
+"base": "Spatial",
+"class": "XRToolsPoke",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/assets/poke.gd"
+}, {
+"base": "Spatial",
+"class": "XRToolsSceneBase",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/staging/scene_base.gd"
+}, {
 "base": "Area",
 "class": "XRToolsSnapZone",
 "language": "GDScript",
 "path": "res://addons/godot-xr-tools/objects/snap_zone.gd"
+}, {
+"base": "Spatial",
+"class": "XRToolsStaging",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/staging/staging.gd"
 }, {
 "base": "Reference",
 "class": "XRToolsVelocityAverager",
@@ -401,6 +421,7 @@ _global_script_class_icons={
 "XRPickableBall": "",
 "XRPickableStrut": "",
 "XRPickableWire": "",
+"XRTools": "",
 "XRToolsClimbable": "res://addons/godot-xr-tools/editor/icons/hand.svg",
 "XRToolsFallDamage": "",
 "XRToolsFunctionPickup": "res://addons/godot-xr-tools/editor/icons/function.svg",
@@ -437,7 +458,10 @@ _global_script_class_icons={
 "XRToolsPhysicsHand": "",
 "XRToolsPickable": "",
 "XRToolsPlayerBody": "res://addons/godot-xr-tools/editor/icons/body.svg",
+"XRToolsPoke": "",
+"XRToolsSceneBase": "",
 "XRToolsSnapZone": "",
+"XRToolsStaging": "",
 "XRToolsVelocityAverager": "",
 "XRToolsVelocityAveragerLinear": "",
 "XRToolsVirtualKeyboard2D": "",
@@ -456,11 +480,8 @@ enable_audio_input=true
 
 [autoload]
 
-Settings="*res://addons/LorienInfiniteCanvas/Misc/Settings.gd"
-Utils="*res://addons/LorienInfiniteCanvas/Misc/Utils.gd"
-BrushStrokeTexture="*res://addons/LorienInfiniteCanvas/BrushStroke/BrushStrokeTexture.gd"
-ProjectManager="*res://addons/LorienInfiniteCanvas/ProjectManager/ProjectManager.gd"
-ProjectMetadata="*res://addons/LorienInfiniteCanvas/ProjectManager/ProjectMetadata.gd"
+LorAL="*res://addons/LorienInfiniteCanvas/LorAL.tscn"
+XRToolsUserSettings="*res://addons/godot-xr-tools/user_settings/user_settings.gd"
 
 [editor_plugins]
 
