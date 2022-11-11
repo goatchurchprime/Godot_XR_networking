@@ -39,14 +39,21 @@ func _ready():
 	$upperhandUI/Viewport/Control/ActiveDY.connect("value_changed", self, "onactivedyvaluechanged")
 	$upperhandUI/Viewport/Control/Flathandsurfacedepth.value = flathandsurfacedepth
 	$upperhandUI/Viewport/Control/Flathandsurfacedepth.connect("value_changed", self, "onflathandsurfacedepthvaluechanged")
-	$upperhandUI/Viewport/Control/ColorPickerButton.connect("color_changed", $ViewportLorienCanvas/Viewport/InfiniteCanvas, "set_brush_color")
+
+	$upperhandUI/Viewport/Control/ColorPickerButton.connect("color_changed", self, "setbrushcolor")
 	for precolor in $upperhandUI/Viewport/Control/precolors.get_children():
-		precolor.connect("pressed", $ViewportLorienCanvas/Viewport/InfiniteCanvas, "set_brush_color", [precolor.get_child(0).color])
+		precolor.connect("pressed", self, "setbrushcolor", [precolor.get_child(0).color])
+	$shrinkavatartransform/RightIndexFinger/CollisionShape/MeshInstance.get_surface_material(0).albedo_color = $ViewportLorienCanvas/Viewport/InfiniteCanvas._brush_color
+
 	$upperhandUI/Viewport/Control/ToolSelection.connect("item_selected", $ViewportLorienCanvas/Viewport/InfiniteCanvas, "use_tool")
 
 	$shrinkavatartransform/pencircleR.inner_radius = pencircleRad
 	$shrinkavatartransform/pencircleR.outer_radius = pencircleRad*1.1
+	$shrinkavatartransform/RightIndexFinger.visible = true
 
+func setbrushcolor(color):
+	$shrinkavatartransform/RightIndexFinger/CollisionShape/MeshInstance.get_surface_material(0).albedo_color = color
+	$ViewportLorienCanvas/Viewport/InfiniteCanvas.set_brush_color(color)
 
 var handfile = null
 var mqtt = null
@@ -355,13 +362,15 @@ func upperhanddetection(delta):
 				if ybelow < upperhandUIcontactdistance:
 					$upperhandUI/StaticBody.emit_signal("pointer_pressed", indexupper_new_at)
 					indexpressed = true
-					$upperhandUI/Cursor.visible = false
+					#$upperhandUI/Cursor.visible = false
+					$upperhandUI/Cursor.scale = Vector3(5,1,5)
 					$upperhandUI/Cursor/ClickPress.play()
 			else:
 				if ybelow > upperhandUIcontactdistancedetach:
 					$upperhandUI/StaticBody.emit_signal("pointer_released", indexupper_new_at)
 					$upperhandUI/Cursor/ClickRelease.play()
 					indexpressed = false
+					$upperhandUI/Cursor.scale = Vector3(1,1,1)
 					$upperhandUI/Cursor.visible = true
 				
 		else:
