@@ -87,20 +87,19 @@ albedo_color = Color( 0.67451, 0.905882, 0.211765, 1 )
 
 [sub_resource type="QuadMesh" id=45]
 resource_local_to_scene = true
-size = Vector2( 3, 2 )
+size = Vector2( 0.15, 0.15 )
 
-[sub_resource type="ViewportTexture" id=46]
+[sub_resource type="ViewportTexture" id=50]
+flags = 4
 
-[sub_resource type="SpatialMaterial" id=47]
-resource_local_to_scene = true
+[sub_resource type="SpatialMaterial" id=51]
 flags_transparent = true
-flags_unshaded = true
 params_cull_mode = 2
-albedo_texture = SubResource( 46 )
+albedo_texture = SubResource( 50 )
 
 [sub_resource type="BoxShape" id=48]
 resource_local_to_scene = true
-extents = Vector3( 1.5, 1, 0.01 )
+extents = Vector3( 0.075, 0.075, 0.01 )
 
 [sub_resource type="SpatialMaterial" id=49]
 albedo_color = Color( 0.858824, 0.933333, 0.0941176, 1 )
@@ -112,6 +111,8 @@ script = ExtResource( 4 )
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.250238, 0.829448, -0.846998 )
 screen_size = Vector2( 1, 1 )
 viewport_size = Vector2( 1600, 1600 )
+transparent = 0
+unshaded = true
 scene = ExtResource( 1 )
 collision_layer = 1024
 
@@ -203,9 +204,16 @@ screen_size = Vector2( 0.15, 0.15 )
 viewport_size = Vector2( 300, 300 )
 scene = ExtResource( 5 )
 
+[node name="Viewport" parent="upperhandUI" index="0"]
+size = Vector2( 300, 300 )
+
 [node name="Screen" parent="upperhandUI" index="1"]
 mesh = SubResource( 45 )
-material/0 = SubResource( 47 )
+material/0 = SubResource( 51 )
+
+[node name="StaticBody" parent="upperhandUI" index="2"]
+screen_size = Vector2( 0.15, 0.15 )
+viewport_size = Vector2( 300, 300 )
 
 [node name="CollisionShape" parent="upperhandUI/StaticBody" index="0"]
 shape = SubResource( 48 )
