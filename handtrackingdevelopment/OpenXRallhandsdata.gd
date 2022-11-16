@@ -1,4 +1,5 @@
 extends Spatial
+class_name OpenXRallhandsdata
 
 var _handtracking_enabled = false
 var is_active_L = false
@@ -7,7 +8,6 @@ var joint_transforms_L = [ ]
 var joint_transforms_R = [ ]
 var palm_joint_confidence_L = -1
 var palm_joint_confidence_R = -1
-var boundingbox_L = null
 
 const XR_HAND_JOINT_COUNT_EXT = 26
 const XR_HAND_JOINTS_MOTION_RANGE_UNOBSTRUCTED_EXT = 0
@@ -17,8 +17,8 @@ const TRACKING_CONFIDENCE_LOW = 1
 const TRACKING_CONFIDENCE_HIGH = 2
 
 # standard naming convention https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#_conventions_of_hand_joints
-var XRbone_names = [ "Palm", "Wrist", "Thumb_Metacarpal", "Thumb_Proximal", "Thumb_Distal", "Thumb_Tip", "Index_Metacarpal", "Index_Proximal", "Index_Intermediate", "Index_Distal", "Index_Tip", "Middle_Metacarpal", "Middle_Proximal", "Middle_Intermediate", "Middle_Distal", "Middle_Tip", "Ring_Metacarpal", "Ring_Proximal", "Ring_Intermediate", "Ring_Distal", "Ring_Tip", "Little_Metacarpal", "Little_Proximal", "Little_Intermediate", "Little_Distal", "Little_Tip" ]
-var boneparentsToWrist = [-1, -1, 1, 2, 3, 4, 1, 6, 7, 8, 9, 1, 11, 12, 13, 14, 1, 16, 17, 18, 19, 1, 21, 22, 23, 24]
+const XRbone_names = [ "Palm", "Wrist", "Thumb_Metacarpal", "Thumb_Proximal", "Thumb_Distal", "Thumb_Tip", "Index_Metacarpal", "Index_Proximal", "Index_Intermediate", "Index_Distal", "Index_Tip", "Middle_Metacarpal", "Middle_Proximal", "Middle_Intermediate", "Middle_Distal", "Middle_Tip", "Ring_Metacarpal", "Ring_Proximal", "Ring_Intermediate", "Ring_Distal", "Ring_Tip", "Little_Metacarpal", "Little_Proximal", "Little_Intermediate", "Little_Distal", "Little_Tip" ]
+const boneparentsToWrist = [-1, -1, 1, 2, 3, 4, 1, 6, 7, 8, 9, 1, 11, 12, 13, 14, 1, 16, 17, 18, 19, 1, 21, 22, 23, 24]
 
 enum {
 	XR_HAND_JOINT_PALM_EXT = 0,
@@ -49,7 +49,7 @@ enum {
 	XR_HAND_JOINT_LITTLE_TIP_EXT = 25
 }
 
-var xrfingers = [
+const xrfingers = [
 	XR_HAND_JOINT_THUMB_PROXIMAL_EXT, XR_HAND_JOINT_THUMB_DISTAL_EXT, XR_HAND_JOINT_THUMB_TIP_EXT, 
 	XR_HAND_JOINT_INDEX_PROXIMAL_EXT, XR_HAND_JOINT_INDEX_INTERMEDIATE_EXT, XR_HAND_JOINT_INDEX_DISTAL_EXT, XR_HAND_JOINT_INDEX_TIP_EXT, 
 	XR_HAND_JOINT_MIDDLE_PROXIMAL_EXT, XR_HAND_JOINT_MIDDLE_INTERMEDIATE_EXT, XR_HAND_JOINT_MIDDLE_DISTAL_EXT, XR_HAND_JOINT_MIDDLE_TIP_EXT, 
@@ -57,7 +57,7 @@ var xrfingers = [
 	XR_HAND_JOINT_LITTLE_PROXIMAL_EXT, XR_HAND_JOINT_LITTLE_INTERMEDIATE_EXT, XR_HAND_JOINT_LITTLE_DISTAL_EXT, XR_HAND_JOINT_LITTLE_TIP_EXT 
 ]
 
-var xrbones_necessary_to_measure_extent = [
+const xrbones_necessary_to_measure_extent = [
 	XR_HAND_JOINT_PALM_EXT, 
 	XR_HAND_JOINT_THUMB_TIP_EXT, 
 	XR_HAND_JOINT_INDEX_PROXIMAL_EXT, XR_HAND_JOINT_INDEX_TIP_EXT, 
@@ -96,6 +96,29 @@ func _enter_tree():
 
 func _ready():
 	set_physics_process(_handtracking_enabled)
+		
+
+static func Dcheckbonejointalignment(joint_transforms):
+	for i in range(2, XR_HAND_JOINT_COUNT_EXT):
+		var ip = boneparentsToWrist[i]
+		var vp = joint_transforms[i].origin - joint_transforms[ip].origin
+		if ip != XR_HAND_JOINT_WRIST_EXT or i == XR_HAND_JOINT_MIDDLE_METACARPAL_EXT:
+			print(i, ",", ip, joint_transforms[ip].basis.inverse().xform(vp), joint_transforms[ip].basis.x.dot(vp))
+	var Dpalmpos = 0.5*(joint_transforms[XR_HAND_JOINT_MIDDLE_METACARPAL_EXT].origin + joint_transforms[XR_HAND_JOINT_MIDDLE_PROXIMAL_EXT].origin)
+	#var ta = joint_transforms[XR_HAND_JOINT_MIDDLE_METACARPAL_EXT].origin
+	var ta = joint_transforms[XR_HAND_JOINT_WRIST_EXT].origin
+	var tb = joint_transforms[XR_HAND_JOINT_MIDDLE_PROXIMAL_EXT].origin
+	var tp = joint_transforms[XR_HAND_JOINT_PALM_EXT].origin
+	var vab = tb - ta
+	var tlam = (tp - ta).dot(vab)/vab.length_squared()
+	print("palm ", Dpalmpos - joint_transforms[XR_HAND_JOINT_PALM_EXT].origin)
+	print("Dpalm lam ", tlam, " perp ", (ta + vab*tlam - tp).length()) # joint_transforms[XR_HAND_JOINT_PALM_EXT].origin, joint_transforms[XR_HAND_JOINT_MIDDLE_METACARPAL_EXT].origin, joint_transforms[XR_HAND_JOINT_MIDDLE_PROXIMAL_EXT].origin)
+	print("tpalm ", joint_transforms[XR_HAND_JOINT_PALM_EXT].basis.z.cross(joint_transforms[XR_HAND_JOINT_MIDDLE_METACARPAL_EXT].basis.z))
+	if 0:   # test tips bases are same as previous bone
+		for itip in [ XR_HAND_JOINT_THUMB_TIP_EXT, XR_HAND_JOINT_INDEX_TIP_EXT, XR_HAND_JOINT_MIDDLE_TIP_EXT, XR_HAND_JOINT_MIDDLE_TIP_EXT, XR_HAND_JOINT_RING_TIP_EXT, XR_HAND_JOINT_LITTLE_TIP_EXT]:
+			var iptip = boneparentsToWrist[itip]
+			print("tip", itip, joint_transforms[itip].basis.inverse()*joint_transforms[iptip].basis)
+
 		
 func skel_backtoOXRjointtransforms(joint_transforms, skel):
 	joint_transforms[0] = skel.get_parent().transform

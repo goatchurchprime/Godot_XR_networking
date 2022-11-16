@@ -22,9 +22,8 @@ func _ready():
 func processavatarhand(palm_joint_confidence, joint_transforms, ovr_LR_hand_model, ovrhandLRrestdata, ControllerLR, LRHandController):
 	if palm_joint_confidence != -1:
 		ControllerLR.visible = false
-		var h = OpenXRtrackedhand_funcs.gethandjointpositionsL(joint_transforms)
 		if palm_joint_confidence == TRACKING_CONFIDENCE_HIGH: 
-			var ovrhandpose = OpenXRtrackedhand_funcs.setshapetobonesOVR(h, ovrhandLRrestdata)
+			var ovrhandpose = OpenXRtrackedhand_funcs.setshapetobonesOVR(joint_transforms, ovrhandLRrestdata)
 			ovr_LR_hand_model.transform = ovrhandpose["handtransform"]
 			var skel = ovrhandLRrestdata["skel"]
 			for i in range(23):
