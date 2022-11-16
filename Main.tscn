@@ -3,7 +3,7 @@
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
 [ext_resource path="res://addons/godot-openxr/scenes/first_person_controller_vr.tscn" type="PackedScene" id=3]
-[ext_resource path="res://addons/godot-xr-tools/assets/player_body.tscn" type="PackedScene" id=4]
+[ext_resource path="res://addons/godot-xr-tools/player/player_body.tscn" type="PackedScene" id=4]
 [ext_resource path="res://addons/godot-xr-tools/functions/movement_direct.tscn" type="PackedScene" id=5]
 [ext_resource path="res://addons/godot-xr-tools/functions/function_pointer.tscn" type="PackedScene" id=6]
 [ext_resource path="res://lorienexperiments/LorienHandControls.tscn" type="PackedScene" id=7]
@@ -93,7 +93,6 @@ QUESTstartupprotocol = "none"
 [node name="ARVRCamera" parent="FPController" index="1"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, 0 )
 current = true
-far = 1000.0
 
 [node name="LeftHandController" parent="FPController" index="2"]
 visible = true
@@ -147,6 +146,7 @@ collision_layer = 8704
 
 [node name="Viewport" parent="ViewportNetworkGateway" index="0"]
 size = Vector2( 550, 400 )
+render_target_update_mode = 1
 
 [node name="NetworkGateway" parent="ViewportNetworkGateway/Viewport" index="0" instance=ExtResource( 11 )]
 

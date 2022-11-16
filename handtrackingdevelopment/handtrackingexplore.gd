@@ -60,10 +60,10 @@ var rpmavatarhandrestdata = null
 var gxthandrestdata = null
 func _ready():
 	ovrhandrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata(ovrhandmodel)
-	lowpolyhandrestdata = OpenXRtrackedhand_funcs.getlowpolyhandrestdata($RightHand)
+	#lowpolyhandrestdata = OpenXRtrackedhand_funcs.getlowpolyhandrestdata($RightHand)
 	rpmavatarhandrestdata = OpenXRtrackedhand_funcs.getrpmhandrestdata(rpmavatar)
 	gxthandrestdata = OpenXRtrackedhand_funcs.getGXThandrestdata($RightHandGXT)
-	$RightHandGXT/AnimationTree.active = false
+	#$RightHandGXT/AnimationTree.active = false
 
 	var mi = $quickjointnodes.get_child(0)
 	for i in range(25):
@@ -85,7 +85,7 @@ func sethandposfromnodes():
 		var gxthandpose = OpenXRtrackedhand_funcs.setshapetobonesLowPoly(joint_transforms, gxthandrestdata, true)
 		var skel = gxthandrestdata["skel"]
 		print(skel, " ", $RightHandGXT/hand_r/Armature_Left/Skeleton)
-		for i in range(20):
+		for i in range(25):
 			skel.set_bone_pose(i, gxthandpose[i])
 		$RightHandGXT.transform = gxthandpose["handtransform"]
 		$MeshInstance_marker.global_transform = skel.global_transform*skel.get_bone_global_pose(3)
@@ -94,7 +94,7 @@ func sethandposfromnodes():
 		#return 		
 		
 	
-	if $RightHand.visible:
+	if false and $RightHand.visible:
 		var lowpolyhandpose = OpenXRtrackedhand_funcs.setshapetobonesLowPoly(joint_transforms, lowpolyhandrestdata, true)
 		var skel = lowpolyhandrestdata["skel"]
 

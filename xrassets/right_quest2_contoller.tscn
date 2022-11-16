@@ -96,4 +96,3 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00935476, -0.00472996, 0.00
 mesh = SubResource( 3 )
 skin = SubResource( 4 )
 skeleton = NodePath("../right_quest2_controller_world")
-material/0 = null
