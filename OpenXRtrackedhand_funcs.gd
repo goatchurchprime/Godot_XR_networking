@@ -79,133 +79,39 @@ static func getGXThandrestdata(lrhand):
 	gxthanddata["skeltrans"] = lrhand.global_transform.affine_inverse()*skel.global_transform
 	return gxthanddata
 
-static func setvecstobonesLP(ib0, p1, p2, p3, p4, lowpolyhandrestdata, lowpolyhandpose, tRboneposeG):
-	var vec1 = p2 - p1
-	var vec2 = p3 - p2
-	var vec3 = p4 - p3
-	var ib1 = ib0+1
-	var ib2 = ib0+2
-	var ib3 = ib0+3
-	
-	var Dskel = lowpolyhandrestdata["skel"]
-	
-	assert (Dskel.get_bone_parent(ib0) == 0)
-	assert (Dskel.get_bone_parent(ib1) == ib0)
-	assert (Dskel.get_bone_parent(ib2) == ib1)
-	assert (Dskel.get_bone_parent(ib3) == ib2)
 
-	var t0bonerest = lowpolyhandrestdata[ib0]
-	var t1bonerest = lowpolyhandrestdata[ib1]
-	var t2bonerest = lowpolyhandrestdata[ib2]
-	var t3bonerest = lowpolyhandrestdata[ib3]
-
-	var t0bonerestG = tRboneposeG*t0bonerest
-	var t0boneposebasis = Basis()
-	var t0boneposeorigin = Vector3()
-	var t0bonepose = Transform(t0boneposebasis, t0boneposeorigin)
-	var t0boneposeG = t0bonerestG*t0bonepose
-	
-	var t1bonerestG = t0boneposeG*t1bonerest
-	var t1boneposebasis = rotationtoalign(t1bonerest.origin, t1bonerestG.basis.inverse()*vec1)
-	var t1boneposeorigin = t1bonerestG.affine_inverse()*p1
-	var t1bonepose = Transform(t1boneposebasis, t1boneposeorigin)
-	var t1boneposeG = t1bonerestG*t1bonepose
-
-	var t2bonerestG = t1boneposeG*t2bonerest
-	var t2boneposebasis = rotationtoalign(t2bonerest.origin, t2bonerestG.basis.inverse()*vec2)
-	var t2boneposeorigin = t2bonerestG.affine_inverse()*p2
-	var t2bonepose = Transform(t2boneposebasis, t2boneposeorigin)
-	var t2boneposeG = t2bonerestG*t2bonepose
-
-	lowpolyhandpose[ib0] = t0bonepose
-	lowpolyhandpose[ib1] = t1bonepose
-	lowpolyhandpose[ib2] = t2bonepose
-
-	var t3bonerestG = t2boneposeG*t3bonerest
-	var t3boneposebasis = rotationtoalign(t3bonerest.origin, t3bonerestG.basis.inverse()*vec3)
-	var t3boneposeorigin = t3bonerestG.affine_inverse()*p3
-	var t3bonepose = Transform(t3boneposebasis, t3boneposeorigin)
-	lowpolyhandpose[ib3] = t3bonepose
-	
-static func setvecstobonesLPThumb(ib0, p1, p2, p3, lowpolyhandrestdata, lowpolyhandpose, tRboneposeG):
-	var vec1 = p2 - p1
-	var vec2 = p3 - p2
-	var ib1 = ib0+1
-	var ib2 = ib0+2
-	
-	var Dskel = lowpolyhandrestdata["skel"]
-	
-	assert (Dskel.get_bone_parent(ib0) == 0)
-	assert (Dskel.get_bone_parent(ib1) == ib0)
-	assert (Dskel.get_bone_parent(ib2) == ib1)
-
-	var t0bonerest = lowpolyhandrestdata[ib0]
-	var t1bonerest = lowpolyhandrestdata[ib1]
-	var t2bonerest = lowpolyhandrestdata[ib2]
-
-	var t0bonerestG = tRboneposeG*t0bonerest
-	var t0boneposebasis = Basis()
-	var t0boneposeorigin = Vector3()
-	var t0bonepose = Transform(t0boneposebasis, t0boneposeorigin)
-	var t0boneposeG = t0bonerestG*t0bonepose
-	
-	var t1bonerestG = t0boneposeG*t1bonerest
-	var t1boneposebasis = Basis()
-	var t1boneposeorigin = Vector3()
-#	var t1boneposebasis = rotationtoalign(t1bonerest.origin, t1bonerestG.basis.inverse()*vec1)
-#	var t1boneposeorigin = t1bonerestG.affine_inverse()*p1
-	var t1bonepose = Transform(t1boneposebasis, t1boneposeorigin)
-	var t1boneposeG = t1bonerestG*t1bonepose
-
-	var t2bonerestG = t1boneposeG*t2bonerest
-	var t2boneposebasis = Basis()
-	var t2boneposeorigin = Vector3()
-#	var t2boneposebasis = rotationtoalign(t2bonerest.origin, t2bonerestG.basis.inverse()*vec2)
-#	var t2boneposeorigin = t2bonerestG.affine_inverse()*p2
-	var t2bonepose = Transform(t2boneposebasis, t2boneposeorigin)
-	var t2boneposeG = t2bonerestG*t2bonepose
-
-	lowpolyhandpose[ib0] = t0bonepose
-	lowpolyhandpose[ib1] = t1bonepose
-	lowpolyhandpose[ib2] = t2bonepose
-
-
-static func transform_set_look_at_with_y(pfrom, pto, p_up):
+static func transform_set_look_at_with_y(pfrom, pto, p_up, bright):
 	var v_z = pto - pfrom
 	v_z = v_z.normalized()
-	var v_y = p_up
+	var v_y = p_up if bright else -p_up
 	var v_x = v_y.cross(v_z)
 	v_y = v_z.cross(v_x)
 	v_x = v_x.normalized()
 	v_y = v_y.normalized()
-	return Transform(Basis(v_y, v_z, -v_x), pfrom)
+	return Transform(Basis(v_y if bright else -v_y, v_z, -v_x), pfrom)
 
-static func setfingerbonesGXT(ib1, tproximal, tintermediate, tdistal, ttip, bonerest, bonepose, t0boneposeG):
+static func setfingerbonesGXT(ib1, tproximal, tintermediate, tdistal, ttip, bonerest, bonepose, t0boneposeG, bright):
 	var ib2 = ib1+1
 	var ib3 = ib2+1
 	var ib4 = ib3+1
 	var t1bonerestG = t0boneposeG*bonerest[ib1]
-	var t1boneposeGT = transform_set_look_at_with_y(t1bonerestG.origin, tproximal.origin, -t1bonerestG.basis.y)
+	var t1boneposeGT = transform_set_look_at_with_y(t1bonerestG.origin, tproximal.origin, -t1bonerestG.basis.y, bright)
 	bonepose[ib1] = t1bonerestG.inverse()*t1boneposeGT
 	var t1boneposeG = t1bonerestG*bonepose[ib1]
 	var t2bonerestG = t1boneposeG*bonerest[ib2]
-	var t2boneposeGT = transform_set_look_at_with_y(tproximal.origin, tintermediate.origin, -tproximal.basis.y)
+	var t2boneposeGT = transform_set_look_at_with_y(tproximal.origin, tintermediate.origin, -tproximal.basis.y, bright)
 	bonepose[ib2] = t2bonerestG.inverse()*t2boneposeGT	
 	var t2boneposeG = t2bonerestG*bonepose[ib2]
 	var t3bonerestG = t2boneposeG*bonerest[ib3]
-	var t3boneposeGT = transform_set_look_at_with_y(tintermediate.origin, tdistal.origin, -tintermediate.basis.y)
+	var t3boneposeGT = transform_set_look_at_with_y(tintermediate.origin, tdistal.origin, -tintermediate.basis.y, bright)
 	bonepose[ib3] = t3bonerestG.inverse()*t3boneposeGT
 	var t3boneposeG = t3bonerestG*bonepose[ib3]
 	var t4bonerestG = t3boneposeG*bonerest[ib4]
-	var t4boneposeGT = transform_set_look_at_with_y(tdistal.origin, ttip.origin, -tdistal.basis.y)
+	var t4boneposeGT = transform_set_look_at_with_y(tdistal.origin, ttip.origin, -tdistal.basis.y, bright)
 	bonepose[ib4] = t4bonerestG.inverse()*t4boneposeGT
 
 
-# (A.basis, A.origin)*(B.basis, B.origin) = (A.basis*B.basis, A.origin + A.basis*B.origin)
-# (A.basis, A.origin)*(B.basis, B.origin)*(B.basis, B.origin)
-#     = (A.basis*B.basis*C.basis, A.origin + A.basis*B.origin + A.basis*B.basis*C.origin)
 static func setshapetobonesLowPoly(joint_transforms, bonerest, bright=true):
-	var h = gethandjointpositionsL(joint_transforms)
 	var rotz90 = Transform(Basis(Vector3(0,0,1), deg2rad(90 if bright else -90)))
 
 	var wristtransform = joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_WRIST_EXT]*rotz90
@@ -213,28 +119,31 @@ static func setshapetobonesLowPoly(joint_transforms, bonerest, bright=true):
 	for i in range(25):
 		bonepose[i] = Transform()
 	bonepose[0] = Transform(Basis(), -bonerest[0].basis.xform_inv(bonerest[0].origin))
+	bonepose[1] = Transform()
+	
 	var tRboneposeGR = bonepose["handtransform"]*bonerest["skeltrans"]
 
-	#var tRboneposeGR0 = tRboneposeGR*bonerest[0]*bonepose[0]
-	#var tRboneposeGR0 = tRboneposeGR*bonerest[0]*bonepose[0]
 	var t0boneposeG = tRboneposeGR*bonerest[0]*bonepose[0]
 	var t1boneposeG = t0boneposeG*bonerest[1]*bonepose[1]
 	var t2bonerestG = t1boneposeG*bonerest[2]
-	var t2boneposeGT = transform_set_look_at_with_y(joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_THUMB_PROXIMAL_EXT].origin, joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_THUMB_DISTAL_EXT].origin, -joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_THUMB_PROXIMAL_EXT].basis.y)
+	var Ds = 1 if bright else -1
+	var thproximal = joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_THUMB_PROXIMAL_EXT]
+	var thdistal = joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_THUMB_DISTAL_EXT]
+	var thtip = joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_THUMB_TIP_EXT]
+	var t2boneposeGT = transform_set_look_at_with_y(thproximal.origin, thdistal.origin, -thproximal.basis.x*Ds, bright)
 	bonepose[2] = t2bonerestG.inverse()*t2boneposeGT
 	var t2boneposeG = t2bonerestG*bonepose[2]
 	var t3bonerestG = t2boneposeG*bonerest[3]
-	var t3boneposeGT = transform_set_look_at_with_y(joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_THUMB_DISTAL_EXT].origin, joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_THUMB_TIP_EXT].origin, -joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_THUMB_DISTAL_EXT].basis.y)
+	var t3boneposeGT = transform_set_look_at_with_y(thdistal.origin, thtip.origin, -thdistal.basis.x*Ds, bright)
 	bonepose[3] = t3bonerestG.inverse()*t3boneposeGT
 	var t3boneposeG = t3bonerestG*bonepose[3]
-#	setvecstobonesLPThumb(1, h["ht1"], h["ht2"], h["ht3"], bonerest, bonepose, tRboneposeGR0)
 
-	setfingerbonesGXT(5, joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_INDEX_PROXIMAL_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_INDEX_INTERMEDIATE_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_INDEX_DISTAL_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_INDEX_TIP_EXT], bonerest, bonepose, t0boneposeG)
-	setfingerbonesGXT(10, joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_MIDDLE_PROXIMAL_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_MIDDLE_INTERMEDIATE_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_MIDDLE_DISTAL_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_MIDDLE_TIP_EXT], bonerest, bonepose, t0boneposeG)
-	setfingerbonesGXT(15, joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_RING_PROXIMAL_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_RING_INTERMEDIATE_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_RING_DISTAL_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_RING_TIP_EXT], bonerest, bonepose, t0boneposeG)
-	setfingerbonesGXT(20, joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_LITTLE_PROXIMAL_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_LITTLE_INTERMEDIATE_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_LITTLE_DISTAL_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_LITTLE_TIP_EXT], bonerest, bonepose, t0boneposeG)
+	setfingerbonesGXT(5, joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_INDEX_PROXIMAL_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_INDEX_INTERMEDIATE_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_INDEX_DISTAL_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_INDEX_TIP_EXT], bonerest, bonepose, t0boneposeG, bright)
+	setfingerbonesGXT(10, joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_MIDDLE_PROXIMAL_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_MIDDLE_INTERMEDIATE_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_MIDDLE_DISTAL_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_MIDDLE_TIP_EXT], bonerest, bonepose, t0boneposeG, bright)
+	setfingerbonesGXT(15, joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_RING_PROXIMAL_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_RING_INTERMEDIATE_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_RING_DISTAL_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_RING_TIP_EXT], bonerest, bonepose, t0boneposeG, bright)
+	setfingerbonesGXT(20, joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_LITTLE_PROXIMAL_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_LITTLE_INTERMEDIATE_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_LITTLE_DISTAL_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_LITTLE_TIP_EXT], bonerest, bonepose, t0boneposeG, bright)
 
-	OpenXRallhandsdata.Dcheckbonejointalignment(joint_transforms)
+	#OpenXRallhandsdata.Dcheckbonejointalignment(joint_transforms)
 	return bonepose
 
 

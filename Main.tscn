@@ -8,7 +8,7 @@
 [ext_resource path="res://addons/godot-xr-tools/functions/function_pointer.tscn" type="PackedScene" id=6]
 [ext_resource path="res://lorienexperiments/LorienHandControls.tscn" type="PackedScene" id=7]
 [ext_resource path="res://addons/godot-xr-tools/functions/movement_turn.tscn" type="PackedScene" id=8]
-[ext_resource path="res://VRPlayerAvatar.tscn" type="PackedScene" id=9]
+[ext_resource path="res://LPVRPlayerAvatar.tscn" type="PackedScene" id=9]
 [ext_resource path="res://tensegrityexperiments/TensegrityExperiments.tscn" type="PackedScene" id=10]
 [ext_resource path="res://addons/player-networking/NetworkGateway.tscn" type="PackedScene" id=11]
 [ext_resource path="res://addons/godot-xr-tools/objects/pickable.gd" type="Script" id=12]
@@ -183,8 +183,7 @@ shape = SubResource( 19 )
 
 [node name="Players" type="Spatial" parent="."]
 
-[node name="VRPlayerAvatar" parent="Players" instance=ExtResource( 9 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.16926, 0 )
+[node name="LPVRPlayerAvatar" parent="Players" instance=ExtResource( 9 )]
 
 [node name="SportBall" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.54476, 1.91887, -4.03967 )
