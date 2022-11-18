@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=2]
+[gd_scene load_steps=36 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
@@ -15,6 +15,7 @@
 [ext_resource path="res://addons/godot-xr-tools/functions/function_pickup.tscn" type="PackedScene" id=13]
 [ext_resource path="res://click04.wav" type="AudioStream" id=14]
 [ext_resource path="res://addons/godot-xr-tools/objects/viewport_2d_in_3d.tscn" type="PackedScene" id=15]
+[ext_resource path="res://addons/godot-openxr/scenes/left_hand_nodes.tscn" type="PackedScene" id=16]
 [ext_resource path="res://handtrackingdevelopment/OpenXRallhandsdata.tscn" type="PackedScene" id=18]
 
 [sub_resource type="PlaneMesh" id=2]
@@ -125,6 +126,9 @@ ranged_collision_mask = 4097
 
 [node name="HandtrackingDevelopment" type="Node" parent="FPController"]
 script = ExtResource( 2 )
+
+[node name="Left_hand" parent="FPController" instance=ExtResource( 16 )]
+visible = false
 
 [node name="Floor" type="StaticBody" parent="."]
 
@@ -271,8 +275,9 @@ visible = false
 
 [editable path="FPController"]
 [editable path="FPController/OpenXRallhandsdata"]
+[editable path="FPController/Left_hand"]
 [editable path="ViewportNetworkGateway"]
 [editable path="ViewportNetworkGateway/Viewport/NetworkGateway"]
 [editable path="Players/LPVRPlayerAvatar"]
-[editable path="Players/LPVRPlayerAvatar/LeftAppendage/boneroll_0_hand_l"]
-[editable path="Players/LPVRPlayerAvatar/RightAppendage/boneroll_0_hand_l"]
+[editable path="Players/LPVRPlayerAvatar/LeftAppendage/4f_moved_hand_l"]
+[editable path="Players/LPVRPlayerAvatar/RightAppendage/4f_moved_hand_l"]

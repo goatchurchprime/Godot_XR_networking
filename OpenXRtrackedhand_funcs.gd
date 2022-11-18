@@ -107,7 +107,7 @@ static func setfingerbonesGXT(ib1, tproximal, tintermediate, tdistal, ttip, bone
 	bonepose[ib3] = t3bonerestG.inverse()*t3boneposeGT
 	var t3boneposeG = t3bonerestG*bonepose[ib3]
 	var t4bonerestG = t3boneposeG*bonerest[ib4]
-	var tipadjusted = ttip.origin - tdistal.basis.y*0.01
+	var tipadjusted = ttip.origin
 	var t4boneposeGT = transform_set_look_at_with_y(tdistal.origin, tipadjusted, -tdistal.basis.y, bright)
 	bonepose[ib4] = t4bonerestG.inverse()*t4boneposeGT
 
@@ -148,6 +148,10 @@ static func setshapetobonesLowPoly(joint_transforms, bonerest, bright=true):
 	setfingerbonesGXT(20, joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_LITTLE_PROXIMAL_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_LITTLE_INTERMEDIATE_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_LITTLE_DISTAL_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_LITTLE_TIP_EXT], bonerest, bonepose, t0boneposeG, bright)
 
 	#OpenXRallhandsdata.Dcheckbonejointalignment(joint_transforms)
+	if not bright:
+		for i in range(1, 25):
+			bonepose[i].origin = Vector3(0,0,0)
+
 	return bonepose
 
 

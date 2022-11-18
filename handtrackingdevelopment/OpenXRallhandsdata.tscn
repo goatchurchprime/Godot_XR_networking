@@ -5,6 +5,11 @@
 [ext_resource path="res://addons/godot-openxr/config/OpenXRSkeleton.gdns" type="Script" id=3]
 
 [sub_resource type="CylinderMesh" id=1]
+top_radius = 0.005
+bottom_radius = 0.005
+height = 0.02
+radial_segments = 12
+rings = 0
 
 [node name="OpenXRallhandsdata" type="Spatial"]
 script = ExtResource( 2 )
