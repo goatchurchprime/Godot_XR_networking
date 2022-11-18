@@ -65,14 +65,18 @@ const xrbones_necessary_to_measure_extent = [
 ]
 
 
-func setupopenxrpluginhandskeleton(handpalmpose, bright):
+func setupopenxrpluginhandskeleton(handskelpose, aimpose, bright):
+	if aimpose:
+		aimpose.action = "godot/aim_pose"
+		aimpose.path = "/user/hand/right" if bright else "/user/hand/left"
+	
 	# for these parameters see https://github.com/GodotVR/godot_openxr/blob/master/src/gdclasses/OpenXRPose.cpp
-	handpalmpose.action = "SkeletonBase"
-	handpalmpose.path = "/user/hand/right" if bright else "/user/hand/left"
+	handskelpose.action = "SkeletonBase"
+	handskelpose.path = "/user/hand/right" if bright else "/user/hand/left"
 
 	# for these parameters see https://github.com/GodotVR/godot_openxr/blob/master/src/gdclasses/OpenXRSkeleton.cpp
 	var _LR = ("_R" if bright else "_L")
-	var handskel = handpalmpose.get_child(0)
+	var handskel = handskelpose.get_child(0)
 	handskel.hand = 1 if bright else 0
 	handskel.motion_range = XR_HAND_JOINTS_MOTION_RANGE_UNOBSTRUCTED_EXT
 	for i in range(len(XRbone_names)):
@@ -81,13 +85,13 @@ func setupopenxrpluginhandskeleton(handpalmpose, bright):
 			handskel.set_bone_parent(i, boneparentsToWrist[i])
 
 func _enter_tree():
-	_handtracking_enabled = ("path" in $LeftHandPalmPose)
-	print("Handtrack enabled ", _handtracking_enabled, " ", $LeftHandPalmPose.get_script())
+	_handtracking_enabled = ("path" in $LeftHandSkelPose)
+	print("Handtrack enabled ", _handtracking_enabled, " ", $LeftHandSkelPose.get_script())
 	assert (len(XRbone_names) == XR_HAND_JOINT_COUNT_EXT)
 	assert (len(boneparentsToWrist) == XR_HAND_JOINT_COUNT_EXT)
 	if _handtracking_enabled:
-		setupopenxrpluginhandskeleton($LeftHandPalmPose, false)
-		setupopenxrpluginhandskeleton($RightHandPalmPose, true)
+		setupopenxrpluginhandskeleton($LeftHandSkelPose, null, false)
+		setupopenxrpluginhandskeleton($RightHandSkelPose, $RightHandAimPose, true)
 		for i in range(XR_HAND_JOINT_COUNT_EXT):
 			joint_transforms_L.push_back(Transform())
 			joint_transforms_R.push_back(Transform())
@@ -131,7 +135,7 @@ func skel_backtoOXRjointtransforms(joint_transforms, skel):
 	return skel.get_parent().get_tracking_confidence()
 
 func _physics_process(delta):
-	is_active_L = $LeftHandPalmPose.is_active()
-	is_active_R = $RightHandPalmPose.is_active()
-	palm_joint_confidence_L = skel_backtoOXRjointtransforms(joint_transforms_L, $LeftHandPalmPose/LeftHandBlankSkeleton) if is_active_L else TRACKING_CONFIDENCE_NOT_APPLICABLE
-	palm_joint_confidence_R = skel_backtoOXRjointtransforms(joint_transforms_R, $RightHandPalmPose/RightHandBlankSkeleton) if is_active_R else TRACKING_CONFIDENCE_NOT_APPLICABLE
+	is_active_L = $LeftHandSkelPose.is_active()
+	is_active_R = $RightHandSkelPose.is_active()
+	palm_joint_confidence_L = skel_backtoOXRjointtransforms(joint_transforms_L, $LeftHandSkelPose/LeftHandBlankSkeleton) if is_active_L else TRACKING_CONFIDENCE_NOT_APPLICABLE
+	palm_joint_confidence_R = skel_backtoOXRjointtransforms(joint_transforms_R, $RightHandSkelPose/RightHandBlankSkeleton) if is_active_R else TRACKING_CONFIDENCE_NOT_APPLICABLE

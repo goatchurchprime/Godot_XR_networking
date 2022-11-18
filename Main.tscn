@@ -119,9 +119,6 @@ ranged_collision_mask = 4097
 
 [node name="MovementTurn" parent="FPController/RightHandController" index="1" instance=ExtResource( 8 )]
 
-[node name="FunctionPointer" parent="FPController/RightHandController" index="2" instance=ExtResource( 6 )]
-collision_mask = 515071
-
 [node name="PlayerBody" parent="FPController" instance=ExtResource( 4 )]
 
 [node name="OpenXRallhandsdata" parent="FPController" instance=ExtResource( 18 )]
@@ -184,6 +181,8 @@ shape = SubResource( 19 )
 [node name="Players" type="Spatial" parent="."]
 
 [node name="LPVRPlayerAvatar" parent="Players" instance=ExtResource( 9 )]
+
+[node name="FunctionPointer" parent="Players/LPVRPlayerAvatar/RightAppendage" index="3" instance=ExtResource( 6 )]
 
 [node name="SportBall" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.54476, 1.91887, -4.03967 )
@@ -274,3 +273,6 @@ visible = false
 [editable path="FPController/OpenXRallhandsdata"]
 [editable path="ViewportNetworkGateway"]
 [editable path="ViewportNetworkGateway/Viewport/NetworkGateway"]
+[editable path="Players/LPVRPlayerAvatar"]
+[editable path="Players/LPVRPlayerAvatar/LeftAppendage/boneroll_0_hand_l"]
+[editable path="Players/LPVRPlayerAvatar/RightAppendage/boneroll_0_hand_l"]
