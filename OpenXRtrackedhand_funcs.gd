@@ -74,7 +74,7 @@ static func getGXThandrestdata(lrhand):
 	gxthanddata["skel"] = skel
 	for i in range(25):
 		gxthanddata[i] = skel.get_bone_rest(i)
-		if i != 0:
+		if i != 0 and skel.get_bone_parent(i) != 0:
 			assert (is_zero_approx(gxthanddata[i].origin.x) and is_zero_approx(gxthanddata[i].origin.z) and gxthanddata[i].origin.y >= 0)
 	gxthanddata["skeltrans"] = lrhand.global_transform.affine_inverse()*skel.global_transform
 	return gxthanddata
@@ -107,7 +107,8 @@ static func setfingerbonesGXT(ib1, tproximal, tintermediate, tdistal, ttip, bone
 	bonepose[ib3] = t3bonerestG.inverse()*t3boneposeGT
 	var t3boneposeG = t3bonerestG*bonepose[ib3]
 	var t4bonerestG = t3boneposeG*bonerest[ib4]
-	var t4boneposeGT = transform_set_look_at_with_y(tdistal.origin, ttip.origin, -tdistal.basis.y, bright)
+	var tipadjusted = ttip.origin - tdistal.basis.y*0.01
+	var t4boneposeGT = transform_set_look_at_with_y(tdistal.origin, tipadjusted, -tdistal.basis.y, bright)
 	bonepose[ib4] = t4bonerestG.inverse()*t4boneposeGT
 
 
@@ -119,17 +120,20 @@ static func setshapetobonesLowPoly(joint_transforms, bonerest, bright=true):
 	for i in range(25):
 		bonepose[i] = Transform()
 	bonepose[0] = Transform(Basis(), -bonerest[0].basis.xform_inv(bonerest[0].origin))
-	bonepose[1] = Transform()
 	
 	var tRboneposeGR = bonepose["handtransform"]*bonerest["skeltrans"]
-
-	var t0boneposeG = tRboneposeGR*bonerest[0]*bonepose[0]
-	var t1boneposeG = t0boneposeG*bonerest[1]*bonepose[1]
-	var t2bonerestG = t1boneposeG*bonerest[2]
-	var Ds = 1 if bright else -1
+	var thmetacarpal = joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_THUMB_METACARPAL_EXT]
 	var thproximal = joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_THUMB_PROXIMAL_EXT]
 	var thdistal = joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_THUMB_DISTAL_EXT]
 	var thtip = joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_THUMB_TIP_EXT]
+
+	var Ds = 1 if bright else -1
+	var t0boneposeG = tRboneposeGR*bonerest[0]*bonepose[0]
+	var t1bonerestG = t0boneposeG*bonerest[1]
+	var t1boneposeGT = transform_set_look_at_with_y(thmetacarpal.origin, thproximal.origin, -thmetacarpal.basis.x*Ds, bright)
+	bonepose[1] = t1bonerestG.inverse()*t1boneposeGT
+	var t1boneposeG = t1bonerestG*bonepose[1]
+	var t2bonerestG = t1boneposeG*bonerest[2]
 	var t2boneposeGT = transform_set_look_at_with_y(thproximal.origin, thdistal.origin, -thproximal.basis.x*Ds, bright)
 	bonepose[2] = t2bonerestG.inverse()*t2boneposeGT
 	var t2boneposeG = t2bonerestG*bonepose[2]

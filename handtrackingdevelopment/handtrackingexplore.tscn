@@ -4,11 +4,11 @@
 [ext_resource path="res://handtrackingdevelopment/handtrackingexplore.gd" type="Script" id=2]
 [ext_resource path="res://xrassets/readyplayerme_avatar.glb" type="PackedScene" id=3]
 [ext_resource path="res://addons/goutte.camera.trackball/trackball_camera.gd" type="Script" id=4]
+[ext_resource path="res://xrassets/final_hand.glb" type="PackedScene" id=5]
 [ext_resource path="res://addons/godot-xr-tools/objects/viewport_2d_in_3d.tscn" type="PackedScene" id=6]
-[ext_resource path="res://xrassets/boneroll_0_hand_l.glb" type="PackedScene" id=8]
 
 [sub_resource type="CubeMesh" id=3]
-size = Vector3( 0.008, 0.03, 0.008 )
+size = Vector3( 0.004, 0.03, 0.004 )
 
 [sub_resource type="SpatialMaterial" id=4]
 albedo_color = Color( 0.105882, 0.0196078, 0.964706, 1 )
@@ -23,8 +23,7 @@ albedo_color = Color( 0.898039, 0.0392157, 0.0392157, 1 )
 albedo_color = Color( 0.0862745, 0.819608, 0.964706, 1 )
 
 [sub_resource type="SpatialMaterial" id=6]
-albedo_color = Color( 0.184314, 0.898039, 0.831373, 1 )
-metallic = 0.42
+albedo_color = Color( 0.360784, 0.72549, 0.254902, 1 )
 
 [node name="Spatial" type="Spatial"]
 script = ExtResource( 2 )
@@ -142,12 +141,12 @@ script = ExtResource( 4 )
 [node name="RightHandGXT" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.376938 )
 
-[node name="boneroll_0_hand_l" parent="RightHandGXT" instance=ExtResource( 8 )]
+[node name="final_hand" parent="RightHandGXT" instance=ExtResource( 5 )]
 transform = Transform( -1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 
-[node name="mesh_Hand_low_L" parent="RightHandGXT/boneroll_0_hand_l/Armature/Skeleton" index="0"]
+[node name="mesh_Hand_low_L" parent="RightHandGXT/final_hand/Armature/Skeleton" index="0"]
 material/0 = SubResource( 6 )
 
 [editable path="ovr_right_hand_model"]
 [editable path="readyplayerme_avatar"]
-[editable path="RightHandGXT/boneroll_0_hand_l"]
+[editable path="RightHandGXT/final_hand"]
