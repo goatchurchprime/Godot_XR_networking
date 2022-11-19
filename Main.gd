@@ -44,6 +44,7 @@ func _ready():
 	$FPController/RightHandController.connect("button_pressed", self, "vr_right_button_pressed")
 	$FPController/RightHandController.connect("button_release", self, "vr_right_button_release")
 	$FPController/LeftHandController.connect("button_pressed", self, "vr_left_button_pressed")
+	$FPController/ARVRController4.connect("button_pressed", self, "pose_right_button_pressed")
 
 	$FPController/PlayerBody.default_physics.move_drag = 45
 	$SportBall.connect("body_entered", self, "ball_body_entered")
@@ -74,6 +75,9 @@ const VR_TRIGGER = 15
 const VR_BUTTON_4 = 4
 const VR_HANDTRACKING_INDEXTHUMB_PINCH = VR_BUTTON_4
 	
+func pose_right_button_pressed(button: int):
+	print("pose_right_button_pressed ", button)
+
 func vr_right_button_pressed(button: int):
 	print("vr right button pressed ", button)
 	if button == VR_BUTTON_BY:
@@ -143,4 +147,5 @@ func _process(delta):
 	#else:
 	#	$FPController/RightHandController/FunctionPointer.active_button = VR_TRIGGER
 	pass
+	
 

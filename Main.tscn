@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=2]
+[gd_scene load_steps=39 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
@@ -16,7 +16,18 @@
 [ext_resource path="res://click04.wav" type="AudioStream" id=14]
 [ext_resource path="res://addons/godot-xr-tools/objects/viewport_2d_in_3d.tscn" type="PackedScene" id=15]
 [ext_resource path="res://addons/godot-openxr/scenes/left_hand_nodes.tscn" type="PackedScene" id=16]
+[ext_resource path="res://avatars/monster/monster.tscn" type="PackedScene" id=17]
 [ext_resource path="res://handtrackingdevelopment/OpenXRallhandsdata.tscn" type="PackedScene" id=18]
+
+[sub_resource type="CylinderMesh" id=20]
+top_radius = 0.008
+bottom_radius = 0.001
+height = 0.06
+radial_segments = 12
+rings = 0
+
+[sub_resource type="SpatialMaterial" id=21]
+albedo_color = Color( 0.137255, 0.764706, 0.0745098, 1 )
 
 [sub_resource type="PlaneMesh" id=2]
 size = Vector2( 20, 20 )
@@ -36,13 +47,13 @@ extents = Vector3( 10, 0.1, 10 )
 resource_local_to_scene = true
 size = Vector2( 3, 2 )
 
-[sub_resource type="ViewportTexture" id=20]
+[sub_resource type="ViewportTexture" id=22]
 flags = 4
 
-[sub_resource type="SpatialMaterial" id=21]
+[sub_resource type="SpatialMaterial" id=23]
 flags_transparent = true
 params_cull_mode = 2
-albedo_texture = SubResource( 20 )
+albedo_texture = SubResource( 22 )
 
 [sub_resource type="BoxShape" id=19]
 resource_local_to_scene = true
@@ -120,15 +131,31 @@ ranged_collision_mask = 4097
 
 [node name="MovementTurn" parent="FPController/RightHandController" index="1" instance=ExtResource( 8 )]
 
-[node name="PlayerBody" parent="FPController" instance=ExtResource( 4 )]
+[node name="ARVRController3" type="ARVRController" parent="FPController"]
+controller_id = 3
+
+[node name="MeshInstance" type="MeshInstance" parent="FPController/ARVRController3"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+mesh = SubResource( 20 )
+material/0 = SubResource( 21 )
+
+[node name="ARVRController4" type="ARVRController" parent="FPController"]
+controller_id = 4
+
+[node name="MeshInstance" type="MeshInstance" parent="FPController/ARVRController4"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+mesh = SubResource( 20 )
+material/0 = SubResource( 21 )
 
 [node name="OpenXRallhandsdata" parent="FPController" instance=ExtResource( 18 )]
+pause_mode = 2
+
+[node name="PlayerBody" parent="FPController" instance=ExtResource( 4 )]
 
 [node name="HandtrackingDevelopment" type="Node" parent="FPController"]
 script = ExtResource( 2 )
 
 [node name="Left_hand" parent="FPController" instance=ExtResource( 16 )]
-visible = false
 
 [node name="Floor" type="StaticBody" parent="."]
 
@@ -173,7 +200,7 @@ items = [ "me", null, false, 0, null ]
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource( 16 )
-material/0 = SubResource( 21 )
+material/0 = SubResource( 23 )
 
 [node name="StaticBody" parent="ViewportNetworkGateway" index="2"]
 collision_layer = 8704
@@ -272,6 +299,9 @@ extents = Vector3( 12, 10, 13 )
 
 [node name="TensegrityExperiments" parent="." instance=ExtResource( 10 )]
 visible = false
+
+[node name="Monster" parent="." instance=ExtResource( 17 )]
+transform = Transform( -0.432479, 0, -0.901644, 0, 1, 0, 0.901644, 0, -0.432479, -3.85101, 7.42908, -6.90018 )
 
 [editable path="FPController"]
 [editable path="FPController/OpenXRallhandsdata"]
