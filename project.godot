@@ -507,6 +507,7 @@ singletons=[ "res://addons/godot-openxr/config/godot_openxr.gdnlib", "res://webr
 
 etc=false
 warnings=false
+grip=false
 
 [input]
 

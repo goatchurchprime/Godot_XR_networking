@@ -1,4 +1,4 @@
-[gd_scene load_steps=46 format=2]
+[gd_scene load_steps=45 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
@@ -8,18 +8,17 @@
 [ext_resource path="res://addons/godot-xr-tools/objects/pickable.tscn" type="PackedScene" id=6]
 [ext_resource path="res://lorienexperiments/LorienHandControls.tscn" type="PackedScene" id=7]
 [ext_resource path="res://addons/godot-xr-tools/functions/movement_turn.tscn" type="PackedScene" id=8]
-[ext_resource path="res://LPVRPlayerAvatar.tscn" type="PackedScene" id=9]
+[ext_resource path="res://avatars/gxtplayeravatar/LPVRPlayerAvatar.tscn" type="PackedScene" id=9]
 [ext_resource path="res://tensegrityexperiments/TensegrityExperiments.tscn" type="PackedScene" id=10]
 [ext_resource path="res://addons/player-networking/NetworkGateway.tscn" type="PackedScene" id=11]
 [ext_resource path="res://addons/godot-xr-tools/objects/pickable.gd" type="Script" id=12]
-[ext_resource path="res://addons/godot-xr-tools/functions/function_pickup.tscn" type="PackedScene" id=13]
+[ext_resource path="res://addons/godot-xr-tools/functions/function_teleport.tscn" type="PackedScene" id=13]
 [ext_resource path="res://click04.wav" type="AudioStream" id=14]
 [ext_resource path="res://addons/godot-xr-tools/objects/viewport_2d_in_3d.tscn" type="PackedScene" id=15]
 [ext_resource path="res://addons/godot-openxr/scenes/left_hand_nodes.tscn" type="PackedScene" id=16]
 [ext_resource path="res://avatars/monster/monster.tscn" type="PackedScene" id=17]
 [ext_resource path="res://handtrackingdevelopment/OpenXRallhandsdata.tscn" type="PackedScene" id=18]
 [ext_resource path="res://tensegrityexperiments/PickableWire.tscn" type="PackedScene" id=19]
-[ext_resource path="res://addons/godot-xr-tools/functions/movement_climb.tscn" type="PackedScene" id=20]
 [ext_resource path="res://addons/godot-xr-tools/objects/climbable.tscn" type="PackedScene" id=21]
 
 [sub_resource type="CylinderMesh" id=20]
@@ -131,21 +130,15 @@ order = 10
 max_speed = 3.0
 strafe = true
 
-[node name="FunctionPickup" parent="FPController/LeftHandController" index="1" instance=ExtResource( 13 )]
-grab_collision_mask = 4097
-ranged_collision_mask = 4097
-
-[node name="HandUIHook" type="RemoteTransform" parent="FPController/LeftHandController" index="2"]
+[node name="HandUIHook" type="RemoteTransform" parent="FPController/LeftHandController" index="1"]
 transform = Transform( -4.37114e-08, -1, 0, 0.707107, -3.09086e-08, 0.707107, -0.707107, 3.09086e-08, 0.707107, -0.1, 0, 0 )
+
+[node name="FunctionTeleport" parent="FPController/LeftHandController" index="2" instance=ExtResource( 13 )]
 
 [node name="RightHandController" parent="FPController" index="3"]
 visible = true
 
-[node name="FunctionPickup" parent="FPController/RightHandController" index="0" instance=ExtResource( 13 )]
-grab_collision_mask = 4097
-ranged_collision_mask = 4097
-
-[node name="MovementTurn" parent="FPController/RightHandController" index="1" instance=ExtResource( 8 )]
+[node name="MovementTurn" parent="FPController/RightHandController" index="0" instance=ExtResource( 8 )]
 
 [node name="ARVRController3" type="ARVRController" parent="FPController"]
 controller_id = 3
@@ -174,10 +167,6 @@ pause_mode = 2
 script = ExtResource( 2 )
 
 [node name="Left_hand" parent="FPController" instance=ExtResource( 16 )]
-
-[node name="MovementClimb" parent="FPController" instance=ExtResource( 20 )]
-left_pickup = NodePath("../LeftHandController/FunctionPickup")
-right_pickup = NodePath("../RightHandController/FunctionPickup")
 
 [node name="Floor" type="StaticBody" parent="."]
 
@@ -352,8 +341,5 @@ skeleton = NodePath("")
 [editable path="FPController/Left_hand"]
 [editable path="ViewportNetworkGateway"]
 [editable path="ViewportNetworkGateway/Viewport/NetworkGateway"]
-[editable path="Players/LPVRPlayerAvatar"]
-[editable path="Players/LPVRPlayerAvatar/LeftAppendage/4f_moved_hand_l"]
-[editable path="Players/LPVRPlayerAvatar/RightAppendage/4f_moved_hand_l"]
 [editable path="PickableBox"]
 [editable path="ClimbableCylinder"]
