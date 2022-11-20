@@ -6,53 +6,94 @@ var labeltext = "unknown"
 
 onready var LeftHandController = arvrorigin.get_node("LeftHandController")
 onready var RightHandController = arvrorigin.get_node("RightHandController")
-onready var OpenXRallhandsdata = arvrorigin.get_node_or_null("OpenXRallhandsdata")
-
-const TRACKING_CONFIDENCE_HIGH = 2
+onready var OpenXRallhandsdata = arvrorigin.get_node("OpenXRallhandsdata")
 
 var lowpolylefthandrestdata = null
 var lowpolyrighthandrestdata = null
 
+onready var gxtlefthandrestdata = OpenXRtrackedhand_funcs.getGXThandrestdata($LeftAppendage)
+onready var gxtrighthandrestdata = OpenXRtrackedhand_funcs.getGXThandrestdata($RightAppendage)
+var is_the_local_player = false
+
 var shrinkavatartransform = Transform()
 
 func _ready():
-	lowpolyrighthandrestdata = OpenXRtrackedhand_funcs.getlowpolyhandrestdata($RightHand)
-	lowpolylefthandrestdata = OpenXRtrackedhand_funcs.getlowpolyhandrestdata($LeftHand)
-	assert ($LeftHand.get_script() == null)
-	assert ($RightHand.get_script() == null)
-	assert (not $LeftHand/AnimationTree.active and not $RightHand/AnimationTree.active)
+	assert ($FunctionPointer.active_button == XRTools.Buttons.VR_ACTION and $FunctionPointer.action == "")
+	if is_the_local_player:
+		OpenXRallhandsdata.connect("vr_button_action", self, "_on_vr_button")
+
+var bright_active_pointer = false
+var bactive_pointer_not_released = false
 	
-func processavatarhand(palm_joint_confidence, joint_transforms, LRHand, lowpolyhandrestdata, ControllerLR, LRHandController, bright):
-	if palm_joint_confidence != -1:
-		ControllerLR.visible = false
-		var h = OpenXRtrackedhand_funcs.gethandjointpositionsL(joint_transforms)
-		if palm_joint_confidence == TRACKING_CONFIDENCE_HIGH: 
-			var lowpolyhandpose = OpenXRtrackedhand_funcs.setshapetobonesLowPoly(joint_transforms, lowpolyhandrestdata, bright)
-			LRHand.transform = lowpolyhandpose["handtransform"]
-			var skel = lowpolyhandrestdata["skel"]
-			for i in range(20):
-				skel.set_bone_pose(i, lowpolyhandpose[i])
-			LRHand.visible = true
+func _on_vr_button(button: int, bpressed: bool, bright: bool):
+	if not bpressed:
+		print("vr_buttonRelease ", button, " ", "R" if bright else "L")
+	if button == XRTools.Buttons.VR_TRIGGER:
+		if bright == bright_active_pointer:
+			if bpressed:
+				$FunctionPointer._on_button_pressed(XRTools.Buttons.VR_ACTION)
+			elif bactive_pointer_not_released:
+				$FunctionPointer._on_button_release(XRTools.Buttons.VR_ACTION)
+			bactive_pointer_not_released = bpressed
 		else:
-			LRHand.visible = false
+			if bactive_pointer_not_released:
+				$FunctionPointer._on_button_release(XRTools.Buttons.VR_ACTION)
+				bactive_pointer_not_released = false
+			bright_active_pointer = bright
+	
+func processavatarhand(LRAppendage, palm_joint_confidence, joint_transforms, gxthandrestdata, LRHandController, bright):
+	var LRhand = LRAppendage.get_child(0)
+	var LRcontroller = LRAppendage.get_child(1)
+	
+	if palm_joint_confidence != OpenXRallhandsdata.TRACKING_CONFIDENCE_NOT_APPLICABLE:
+		LRcontroller.visible = false
+		var h = OpenXRtrackedhand_funcs.gethandjointpositionsL(joint_transforms)
+		if palm_joint_confidence == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH: 
+			var lowpolyhandpose = OpenXRtrackedhand_funcs.setshapetobonesLowPoly(joint_transforms, gxthandrestdata, bright)
+			LRAppendage.transform = lowpolyhandpose["handtransform"]
+			var skel = gxthandrestdata["skel"]
+			for i in range(25):
+				skel.set_bone_pose(i, lowpolyhandpose[i])
+			LRhand.visible = true
+		else:
+			LRhand.visible = false
 
 	elif LRHandController.get_is_active():
-		LRHand.visible = false
-		ControllerLR.transform = LRHandController.transform
-		ControllerLR.visible = true
+		LRhand.visible = false
+		LRAppendage.transform = LRHandController.transform
+		LRcontroller.visible = true
 	else:
-		LRHand.visible = false
-		ControllerLR.visible = false
+		LRhand.visible = false
+		LRcontroller.visible = false
+
+func processpointer():
+	if (OpenXRallhandsdata.pointer_pose_confidence_R if bright_active_pointer else OpenXRallhandsdata.pointer_pose_confidence_L) == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH:
+		$FunctionPointer.transform = OpenXRallhandsdata.pointer_pose_transform_R if bright_active_pointer else OpenXRallhandsdata.pointer_pose_transform_L
+		var pinchedvalue = OpenXRallhandsdata.triggerpinchedjoyvalue_R if bright_active_pointer else OpenXRallhandsdata.triggerpinchedjoyvalue_L
+		$FunctionPointer/IntensityMarker.scale = Vector3(1,pinchedvalue*2+0.5,1)
+		if not $FunctionPointer.enabled:
+			$FunctionPointer.set_enabled(true)
+	elif $FunctionPointer.enabled:
+		$FunctionPointer.set_enabled(false)
 
 func PAV_processlocalavatarposition(delta):
+	assert (is_the_local_player)
 	transform = shrinkavatartransform*arvrorigin.transform
 	$HeadCam.transform = arvrorigin.get_node("ARVRCamera").transform
-	processavatarhand(OpenXRallhandsdata.palm_joint_confidence_L, OpenXRallhandsdata.joint_transforms_L, $LeftHand, lowpolylefthandrestdata, $ControllerLeft, LeftHandController, false)
-	processavatarhand(OpenXRallhandsdata.palm_joint_confidence_R, OpenXRallhandsdata.joint_transforms_R, $RightHand, lowpolyrighthandrestdata, $ControllerRight, RightHandController, true)
+	processavatarhand($LeftAppendage, OpenXRallhandsdata.palm_joint_confidence_L, OpenXRallhandsdata.joint_transforms_L, gxtlefthandrestdata, LeftHandController, false)
+	processavatarhand($RightAppendage, OpenXRallhandsdata.palm_joint_confidence_R, OpenXRallhandsdata.joint_transforms_R, gxtrighthandrestdata, RightHandController, true)
+	processpointer()
+		
+#var controller_pose_transform_L : Transform = Transform()
+#var controller_pose_transform_R : Transform = Transform()
+#var controller_pose_confidence_L : int = TRACKING_CONFIDENCE_NOT_APPLICABLE
+#var controller_pose_confidence_R : int = TRACKING_CONFIDENCE_NOT_APPLICABLE
+
+
 
 func setpaddlebody(active):
-	$ControllerRight/PaddleBody.visible = active
-	$ControllerRight/PaddleBody/CollisionShape.disabled = not active
+	$RightAppendage/PaddleBody.visible = active
+	$RightAppendage/PaddleBody/CollisionShape.disabled = not active
 
 func PAV_avatartoframedata():
 	var fd = {  NCONSTANTS2.CFI_VRORIGIN_POSITION: transform.origin, 
@@ -61,35 +102,40 @@ func PAV_avatartoframedata():
 				NCONSTANTS2.CFI_VRHEAD_ROTATION: $HeadCam.transform.basis.get_rotation_quat() 
 			 }
 			
-	if $LeftHand.visible:
+	var Lhand = $LeftAppendage.get_child(0)
+	var Lcontroller = $LeftAppendage.get_child(1)
+	var Rhand = $RightAppendage.get_child(0)
+	var Rcontroller = $RightAppendage.get_child(1)
+
+	if Lhand.visible:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE] = -1.0
-		fd[NCONSTANTS2.CFI_VRHANDLEFT_POSITION] = $LeftHand.transform.origin
-		fd[NCONSTANTS2.CFI_VRHANDLEFT_ROTATION] = $LeftHand.transform.basis.get_rotation_quat()
-		var skel = lowpolylefthandrestdata["skel"]
-		for i in range(23):
+		fd[NCONSTANTS2.CFI_VRHANDLEFT_POSITION] = $LeftAppendage.transform.origin
+		fd[NCONSTANTS2.CFI_VRHANDLEFT_ROTATION] = $LeftAppendage.transform.basis.get_rotation_quat()
+		var skel = gxtlefthandrestdata["skel"]
+		for i in range(25):
 			fd[NCONSTANTS2.CFI_VRHANDLEFT_BONE_ROTATIONS+i] = skel.get_bone_pose(i).basis.get_rotation_quat()
-	elif $ControllerLeft.visible:
+	elif Lcontroller.visible:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE] = 1.0
-		fd[NCONSTANTS2.CFI_VRHANDLEFT_POSITION] = $ControllerLeft.transform.origin
-		fd[NCONSTANTS2.CFI_VRHANDLEFT_ROTATION] = $ControllerLeft.transform.basis.get_rotation_quat()
+		fd[NCONSTANTS2.CFI_VRHANDLEFT_POSITION] = $LeftAppendage.transform.origin
+		fd[NCONSTANTS2.CFI_VRHANDLEFT_ROTATION] = $LeftAppendage.transform.basis.get_rotation_quat()
 	else:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE] = 0.0
 
-	if $RightHand.visible:
+	if Rhand.visible:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE] = -1.0
-		fd[NCONSTANTS2.CFI_VRHANDRIGHT_POSITION] = $RightHand.transform.origin
-		fd[NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION] = $RightHand.transform.basis.get_rotation_quat()
-		var skel = lowpolyrighthandrestdata["skel"]
-		for i in range(20):
+		fd[NCONSTANTS2.CFI_VRHANDRIGHT_POSITION] = $RightAppendage.transform.origin
+		fd[NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION] = $RightAppendage.transform.basis.get_rotation_quat()
+		var skel = gxtrighthandrestdata["skel"]
+		for i in range(25):
 			fd[NCONSTANTS2.CFI_VRHANDRIGHT_BONE_ROTATIONS+i] = skel.get_bone_pose(i).basis.get_rotation_quat()
-	elif $ControllerRight.visible:
+	elif Rcontroller.visible:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE] = 1.0
-		fd[NCONSTANTS2.CFI_VRHANDRIGHT_POSITION] = $ControllerRight.transform.origin
-		fd[NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION] = $ControllerRight.transform.basis.get_rotation_quat()
+		fd[NCONSTANTS2.CFI_VRHANDRIGHT_POSITION] = $RightAppendage.transform.origin
+		fd[NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION] = $RightAppendage.transform.basis.get_rotation_quat()
 	else:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE] = 0.0
 
-	fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY] = $ControllerRight/PaddleBody.visible
+	fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY] = $RightAppendage/PaddleBody.visible
 
 	return fd
 
@@ -106,52 +152,56 @@ func PAV_framedatatoavatar(fd):
 	transform = overwritetranform(transform, fd.get(NCONSTANTS2.CFI_VRORIGIN_ROTATION), fd.get(NCONSTANTS2.CFI_VRORIGIN_POSITION))
 	$HeadCam.transform = overwritetranform($HeadCam.transform, fd.get(NCONSTANTS2.CFI_VRHEAD_ROTATION), fd.get(NCONSTANTS2.CFI_VRHEAD_POSITION))
 
+	var Lhand = $LeftAppendage.get_child(0)
+	var Lcontroller = $LeftAppendage.get_child(1)
+	var Rhand = $RightAppendage.get_child(0)
+	var Rcontroller = $RightAppendage.get_child(1)
+
 	if fd.has(NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE):
 		var hcleftfade = fd.get(NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE)
-		$ControllerLeft.visible = (hcleftfade > 0.0)
-		$LeftHand.visible = (hcleftfade < 0.0)
+		Lcontroller.visible = (hcleftfade > 0.0)
+		Lhand.visible = (hcleftfade < 0.0)
 	if fd.has(NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE):
 		var hcrightfade = fd.get(NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE)
-		$ControllerRight.visible = (hcrightfade > 0.0)
-		$LeftHand.visible = (hcrightfade < 0.0)
+		Rcontroller.visible = (hcrightfade > 0.0)
+		Rhand.visible = (hcrightfade < 0.0)
 		
-	if $LeftHand.visible:
-		$LeftHand.transform = overwritetranform($LeftHand.transform, fd.get(NCONSTANTS2.CFI_VRHANDLEFT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDLEFT_POSITION))
-		var skel = $LeftHand/LeftHand/Armature_Left/Skeleton
-		for i in range(20):
-			var frot = fd.get(NCONSTANTS2.CFI_VRHANDLEFT_BONE_ROTATIONS+i)
-			if frot != null:
-				skel.set_bone_pose(i, Transform(frot))
-	elif $ControllerLeft.visible:
-		$ControllerLeft.transform = overwritetranform($ControllerLeft.transform, fd.get(NCONSTANTS2.CFI_VRHANDLEFT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDLEFT_POSITION))
+	if Lhand.visible or Lcontroller.visible:
+		$LeftAppendage.transform = overwritetranform($LeftAppendage.transform, fd.get(NCONSTANTS2.CFI_VRHANDLEFT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDLEFT_POSITION))
+		if Lhand.visible:
+			var skel = Lhand.get_node("Armature/Skeleton")
+			for i in range(25):
+				var frot = fd.get(NCONSTANTS2.CFI_VRHANDLEFT_BONE_ROTATIONS+i)
+				if frot != null:
+					skel.set_bone_pose(i, Transform(frot))
 
-	if $RightHand.visible:
-		$RightHand.transform = overwritetranform($RightHand.transform, fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_POSITION))
-		var skel = $RightHand/RightHand/Armature_Left/Skeleton
-		for i in range(20):
-			var frot = fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_BONE_ROTATIONS+i)
-			if frot != null:
-				skel.set_bone_pose(i, Transform(frot))
-	elif $ControllerRight.visible:
-		$ControllerRight.transform = overwritetranform($ControllerRight.transform, fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_POSITION))
+	if Rhand.visible or Rcontroller.visible:
+		$RightAppendage.transform = overwritetranform($RightAppendage.transform, fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_POSITION))
+		if Rhand.visible:
+			var skel = Rhand.get_node("Armature/Skeleton")
+			for i in range(25):
+				var frot = fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_BONE_ROTATIONS+i)
+				if frot != null:
+					skel.set_bone_pose(i, Transform(frot))
 	
 	if fd.has(NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY):
-		print("remote setpaddlebody ", fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY])
+		#print("remote setpaddlebody ", fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY])
 		setpaddlebody(fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY])
 
-
-		
+	
 var possibleusernames = ["Alice", "Beth", "Cath", "Dan", "Earl", "Fred", "George", "Harry", "Ivan", "John", "Kevin", "Larry", "Martin", "Oliver", "Peter", "Quentin", "Robert", "Samuel", "Thomas", "Ulrik", "Victor", "Wayne", "Xavier", "Youngs", "Zephir"]
 func PAV_initavatarlocal():
+	is_the_local_player = true
 	randomize()
 	labeltext = possibleusernames[randi()%len(possibleusernames)]
-	$LeftHand/LeftHand/Armature_Left/Skeleton/Hand_Left.set_surface_material(0, load("res://xrassets/vrhandmaterial.tres"))
-	$RightHand/RightHand/Armature_Left/Skeleton/Hand_Left.set_surface_material(0, load("res://xrassets/vrhandmaterial.tres"))
+	#$LeftHand/LeftHand/Armature_Left/Skeleton/Hand_Left.set_surface_material(0, load("res://xrassets/vrhandmaterial.tres"))
+	#$RightHand/RightHand/Armature_Left/Skeleton/Hand_Left.set_surface_material(0, load("res://xrassets/vrhandmaterial.tres"))
 
 func PAV_initavatarremote(avatardata):
+	is_the_local_player = false
 	labeltext = avatardata["labeltext"]
-	$LeftHand/LeftHand/Armature_Left/Skeleton/Hand_Left.set_surface_material(0, load("res://xrassets/vrhandmaterial.tres"))
-	$RightHand/RightHand/Armature_Left/Skeleton/Hand_Left.set_surface_material(0, load("res://xrassets/vrhandmaterial.tres"))
+	#$LeftHand/LeftHand/Armature_Left/Skeleton/Hand_Left.set_surface_material(0, load("res://xrassets/vrhandmaterial.tres"))
+	#$RightHand/RightHand/Armature_Left/Skeleton/Hand_Left.set_surface_material(0, load("res://xrassets/vrhandmaterial.tres"))
 
 func PAV_avatarinitdata():
 	var avatardata = { "avatarsceneresource":filename, 

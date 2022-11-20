@@ -5,7 +5,7 @@ onready var ovrhandmodel = $ovr_right_hand_model
 #onready var skel = $ovr_right_hand_model/ArmatureRight/Skeleton
 onready var rpmavatar = $readyplayerme_avatar
 
-const Dapply_readyplayerme_hand = true
+const Dapply_readyplayerme_hand = false
 
 func _process(delta):
 	pass
@@ -57,10 +57,13 @@ func applyjointpose(jointtransform):
 var ovrhandrestdata = null
 var lowpolyhandrestdata = null
 var rpmavatarhandrestdata = null
+var gxthandrestdata = null
 func _ready():
 	ovrhandrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata(ovrhandmodel)
-	lowpolyhandrestdata = OpenXRtrackedhand_funcs.getlowpolyhandrestdata($RightHand)
+	#lowpolyhandrestdata = OpenXRtrackedhand_funcs.getlowpolyhandrestdata($RightHand)
 	rpmavatarhandrestdata = OpenXRtrackedhand_funcs.getrpmhandrestdata(rpmavatar)
+	gxthandrestdata = OpenXRtrackedhand_funcs.getGXThandrestdata($RightHandGXT)
+	#$RightHandGXT/AnimationTree.active = false
 
 	var mi = $quickjointnodes.get_child(0)
 	for i in range(25):
@@ -69,7 +72,7 @@ func _ready():
 	$TrackballCameraOrigin.transform.origin = jointtransforms[0][0].origin
 
 
-# (A.basis, A.origin)*(B.basis, B.origin) = (A.basis*B.basis, A.origin + A.basis*B.origin)
+# (A.basis, A.origin)*(B.basis, B.origin) = (A.basis*B.basis, A.origin + A.basis*B.origin)ovrhandrestdata
 func sethandposfromnodes():
 	var joint_transforms = jointtransforms[0]
 	var h = OpenXRtrackedhand_funcs.gethandjointpositionsL(joint_transforms)
@@ -78,8 +81,21 @@ func sethandposfromnodes():
 #	$MeshInstance_marker2.global_transform = $Right_hand/Wrist/ThumbMetacarpal/ThumbProximal/ThumbDistal.global_transform
 	$MeshInstance_marker2.global_transform.origin = h["ht3"]
 
-	if $RightHand.visible:
-		var lowpolyhandpose = OpenXRtrackedhand_funcs.setshapetobonesLowPoly(joint_transforms, lowpolyhandrestdata)
+	if $RightHandGXT.visible:
+		var gxthandpose = OpenXRtrackedhand_funcs.setshapetobonesLowPoly(joint_transforms, gxthandrestdata, true)
+		var skel = gxthandrestdata["skel"]
+		print(skel, " ", $RightHandGXT/hand_r/Armature_Left/Skeleton)
+		for i in range(25):
+			skel.set_bone_pose(i, gxthandpose[i])
+		$RightHandGXT.transform = gxthandpose["handtransform"]
+		$MeshInstance_marker.global_transform = skel.global_transform*skel.get_bone_global_pose(3)
+
+		#$MeshInstance_marker/MeshInstance_marker.scale = Vector3(0.1,0.1,1)
+		#return 		
+		
+	
+	if false and $RightHand.visible:
+		var lowpolyhandpose = OpenXRtrackedhand_funcs.setshapetobonesLowPoly(joint_transforms, lowpolyhandrestdata, true)
 		var skel = lowpolyhandrestdata["skel"]
 
 		print("sdfsf")
@@ -90,17 +106,18 @@ func sethandposfromnodes():
 
 		for i in range(20):
 			skel.set_bone_pose(i, lowpolyhandpose[i])
+
 		print(skel.get_bone_pose(4))
 		print(lowpolyhandpose[4])
 		print("ggg")
 		print(skel.get_bone_rest(0)*skel.get_bone_pose(0)*skel.get_bone_rest(4)*skel.get_bone_pose(4))
 		print(skel.get_bone_global_pose(4))
 
-		$RightHand.transform = lowpolyhandpose["handtransform"]
-		$MeshInstance_marker.global_transform = skel.global_transform*skel.get_bone_global_pose(6)
+#		$RightHand.transform = lowpolyhandpose["handtransform"]
+#		$MeshInstance_marker.global_transform = skel.global_transform*skel.get_bone_global_pose(6)
 		
 #		$MeshInstance_marker.global_transform = skel.global_transform*skel.get_bone_global_pose(4)
-		$MeshInstance_marker/MeshInstance_marker.scale = Vector3(0.1,0.1,1)
+		#$MeshInstance_marker/MeshInstance_marker.scale = Vector3(0.1,0.1,1)
 		return 		
 
 	if Dapply_readyplayerme_hand:
@@ -127,15 +144,15 @@ func sethandposfromnodes():
 		$MeshInstance_marker2.global_transform = skel.global_transform*skel.get_bone_global_pose(36)
 		return
 
-	var ovrhandpose = OpenXRtrackedhand_funcs.setshapetobonesOVR(h, ovrhandrestdata)
+	var ovrhandpose = OpenXRtrackedhand_funcs.setshapetobonesOVR(joint_transforms, ovrhandrestdata)
 	var skel = ovrhandrestdata["skel"]
 	ovrhandmodel.transform = ovrhandpose["handtransform"]
 	for i in range(23):
 		skel.set_bone_pose(i, ovrhandpose[i])
 
 	#$MeshInstance.global_transform.origin = $Right_hand.global_transform*h["hi1"]
-	$MeshInstance_marker.global_transform = skel.global_transform*skel.get_bone_global_pose(5)
-	$MeshInstance_marker/MeshInstance_marker.scale = Vector3(100,100,100)
+	#$MeshInstance_marker.global_transform = skel.global_transform*skel.get_bone_global_pose(5)
+	#$MeshInstance_marker/MeshInstance_marker.scale = Vector3(100,100,100)
 
 func _input(event):
 	if event is InputEventKey and event.pressed:

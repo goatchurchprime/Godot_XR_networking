@@ -24,6 +24,7 @@ export var QUESTstartupprotocol = "webrtc"
 
 #    don't forget to checkout to 2.5.0
 
+# We will consider making my own FPConroller with these other sub-controllers in it
 
 func _ready():
 	#$FPController/LeftHandController/Function_Direct_movement.nonVRkeyboard = true
@@ -44,6 +45,9 @@ func _ready():
 	$FPController/RightHandController.connect("button_pressed", self, "vr_right_button_pressed")
 	$FPController/RightHandController.connect("button_release", self, "vr_right_button_release")
 	$FPController/LeftHandController.connect("button_pressed", self, "vr_left_button_pressed")
+	$FPController/LeftHandController.set_process(false)
+	$FPController/RightHandController.set_process(false)
+
 
 	$FPController/PlayerBody.default_physics.move_drag = 45
 	$SportBall.connect("body_entered", self, "ball_body_entered")
@@ -74,6 +78,9 @@ const VR_TRIGGER = 15
 const VR_BUTTON_4 = 4
 const VR_HANDTRACKING_INDEXTHUMB_PINCH = VR_BUTTON_4
 	
+func pose_right_button_pressed(button: int):
+	print("pose_right_button_pressed ", button)
+
 func vr_right_button_pressed(button: int):
 	print("vr right button pressed ", button)
 	if button == VR_BUTTON_BY:
@@ -138,9 +145,32 @@ func _physics_process(delta):
 
 
 func _process(delta):
-	if $FPController.interface != null and $FPController/OpenXRallhandsdata.is_active_R:
-		$FPController/RightHandController/FunctionPointer.active_button = VR_HANDTRACKING_INDEXTHUMB_PINCH
-	else:
-		$FPController/RightHandController/FunctionPointer.active_button = VR_TRIGGER
+	#if $FPController.interface != null and $FPController/OpenXRallhandsdata.is_active_R:
+	#	$FPController/RightHandController/FunctionPointer.active_button = VR_HANDTRACKING_INDEXTHUMB_PINCH
+	#else:
+	#	$FPController/RightHandController/FunctionPointer.active_button = VR_TRIGGER
+	pass
 	
 
+#** Remove the debug printing messages
+#** make the -1 controllerid named
+#** test out drawing laser in contact only case
+#** shorten laser to contact point PR to the toolkit
+#** try out the function pickup case with the hands
+#** clean up the hand finger drawing code more so
+#** viewport network gateway on wrong setting at startup (enet instead of webrtc) error
+#** check networking all still works
+#** networking wristband
+#** make a video and make the case for unified pointer rather than 4 pointers
+#** try out the physics pointer for finger too
+#** experiment with the climb pointer (where any of the fingers must be in contact)
+
+#** play through elixir
+#** hand tracking movement of vrchat and eolia
+
+#** more work on the drawing in 2D
+#** networking of that in experiments (first in alone in it)
+
+#** consider the dinosaur
+#** does it work in different world scales?
+#** consider the dinosaur avatar as a mechanoid

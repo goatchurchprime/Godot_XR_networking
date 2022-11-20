@@ -1,21 +1,35 @@
-[gd_scene load_steps=35 format=2]
+[gd_scene load_steps=44 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
 [ext_resource path="res://addons/godot-openxr/scenes/first_person_controller_vr.tscn" type="PackedScene" id=3]
-[ext_resource path="res://addons/godot-xr-tools/assets/player_body.tscn" type="PackedScene" id=4]
+[ext_resource path="res://addons/godot-xr-tools/player/player_body.tscn" type="PackedScene" id=4]
 [ext_resource path="res://addons/godot-xr-tools/functions/movement_direct.tscn" type="PackedScene" id=5]
-[ext_resource path="res://addons/godot-xr-tools/functions/function_pointer.tscn" type="PackedScene" id=6]
+[ext_resource path="res://addons/godot-xr-tools/objects/pickable.tscn" type="PackedScene" id=6]
 [ext_resource path="res://lorienexperiments/LorienHandControls.tscn" type="PackedScene" id=7]
 [ext_resource path="res://addons/godot-xr-tools/functions/movement_turn.tscn" type="PackedScene" id=8]
-[ext_resource path="res://VRPlayerAvatar.tscn" type="PackedScene" id=9]
+[ext_resource path="res://LPVRPlayerAvatar.tscn" type="PackedScene" id=9]
 [ext_resource path="res://tensegrityexperiments/TensegrityExperiments.tscn" type="PackedScene" id=10]
 [ext_resource path="res://addons/player-networking/NetworkGateway.tscn" type="PackedScene" id=11]
 [ext_resource path="res://addons/godot-xr-tools/objects/pickable.gd" type="Script" id=12]
 [ext_resource path="res://addons/godot-xr-tools/functions/function_pickup.tscn" type="PackedScene" id=13]
 [ext_resource path="res://click04.wav" type="AudioStream" id=14]
 [ext_resource path="res://addons/godot-xr-tools/objects/viewport_2d_in_3d.tscn" type="PackedScene" id=15]
+[ext_resource path="res://addons/godot-openxr/scenes/left_hand_nodes.tscn" type="PackedScene" id=16]
+[ext_resource path="res://avatars/monster/monster.tscn" type="PackedScene" id=17]
 [ext_resource path="res://handtrackingdevelopment/OpenXRallhandsdata.tscn" type="PackedScene" id=18]
+[ext_resource path="res://tensegrityexperiments/PickableWire.tscn" type="PackedScene" id=19]
+[ext_resource path="res://addons/godot-xr-tools/functions/movement_climb.tscn" type="PackedScene" id=20]
+
+[sub_resource type="CylinderMesh" id=20]
+top_radius = 0.008
+bottom_radius = 0.001
+height = 0.06
+radial_segments = 12
+rings = 0
+
+[sub_resource type="SpatialMaterial" id=21]
+albedo_color = Color( 0.137255, 0.764706, 0.0745098, 1 )
 
 [sub_resource type="PlaneMesh" id=2]
 size = Vector2( 20, 20 )
@@ -35,13 +49,13 @@ extents = Vector3( 10, 0.1, 10 )
 resource_local_to_scene = true
 size = Vector2( 3, 2 )
 
-[sub_resource type="ViewportTexture" id=20]
+[sub_resource type="ViewportTexture" id=22]
 flags = 4
 
-[sub_resource type="SpatialMaterial" id=21]
+[sub_resource type="SpatialMaterial" id=23]
 flags_transparent = true
 params_cull_mode = 2
-albedo_texture = SubResource( 20 )
+albedo_texture = SubResource( 22 )
 
 [sub_resource type="BoxShape" id=19]
 resource_local_to_scene = true
@@ -83,6 +97,16 @@ albedo_color = Color( 0.980392, 0.843137, 0.858824, 1 )
 albedo_texture = SubResource( 13 )
 uv1_scale = Vector3( 10, 20, 1 )
 
+[sub_resource type="BoxShape" id=24]
+extents = Vector3( 0.05, 0.5, 0.05 )
+
+[sub_resource type="CubeMesh" id=25]
+size = Vector3( 0.1, 1, 0.1 )
+
+[sub_resource type="CylinderMesh" id=26]
+top_radius = 0.5
+bottom_radius = 0.4
+
 [node name="Main" type="Spatial"]
 script = ExtResource( 1 )
 PCstartupprotocol = "none"
@@ -93,7 +117,6 @@ QUESTstartupprotocol = "none"
 [node name="ARVRCamera" parent="FPController" index="1"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, 0 )
 current = true
-far = 1000.0
 
 [node name="LeftHandController" parent="FPController" index="2"]
 visible = true
@@ -120,15 +143,37 @@ ranged_collision_mask = 4097
 
 [node name="MovementTurn" parent="FPController/RightHandController" index="1" instance=ExtResource( 8 )]
 
-[node name="FunctionPointer" parent="FPController/RightHandController" index="2" instance=ExtResource( 6 )]
-collision_mask = 515071
+[node name="ARVRController3" type="ARVRController" parent="FPController"]
+controller_id = 3
+
+[node name="MeshInstance" type="MeshInstance" parent="FPController/ARVRController3"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+visible = false
+mesh = SubResource( 20 )
+material/0 = SubResource( 21 )
+
+[node name="ARVRController4" type="ARVRController" parent="FPController"]
+controller_id = 4
+
+[node name="MeshInstance" type="MeshInstance" parent="FPController/ARVRController4"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+visible = false
+mesh = SubResource( 20 )
+material/0 = SubResource( 21 )
+
+[node name="OpenXRallhandsdata" parent="FPController" instance=ExtResource( 18 )]
+pause_mode = 2
 
 [node name="PlayerBody" parent="FPController" instance=ExtResource( 4 )]
 
-[node name="OpenXRallhandsdata" parent="FPController" instance=ExtResource( 18 )]
-
 [node name="HandtrackingDevelopment" type="Node" parent="FPController"]
 script = ExtResource( 2 )
+
+[node name="Left_hand" parent="FPController" instance=ExtResource( 16 )]
+
+[node name="MovementClimb" parent="FPController" instance=ExtResource( 20 )]
+left_pickup = NodePath("../LeftHandController/FunctionPickup")
+right_pickup = NodePath("../RightHandController/FunctionPickup")
 
 [node name="Floor" type="StaticBody" parent="."]
 
@@ -147,6 +192,7 @@ collision_layer = 8704
 
 [node name="Viewport" parent="ViewportNetworkGateway" index="0"]
 size = Vector2( 550, 400 )
+render_target_update_mode = 1
 
 [node name="NetworkGateway" parent="ViewportNetworkGateway/Viewport" index="0" instance=ExtResource( 11 )]
 
@@ -172,7 +218,7 @@ items = [ "me", null, false, 0, null ]
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource( 16 )
-material/0 = SubResource( 21 )
+material/0 = SubResource( 23 )
 
 [node name="StaticBody" parent="ViewportNetworkGateway" index="2"]
 collision_layer = 8704
@@ -183,8 +229,8 @@ shape = SubResource( 19 )
 
 [node name="Players" type="Spatial" parent="."]
 
-[node name="VRPlayerAvatar" parent="Players" instance=ExtResource( 9 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.16926, 0 )
+[node name="LPVRPlayerAvatar" parent="Players" instance=ExtResource( 9 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.653152, 1.22849, 0 )
 
 [node name="SportBall" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.54476, 1.91887, -4.03967 )
@@ -271,7 +317,37 @@ extents = Vector3( 12, 10, 13 )
 [node name="TensegrityExperiments" parent="." instance=ExtResource( 10 )]
 visible = false
 
+[node name="Monster" parent="." instance=ExtResource( 17 )]
+transform = Transform( -0.0864958, 0, -0.180329, 0, 0.2, 0, 0.180329, 0, -0.0864958, -3.85101, 1.51881, -2.8849 )
+
+[node name="Wire" parent="." instance=ExtResource( 19 )]
+
+[node name="PickableBox" parent="." instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.21791, 0.553108, -0.884537 )
+ranged_grab_method = 2
+
+[node name="CollisionShape" parent="PickableBox" index="1"]
+shape = SubResource( 24 )
+
+[node name="MeshInstance" type="MeshInstance" parent="PickableBox"]
+mesh = SubResource( 25 )
+
+[node name="ClimbableBox" parent="." instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.517, 1, 0 )
+mode = 1
+ranged_grab_method = 0
+
+[node name="MeshInstance" type="MeshInstance" parent="ClimbableBox"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.695835 )
+mesh = SubResource( 26 )
+
 [editable path="FPController"]
 [editable path="FPController/OpenXRallhandsdata"]
+[editable path="FPController/Left_hand"]
 [editable path="ViewportNetworkGateway"]
 [editable path="ViewportNetworkGateway/Viewport/NetworkGateway"]
+[editable path="Players/LPVRPlayerAvatar"]
+[editable path="Players/LPVRPlayerAvatar/LeftAppendage/4f_moved_hand_l"]
+[editable path="Players/LPVRPlayerAvatar/RightAppendage/4f_moved_hand_l"]
+[editable path="PickableBox"]
+[editable path="ClimbableBox"]

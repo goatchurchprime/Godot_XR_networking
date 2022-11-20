@@ -1,21 +1,20 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://xrassets/ovr_right_hand_model.glb" type="PackedScene" id=1]
 [ext_resource path="res://handtrackingdevelopment/handtrackingexplore.gd" type="Script" id=2]
 [ext_resource path="res://xrassets/readyplayerme_avatar.glb" type="PackedScene" id=3]
 [ext_resource path="res://addons/goutte.camera.trackball/trackball_camera.gd" type="Script" id=4]
-[ext_resource path="res://addons/godot-xr-tools/assets/right_hand.tscn" type="PackedScene" id=5]
+[ext_resource path="res://xrassets/4f_moved_hand_l.glb" type="PackedScene" id=5]
 [ext_resource path="res://addons/godot-xr-tools/objects/viewport_2d_in_3d.tscn" type="PackedScene" id=6]
-[ext_resource path="res://xrassets/vrhandmaterial.tres" type="Material" id=7]
 
 [sub_resource type="CubeMesh" id=3]
-size = Vector3( 0.015, 0.015, 0.02 )
+size = Vector3( 0.004, 0.03, 0.004 )
 
 [sub_resource type="SpatialMaterial" id=4]
 albedo_color = Color( 0.105882, 0.0196078, 0.964706, 1 )
 
 [sub_resource type="CubeMesh" id=1]
-size = Vector3( 0.1, 0.1, 0.1 )
+size = Vector3( 0.01, 0.01, 0.1 )
 
 [sub_resource type="SpatialMaterial" id=5]
 albedo_color = Color( 0.898039, 0.0392157, 0.0392157, 1 )
@@ -29,21 +28,13 @@ script = ExtResource( 2 )
 [node name="quickjointnodes" type="Spatial" parent="."]
 
 [node name="MeshInstance" type="MeshInstance" parent="quickjointnodes"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0812149, 0 )
 mesh = SubResource( 3 )
 material/0 = SubResource( 4 )
 
 [node name="ovr_right_hand_model" parent="." instance=ExtResource( 1 )]
 transform = Transform( 0.470566, 0.313517, 0.824788, 0.805183, 0.229751, -0.546713, -0.3609, 0.92137, -0.144325, -0.408264, 0.10582, 0.060482 )
-
-[node name="ArmatureRight" parent="ovr_right_hand_model" index="0"]
 visible = false
-
-[node name="Skeleton" parent="ovr_right_hand_model/ArmatureRight" index="0"]
-bones/0/bound_children = [ NodePath("BoneAttachment5"), NodePath("BoneAttachment6"), NodePath("BoneAttachment7"), NodePath("BoneAttachment8"), NodePath("BoneAttachment9"), NodePath("BoneAttachment10"), NodePath("BoneAttachment11"), NodePath("BoneAttachment12"), NodePath("BoneAttachment13"), NodePath("BoneAttachment14"), NodePath("BoneAttachment15"), NodePath("BoneAttachment16") ]
-bones/2/bound_children = [ NodePath("BoneAttachment3") ]
-bones/3/bound_children = [ NodePath("BoneAttachment2") ]
-bones/4/bound_children = [ NodePath("BoneAttachment") ]
-bones/10/bound_children = [ NodePath("BoneAttachment4") ]
 
 [node name="BoneAttachment" parent="ovr_right_hand_model/ArmatureRight/Skeleton" index="0"]
 transform = Transform( 0.575561, 0.67335, 0.464036, -0.739133, 0.671136, -0.0570911, -0.349873, -0.310125, 0.883975, -8.31233, 6.69126, 4.37118 )
@@ -100,9 +91,10 @@ shadow_enabled = true
 
 [node name="readyplayerme_avatar" parent="." instance=ExtResource( 3 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.928, -0.16 )
+visible = false
 
 [node name="MeshInstance_marker" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.196732, 0.320114 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0572281, 0 )
 
 [node name="MeshInstance_marker" type="MeshInstance" parent="MeshInstance_marker"]
 mesh = SubResource( 1 )
@@ -132,22 +124,15 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.19925 )
 [node name="TrackballCameraOrigin" type="Spatial" parent="."]
 
 [node name="TrackballCamera" type="Camera" parent="TrackballCameraOrigin"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.601307 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.4 )
 fov = 38.6
 script = ExtResource( 4 )
 
-[node name="RightHand" parent="." instance=ExtResource( 5 )]
-transform = Transform( 0.999678, 0.0253744, 0, -0.0253744, 0.999678, 0, 0, 0, 1, 0, 0, 0.289581 )
-visible = false
-script = null
+[node name="RightHandGXT" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.376938 )
 
-[node name="Hand_Left" parent="RightHand/RightHand/Armature_Left/Skeleton" index="0"]
-material/0 = ExtResource( 7 )
-
-[node name="AnimationTree" parent="RightHand" index="1"]
-active = false
+[node name="4f_moved_hand_l" parent="RightHandGXT" instance=ExtResource( 5 )]
+transform = Transform( -1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 
 [editable path="ovr_right_hand_model"]
 [editable path="readyplayerme_avatar"]
-[editable path="RightHand"]
-[editable path="RightHand/RightHand"]

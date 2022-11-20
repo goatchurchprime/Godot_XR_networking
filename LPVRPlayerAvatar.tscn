@@ -1,10 +1,10 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=17 format=2]
 
-[ext_resource path="res://xrassets/right_quest2_contoller.tscn" type="PackedScene" id=1]
+[ext_resource path="res://xrassets/4f_moved_hand_l.glb" type="PackedScene" id=1]
 [ext_resource path="res://LPVRPlayerAvatar.gd" type="Script" id=2]
 [ext_resource path="res://xrassets/left_quest2_controller.tscn" type="PackedScene" id=3]
-[ext_resource path="res://addons/godot-xr-tools/assets/left_hand.tscn" type="PackedScene" id=5]
-[ext_resource path="res://addons/godot-xr-tools/assets/right_hand.tscn" type="PackedScene" id=6]
+[ext_resource path="res://xrassets/right_quest2_controller.tscn" type="PackedScene" id=4]
+[ext_resource path="res://addons/godot-xr-tools/functions/function_pointer.tscn" type="PackedScene" id=5]
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 0.2, 0.1, 0.1 )
@@ -20,6 +20,13 @@ rings = 24
 
 [sub_resource type="SpatialMaterial" id=4]
 albedo_color = Color( 0.741176, 0.623529, 0.584314, 1 )
+
+[sub_resource type="SpatialMaterial" id=8]
+flags_transparent = true
+albedo_color = Color( 0.690196, 0.247059, 0.839216, 0.894118 )
+
+[sub_resource type="SpatialMaterial" id=9]
+albedo_color = Color( 0.964706, 0.337255, 0.337255, 1 )
 
 [sub_resource type="CylinderShape" id=5]
 margin = 0.02
@@ -41,6 +48,16 @@ emission_energy = 1.0
 emission_operator = 0
 emission_on_uv2 = false
 
+[sub_resource type="CylinderMesh" id=10]
+top_radius = 0.01
+bottom_radius = 0.005
+height = 0.02
+radial_segments = 8
+rings = 0
+
+[sub_resource type="SpatialMaterial" id=11]
+albedo_color = Color( 0.87451, 0.85098, 0.0980392, 1 )
+
 [node name="LPVRPlayerAvatar" type="Spatial"]
 script = ExtResource( 2 )
 
@@ -53,46 +70,50 @@ transform = Transform( 0.9, 0, 0, 0, 1, 0, 0, 0, 0.98, 0, -0.051, 0.085 )
 mesh = SubResource( 3 )
 material = SubResource( 4 )
 
-[node name="ControllerLeft" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.307861, -0.332077, -0.346588 )
+[node name="LeftAppendage" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.262, -0.31, -0.21 )
 
-[node name="left_quest2_controller" parent="ControllerLeft" instance=ExtResource( 3 )]
+[node name="4f_moved_hand_l" parent="LeftAppendage" instance=ExtResource( 1 )]
 
-[node name="ControllerRight" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.319285, -0.267242, -0.39732 )
+[node name="mesh_Hand_low_L" parent="LeftAppendage/4f_moved_hand_l/Armature/Skeleton" index="0"]
+material/0 = SubResource( 8 )
 
-[node name="right_quest2_contoller" parent="ControllerRight" instance=ExtResource( 1 )]
+[node name="left_quest2_controller" parent="LeftAppendage" instance=ExtResource( 3 )]
 
-[node name="PaddleBody" type="KinematicBody" parent="ControllerRight"]
-transform = Transform( 0.752357, 0.658755, 0, -0.658755, 0.752357, 0, 0, 0, 1, 0.011775, -0.044319, -0.348128 )
+[node name="RightAppendage" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.261993, -0.309998, -0.216488 )
+
+[node name="4f_moved_hand_l" parent="RightAppendage" instance=ExtResource( 1 )]
+transform = Transform( -1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+
+[node name="mesh_Hand_low_L" parent="RightAppendage/4f_moved_hand_l/Armature/Skeleton" index="0"]
+material/0 = SubResource( 9 )
+
+[node name="right_quest2_controller" parent="RightAppendage" instance=ExtResource( 4 )]
+
+[node name="PaddleBody" type="KinematicBody" parent="RightAppendage"]
+transform = Transform( 0.752357, 0.658755, 0, -0.658755, 0.752357, 0, 0, 0, 1, 0.00118214, -0.00156346, -0.425429 )
 visible = false
 collision_layer = 4096
 collision_mask = 4096
 
-[node name="CollisionShape" type="CollisionShape" parent="ControllerRight/PaddleBody"]
+[node name="CollisionShape" type="CollisionShape" parent="RightAppendage/PaddleBody"]
 transform = Transform( 0.704795, 0.709411, 0, -0.709411, 0.704795, 0, 0, 0, 1, 0, 0, 0 )
 shape = SubResource( 5 )
 disabled = true
 
-[node name="MeshInstance" type="MeshInstance" parent="ControllerRight/PaddleBody/CollisionShape"]
+[node name="MeshInstance" type="MeshInstance" parent="RightAppendage/PaddleBody/CollisionShape"]
 mesh = SubResource( 6 )
 material/0 = SubResource( 7 )
 
-[node name="LeftHand" parent="." instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.316681, -0.235588, 0 )
-script = null
+[node name="FunctionPointer" parent="." instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.261993, -0.309998, -0.216488 )
+active_button = 255
 
-[node name="AnimationTree" parent="LeftHand" index="1"]
-active = false
+[node name="IntensityMarker" type="MeshInstance" parent="FunctionPointer"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -0.04 )
+mesh = SubResource( 10 )
+material/0 = SubResource( 11 )
 
-[node name="RightHand" parent="." instance=ExtResource( 6 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.236969, -0.264137, 0 )
-script = null
-
-[node name="AnimationTree" parent="RightHand" index="1"]
-active = false
-
-[editable path="LeftHand"]
-[editable path="LeftHand/LeftHand"]
-[editable path="RightHand"]
-[editable path="RightHand/RightHand"]
+[editable path="LeftAppendage/4f_moved_hand_l"]
+[editable path="RightAppendage/4f_moved_hand_l"]

@@ -173,8 +173,8 @@ func onflathandsurfacedepthvaluechanged(value: float):
 
 var flathandactive = 0
 func flathandsresetdetection(delta):
-	var flathandscoreL = flathandscore(OpenXRallhandsdata.joint_transforms_L) if (OpenXRallhandsdata.is_active_L and OpenXRallhandsdata.palm_joint_confidence_L == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH) else 0.0
-	var flathandscoreR = flathandscore(OpenXRallhandsdata.joint_transforms_R) if (OpenXRallhandsdata.is_active_R and OpenXRallhandsdata.palm_joint_confidence_R == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH) else 0.0
+	var flathandscoreL = flathandscore(OpenXRallhandsdata.joint_transforms_L) if (OpenXRallhandsdata.palm_joint_confidence_L == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH) else 0.0
+	var flathandscoreR = flathandscore(OpenXRallhandsdata.joint_transforms_R) if (OpenXRallhandsdata.palm_joint_confidence_R == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH) else 0.0
 	var resetflat = false
 	if flathandactive != 2:
 		resetflat = flathandresetdetection(OpenXRallhandsdata.joint_transforms_L, flathandscoreL, delta)
@@ -228,11 +228,11 @@ var sidehandknuckleposR = null
 
 
 func sidehanddragdetection(delta):
-	var NsidehandknuckleposL = sidehandknuckle(OpenXRallhandsdata.joint_transforms_L, $shrinkavatartransform/fistdragmarkerL, delta) if (OpenXRallhandsdata.is_active_L and OpenXRallhandsdata.palm_joint_confidence_L == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH) else null
+	var NsidehandknuckleposL = sidehandknuckle(OpenXRallhandsdata.joint_transforms_L, $shrinkavatartransform/fistdragmarkerL, delta) if (OpenXRallhandsdata.palm_joint_confidence_L == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH) else null
 	var kpvecL = NsidehandknuckleposL - sidehandknuckleposL if (NsidehandknuckleposL != null and sidehandknuckleposL != null) else null
 	sidehandknuckleposL = NsidehandknuckleposL
 	
-	var NsidehandknuckleposR = sidehandknuckle(OpenXRallhandsdata.joint_transforms_R, $shrinkavatartransform/fistdragmarkerR, delta) if (OpenXRallhandsdata.is_active_R and OpenXRallhandsdata.palm_joint_confidence_R == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH) else null
+	var NsidehandknuckleposR = sidehandknuckle(OpenXRallhandsdata.joint_transforms_R, $shrinkavatartransform/fistdragmarkerR, delta) if (OpenXRallhandsdata.palm_joint_confidence_R == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH) else null
 	var kpvecR = NsidehandknuckleposR - sidehandknuckleposR if (NsidehandknuckleposR != null and sidehandknuckleposR != null) else null
 	sidehandknuckleposR = NsidehandknuckleposR
 
@@ -244,7 +244,7 @@ func sidehanddragdetection(delta):
 
 var thumbontable = false
 func thumbdownundodetection(delta):
-	if not (OpenXRallhandsdata.is_active_R and OpenXRallhandsdata.palm_joint_confidence_R == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH):
+	if not (OpenXRallhandsdata.palm_joint_confidence_R == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH):
 		return
 	var joint_transforms = OpenXRallhandsdata.joint_transforms_R
 	var thumbpos = FPController.global_transform.xform(joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_THUMB_TIP_EXT].origin)
@@ -313,14 +313,13 @@ func penmarkerdetection(indexfingertransform, pencircle, delta):
 		mpos = spos
 
 func getpenindexfingertransform(bleft):
-	if (OpenXRallhandsdata.is_active_L if bleft else OpenXRallhandsdata.is_active_R): 
-		if ((OpenXRallhandsdata.palm_joint_confidence_L if bleft else OpenXRallhandsdata.palm_joint_confidence_R) == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH):
-			var joint_transforms = (OpenXRallhandsdata.joint_transforms_L if bleft else OpenXRallhandsdata.joint_transforms_R)
-			var indexfingertransform = FPController.global_transform*joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_INDEX_TIP_EXT]
-			if indexfingertransform.basis.z.y >= flatpenanglelimit:
-				var indexfingerabovetableheight = indexfingertransform.origin.y - loriencanvasOrigin.y
-				if indexfingerabovetableheight <= cursorfingerheight:
-					return indexfingertransform
+	if ((OpenXRallhandsdata.palm_joint_confidence_L if bleft else OpenXRallhandsdata.palm_joint_confidence_R) == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH):
+		var joint_transforms = (OpenXRallhandsdata.joint_transforms_L if bleft else OpenXRallhandsdata.joint_transforms_R)
+		var indexfingertransform = FPController.global_transform*joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_INDEX_TIP_EXT]
+		if indexfingertransform.basis.z.y >= flatpenanglelimit:
+			var indexfingerabovetableheight = indexfingertransform.origin.y - loriencanvasOrigin.y
+			if indexfingerabovetableheight <= cursorfingerheight:
+				return indexfingertransform
 	return null
 
 var sinpalmtrigger = sin(deg2rad(55))
@@ -332,7 +331,7 @@ var upperhandUIheight = 0.05
 var upperhandUIcontactdistance = -0.005
 var upperhandUIcontactdistancedetach = 0.01
 func upperhanddetection(delta):
-	if not (OpenXRallhandsdata.is_active_R and OpenXRallhandsdata.palm_joint_confidence_R == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH):
+	if not (OpenXRallhandsdata.palm_joint_confidence_R == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH):
 		return
 	var joint_transforms = OpenXRallhandsdata.joint_transforms_R
 	var palmupbasisy = -joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_PALM_EXT].basis.y.y

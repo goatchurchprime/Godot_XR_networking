@@ -1,0 +1,275 @@
+[gd_scene load_steps=16 format=2]
+
+[ext_resource path="res://avatars/monster/monster.gd" type="Script" id=1]
+[ext_resource path="res://avatars/monster/mesh/monster.glb" type="PackedScene" id=2]
+[ext_resource path="res://avatars/monster/sounds/step.wav" type="AudioStream" id=3]
+[ext_resource path="res://avatars/monster/sounds/swing.wav" type="AudioStream" id=4]
+[ext_resource path="res://avatars/monster/sounds/monster_roar.wav" type="AudioStream" id=5]
+[ext_resource path="res://avatars/monster/sounds/monster_eat.wav" type="AudioStream" id=6]
+[ext_resource path="res://avatars/monster/sounds/monster_smash.wav" type="AudioStream" id=7]
+[ext_resource path="res://avatars/monster/sounds/monster_die.wav" type="AudioStream" id=8]
+
+[sub_resource type="SphereShape" id=8]
+radius = 2.0
+
+[sub_resource type="SphereShape" id=10]
+radius = 8.0
+
+[sub_resource type="SphereShape" id=9]
+radius = 3.0
+
+[sub_resource type="SphereShape" id=5]
+radius = 2.0
+
+[sub_resource type="Animation" id=7]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("MonsterArmature/Skeleton/LeftFootAnchor/LStompArea:monitorable")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ false ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("..:locked")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ false ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("MonsterArmature/Skeleton/LeftHandAnchor/LAttackArea:monitorable")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ false ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("MonsterArmature/Skeleton/RightHandAnchor/RAttackArea:monitorable")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ false ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("MonsterArmature/Skeleton/RightFootAnchor/RStompArea:monitorable")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ false ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("MonsterArmature/Skeleton/RightHandAnchor/GrabArea:monitorable")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ false ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("MonsterArmature/Skeleton/LeftHandAnchor/LAttackArea/SmashAttackArea:monitorable")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ false ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("..:roar")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ false ]
+}
+
+[sub_resource type="CapsuleShape" id=6]
+radius = 4.5
+height = 6.0
+
+[sub_resource type="CapsuleShape" id=11]
+radius = 3.0
+height = 4.0
+
+[node name="Monster" type="KinematicBody"]
+collision_mask = 96
+script = ExtResource( 1 )
+
+[node name="Origin" parent="." instance=ExtResource( 2 )]
+
+[node name="MonsterArmature" parent="Origin" index="0"]
+transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0 )
+
+[node name="Skeleton" parent="Origin/MonsterArmature" index="0"]
+bones/18/bound_children = [ NodePath("LeftFootAnchor") ]
+bones/22/bound_children = [ NodePath("LeftHandAnchor") ]
+bones/25/bound_children = [ NodePath("RightFootAnchor") ]
+bones/29/bound_children = [ NodePath("RightHandAnchor") ]
+
+[node name="LeftHandAnchor" type="BoneAttachment" parent="Origin/MonsterArmature/Skeleton" index="1"]
+transform = Transform( 0.121054, -0.0460664, 0.991576, 0.902377, -0.411106, -0.129263, 0.413598, 0.910423, -0.00819659, 3.51877, -1.0289, 2.57944 )
+bone_name = "fingers_l"
+
+[node name="LAttackArea" type="Area" parent="Origin/MonsterArmature/Skeleton/LeftHandAnchor"]
+collision_layer = 2
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape" type="CollisionShape" parent="Origin/MonsterArmature/Skeleton/LeftHandAnchor/LAttackArea"]
+shape = SubResource( 8 )
+
+[node name="SmashAttackArea" type="Area" parent="Origin/MonsterArmature/Skeleton/LeftHandAnchor/LAttackArea"]
+transform = Transform( 1, 2.98023e-08, 0, -1.49012e-08, 1, -3.35276e-08, 2.98023e-08, -5.58794e-09, 1, -0.545582, 2.87747, -0.650013 )
+collision_layer = 2
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape" type="CollisionShape" parent="Origin/MonsterArmature/Skeleton/LeftHandAnchor/LAttackArea/SmashAttackArea"]
+transform = Transform( 1, -9.31323e-10, -1.49012e-08, -1.86265e-09, 1, -1.30385e-08, -1.49012e-08, 9.48785e-09, 1, 1.99354, 0.0234688, 0.15885 )
+shape = SubResource( 10 )
+
+[node name="RightHandAnchor" type="BoneAttachment" parent="Origin/MonsterArmature/Skeleton" index="2"]
+transform = Transform( 0.0250998, 0.992783, 0.117266, 0.668926, 0.0704932, -0.739979, -0.742905, 0.0970157, -0.662329, -3.34279, -3.93275, 3.15987 )
+bone_name = "fingers_r"
+
+[node name="RAttackArea" type="Area" parent="Origin/MonsterArmature/Skeleton/RightHandAnchor"]
+collision_layer = 2
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape" type="CollisionShape" parent="Origin/MonsterArmature/Skeleton/RightHandAnchor/RAttackArea"]
+shape = SubResource( 8 )
+
+[node name="GrabArea" type="Area" parent="Origin/MonsterArmature/Skeleton/RightHandAnchor"]
+transform = Transform( 1, 8.9407e-08, 7.45058e-09, 0, 1, -5.58794e-08, -5.58794e-08, -4.09782e-08, 1, 0.316347, 0.840722, -0.324262 )
+collision_layer = 8
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape" type="CollisionShape" parent="Origin/MonsterArmature/Skeleton/RightHandAnchor/GrabArea"]
+shape = SubResource( 9 )
+
+[node name="LeftFootAnchor" type="BoneAttachment" parent="Origin/MonsterArmature/Skeleton" index="3"]
+transform = Transform( 0.974111, 0.217785, -0.0606487, 2.16845e-07, -0.268273, -0.963343, -0.226072, 0.938403, -0.261327, 2.72252, -6.29438, 0.629736 )
+bone_name = "foot_l"
+
+[node name="LStompArea" type="Area" parent="Origin/MonsterArmature/Skeleton/LeftFootAnchor"]
+transform = Transform( 1, 3.55271e-15, 4.9738e-14, -2.4869e-14, 0.999999, 5.96046e-08, 1.14131e-13, 0, 1, -1.19209e-07, 1.14299, -0.318299 )
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="StompShape" type="CollisionShape" parent="Origin/MonsterArmature/Skeleton/LeftFootAnchor/LStompArea"]
+shape = SubResource( 5 )
+
+[node name="RightFootAnchor" type="BoneAttachment" parent="Origin/MonsterArmature/Skeleton" index="4"]
+transform = Transform( 0.984173, -0.170712, 0.0475397, -2.38719e-07, -0.268273, -0.963343, 0.177208, 0.948097, -0.264027, -2.59327, -6.29438, -2.63342 )
+bone_name = "foot_r"
+
+[node name="RStompArea" type="Area" parent="Origin/MonsterArmature/Skeleton/RightFootAnchor"]
+transform = Transform( 1, 0, -5.32907e-15, 0, 0.999999, 2.98023e-08, 3.19744e-14, 0, 1, -1.19209e-07, 1.14299, -0.318299 )
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="StompShape" type="CollisionShape" parent="Origin/MonsterArmature/Skeleton/RightFootAnchor/RStompArea"]
+shape = SubResource( 5 )
+
+[node name="AnimationPlayer" parent="Origin" index="1"]
+autoplay = "idle-loop"
+anims/RESET = SubResource( 7 )
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+shape = SubResource( 6 )
+
+[node name="CameraPivot" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0 )
+
+[node name="Camera" type="Camera" parent="CameraPivot"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20 )
+size = 32.0
+far = 1000.0
+
+[node name="Hitbox" type="Area" parent="."]
+collision_layer = 0
+collision_mask = 15360
+monitorable = false
+
+[node name="CollisionShape" type="CollisionShape" parent="Hitbox"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+shape = SubResource( 11 )
+
+[node name="AttackTimer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[node name="ShakeTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="StepSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 3 )
+
+[node name="SwingSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 4 )
+volume_db = -10.0
+
+[node name="RoarSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 5 )
+
+[node name="DieSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 8 )
+
+[node name="EatSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 6 )
+
+[node name="SmashSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 7 )
+pitch_scale = 0.7
+
+[connection signal="area_entered" from="Hitbox" to="." method="hit"]
+
+[editable path="Origin"]
