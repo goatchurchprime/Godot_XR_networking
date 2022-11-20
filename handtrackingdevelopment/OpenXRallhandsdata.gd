@@ -18,6 +18,10 @@ var controller_pose_transform_R : Transform = Transform()
 var controller_pose_confidence_L : int = TRACKING_CONFIDENCE_NOT_APPLICABLE
 var controller_pose_confidence_R : int = TRACKING_CONFIDENCE_NOT_APPLICABLE
 
+var triggerpinchedjoyvalue_L : float = 0.0
+var triggerpinchedjoyvalue_R : float = 0.0
+
+
 var arvrorigin : ARVROrigin
 var arcrconfigurationnode : Node
 var arvrcontrollerleft : ARVRController
@@ -96,7 +100,9 @@ enum {
 	
 	JOY_AXIS_THUMBSTICK_X = 0, 
 	JOY_AXIS_THUMBSTICK_Y = 1, 
-	
+	JOY_AXIS_TRIGGER_BUTTON = 2,
+	JOY_AXIS_GRIP_BUTTON = 3
+
 	VR_BUTTON_THUMB_INDEX_PINCH = 7,
 	VR_BUTTON_THUMB_MIDDLE_PINCH = 1,
 	VR_BUTTON_THUMB_RING_PINCH = 15,
@@ -110,7 +116,7 @@ enum {
 	VR_BUTTON_BY = 1,
 	VR_BUTTON_TOUCH_PAD = 12,
 	VR_BUTTON_PAD = 14,
-	VR_BUTTON_THUMB_INDEX_PINCH_FROM_CONTROLLER = 4,
+	VR_BUTTON_THUMB_INDEX_PINCH_VIA_CONTROLLER_SIGNAL = 4,
 }
 
 
@@ -185,7 +191,7 @@ func cvr_button_action(button: int, bpressed: bool, bright: bool, bcontroller: b
 		if button == VR_BUTTON_TOUCH_AX or button == VR_BUTTON_TOUCH_BY:
 			return
 	else:
-		if button == VR_BUTTON_THUMB_INDEX_PINCH_FROM_CONTROLLER:
+		if button == VR_BUTTON_THUMB_INDEX_PINCH_VIA_CONTROLLER_SIGNAL:
 			return
 		elif button == VR_BUTTON_THUMB_INDEX_PINCH:
 			button = VR_BUTTON_TRIGGER
@@ -244,13 +250,16 @@ func _physics_process(delta):
 	controller_pose_confidence_R = arcrconfigurationnode.get_tracking_confidence(2) if specialist_openxr_gdns_script_loaded and arvrcontrollerright.get_is_active() else TRACKING_CONFIDENCE_NOT_APPLICABLE
 	controller_pose_transform_L = arvrcontrollerleft.transform
 	controller_pose_transform_R = arvrcontrollerright.transform
+
+	triggerpinchedjoyvalue_L = (arvrcontroller3.get_joystick_axis(JOY_AXIS_THUMB_INDEX_PINCH)+1)/2 if arvrcontroller3.get_joystick_id() != -1 else arvrcontrollerleft.get_joystick_axis(JOY_AXIS_TRIGGER_BUTTON)
+	triggerpinchedjoyvalue_R = (arvrcontroller4.get_joystick_axis(JOY_AXIS_THUMB_INDEX_PINCH)+1)/2 if arvrcontroller4.get_joystick_id() != -1 else arvrcontrollerright.get_joystick_axis(JOY_AXIS_TRIGGER_BUTTON)
 		
 	Dt += delta
 	if Dt > 2.0:
 		Dt = 0
 		# as from void XRExtHandTrackingExtensionWrapper::update_handtracking() 
 		# these have the joystick settings
-		print(arvrcontroller3.get_joystick_id(), "  ", arvrcontrollerleft.get_joystick_id(), "Rjoy ", arvrcontrollerright.get_joystick_axis(0), arvrcontrollerright.get_joystick_axis(1), " ", arvrcontroller4.get_joystick_axis(JOY_AXIS_THUMB_INDEX_PINCH), " ", arvrcontroller4.get_joystick_axis(JOY_AXIS_THUMB_INDEX_PINCH), 
+		print(arvrcontrollerleft.get_joystick_id(),",", arvrcontroller3.get_joystick_id(), "  ", arvrcontrollerleft.get_joystick_id(), "Rjoy ", arvrcontrollerright.get_joystick_axis(2), arvrcontrollerright.get_joystick_axis(3), " ", arvrcontrollerright.get_joystick_axis(4), " ", arvrcontroller4.get_joystick_axis(JOY_AXIS_THUMB_INDEX_PINCH), 
 		"  ", Input.get_joy_axis(3, JOY_AXIS_THUMB_INDEX_PINCH), 
 		" ", Input.get_joy_axis(arvrcontroller3.get_joystick_id(), JOY_AXIS_THUMB_INDEX_PINCH), 
 		" ", Input.get_joy_axis(arvrcontroller3.get_joystick_id(), JOY_AXIS_THUMB_MIDDLE_PINCH))

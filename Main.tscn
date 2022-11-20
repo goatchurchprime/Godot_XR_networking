@@ -135,6 +135,7 @@ controller_id = 3
 
 [node name="MeshInstance" type="MeshInstance" parent="FPController/ARVRController3"]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+visible = false
 mesh = SubResource( 20 )
 material/0 = SubResource( 21 )
 
@@ -143,6 +144,7 @@ controller_id = 4
 
 [node name="MeshInstance" type="MeshInstance" parent="FPController/ARVRController4"]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+visible = false
 mesh = SubResource( 20 )
 material/0 = SubResource( 21 )
 
