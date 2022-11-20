@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=2]
+[gd_scene load_steps=46 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
@@ -20,6 +20,7 @@
 [ext_resource path="res://handtrackingdevelopment/OpenXRallhandsdata.tscn" type="PackedScene" id=18]
 [ext_resource path="res://tensegrityexperiments/PickableWire.tscn" type="PackedScene" id=19]
 [ext_resource path="res://addons/godot-xr-tools/functions/movement_climb.tscn" type="PackedScene" id=20]
+[ext_resource path="res://addons/godot-xr-tools/objects/climbable.tscn" type="PackedScene" id=21]
 
 [sub_resource type="CylinderMesh" id=20]
 top_radius = 0.008
@@ -49,13 +50,13 @@ extents = Vector3( 10, 0.1, 10 )
 resource_local_to_scene = true
 size = Vector2( 3, 2 )
 
-[sub_resource type="ViewportTexture" id=22]
+[sub_resource type="ViewportTexture" id=30]
 flags = 4
 
-[sub_resource type="SpatialMaterial" id=23]
+[sub_resource type="SpatialMaterial" id=31]
 flags_transparent = true
 params_cull_mode = 2
-albedo_texture = SubResource( 22 )
+albedo_texture = SubResource( 30 )
 
 [sub_resource type="BoxShape" id=19]
 resource_local_to_scene = true
@@ -103,9 +104,12 @@ extents = Vector3( 0.05, 0.5, 0.05 )
 [sub_resource type="CubeMesh" id=25]
 size = Vector3( 0.1, 1, 0.1 )
 
+[sub_resource type="CylinderShape" id=29]
+radius = 0.5
+
 [sub_resource type="CylinderMesh" id=26]
 top_radius = 0.5
-bottom_radius = 0.4
+bottom_radius = 0.5
 
 [node name="Main" type="Spatial"]
 script = ExtResource( 1 )
@@ -218,7 +222,7 @@ items = [ "me", null, false, 0, null ]
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource( 16 )
-material/0 = SubResource( 23 )
+material/0 = SubResource( 31 )
 
 [node name="StaticBody" parent="ViewportNetworkGateway" index="2"]
 collision_layer = 8704
@@ -325,6 +329,7 @@ transform = Transform( -0.0864958, 0, -0.180329, 0, 0.2, 0, 0.180329, 0, -0.0864
 [node name="PickableBox" parent="." instance=ExtResource( 6 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.21791, 0.553108, -0.884537 )
 ranged_grab_method = 2
+ranged_grab_speed = 10.0
 
 [node name="CollisionShape" parent="PickableBox" index="1"]
 shape = SubResource( 24 )
@@ -332,14 +337,15 @@ shape = SubResource( 24 )
 [node name="MeshInstance" type="MeshInstance" parent="PickableBox"]
 mesh = SubResource( 25 )
 
-[node name="ClimbableBox" parent="." instance=ExtResource( 6 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.517, 1, 0 )
-mode = 1
-ranged_grab_method = 0
+[node name="ClimbableCylinder" parent="." instance=ExtResource( 21 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.517, 1, -1.06835 )
 
-[node name="MeshInstance" type="MeshInstance" parent="ClimbableBox"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.695835 )
+[node name="CollisionShape" parent="ClimbableCylinder" index="0"]
+shape = SubResource( 29 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ClimbableCylinder"]
 mesh = SubResource( 26 )
+skeleton = NodePath("")
 
 [editable path="FPController"]
 [editable path="FPController/OpenXRallhandsdata"]
@@ -350,4 +356,4 @@ mesh = SubResource( 26 )
 [editable path="Players/LPVRPlayerAvatar/LeftAppendage/4f_moved_hand_l"]
 [editable path="Players/LPVRPlayerAvatar/RightAppendage/4f_moved_hand_l"]
 [editable path="PickableBox"]
-[editable path="ClimbableBox"]
+[editable path="ClimbableCylinder"]
