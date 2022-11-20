@@ -6,29 +6,40 @@ var labeltext = "unknown"
 
 onready var LeftHandController = arvrorigin.get_node("LeftHandController")
 onready var RightHandController = arvrorigin.get_node("RightHandController")
-onready var OpenXRallhandsdata = arvrorigin.get_node_or_null("OpenXRallhandsdata")
-
-const TRACKING_CONFIDENCE_HIGH = 2
+onready var OpenXRallhandsdata = arvrorigin.get_node("OpenXRallhandsdata")
 
 var lowpolylefthandrestdata = null
 var lowpolyrighthandrestdata = null
 
 onready var gxtlefthandrestdata = OpenXRtrackedhand_funcs.getGXThandrestdata($LeftAppendage)
 onready var gxtrighthandrestdata = OpenXRtrackedhand_funcs.getGXThandrestdata($RightAppendage)
+var is_the_local_player = false
 
 var shrinkavatartransform = Transform()
 
 func _ready():
-	pass
+	assert ($FunctionPointer.active_button == XRTools.Buttons.VR_ACTION and $FunctionPointer.action == "")
+	if is_the_local_player:
+		OpenXRallhandsdata.connect("vr_button_action", self, "_on_vr_button")
+	
+func _on_vr_button(button: int, bpressed: bool, bright: bool):
+	if not bpressed:
+		print("vr_buttonRelease ", button, " ", "R" if bright else "L")
+	if button == XRTools.Buttons.VR_TRIGGER:
+		if bright:
+			if bpressed:
+				$FunctionPointer._on_button_pressed(XRTools.Buttons.VR_ACTION)
+			else:
+				$FunctionPointer._on_button_release(XRTools.Buttons.VR_ACTION)
 	
 func processavatarhand(palm_joint_confidence, joint_transforms, LRAppendage, gxthandrestdata, LRHandController, bright):
 	var LRhand = LRAppendage.get_child(0)
 	var LRcontroller = LRAppendage.get_child(1)
 	
-	if palm_joint_confidence != -1:
+	if palm_joint_confidence != OpenXRallhandsdata.TRACKING_CONFIDENCE_NOT_APPLICABLE:
 		LRcontroller.visible = false
 		var h = OpenXRtrackedhand_funcs.gethandjointpositionsL(joint_transforms)
-		if palm_joint_confidence == TRACKING_CONFIDENCE_HIGH: 
+		if palm_joint_confidence == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH: 
 			var lowpolyhandpose = OpenXRtrackedhand_funcs.setshapetobonesLowPoly(joint_transforms, gxthandrestdata, bright)
 			LRAppendage.transform = lowpolyhandpose["handtransform"]
 			var skel = gxthandrestdata["skel"]
@@ -46,12 +57,30 @@ func processavatarhand(palm_joint_confidence, joint_transforms, LRAppendage, gxt
 		LRhand.visible = false
 		LRcontroller.visible = false
 
+	if not bright:
+		LRhand.visible = true
+		LRcontroller.visible = true
+
+
+
 func PAV_processlocalavatarposition(delta):
 	transform = shrinkavatartransform*arvrorigin.transform
 	$HeadCam.transform = arvrorigin.get_node("ARVRCamera").transform
-
 	processavatarhand(OpenXRallhandsdata.palm_joint_confidence_L, OpenXRallhandsdata.joint_transforms_L, $LeftAppendage, gxtlefthandrestdata, LeftHandController, false)
 	processavatarhand(OpenXRallhandsdata.palm_joint_confidence_R, OpenXRallhandsdata.joint_transforms_R, $RightAppendage, gxtrighthandrestdata, RightHandController, true)
+	if OpenXRallhandsdata.pointer_pose_confidence_R == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH:
+		$FunctionPointer.transform = OpenXRallhandsdata.pointer_pose_transform_R
+		if not $FunctionPointer.enabled:
+			$FunctionPointer.set_enabled(true)
+	elif $FunctionPointer.enabled:
+		$FunctionPointer.set_enabled(false)
+		
+#var controller_pose_transform_L : Transform = Transform()
+#var controller_pose_transform_R : Transform = Transform()
+#var controller_pose_confidence_L : int = TRACKING_CONFIDENCE_NOT_APPLICABLE
+#var controller_pose_confidence_R : int = TRACKING_CONFIDENCE_NOT_APPLICABLE
+
+
 
 func setpaddlebody(active):
 	$RightAppendage/PaddleBody.visible = active
@@ -150,16 +179,17 @@ func PAV_framedatatoavatar(fd):
 		#print("remote setpaddlebody ", fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY])
 		setpaddlebody(fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY])
 
-
-		
+	
 var possibleusernames = ["Alice", "Beth", "Cath", "Dan", "Earl", "Fred", "George", "Harry", "Ivan", "John", "Kevin", "Larry", "Martin", "Oliver", "Peter", "Quentin", "Robert", "Samuel", "Thomas", "Ulrik", "Victor", "Wayne", "Xavier", "Youngs", "Zephir"]
 func PAV_initavatarlocal():
+	is_the_local_player = true
 	randomize()
 	labeltext = possibleusernames[randi()%len(possibleusernames)]
 	#$LeftHand/LeftHand/Armature_Left/Skeleton/Hand_Left.set_surface_material(0, load("res://xrassets/vrhandmaterial.tres"))
 	#$RightHand/RightHand/Armature_Left/Skeleton/Hand_Left.set_surface_material(0, load("res://xrassets/vrhandmaterial.tres"))
 
 func PAV_initavatarremote(avatardata):
+	is_the_local_player = false
 	labeltext = avatardata["labeltext"]
 	#$LeftHand/LeftHand/Armature_Left/Skeleton/Hand_Left.set_surface_material(0, load("res://xrassets/vrhandmaterial.tres"))
 	#$RightHand/RightHand/Armature_Left/Skeleton/Hand_Left.set_surface_material(0, load("res://xrassets/vrhandmaterial.tres"))

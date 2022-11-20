@@ -1,11 +1,10 @@
-[gd_scene load_steps=39 format=2]
+[gd_scene load_steps=38 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
 [ext_resource path="res://addons/godot-openxr/scenes/first_person_controller_vr.tscn" type="PackedScene" id=3]
 [ext_resource path="res://addons/godot-xr-tools/player/player_body.tscn" type="PackedScene" id=4]
 [ext_resource path="res://addons/godot-xr-tools/functions/movement_direct.tscn" type="PackedScene" id=5]
-[ext_resource path="res://addons/godot-xr-tools/functions/function_pointer.tscn" type="PackedScene" id=6]
 [ext_resource path="res://lorienexperiments/LorienHandControls.tscn" type="PackedScene" id=7]
 [ext_resource path="res://addons/godot-xr-tools/functions/movement_turn.tscn" type="PackedScene" id=8]
 [ext_resource path="res://LPVRPlayerAvatar.tscn" type="PackedScene" id=9]
@@ -212,8 +211,6 @@ shape = SubResource( 19 )
 [node name="Players" type="Spatial" parent="."]
 
 [node name="LPVRPlayerAvatar" parent="Players" instance=ExtResource( 9 )]
-
-[node name="FunctionPointer" parent="Players/LPVRPlayerAvatar/RightAppendage" index="3" instance=ExtResource( 6 )]
 
 [node name="SportBall" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.54476, 1.91887, -4.03967 )

@@ -39,7 +39,7 @@ bind/5/name = "b_thumbstick"
 bind/5/bone = -1
 bind/5/pose = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00935476, 0.00472996, -0.0027986 )
 
-[node name="right_quest2_contoller" type="Spatial"]
+[node name="right_quest2_controller" type="Spatial"]
 transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0 )
 
 [node name="right_quest2_controller_world" type="Skeleton" parent="."]

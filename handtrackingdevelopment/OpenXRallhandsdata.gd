@@ -2,12 +2,21 @@ extends Spatial
 class_name OpenXRallhandsdata
 
 var specialist_openxr_gdns_script_loaded = false
-var is_active_L = false
-var is_active_R = false
+
+signal vr_button_action(button, bpressed, bright)
+
+var palm_joint_confidence_L = TRACKING_CONFIDENCE_NOT_APPLICABLE
+var palm_joint_confidence_R = TRACKING_CONFIDENCE_NOT_APPLICABLE
 var joint_transforms_L = [ ]
 var joint_transforms_R = [ ]
-var palm_joint_confidence_L = -1
-var palm_joint_confidence_R = -1
+var pointer_pose_transform_L : Transform = Transform()
+var pointer_pose_transform_R : Transform = Transform()
+var pointer_pose_confidence_L : int = TRACKING_CONFIDENCE_NOT_APPLICABLE
+var pointer_pose_confidence_R : int = TRACKING_CONFIDENCE_NOT_APPLICABLE
+var controller_pose_transform_L : Transform = Transform()
+var controller_pose_transform_R : Transform = Transform()
+var controller_pose_confidence_L : int = TRACKING_CONFIDENCE_NOT_APPLICABLE
+var controller_pose_confidence_R : int = TRACKING_CONFIDENCE_NOT_APPLICABLE
 
 var arvrorigin : ARVROrigin
 var arcrconfigurationnode : Node
@@ -18,10 +27,13 @@ var arvrcontroller4 : ARVRController
 
 const XR_HAND_JOINT_COUNT_EXT = 26
 const XR_HAND_JOINTS_MOTION_RANGE_UNOBSTRUCTED_EXT = 0
-const TRACKING_CONFIDENCE_NOT_APPLICABLE = -1
-const TRACKING_CONFIDENCE_NONE = 0
-const TRACKING_CONFIDENCE_LOW = 1
-const TRACKING_CONFIDENCE_HIGH = 2
+
+enum {
+	TRACKING_CONFIDENCE_NOT_APPLICABLE = -1,
+	TRACKING_CONFIDENCE_NONE = 0,
+	TRACKING_CONFIDENCE_LOW = 1,
+	TRACKING_CONFIDENCE_HIGH = 2
+}
 
 # standard naming convention https://registry.khronos.org/OpenXR/specs/1.0/html/xrspec.html#_conventions_of_hand_joints
 const XRbone_names = [ "Palm", "Wrist", "Thumb_Metacarpal", "Thumb_Proximal", "Thumb_Distal", "Thumb_Tip", "Index_Metacarpal", "Index_Proximal", "Index_Intermediate", "Index_Distal", "Index_Tip", "Middle_Metacarpal", "Middle_Proximal", "Middle_Intermediate", "Middle_Distal", "Middle_Tip", "Ring_Metacarpal", "Ring_Proximal", "Ring_Intermediate", "Ring_Distal", "Ring_Tip", "Little_Metacarpal", "Little_Proximal", "Little_Intermediate", "Little_Distal", "Little_Tip" ]
@@ -72,10 +84,10 @@ const xrbones_necessary_to_measure_extent = [
 ]
 
 enum {
-	JOY_ID_HANDLEFT = 0, 
-	JOY_ID_HANDRIGHT = 1, 
 	JOY_ID_CONTROLLER_LEFT = 2, 
 	JOY_ID_CONTROLLER_RIGHT = 3, 
+	JOY_ID_HANDLEFT = 0, 
+	JOY_ID_HANDRIGHT = 1, 
 
 	JOY_AXIS_THUMB_INDEX_PINCH = 7,
 	JOY_AXIS_THUMB_MIDDLE_PINCH = 6,
@@ -84,24 +96,34 @@ enum {
 	
 	JOY_AXIS_THUMBSTICK_X = 0, 
 	JOY_AXIS_THUMBSTICK_Y = 1, 
+	
+	VR_BUTTON_THUMB_INDEX_PINCH = 7,
+	VR_BUTTON_THUMB_MIDDLE_PINCH = 1,
+	VR_BUTTON_THUMB_RING_PINCH = 15,
+	VR_BUTTON_THUMB_LITTLE_PINCH = 2,
+
+	VR_BUTTON_TRIGGER = 15,
+	VR_BUTTON_GRIP = 2,
+	VR_BUTTON_TOUCH_AX = 5, 
+	VR_BUTTON_AX = 7, 
+	VR_BUTTON_TOUCH_BY = 6,
+	VR_BUTTON_BY = 1,
+	VR_BUTTON_TOUCH_PAD = 12,
+	VR_BUTTON_PAD = 14,
+	VR_BUTTON_THUMB_INDEX_PINCH_FROM_CONTROLLER = 4,
 }
 
-func setupopenxrpluginhandskeleton(handskelpose, aimpose, grippose, bright):
-	if aimpose:
-		aimpose.action = "godot/aim_pose"
-		aimpose.path = "/user/hand/right" if bright else "/user/hand/left"
-	if grippose:
-		grippose.action = "godot/grip_pose"
-		grippose.path = "/user/hand/right" if bright else "/user/hand/left"
-		
+
+func setupopenxrpluginhandskeleton(handskelpose, _LR):
 	# for these parameters see https://github.com/GodotVR/godot_openxr/blob/master/src/gdclasses/OpenXRPose.cpp
 	handskelpose.action = "SkeletonBase"
-	handskelpose.path = "/user/hand/right" if bright else "/user/hand/left"
+	handskelpose.path = "/user/hand/right" if _LR == "_R" else "/user/hand/left"
 
 	# for these parameters see https://github.com/GodotVR/godot_openxr/blob/master/src/gdclasses/OpenXRSkeleton.cpp
-	var _LR = ("_R" if bright else "_L")
+	assert (len(XRbone_names) == XR_HAND_JOINT_COUNT_EXT)
+	assert (len(boneparentsToWrist) == XR_HAND_JOINT_COUNT_EXT)
 	var handskel = handskelpose.get_child(0)
-	handskel.hand = 1 if bright else 0
+	handskel.hand = 1 if _LR == "_R" else 0
 	handskel.motion_range = XR_HAND_JOINTS_MOTION_RANGE_UNOBSTRUCTED_EXT
 	for i in range(len(XRbone_names)):
 		handskel.add_bone(XRbone_names[i] + _LR)
@@ -111,11 +133,15 @@ func setupopenxrpluginhandskeleton(handskelpose, aimpose, grippose, bright):
 func _enter_tree():
 	specialist_openxr_gdns_script_loaded = ("path" in $LeftHandSkelPose)
 	print("Handtrack enabled ", specialist_openxr_gdns_script_loaded, " ", $LeftHandSkelPose.get_script())
-	assert (len(XRbone_names) == XR_HAND_JOINT_COUNT_EXT)
-	assert (len(boneparentsToWrist) == XR_HAND_JOINT_COUNT_EXT)
 	if specialist_openxr_gdns_script_loaded:
-		setupopenxrpluginhandskeleton($LeftHandSkelPose, $LeftHandAimPose, $LeftHandGripPose, false)
-		setupopenxrpluginhandskeleton($RightHandSkelPose, $RightHandAimPose, null, true)
+		setupopenxrpluginhandskeleton($LeftHandSkelPose, "_L")
+		$LeftHandAimPose.action = "godot/aim_pose"
+		$LeftHandAimPose.path = "/user/hand/left"
+		$LeftHandGripPose.action = "godot/grip_pose"
+		$LeftHandGripPose.path = "/user/hand/left"
+		setupopenxrpluginhandskeleton($RightHandSkelPose, "_R")
+		$RightHandAimPose.action = "godot/aim_pose"
+		$RightHandAimPose.path = "/user/hand/right"
 		for i in range(XR_HAND_JOINT_COUNT_EXT):
 			joint_transforms_L.push_back(Transform())
 			joint_transforms_R.push_back(Transform())
@@ -135,17 +161,40 @@ func _ready():
 				arvrcontroller3 = child
 			elif child.controller_id == 4:
 				arvrcontroller4 = child
-				
 		if child.get_script():
 			if child.get_script().get_path() == "res://addons/godot-openxr/config/OpenXRConfig.gdns":
 				arcrconfigurationnode = child
 				
-	set_physics_process(specialist_openxr_gdns_script_loaded)
 	if arcrconfigurationnode and specialist_openxr_gdns_script_loaded:
 		print("OpenXR extensions ", arcrconfigurationnode.get_enabled_extensions())
 		#print("OpenXR action sets ", arcrconfigurationnode.get_action_sets())
 	
-#var tracking_confidence = configuration.get_tracking_confidence(controller_id)
+	arvrcontrollerleft.connect("button_pressed", self, "cvr_button_action", [true, false, true])
+	arvrcontrollerleft.connect("button_release", self, "cvr_button_action", [false, false, true])
+	arvrcontrollerright.connect("button_pressed", self, "cvr_button_action", [true, true, true])
+	arvrcontrollerright.connect("button_release", self, "cvr_button_action", [false, true, true])
+	arvrcontroller3.connect("button_pressed", self, "cvr_button_action", [true, false, false])
+	arvrcontroller3.connect("button_release", self, "cvr_button_action", [false, false, false])
+	arvrcontroller4.connect("button_pressed", self, "cvr_button_action", [true, true, false])
+	arvrcontroller4.connect("button_release", self, "cvr_button_action", [false, true, false])
+
+func cvr_button_action(button: int, bpressed: bool, bright: bool, bcontroller: bool):
+	if bpressed:
+		print("vr_button_action ", button, " R" if bright else " L", " ", "controller" if bcontroller else "hand")
+	if bcontroller:
+		if button == VR_BUTTON_TOUCH_AX or button == VR_BUTTON_TOUCH_BY:
+			return
+	else:
+		if button == VR_BUTTON_THUMB_INDEX_PINCH_FROM_CONTROLLER:
+			return
+		elif button == VR_BUTTON_THUMB_INDEX_PINCH:
+			button = VR_BUTTON_TRIGGER
+		elif button == VR_BUTTON_THUMB_MIDDLE_PINCH:
+			button = VR_BUTTON_GRIP
+		else:
+			return
+	emit_signal("vr_button_action", button, bpressed, bright)
+	
 
 static func Dcheckbonejointalignment(joint_transforms):
 	for i in range(2, XR_HAND_JOINT_COUNT_EXT):
@@ -180,21 +229,24 @@ func skel_backtoOXRjointtransforms(joint_transforms, skel):
 	return skel.get_parent().get_tracking_confidence()
 
 var Dt = 0
+
 func _physics_process(delta):
-	is_active_L = $LeftHandSkelPose.is_active()
-	if is_active_L:
-		palm_joint_confidence_L = skel_backtoOXRjointtransforms(joint_transforms_L, $LeftHandSkelPose/LeftHandBlankSkeleton)
-	else:
-		palm_joint_confidence_L = TRACKING_CONFIDENCE_NOT_APPLICABLE
-
-	is_active_R = $RightHandSkelPose.is_active()
-	if is_active_R:
-		palm_joint_confidence_R = skel_backtoOXRjointtransforms(joint_transforms_R, $RightHandSkelPose/RightHandBlankSkeleton) 
-	else:
-		palm_joint_confidence_R = TRACKING_CONFIDENCE_NOT_APPLICABLE
-
+	if specialist_openxr_gdns_script_loaded:
+		palm_joint_confidence_L = skel_backtoOXRjointtransforms(joint_transforms_L, $LeftHandSkelPose/LeftHandBlankSkeleton) \
+				if $LeftHandSkelPose.is_active() else TRACKING_CONFIDENCE_NOT_APPLICABLE
+		palm_joint_confidence_R = skel_backtoOXRjointtransforms(joint_transforms_R, $RightHandSkelPose/RightHandBlankSkeleton) \
+				if $RightHandSkelPose.is_active() else TRACKING_CONFIDENCE_NOT_APPLICABLE
+		pointer_pose_confidence_L = $LeftHandAimPose.get_tracking_confidence() if $LeftHandAimPose.is_active() else TRACKING_CONFIDENCE_NOT_APPLICABLE
+		pointer_pose_confidence_R = $RightHandAimPose.get_tracking_confidence() if $RightHandAimPose.is_active() else TRACKING_CONFIDENCE_NOT_APPLICABLE
+		pointer_pose_transform_L = $LeftHandAimPose.transform
+		pointer_pose_transform_R = $RightHandAimPose.transform
+	controller_pose_confidence_L = arcrconfigurationnode.get_tracking_confidence(1) if specialist_openxr_gdns_script_loaded and arvrcontrollerleft.get_is_active() else TRACKING_CONFIDENCE_NOT_APPLICABLE
+	controller_pose_confidence_R = arcrconfigurationnode.get_tracking_confidence(2) if specialist_openxr_gdns_script_loaded and arvrcontrollerright.get_is_active() else TRACKING_CONFIDENCE_NOT_APPLICABLE
+	controller_pose_transform_L = arvrcontrollerleft.transform
+	controller_pose_transform_R = arvrcontrollerright.transform
+		
 	Dt += delta
-	if Dt > 0.5:
+	if Dt > 2.0:
 		Dt = 0
 		# as from void XRExtHandTrackingExtensionWrapper::update_handtracking() 
 		# these have the joystick settings
@@ -202,12 +254,3 @@ func _physics_process(delta):
 		"  ", Input.get_joy_axis(3, JOY_AXIS_THUMB_INDEX_PINCH), 
 		" ", Input.get_joy_axis(arvrcontroller3.get_joystick_id(), JOY_AXIS_THUMB_INDEX_PINCH), 
 		" ", Input.get_joy_axis(arvrcontroller3.get_joystick_id(), JOY_AXIS_THUMB_MIDDLE_PINCH))
-
-## Grip controller button
-#export (XRTools.Axis) var pickup_axis_id = XRTools.Axis.VR_GRIP_AXIS
-#export (XRTools.Buttons) var action_button_id = XRTools.Buttons.VR_TRIGGER
-
-func _input(event):
-	if event is InputEventJoypadButton:
-		if event.pressed:
-			print("joypad button ", event.button_index)

@@ -24,6 +24,7 @@ export var QUESTstartupprotocol = "webrtc"
 
 #    don't forget to checkout to 2.5.0
 
+# We will consider making my own FPConroller with these other sub-controllers in it
 
 func _ready():
 	#$FPController/LeftHandController/Function_Direct_movement.nonVRkeyboard = true
@@ -44,7 +45,9 @@ func _ready():
 	$FPController/RightHandController.connect("button_pressed", self, "vr_right_button_pressed")
 	$FPController/RightHandController.connect("button_release", self, "vr_right_button_release")
 	$FPController/LeftHandController.connect("button_pressed", self, "vr_left_button_pressed")
-	$FPController/ARVRController4.connect("button_pressed", self, "pose_right_button_pressed")
+	$FPController/LeftHandController.set_process(false)
+	$FPController/RightHandController.set_process(false)
+
 
 	$FPController/PlayerBody.default_physics.move_drag = 45
 	$SportBall.connect("body_entered", self, "ball_body_entered")
