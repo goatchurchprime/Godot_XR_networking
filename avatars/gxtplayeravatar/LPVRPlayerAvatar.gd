@@ -41,6 +41,8 @@ func _on_vr_button(button: int, bpressed: bool, bright: bool):
 				bactive_pointer_not_released = false
 			bright_active_pointer = bright
 	
+	
+	
 func processavatarhand(LRAppendage, palm_joint_confidence, joint_transforms, gxthandrestdata, LRHandController, bright):
 	var LRhand = LRAppendage.get_child(0)
 	var LRcontroller = LRAppendage.get_child(1)
@@ -62,11 +64,16 @@ func processavatarhand(LRAppendage, palm_joint_confidence, joint_transforms, gxt
 		LRhand.visible = false
 		LRAppendage.transform = LRHandController.transform
 		LRcontroller.visible = true
+
 	else:
 		LRhand.visible = false
 		LRcontroller.visible = false
 
+
 func processpointer():
+	$LeftPointerGripArea.transform = OpenXRallhandsdata.pointer_pose_transform_L
+	$RightPointerGripArea.transform = OpenXRallhandsdata.pointer_pose_transform_R
+
 	if (OpenXRallhandsdata.pointer_pose_confidence_R if bright_active_pointer else OpenXRallhandsdata.pointer_pose_confidence_L) == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH:
 		$FunctionPointer.transform = OpenXRallhandsdata.pointer_pose_transform_R if bright_active_pointer else OpenXRallhandsdata.pointer_pose_transform_L
 		var pinchedvalue = OpenXRallhandsdata.triggerpinchedjoyvalue_R if bright_active_pointer else OpenXRallhandsdata.triggerpinchedjoyvalue_L

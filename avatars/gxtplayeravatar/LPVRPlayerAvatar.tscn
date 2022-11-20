@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://xrassets/left_quest2_controller.tscn" type="PackedScene" id=1]
 [ext_resource path="res://xrassets/right_quest2_controller.tscn" type="PackedScene" id=2]
@@ -6,6 +6,9 @@
 [ext_resource path="res://avatars/gxtplayeravatar/LPVRPlayerAvatar.gd" type="Script" id=4]
 [ext_resource path="res://addons/godot-xr-tools/functions/function_pointer.tscn" type="PackedScene" id=5]
 [ext_resource path="res://addons/godot-xr-tools/functions/function_pickup.tscn" type="PackedScene" id=6]
+[ext_resource path="res://avatars/gxtplayeravatar/pointergriparea.gd" type="Script" id=7]
+[ext_resource path="res://addons/godot-xr-tools/player/poke/poke.tscn" type="PackedScene" id=8]
+[ext_resource path="res://addons/godot-xr-tools/functions/movement_climb.tscn" type="PackedScene" id=9]
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 0.2, 0.1, 0.1 )
@@ -81,10 +84,9 @@ material/0 = SubResource( 8 )
 
 [node name="left_quest2_controller" parent="LeftAppendage" instance=ExtResource( 1 )]
 
-[node name="FunctionPickup" parent="LeftAppendage" instance=ExtResource( 6 )]
-
 [node name="RightAppendage" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.261993, -0.309998, -0.216488 )
+script = ExtResource( 7 )
 
 [node name="4f_moved_hand_l" parent="RightAppendage" instance=ExtResource( 3 )]
 transform = Transform( -1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
@@ -93,8 +95,6 @@ transform = Transform( -1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 material/0 = SubResource( 9 )
 
 [node name="right_quest2_controller" parent="RightAppendage" instance=ExtResource( 2 )]
-
-[node name="FunctionPickup" parent="RightAppendage" instance=ExtResource( 6 )]
 
 [node name="PaddleBody" type="KinematicBody" parent="RightAppendage"]
 transform = Transform( 0.752357, 0.658755, 0, -0.658755, 0.752357, 0, 0, 0, 1, 0.00118214, -0.00156346, -0.425429 )
@@ -111,6 +111,18 @@ disabled = true
 mesh = SubResource( 6 )
 material/0 = SubResource( 7 )
 
+[node name="LeftPointerGripArea" type="Spatial" parent="."]
+script = ExtResource( 7 )
+
+[node name="FunctionPickup" parent="LeftPointerGripArea" instance=ExtResource( 6 )]
+
+[node name="RightPointerGripArea" type="Spatial" parent="."]
+script = ExtResource( 7 )
+
+[node name="FunctionPickup" parent="RightPointerGripArea" instance=ExtResource( 6 )]
+
+[node name="Poke" parent="RightPointerGripArea" instance=ExtResource( 8 )]
+
 [node name="FunctionPointer" parent="." instance=ExtResource( 5 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.261993, -0.309998, -0.216488 )
 active_button = 255
@@ -119,6 +131,10 @@ active_button = 255
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -0.04 )
 mesh = SubResource( 10 )
 material/0 = SubResource( 11 )
+
+[node name="MovementClimb" parent="." instance=ExtResource( 9 )]
+left_pickup = NodePath("../LeftPointerGripArea/FunctionPickup")
+right_pickup = NodePath("../RightPointerGripArea/FunctionPickup")
 
 [editable path="LeftAppendage/4f_moved_hand_l"]
 [editable path="RightAppendage/4f_moved_hand_l"]

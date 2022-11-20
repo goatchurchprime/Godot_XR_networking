@@ -137,14 +137,11 @@ script = ExtResource( 1 )
 [node name="MonsterArmature" parent="Origin" index="0"]
 transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0 )
 
-[node name="Skeleton" parent="Origin/MonsterArmature" index="0"]
-bones/18/bound_children = [ NodePath("LeftFootAnchor") ]
-bones/22/bound_children = [ NodePath("LeftHandAnchor") ]
-bones/25/bound_children = [ NodePath("RightFootAnchor") ]
-bones/29/bound_children = [ NodePath("RightHandAnchor") ]
+[node name="MonsterMesh" parent="Origin/MonsterArmature/Skeleton" index="0"]
+visible = false
 
 [node name="LeftHandAnchor" type="BoneAttachment" parent="Origin/MonsterArmature/Skeleton" index="1"]
-transform = Transform( 0.121054, -0.0460664, 0.991576, 0.902377, -0.411106, -0.129263, 0.413598, 0.910423, -0.00819659, 3.51877, -1.0289, 2.57944 )
+transform = Transform( 0.0682087, -0.944336, 0.321833, 0.5994, -0.219085, -0.769884, 0.797538, 0.245419, 0.551092, 1.80763, -1.0454, -0.649453 )
 bone_name = "fingers_l"
 
 [node name="LAttackArea" type="Area" parent="Origin/MonsterArmature/Skeleton/LeftHandAnchor"]
@@ -168,7 +165,7 @@ transform = Transform( 1, -9.31323e-10, -1.49012e-08, -1.86265e-09, 1, -1.30385e
 shape = SubResource( 10 )
 
 [node name="RightHandAnchor" type="BoneAttachment" parent="Origin/MonsterArmature/Skeleton" index="2"]
-transform = Transform( 0.0250998, 0.992783, 0.117266, 0.668926, 0.0704932, -0.739979, -0.742905, 0.0970157, -0.662329, -3.34279, -3.93275, 3.15987 )
+transform = Transform( -0.401554, 0.705916, -0.58347, 0.183943, -0.561944, -0.806464, -0.897173, -0.431164, 0.0958028, -1.91299, -1.83855, 0.177109 )
 bone_name = "fingers_r"
 
 [node name="RAttackArea" type="Area" parent="Origin/MonsterArmature/Skeleton/RightHandAnchor"]
@@ -191,7 +188,7 @@ monitorable = false
 shape = SubResource( 9 )
 
 [node name="LeftFootAnchor" type="BoneAttachment" parent="Origin/MonsterArmature/Skeleton" index="3"]
-transform = Transform( 0.974111, 0.217785, -0.0606487, 2.16845e-07, -0.268273, -0.963343, -0.226072, 0.938403, -0.261327, 2.72252, -6.29438, 0.629736 )
+transform = Transform( 0.983136, 0.176175, -0.0490611, 2.32169e-07, -0.268273, -0.963343, -0.182879, 0.947097, -0.263748, 2.47677, -6.28817, -2.49742 )
 bone_name = "foot_l"
 
 [node name="LStompArea" type="Area" parent="Origin/MonsterArmature/Skeleton/LeftFootAnchor"]
@@ -205,7 +202,7 @@ monitorable = false
 shape = SubResource( 5 )
 
 [node name="RightFootAnchor" type="BoneAttachment" parent="Origin/MonsterArmature/Skeleton" index="4"]
-transform = Transform( 0.984173, -0.170712, 0.0475397, -2.38719e-07, -0.268273, -0.963343, 0.177208, 0.948097, -0.264027, -2.59327, -6.29438, -2.63342 )
+transform = Transform( 1, 6.4158e-09, -2.40752e-07, -2.35508e-07, -0.183082, -0.983098, -5.03846e-08, 0.983098, -0.183082, -2.42736, -5.5315, -4.7344 )
 bone_name = "foot_r"
 
 [node name="RStompArea" type="Area" parent="Origin/MonsterArmature/Skeleton/RightFootAnchor"]

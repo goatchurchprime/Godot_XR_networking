@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=2]
+[gd_scene load_steps=44 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
@@ -12,7 +12,6 @@
 [ext_resource path="res://tensegrityexperiments/TensegrityExperiments.tscn" type="PackedScene" id=10]
 [ext_resource path="res://addons/player-networking/NetworkGateway.tscn" type="PackedScene" id=11]
 [ext_resource path="res://addons/godot-xr-tools/objects/pickable.gd" type="Script" id=12]
-[ext_resource path="res://addons/godot-xr-tools/functions/function_teleport.tscn" type="PackedScene" id=13]
 [ext_resource path="res://click04.wav" type="AudioStream" id=14]
 [ext_resource path="res://addons/godot-xr-tools/objects/viewport_2d_in_3d.tscn" type="PackedScene" id=15]
 [ext_resource path="res://addons/godot-openxr/scenes/left_hand_nodes.tscn" type="PackedScene" id=16]
@@ -132,8 +131,6 @@ strafe = true
 
 [node name="HandUIHook" type="RemoteTransform" parent="FPController/LeftHandController" index="1"]
 transform = Transform( -4.37114e-08, -1, 0, 0.707107, -3.09086e-08, 0.707107, -0.707107, 3.09086e-08, 0.707107, -0.1, 0, 0 )
-
-[node name="FunctionTeleport" parent="FPController/LeftHandController" index="2" instance=ExtResource( 13 )]
 
 [node name="RightHandController" parent="FPController" index="3"]
 visible = true
@@ -311,7 +308,22 @@ extents = Vector3( 12, 10, 13 )
 visible = false
 
 [node name="Monster" parent="." instance=ExtResource( 17 )]
-transform = Transform( -0.0864958, 0, -0.180329, 0, 0.2, 0, 0.180329, 0, -0.0864958, -3.85101, 1.51881, -2.8849 )
+transform = Transform( -0.0864958, 0, -0.180329, 0, 0.2, 0, 0.180329, 0, -0.0864958, -3.85101, 1.51881, -1.92977 )
+
+[node name="MonsterMesh" parent="Monster/Origin/MonsterArmature/Skeleton" index="0"]
+visible = true
+
+[node name="LeftHandAnchor" parent="Monster/Origin/MonsterArmature/Skeleton" index="1"]
+transform = Transform( 0.615399, -0.785011, 0.0710124, -0.00978325, -0.0976929, -0.995169, 0.788155, 0.611731, -0.0678, 3.34279, -0.991492, 1.59694 )
+
+[node name="RightHandAnchor" parent="Monster/Origin/MonsterArmature/Skeleton" index="2"]
+transform = Transform( 0.615399, 0.785011, -0.0710124, 0.00978325, -0.0976929, -0.995169, -0.788155, 0.611731, -0.0678, -3.34279, -0.991492, 1.59694 )
+
+[node name="LeftFootAnchor" parent="Monster/Origin/MonsterArmature/Skeleton" index="3"]
+transform = Transform( 1, -7.10543e-15, 2.38419e-07, 2.29679e-07, -0.268273, -0.963343, 6.39612e-08, 0.963343, -0.268273, 1.8, -6.28817, -2.23979 )
+
+[node name="RightFootAnchor" parent="Monster/Origin/MonsterArmature/Skeleton" index="4"]
+transform = Transform( 1, 7.10543e-15, -2.38419e-07, -2.29679e-07, -0.268273, -0.963343, -6.39612e-08, 0.963343, -0.268273, -1.8, -6.28817, -2.23979 )
 
 [node name="Wire" parent="." instance=ExtResource( 19 )]
 
@@ -324,6 +336,39 @@ ranged_grab_speed = 10.0
 shape = SubResource( 24 )
 
 [node name="MeshInstance" type="MeshInstance" parent="PickableBox"]
+mesh = SubResource( 25 )
+
+[node name="PickableBox2" parent="." instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.81502, 0.553108, -0.884537 )
+ranged_grab_method = 2
+ranged_grab_speed = 10.0
+
+[node name="CollisionShape" parent="PickableBox2" index="1"]
+shape = SubResource( 24 )
+
+[node name="MeshInstance" type="MeshInstance" parent="PickableBox2"]
+mesh = SubResource( 25 )
+
+[node name="PickableBox3" parent="." instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.3109, 0.553108, -0.884537 )
+ranged_grab_method = 2
+ranged_grab_speed = 10.0
+
+[node name="CollisionShape" parent="PickableBox3" index="1"]
+shape = SubResource( 24 )
+
+[node name="MeshInstance" type="MeshInstance" parent="PickableBox3"]
+mesh = SubResource( 25 )
+
+[node name="PickableBox4" parent="." instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.95457, 0.553108, -0.884537 )
+ranged_grab_method = 2
+ranged_grab_speed = 10.0
+
+[node name="CollisionShape" parent="PickableBox4" index="1"]
+shape = SubResource( 24 )
+
+[node name="MeshInstance" type="MeshInstance" parent="PickableBox4"]
 mesh = SubResource( 25 )
 
 [node name="ClimbableCylinder" parent="." instance=ExtResource( 21 )]
@@ -341,5 +386,10 @@ skeleton = NodePath("")
 [editable path="FPController/Left_hand"]
 [editable path="ViewportNetworkGateway"]
 [editable path="ViewportNetworkGateway/Viewport/NetworkGateway"]
+[editable path="Monster"]
+[editable path="Monster/Origin"]
 [editable path="PickableBox"]
+[editable path="PickableBox2"]
+[editable path="PickableBox3"]
+[editable path="PickableBox4"]
 [editable path="ClimbableCylinder"]

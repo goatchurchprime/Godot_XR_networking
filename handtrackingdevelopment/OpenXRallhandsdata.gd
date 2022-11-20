@@ -20,6 +20,8 @@ var controller_pose_confidence_R : int = TRACKING_CONFIDENCE_NOT_APPLICABLE
 
 var triggerpinchedjoyvalue_L : float = 0.0
 var triggerpinchedjoyvalue_R : float = 0.0
+var grippinchedjoyvalue_L : float = 0.0
+var grippinchedjoyvalue_R : float = 0.0
 
 
 var arvrorigin : ARVROrigin
@@ -101,7 +103,7 @@ enum {
 	JOY_AXIS_THUMBSTICK_X = 0, 
 	JOY_AXIS_THUMBSTICK_Y = 1, 
 	JOY_AXIS_TRIGGER_BUTTON = 2,
-	JOY_AXIS_GRIP_BUTTON = 3
+	JOY_AXIS_GRIP_BUTTON = 4
 
 	VR_BUTTON_THUMB_INDEX_PINCH = 7,
 	VR_BUTTON_THUMB_MIDDLE_PINCH = 1,
@@ -253,6 +255,8 @@ func _physics_process(delta):
 
 	triggerpinchedjoyvalue_L = (arvrcontroller3.get_joystick_axis(JOY_AXIS_THUMB_INDEX_PINCH)+1)/2 if arvrcontroller3.get_joystick_id() != -1 else arvrcontrollerleft.get_joystick_axis(JOY_AXIS_TRIGGER_BUTTON)
 	triggerpinchedjoyvalue_R = (arvrcontroller4.get_joystick_axis(JOY_AXIS_THUMB_INDEX_PINCH)+1)/2 if arvrcontroller4.get_joystick_id() != -1 else arvrcontrollerright.get_joystick_axis(JOY_AXIS_TRIGGER_BUTTON)
+	grippinchedjoyvalue_L = (arvrcontroller3.get_joystick_axis(JOY_AXIS_THUMB_MIDDLE_PINCH)+1)/2 if arvrcontroller3.get_joystick_id() != -1 else arvrcontrollerleft.get_joystick_axis(JOY_AXIS_GRIP_BUTTON)
+	grippinchedjoyvalue_R = (arvrcontroller4.get_joystick_axis(JOY_AXIS_THUMB_MIDDLE_PINCH)+1)/2 if arvrcontroller4.get_joystick_id() != -1 else arvrcontrollerright.get_joystick_axis(JOY_AXIS_GRIP_BUTTON)
 		
 	Dt += delta
 	if Dt > 2.0:
