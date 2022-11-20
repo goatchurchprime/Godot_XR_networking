@@ -152,3 +152,25 @@ func _process(delta):
 	pass
 	
 
+#** Remove the debug printing messages
+#** make the -1 controllerid named
+#** test out drawing laser in contact only case
+#** shorten laser to contact point PR to the toolkit
+#** try out the function pickup case with the hands
+#** clean up the hand finger drawing code more so
+#** viewport network gateway on wrong setting at startup (enet instead of webrtc) error
+#** check networking all still works
+#** networking wristband
+#** make a video and make the case for unified pointer rather than 4 pointers
+#** try out the physics pointer for finger too
+#** experiment with the climb pointer (where any of the fingers must be in contact)
+
+#** play through elixir
+#** hand tracking movement of vrchat and eolia
+
+#** more work on the drawing in 2D
+#** networking of that in experiments (first in alone in it)
+
+#** consider the dinosaur
+#** does it work in different world scales?
+#** consider the dinosaur avatar as a mechanoid

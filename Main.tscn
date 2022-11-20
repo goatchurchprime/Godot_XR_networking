@@ -1,10 +1,11 @@
-[gd_scene load_steps=38 format=2]
+[gd_scene load_steps=44 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
 [ext_resource path="res://addons/godot-openxr/scenes/first_person_controller_vr.tscn" type="PackedScene" id=3]
 [ext_resource path="res://addons/godot-xr-tools/player/player_body.tscn" type="PackedScene" id=4]
 [ext_resource path="res://addons/godot-xr-tools/functions/movement_direct.tscn" type="PackedScene" id=5]
+[ext_resource path="res://addons/godot-xr-tools/objects/pickable.tscn" type="PackedScene" id=6]
 [ext_resource path="res://lorienexperiments/LorienHandControls.tscn" type="PackedScene" id=7]
 [ext_resource path="res://addons/godot-xr-tools/functions/movement_turn.tscn" type="PackedScene" id=8]
 [ext_resource path="res://LPVRPlayerAvatar.tscn" type="PackedScene" id=9]
@@ -17,6 +18,8 @@
 [ext_resource path="res://addons/godot-openxr/scenes/left_hand_nodes.tscn" type="PackedScene" id=16]
 [ext_resource path="res://avatars/monster/monster.tscn" type="PackedScene" id=17]
 [ext_resource path="res://handtrackingdevelopment/OpenXRallhandsdata.tscn" type="PackedScene" id=18]
+[ext_resource path="res://tensegrityexperiments/PickableWire.tscn" type="PackedScene" id=19]
+[ext_resource path="res://addons/godot-xr-tools/functions/movement_climb.tscn" type="PackedScene" id=20]
 
 [sub_resource type="CylinderMesh" id=20]
 top_radius = 0.008
@@ -94,6 +97,16 @@ albedo_color = Color( 0.980392, 0.843137, 0.858824, 1 )
 albedo_texture = SubResource( 13 )
 uv1_scale = Vector3( 10, 20, 1 )
 
+[sub_resource type="BoxShape" id=24]
+extents = Vector3( 0.05, 0.5, 0.05 )
+
+[sub_resource type="CubeMesh" id=25]
+size = Vector3( 0.1, 1, 0.1 )
+
+[sub_resource type="CylinderMesh" id=26]
+top_radius = 0.5
+bottom_radius = 0.4
+
 [node name="Main" type="Spatial"]
 script = ExtResource( 1 )
 PCstartupprotocol = "none"
@@ -158,6 +171,10 @@ script = ExtResource( 2 )
 
 [node name="Left_hand" parent="FPController" instance=ExtResource( 16 )]
 
+[node name="MovementClimb" parent="FPController" instance=ExtResource( 20 )]
+left_pickup = NodePath("../LeftHandController/FunctionPickup")
+right_pickup = NodePath("../RightHandController/FunctionPickup")
+
 [node name="Floor" type="StaticBody" parent="."]
 
 [node name="MeshInstance" type="MeshInstance" parent="Floor"]
@@ -213,6 +230,7 @@ shape = SubResource( 19 )
 [node name="Players" type="Spatial" parent="."]
 
 [node name="LPVRPlayerAvatar" parent="Players" instance=ExtResource( 9 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.653152, 1.22849, 0 )
 
 [node name="SportBall" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.54476, 1.91887, -4.03967 )
@@ -300,7 +318,28 @@ extents = Vector3( 12, 10, 13 )
 visible = false
 
 [node name="Monster" parent="." instance=ExtResource( 17 )]
-transform = Transform( -0.432479, 0, -0.901644, 0, 1, 0, 0.901644, 0, -0.432479, -3.85101, 7.42908, -6.90018 )
+transform = Transform( -0.0864958, 0, -0.180329, 0, 0.2, 0, 0.180329, 0, -0.0864958, -3.85101, 1.51881, -2.8849 )
+
+[node name="Wire" parent="." instance=ExtResource( 19 )]
+
+[node name="PickableBox" parent="." instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.21791, 0.553108, -0.884537 )
+ranged_grab_method = 2
+
+[node name="CollisionShape" parent="PickableBox" index="1"]
+shape = SubResource( 24 )
+
+[node name="MeshInstance" type="MeshInstance" parent="PickableBox"]
+mesh = SubResource( 25 )
+
+[node name="ClimbableBox" parent="." instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.517, 1, 0 )
+mode = 1
+ranged_grab_method = 0
+
+[node name="MeshInstance" type="MeshInstance" parent="ClimbableBox"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.695835 )
+mesh = SubResource( 26 )
 
 [editable path="FPController"]
 [editable path="FPController/OpenXRallhandsdata"]
@@ -310,3 +349,5 @@ transform = Transform( -0.432479, 0, -0.901644, 0, 1, 0, 0.901644, 0, -0.432479,
 [editable path="Players/LPVRPlayerAvatar"]
 [editable path="Players/LPVRPlayerAvatar/LeftAppendage/4f_moved_hand_l"]
 [editable path="Players/LPVRPlayerAvatar/RightAppendage/4f_moved_hand_l"]
+[editable path="PickableBox"]
+[editable path="ClimbableBox"]

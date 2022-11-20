@@ -39,6 +39,16 @@ func _input(event):
 		if event.pressed:
 			if event.scancode == KEY_R:
 				player.play("roar")
+			if event.scancode == KEY_T:
+				player.play("walk-loop")
+			if event.scancode == KEY_Y:
+				player.play("smash")
+			if event.scancode == KEY_U:
+				player.play("poses")
+			if event.scancode == KEY_I:
+				player.play("throw")
+			if event.scancode == KEY_G:
+				player.play("attack-left")
 
 #		$CameraPivot.rotation_degrees.x -= mouse_motion.y
 #		$CameraPivot.rotation_degrees.y -= mouse_motion.x
