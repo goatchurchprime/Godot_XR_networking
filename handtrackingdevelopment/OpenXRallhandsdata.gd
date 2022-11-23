@@ -17,6 +17,7 @@ var controller_pose_transform_L : Transform = Transform()
 var controller_pose_transform_R : Transform = Transform()
 var controller_pose_confidence_L : int = TRACKING_CONFIDENCE_NOT_APPLICABLE
 var controller_pose_confidence_R : int = TRACKING_CONFIDENCE_NOT_APPLICABLE
+var headcam_pose : Transform = Transform()
 
 var triggerpinchedjoyvalue_L : float = 0.0
 var triggerpinchedjoyvalue_R : float = 0.0
@@ -25,7 +26,8 @@ var grippinchedjoyvalue_R : float = 0.0
 
 
 var arvrorigin : ARVROrigin
-var arcrconfigurationnode : Node
+var arvrheadcam : ARVRCamera
+var arvrconfigurationnode : Node
 var arvrcontrollerleft : ARVRController
 var arvrcontrollerright : ARVRController
 var arvrcontroller3 : ARVRController
@@ -169,13 +171,15 @@ func _ready():
 				arvrcontroller3 = child
 			elif child.controller_id == 4:
 				arvrcontroller4 = child
+		if child.is_class("ARVRCamera"):
+			arvrheadcam = child
 		if child.get_script():
 			if child.get_script().get_path() == "res://addons/godot-openxr/config/OpenXRConfig.gdns":
-				arcrconfigurationnode = child
+				arvrconfigurationnode = child
 				
-	if arcrconfigurationnode and specialist_openxr_gdns_script_loaded:
-		print("OpenXR extensions ", arcrconfigurationnode.get_enabled_extensions())
-		#print("OpenXR action sets ", arcrconfigurationnode.get_action_sets())
+	if arvrconfigurationnode and specialist_openxr_gdns_script_loaded:
+		print("OpenXR extensions ", arvrconfigurationnode.get_enabled_extensions())
+		#print("OpenXR action sets ", arvrconfigurationnode.get_action_sets())
 	
 	arvrcontrollerleft.connect("button_pressed", self, "cvr_button_action", [true, false, true])
 	arvrcontrollerleft.connect("button_release", self, "cvr_button_action", [false, false, true])
@@ -248,10 +252,11 @@ func _physics_process(delta):
 		pointer_pose_confidence_R = $RightHandAimPose.get_tracking_confidence() if $RightHandAimPose.is_active() else TRACKING_CONFIDENCE_NOT_APPLICABLE
 		pointer_pose_transform_L = $LeftHandAimPose.transform
 		pointer_pose_transform_R = $RightHandAimPose.transform
-	controller_pose_confidence_L = arcrconfigurationnode.get_tracking_confidence(1) if specialist_openxr_gdns_script_loaded and arvrcontrollerleft.get_is_active() else TRACKING_CONFIDENCE_NOT_APPLICABLE
-	controller_pose_confidence_R = arcrconfigurationnode.get_tracking_confidence(2) if specialist_openxr_gdns_script_loaded and arvrcontrollerright.get_is_active() else TRACKING_CONFIDENCE_NOT_APPLICABLE
+	controller_pose_confidence_L = arvrconfigurationnode.get_tracking_confidence(1) if specialist_openxr_gdns_script_loaded and arvrcontrollerleft.get_is_active() else TRACKING_CONFIDENCE_NOT_APPLICABLE
+	controller_pose_confidence_R = arvrconfigurationnode.get_tracking_confidence(2) if specialist_openxr_gdns_script_loaded and arvrcontrollerright.get_is_active() else TRACKING_CONFIDENCE_NOT_APPLICABLE
 	controller_pose_transform_L = arvrcontrollerleft.transform
 	controller_pose_transform_R = arvrcontrollerright.transform
+	headcam_pose = arvrheadcam.transform
 
 	triggerpinchedjoyvalue_L = (arvrcontroller3.get_joystick_axis(JOY_AXIS_THUMB_INDEX_PINCH)+1)/2 if arvrcontroller3.get_joystick_id() != -1 else arvrcontrollerleft.get_joystick_axis(JOY_AXIS_TRIGGER_BUTTON)
 	triggerpinchedjoyvalue_R = (arvrcontroller4.get_joystick_axis(JOY_AXIS_THUMB_INDEX_PINCH)+1)/2 if arvrcontroller4.get_joystick_id() != -1 else arvrcontrollerright.get_joystick_axis(JOY_AXIS_TRIGGER_BUTTON)
@@ -263,7 +268,7 @@ func _physics_process(delta):
 		Dt = 0
 		# as from void XRExtHandTrackingExtensionWrapper::update_handtracking() 
 		# these have the joystick settings
-		print(arvrcontrollerleft.get_joystick_id(),",", arvrcontroller3.get_joystick_id(), "  ", arvrcontrollerleft.get_joystick_id(), "Rjoy ", arvrcontrollerright.get_joystick_axis(2), arvrcontrollerright.get_joystick_axis(3), " ", arvrcontrollerright.get_joystick_axis(4), " ", arvrcontroller4.get_joystick_axis(JOY_AXIS_THUMB_INDEX_PINCH), 
-		"  ", Input.get_joy_axis(3, JOY_AXIS_THUMB_INDEX_PINCH), 
-		" ", Input.get_joy_axis(arvrcontroller3.get_joystick_id(), JOY_AXIS_THUMB_INDEX_PINCH), 
-		" ", Input.get_joy_axis(arvrcontroller3.get_joystick_id(), JOY_AXIS_THUMB_MIDDLE_PINCH))
+#		print(arvrcontrollerleft.get_joystick_id(),",", arvrcontroller3.get_joystick_id(), "  ", arvrcontrollerleft.get_joystick_id(), "Rjoy ", arvrcontrollerright.get_joystick_axis(2), arvrcontrollerright.get_joystick_axis(3), " ", arvrcontrollerright.get_joystick_axis(4), " ", arvrcontroller4.get_joystick_axis(JOY_AXIS_THUMB_INDEX_PINCH), 
+#		"  ", Input.get_joy_axis(3, JOY_AXIS_THUMB_INDEX_PINCH), 
+#		" ", Input.get_joy_axis(arvrcontroller3.get_joystick_id(), JOY_AXIS_THUMB_INDEX_PINCH), 
+#		" ", Input.get_joy_axis(arvrcontroller3.get_joystick_id(), JOY_AXIS_THUMB_MIDDLE_PINCH))

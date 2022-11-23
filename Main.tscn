@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=2]
+[gd_scene load_steps=49 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
@@ -12,6 +12,7 @@
 [ext_resource path="res://tensegrityexperiments/TensegrityExperiments.tscn" type="PackedScene" id=10]
 [ext_resource path="res://addons/player-networking/NetworkGateway.tscn" type="PackedScene" id=11]
 [ext_resource path="res://addons/godot-xr-tools/objects/pickable.gd" type="Script" id=12]
+[ext_resource path="res://avatars/monster/monsterpuppet.gd" type="Script" id=13]
 [ext_resource path="res://click04.wav" type="AudioStream" id=14]
 [ext_resource path="res://addons/godot-xr-tools/objects/viewport_2d_in_3d.tscn" type="PackedScene" id=15]
 [ext_resource path="res://addons/godot-openxr/scenes/left_hand_nodes.tscn" type="PackedScene" id=16]
@@ -48,13 +49,13 @@ extents = Vector3( 10, 0.1, 10 )
 resource_local_to_scene = true
 size = Vector2( 3, 2 )
 
-[sub_resource type="ViewportTexture" id=30]
+[sub_resource type="ViewportTexture" id=36]
 flags = 4
 
-[sub_resource type="SpatialMaterial" id=31]
+[sub_resource type="SpatialMaterial" id=37]
 flags_transparent = true
 params_cull_mode = 2
-albedo_texture = SubResource( 30 )
+albedo_texture = SubResource( 36 )
 
 [sub_resource type="BoxShape" id=19]
 resource_local_to_scene = true
@@ -108,6 +109,18 @@ radius = 0.5
 [sub_resource type="CylinderMesh" id=26]
 top_radius = 0.5
 bottom_radius = 0.5
+
+[sub_resource type="CubeMesh" id=32]
+size = Vector3( 0.25, 4, 0.75 )
+
+[sub_resource type="SpatialMaterial" id=33]
+albedo_color = Color( 0.109804, 0.835294, 0.352941, 1 )
+
+[sub_resource type="CubeMesh" id=34]
+size = Vector3( 0.3, 0.3, 0.3 )
+
+[sub_resource type="SpatialMaterial" id=35]
+albedo_color = Color( 0.937255, 0.490196, 0.0784314, 1 )
 
 [node name="Main" type="Spatial"]
 script = ExtResource( 1 )
@@ -176,39 +189,18 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0 )
 shape = SubResource( 6 )
 
 [node name="ViewportNetworkGateway" parent="." instance=ExtResource( 15 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.401293, 1.48204, -2.6145 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.597506, 1.48204, -2.6145 )
 viewport_size = Vector2( 550, 400 )
 collision_layer = 8704
 
 [node name="Viewport" parent="ViewportNetworkGateway" index="0"]
 size = Vector2( 550, 400 )
-render_target_update_mode = 1
 
 [node name="NetworkGateway" parent="ViewportNetworkGateway/Viewport" index="0" instance=ExtResource( 11 )]
 
-[node name="ProtocolOptions" parent="ViewportNetworkGateway/Viewport/NetworkGateway" index="0"]
-text = "ENet"
-items = [ "ENet", null, false, 0, null, "WebSocket", null, false, 1, null, "WebRTC (websocket signal)", null, false, 2, null, "WebRTC (mqtt signal)", null, false, 3, null ]
-selected = 0
-
-[node name="NetworkOptions" parent="ViewportNetworkGateway/Viewport/NetworkGateway" index="1"]
-items = [ "Network off", null, false, 0, null, "As server", null, false, 1, null, "Local network", null, false, 3, null ]
-
-[node name="NetworkOptionsMQTTWebRTC" parent="ViewportNetworkGateway/Viewport/NetworkGateway" index="2"]
-items = [ "Network off", null, false, 0, null, "As server", null, false, 1, null, "As client", null, false, 3, null, "As necessary", null, false, 3, null ]
-
-[node name="ClientsList" parent="ViewportNetworkGateway/Viewport/NetworkGateway/WebSocketsignalling/Servermode" index="1"]
-items = [ "none", null, false, 0, null ]
-
-[node name="ClientsList" parent="ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/Servermode" index="1"]
-items = [ "none", null, false, 0, null ]
-
-[node name="PlayerList" parent="ViewportNetworkGateway/Viewport/NetworkGateway/PlayerConnections" index="1"]
-items = [ "me", null, false, 0, null ]
-
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource( 16 )
-material/0 = SubResource( 31 )
+material/0 = SubResource( 37 )
 
 [node name="StaticBody" parent="ViewportNetworkGateway" index="2"]
 collision_layer = 8704
@@ -307,24 +299,6 @@ extents = Vector3( 12, 10, 13 )
 [node name="TensegrityExperiments" parent="." instance=ExtResource( 10 )]
 visible = false
 
-[node name="Monster" parent="." instance=ExtResource( 17 )]
-transform = Transform( -0.0864958, 0, -0.180329, 0, 0.2, 0, 0.180329, 0, -0.0864958, -3.85101, 1.51881, -1.92977 )
-
-[node name="MonsterMesh" parent="Monster/Origin/MonsterArmature/Skeleton" index="0"]
-visible = true
-
-[node name="LeftHandAnchor" parent="Monster/Origin/MonsterArmature/Skeleton" index="1"]
-transform = Transform( 0.615399, -0.785011, 0.0710124, -0.00978325, -0.0976929, -0.995169, 0.788155, 0.611731, -0.0678, 3.34279, -0.991492, 1.59694 )
-
-[node name="RightHandAnchor" parent="Monster/Origin/MonsterArmature/Skeleton" index="2"]
-transform = Transform( 0.615399, 0.785011, -0.0710124, 0.00978325, -0.0976929, -0.995169, -0.788155, 0.611731, -0.0678, -3.34279, -0.991492, 1.59694 )
-
-[node name="LeftFootAnchor" parent="Monster/Origin/MonsterArmature/Skeleton" index="3"]
-transform = Transform( 1, -7.10543e-15, 2.38419e-07, 2.29679e-07, -0.268273, -0.963343, 6.39612e-08, 0.963343, -0.268273, 1.8, -6.28817, -2.23979 )
-
-[node name="RightFootAnchor" parent="Monster/Origin/MonsterArmature/Skeleton" index="4"]
-transform = Transform( 1, 7.10543e-15, -2.38419e-07, -2.29679e-07, -0.268273, -0.963343, -6.39612e-08, 0.963343, -0.268273, -1.8, -6.28817, -2.23979 )
-
 [node name="Wire" parent="." instance=ExtResource( 19 )]
 
 [node name="PickableBox" parent="." instance=ExtResource( 6 )]
@@ -381,15 +355,45 @@ shape = SubResource( 29 )
 mesh = SubResource( 26 )
 skeleton = NodePath("")
 
+[node name="MonsterPuppet" type="Spatial" parent="."]
+script = ExtResource( 13 )
+
+[node name="Monster" parent="MonsterPuppet" instance=ExtResource( 17 )]
+transform = Transform( 0.1, 0, 0.173205, 0, 0.2, 0, -0.173205, 0, 0.1, -1.41636, 1.51881, -2.32625 )
+
+[node name="MonsterArmature" parent="MonsterPuppet/Monster/Origin" index="0"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+
+[node name="FrameStick" type="MeshInstance" parent="MonsterPuppet"]
+mesh = SubResource( 32 )
+material/0 = SubResource( 33 )
+
+[node name="MeshInstance" type="MeshInstance" parent="MonsterPuppet/FrameStick"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, -2, 0.2 )
+mesh = SubResource( 34 )
+material/0 = SubResource( 35 )
+
+[node name="FrameStick2" type="MeshInstance" parent="MonsterPuppet"]
+mesh = SubResource( 32 )
+material/0 = SubResource( 33 )
+
+[node name="MeshInstance" type="MeshInstance" parent="MonsterPuppet/FrameStick2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, -2, 0.2 )
+mesh = SubResource( 34 )
+material/0 = SubResource( 35 )
+
 [editable path="FPController"]
 [editable path="FPController/OpenXRallhandsdata"]
 [editable path="FPController/Left_hand"]
 [editable path="ViewportNetworkGateway"]
 [editable path="ViewportNetworkGateway/Viewport/NetworkGateway"]
-[editable path="Monster"]
-[editable path="Monster/Origin"]
+[editable path="Players/LPVRPlayerAvatar"]
+[editable path="Players/LPVRPlayerAvatar/LeftAppendage/4f_moved_hand_l"]
+[editable path="Players/LPVRPlayerAvatar/RightAppendage/4f_moved_hand_l"]
 [editable path="PickableBox"]
 [editable path="PickableBox2"]
 [editable path="PickableBox3"]
 [editable path="PickableBox4"]
 [editable path="ClimbableCylinder"]
+[editable path="MonsterPuppet/Monster"]
+[editable path="MonsterPuppet/Monster/Origin"]
