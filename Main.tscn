@@ -198,6 +198,24 @@ size = Vector2( 550, 400 )
 
 [node name="NetworkGateway" parent="ViewportNetworkGateway/Viewport" index="0" instance=ExtResource( 11 )]
 
+[node name="ProtocolOptions" parent="ViewportNetworkGateway/Viewport/NetworkGateway" index="0"]
+items = [ "ENet", null, false, 0, null, "WebSocket", null, false, 1, null, "WebRTC (websocket signal)", null, false, 2, null, "WebRTC (mqtt signal)", null, false, 3, null ]
+
+[node name="NetworkOptions" parent="ViewportNetworkGateway/Viewport/NetworkGateway" index="1"]
+items = [ "Network off", null, false, 0, null, "As server", null, false, 1, null, "Local network", null, false, 3, null ]
+
+[node name="NetworkOptionsMQTTWebRTC" parent="ViewportNetworkGateway/Viewport/NetworkGateway" index="2"]
+items = [ "Network off", null, false, 0, null, "As server", null, false, 1, null, "As client", null, false, 3, null, "As necessary", null, false, 3, null ]
+
+[node name="ClientsList" parent="ViewportNetworkGateway/Viewport/NetworkGateway/WebSocketsignalling/Servermode" index="1"]
+items = [ "none", null, false, 0, null ]
+
+[node name="ClientsList" parent="ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/Servermode" index="1"]
+items = [ "none", null, false, 0, null ]
+
+[node name="PlayerList" parent="ViewportNetworkGateway/Viewport/NetworkGateway/PlayerConnections" index="1"]
+items = [ "me", null, false, 0, null ]
+
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource( 16 )
 material/0 = SubResource( 37 )
@@ -364,7 +382,27 @@ transform = Transform( 0.1, 0, 0.173205, 0, 0.2, 0, -0.173205, 0, 0.1, -1.41636,
 [node name="MonsterArmature" parent="MonsterPuppet/Monster/Origin" index="0"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 
+[node name="Skeleton" parent="MonsterPuppet/Monster/Origin/MonsterArmature" index="0"]
+bones/8/rest = Transform( 0.967, 0.121, 0.224, 0.131, 0.52, -0.844, -0.218, 0.846, 0.487, 0, 2.283, 0 )
+bones/18/bound_children = [ NodePath("LeftFootAnchor") ]
+bones/22/bound_children = [ NodePath("LeftHandAnchor") ]
+bones/25/bound_children = [ NodePath("RightFootAnchor") ]
+bones/29/bound_children = [ NodePath("RightHandAnchor") ]
+
+[node name="LeftHandAnchor" parent="MonsterPuppet/Monster/Origin/MonsterArmature/Skeleton" index="1"]
+transform = Transform( 0.615399, -0.785011, 0.0710124, -0.00978325, -0.0976929, -0.995169, 0.788155, 0.611731, -0.0678, 3.34279, -0.991492, 1.59694 )
+
+[node name="RightHandAnchor" parent="MonsterPuppet/Monster/Origin/MonsterArmature/Skeleton" index="2"]
+transform = Transform( 0.615399, 0.785011, -0.0710124, 0.00978325, -0.0976929, -0.995169, -0.788155, 0.611731, -0.0678, -3.34279, -0.991492, 1.59694 )
+
+[node name="LeftFootAnchor" parent="MonsterPuppet/Monster/Origin/MonsterArmature/Skeleton" index="3"]
+transform = Transform( 1, -7.10543e-15, 2.38419e-07, 2.29679e-07, -0.268273, -0.963343, 6.39612e-08, 0.963343, -0.268273, 1.8, -6.28817, -2.23979 )
+
+[node name="RightFootAnchor" parent="MonsterPuppet/Monster/Origin/MonsterArmature/Skeleton" index="4"]
+transform = Transform( 1, 7.10543e-15, -2.38419e-07, -2.29679e-07, -0.268273, -0.963343, -6.39612e-08, 0.963343, -0.268273, -1.8, -6.28817, -2.23979 )
+
 [node name="FrameStick" type="MeshInstance" parent="MonsterPuppet"]
+visible = false
 mesh = SubResource( 32 )
 material/0 = SubResource( 33 )
 
@@ -374,6 +412,7 @@ mesh = SubResource( 34 )
 material/0 = SubResource( 35 )
 
 [node name="FrameStick2" type="MeshInstance" parent="MonsterPuppet"]
+visible = false
 mesh = SubResource( 32 )
 material/0 = SubResource( 33 )
 

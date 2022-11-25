@@ -272,3 +272,10 @@ func _physics_process(delta):
 #		"  ", Input.get_joy_axis(3, JOY_AXIS_THUMB_INDEX_PINCH), 
 #		" ", Input.get_joy_axis(arvrcontroller3.get_joystick_id(), JOY_AXIS_THUMB_INDEX_PINCH), 
 #		" ", Input.get_joy_axis(arvrcontroller3.get_joystick_id(), JOY_AXIS_THUMB_MIDDLE_PINCH))
+
+func gethandcontrollerpose(bright):
+	if (pointer_pose_confidence_R if bright else pointer_pose_confidence_L) != TRACKING_CONFIDENCE_NOT_APPLICABLE:
+		return (pointer_pose_transform_R if bright else pointer_pose_transform_L)
+	if (palm_joint_confidence_R if bright else palm_joint_confidence_L) == TRACKING_CONFIDENCE_HIGH:
+		return joint_transforms_R[XR_HAND_JOINT_WRIST_EXT] if bright else joint_transforms_L[XR_HAND_JOINT_WRIST_EXT]
+	return null

@@ -17,6 +17,11 @@ onready var neck = mskel.find_bone("neck")                   # 2
 onready var head = mskel.find_bone("head")                   # 3
 onready var headrestpose = mskel.get_bone_global_pose(head)
 
+onready var roty180 = Transform(Vector3(-1,0,0), Vector3(0,1,0), Vector3(0,0,-1),  Vector3(0,0,0))
+onready var mskel_bonerest_handcontrolR = roty180*mskel.get_bone_rest(hand_r_control)
+onready var mskel_bonerest_handcontrolR_inverse = mskel_bonerest_handcontrolR.inverse()
+onready var mskel_bonerest_handcontrolL = roty180*mskel.get_bone_rest(hand_r_control)
+
 func _ready():
 	aplayer.play("throw")
 
@@ -44,51 +49,92 @@ func _physics_process(delta):
 	if aplayer.is_playing():
 		$FrameStick.transform = $Monster.transform*mskel.get_bone_global_pose(hand_r_control)
 		return
+	Dt += delta
+	if Dt > 1:
+		Dt = 0
 
 	var zheadback = Vector3(OpenXRallhandsdata.headcam_pose.basis.z.x, 0, OpenXRallhandsdata.headcam_pose.basis.z.z).normalized()
 	var headcamhorizontalbasis = Basis(Vector3(0,1,0).cross(zheadback), Vector3(0,1,0), zheadback)
-	var headcamhorizontaltransform = Transform(headcamhorizontalbasis, Vector3(OpenXRallhandsdata.headcam_pose.origin.x, 0, OpenXRallhandsdata.headcam_pose.origin.z))
+	var headcamhorizontaltransform_fromfloor = Transform(headcamhorizontalbasis, Vector3(OpenXRallhandsdata.headcam_pose.origin.x, 0, OpenXRallhandsdata.headcam_pose.origin.z))
 	
-	var dinohandright = null
-	if OpenXRallhandsdata.pointer_pose_confidence_R != OpenXRallhandsdata.TRACKING_CONFIDENCE_NOT_APPLICABLE:
-		dinohandright = OpenXRallhandsdata.pointer_pose_transform_R
-	if OpenXRallhandsdata.palm_joint_confidence_R == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH:
-		dinohandright = OpenXRallhandsdata.joint_transforms_R[OpenXRallhandsdata.XR_HAND_JOINT_WRIST_EXT]
-	if dinohandright == null:
-		dinohandright = Ldinohandright
-		#return
-	else:
-		dinohandright = headcamhorizontaltransform.inverse()*dinohandright
-		Dt += delta
-		if Dt > 1:
-			Dt = 0
-			#print("dino ", var2str(dinohandright))
-			print("hdino ", var2str(OpenXRallhandsdata.headcam_pose))
-	var dinohandleft = null
-	if OpenXRallhandsdata.pointer_pose_confidence_L != OpenXRallhandsdata.TRACKING_CONFIDENCE_NOT_APPLICABLE:
-		dinohandleft = OpenXRallhandsdata.pointer_pose_transform_L
-	if OpenXRallhandsdata.palm_joint_confidence_L == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH:
-		dinohandleft = OpenXRallhandsdata.joint_transforms_L[OpenXRallhandsdata.XR_HAND_JOINT_WRIST_EXT]
-
 	var humancofgy = 0.8
-	var humancofgz = 0.6
-	if dinohandright != null:
-		var dhandright = Vector3(-dinohandright.origin.x, dinohandright.origin.y - humancofgy, -(dinohandright.origin.z - humancofgz))
-		$FrameStick2.transform = Transform(dinohandright.basis.scaled(Vector3(0.2,0.2,0.2)), Ldinohandright.origin)
+	var humancofgz = 0.0
+	var conjh = Basis.rotated(Vector3(0,1,0), deg2rad(180))
+
+	var handcontrollerposeright = OpenXRallhandsdata.gethandcontrollerpose(true)
+	if handcontrollerposeright == null:
+		handcontrollerposeright = Transform(Ldinohandright.basis, Ldinohandright.origin)
+	
+	# 1. move handrcontrol_bonerestCJ outside, and its inverse, and the handlcontrol
+	# 2. get all the code below working as it should
+	# 3. find the transforms that match hands to gethandcontrollerpose properly (and less janky)
+	# 4. simplify it all down
+	# 4.5 could move claws in with grip keys
+	# 5. experiment with some verlet integration/IK on the upper arms (recording positions and moving up)
+	# 6. experiment with verlet on the spine and neck, and the shoulders
+	# 7. everything relative to the central point (with an avatar rotation applied)
+	# 8. feet placement follow on to move in a step when the twist force or transmission force too far
+	# 9. locomotion done by moving away from the origin position to roll forwards
+	# 10. place in as a new avatar, 
+	# 11. all of this is a pipe-dream
+	# 12. make a phone app version of redovar game.
+	
+	
+	
+	# (A.basis, A.origin)*(B.basis, B.origin)*(C.basis, C.orign) = 
+	# (A.basis*B.basis*C.basis, A.origin + A.basis*B.origin + A.basis*B.basis*C.origin)	
+	# hhdinobasisR = handrcontrol_bonerestCJ.inverse()*handcontrollerpose_relhead*handrcontrol_bonerestCJ
+	# hhdinobasisR.origin = handrcontrol_bonerestCJ.inverse().origin 
+	#      + handrcontrol_bonerestCJ.basis.inverse()*handcontrollerpose_relhead.origin 
+	#      + handrcontrol_bonerestCJ.basis.inverse()*handcontrollerpose_relhead.basis*handrcontrol_bonerestCJ.origin
+	
+	if handcontrollerposeright:
+		var handcontrollerpose_relhead = headcamhorizontaltransform_fromfloor.inverse()*handcontrollerposeright
+		mskel_bonerest_handcontrolR.basis
+		
 		var handrcontrol_bonerest = mskel.get_bone_rest(hand_r_control)
-		var sssP = handrcontrol_bonerest.xform_inv(dhandright*dinoscale)
-		mskel.set_bone_pose(hand_r_control, Transform(dinohandright.basis.inverse(), sssP))
+		var cpos = handcontrollerpose_relhead.origin
+		var cposHR = cpos + Vector3(0, -humancofgy, -humancofgz)
+		#handcontrollerpose_relhead.origin = cposHR*dinoscale
+		var handrcontrol_bonerestCJ = Transform(conjh, Vector3.ZERO)*mskel.get_bone_rest(hand_r_control)
+		var sssP = mskel_bonerest_handcontrolR.basis.xform_inv(cposHR)*dinoscale
+		var hhdinobasisR = handrcontrol_bonerestCJ.inverse()*handcontrollerpose_relhead*handrcontrol_bonerestCJ
+#		print(hhdinobasisR.origin, sssP)
+#		print(handrcontrol_bonerestCJ.basis.inverse()*handcontrollerpose_relhead.origin)
+#		print(handrcontrol_bonerestCJ.basis.inverse()*(-handrcontrol_bonerestCJ.origin + \
+#			handcontrollerpose_relhead.origin + \
+#			handcontrollerpose_relhead.basis*handrcontrol_bonerestCJ.origin))
+#		print("j")
+#		print(Transform(hhdinobasisR.basis, sssP))
+#		print(Transform(mskel_bonerest_handcontrolR_inverse.basis*handcontrollerpose_relhead.basis*mskel_bonerest_handcontrolR.basis, 
+#						mskel_bonerest_handcontrolR_inverse.basis.xform(handcontrollerpose_relhead.origin + Vector3(0, -humancofgy, -humancofgz))*dinoscale))
+#		print(mskel_bonerest_handcontrolR_inverse.basis.xform(handcontrollerpose_relhead.origin + Vector3(0, -humancofgy, -humancofgz))*dinoscale)
+#		print(sssP)
+#		print(mskel_bonerest_handcontrolR_inverse.basis.xform(cposHR)*dinoscale)
+#		print(handcontrollerpose_relhead.origin + Vector3(0, -humancofgy, -humancofgz))
+#		print(cposHR)
+		#sssP = hhdinobasisR.origin
+
+
+#		mskel.set_bone_pose(hand_r_control, Transform(hhdinobasisR.basis, sssP))
+
+		mskel.set_bone_pose(hand_r_control, Transform(
+			mskel_bonerest_handcontrolR_inverse.basis * handcontrollerpose_relhead.basis * mskel_bonerest_handcontrolR.basis, 
+			mskel_bonerest_handcontrolR_inverse.basis.xform(handcontrollerpose_relhead.origin + Vector3(0, -humancofgy, -humancofgz))*dinoscale
+		))
+
+
 		$FrameStick.transform = $Monster.transform*mskel.get_bone_global_pose(hand_r_control)
 	
+	var dinohandleft = OpenXRallhandsdata.gethandcontrollerpose(false)
 	if dinohandleft != null:
-		var dhandleft = Vector3(-dinohandleft.origin.x, dinohandleft.origin.y - humancofgy, -(dinohandright.origin.z - humancofgz))
+		var dhandleft = Vector3(-dinohandleft.origin.x, dinohandleft.origin.y - humancofgy, -(dinohandleft.origin.z - humancofgz))
 		var handlcontrol_bonerest = mskel.get_bone_rest(hand_l_control)
 		var sssQ = handlcontrol_bonerest.xform_inv(dhandleft*dinoscale)
 		mskel.set_bone_pose(hand_l_control, Transform(dinohandleft.basis.inverse(), sssQ))
 
-	var hhdinobasis = Lhdino.basis.rotated(Vector3(0,0,1), deg2rad(20))
-	hhdinobasis = OpenXRallhandsdata.headcam_pose.basis
-	$FrameStick2.transform.basis = hhdinobasis.scaled(Vector3(0.2,0.2,0.2))
+	var hhdinobasis = OpenXRallhandsdata.headcam_pose.basis
+#	$FrameStick2.transform.basis = hhdinobasis.scaled(Vector3(0.2,0.2,0.2))
 #	mskel.set_bone_pose(head, Transform(OpenXRallhandsdata.headcam_pose.basis, Vector3(0,0,0)))
 	var conj = Basis.rotated(Vector3(0,1,0), deg2rad(180))
 	hhdinobasis = conj.inverse()*hhdinobasis*conj
@@ -96,4 +142,4 @@ func _physics_process(delta):
 	mskel.set_bone_pose(head, Transform(hhdinobasis, Vector3(0,0,0)))
 
 	var hhdinohead = headrestpose*Transform(hhdinobasis, Vector3(0,0,0))
-	$FrameStick.transform = $Monster.transform*hhdinohead	
+#	$FrameStick.transform = $Monster.transform*hhdinohead	
