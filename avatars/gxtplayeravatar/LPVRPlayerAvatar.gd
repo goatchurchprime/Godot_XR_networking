@@ -72,9 +72,6 @@ func processavatarhand(LRAppendage, palm_joint_confidence, joint_transforms, gxt
 
 
 func processpointer():
-	$LeftPointerGripArea.transform = OpenXRallhandsdata.pointer_pose_transform_L
-	$RightPointerGripArea.transform = OpenXRallhandsdata.pointer_pose_transform_R
-
 	if (OpenXRallhandsdata.pointer_pose_confidence_R if bright_active_pointer else OpenXRallhandsdata.pointer_pose_confidence_L) == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH:
 		$FunctionPointer.transform = OpenXRallhandsdata.pointer_pose_transform_R if bright_active_pointer else OpenXRallhandsdata.pointer_pose_transform_L
 		var pinchedvalue = OpenXRallhandsdata.triggerpinchedjoyvalue_R if bright_active_pointer else OpenXRallhandsdata.triggerpinchedjoyvalue_L

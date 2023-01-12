@@ -1,13 +1,10 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://xrassets/left_quest2_controller.tscn" type="PackedScene" id=1]
 [ext_resource path="res://xrassets/right_quest2_controller.tscn" type="PackedScene" id=2]
 [ext_resource path="res://xrassets/4f_moved_hand_l.glb" type="PackedScene" id=3]
 [ext_resource path="res://avatars/gxtplayeravatar/LPVRPlayerAvatar.gd" type="Script" id=4]
 [ext_resource path="res://addons/godot-xr-tools/functions/function_pointer.tscn" type="PackedScene" id=5]
-[ext_resource path="res://addons/godot-xr-tools/functions/function_pickup.tscn" type="PackedScene" id=6]
-[ext_resource path="res://avatars/gxtplayeravatar/pointergriparea.gd" type="Script" id=7]
-[ext_resource path="res://addons/godot-xr-tools/player/poke/poke.tscn" type="PackedScene" id=8]
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 0.2, 0.1, 0.1 )
@@ -85,7 +82,6 @@ material/0 = SubResource( 8 )
 
 [node name="RightAppendage" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.261993, -0.309998, -0.216488 )
-script = ExtResource( 7 )
 
 [node name="4f_moved_hand_l" parent="RightAppendage" instance=ExtResource( 3 )]
 transform = Transform( -1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
@@ -109,19 +105,6 @@ disabled = true
 [node name="MeshInstance" type="MeshInstance" parent="RightAppendage/PaddleBody/CollisionShape"]
 mesh = SubResource( 6 )
 material/0 = SubResource( 7 )
-
-[node name="LeftPointerGripArea" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.176712, -0.228287, -0.232578 )
-script = ExtResource( 7 )
-
-[node name="FunctionPickup" parent="LeftPointerGripArea" instance=ExtResource( 6 )]
-
-[node name="RightPointerGripArea" type="Spatial" parent="."]
-script = ExtResource( 7 )
-
-[node name="FunctionPickup" parent="RightPointerGripArea" instance=ExtResource( 6 )]
-
-[node name="Poke" parent="RightPointerGripArea" instance=ExtResource( 8 )]
 
 [node name="FunctionPointer" parent="." instance=ExtResource( 5 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.261993, -0.309998, -0.216488 )
