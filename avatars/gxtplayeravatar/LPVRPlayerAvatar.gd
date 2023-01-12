@@ -22,6 +22,7 @@ func _ready():
 	if is_the_local_player:
 		OpenXRallhandsdata.connect("vr_button_action", self, "_on_vr_button")
 
+
 var bright_active_pointer = false
 var bactive_pointer_not_released = false
 	

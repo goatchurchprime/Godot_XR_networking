@@ -195,11 +195,14 @@ collision_layer = 8704
 
 [node name="Viewport" parent="ViewportNetworkGateway" index="0"]
 size = Vector2( 550, 400 )
+render_target_update_mode = 1
 
 [node name="NetworkGateway" parent="ViewportNetworkGateway/Viewport" index="0" instance=ExtResource( 11 )]
 
 [node name="ProtocolOptions" parent="ViewportNetworkGateway/Viewport/NetworkGateway" index="0"]
+text = "ENet"
 items = [ "ENet", null, false, 0, null, "WebSocket", null, false, 1, null, "WebRTC (websocket signal)", null, false, 2, null, "WebRTC (mqtt signal)", null, false, 3, null ]
+selected = 0
 
 [node name="NetworkOptions" parent="ViewportNetworkGateway/Viewport/NetworkGateway" index="1"]
 items = [ "Network off", null, false, 0, null, "As server", null, false, 1, null, "Local network", null, false, 3, null ]
@@ -324,7 +327,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.21791, 0.553108, -0.884537 
 ranged_grab_method = 2
 ranged_grab_speed = 10.0
 
-[node name="CollisionShape" parent="PickableBox" index="1"]
+[node name="CollisionShape" parent="PickableBox" index="0"]
 shape = SubResource( 24 )
 
 [node name="MeshInstance" type="MeshInstance" parent="PickableBox"]
@@ -335,7 +338,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.81502, 0.553108, -0.884537 
 ranged_grab_method = 2
 ranged_grab_speed = 10.0
 
-[node name="CollisionShape" parent="PickableBox2" index="1"]
+[node name="CollisionShape" parent="PickableBox2" index="0"]
 shape = SubResource( 24 )
 
 [node name="MeshInstance" type="MeshInstance" parent="PickableBox2"]
@@ -346,7 +349,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.3109, 0.553108, -0.884537 )
 ranged_grab_method = 2
 ranged_grab_speed = 10.0
 
-[node name="CollisionShape" parent="PickableBox3" index="1"]
+[node name="CollisionShape" parent="PickableBox3" index="0"]
 shape = SubResource( 24 )
 
 [node name="MeshInstance" type="MeshInstance" parent="PickableBox3"]
@@ -357,7 +360,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.95457, 0.553108, -0.884537 
 ranged_grab_method = 2
 ranged_grab_speed = 10.0
 
-[node name="CollisionShape" parent="PickableBox4" index="1"]
+[node name="CollisionShape" parent="PickableBox4" index="0"]
 shape = SubResource( 24 )
 
 [node name="MeshInstance" type="MeshInstance" parent="PickableBox4"]
@@ -384,10 +387,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 
 [node name="Skeleton" parent="MonsterPuppet/Monster/Origin/MonsterArmature" index="0"]
 bones/8/rest = Transform( 0.967, 0.121, 0.224, 0.131, 0.52, -0.844, -0.218, 0.846, 0.487, 0, 2.283, 0 )
-bones/18/bound_children = [ NodePath("LeftFootAnchor") ]
-bones/22/bound_children = [ NodePath("LeftHandAnchor") ]
-bones/25/bound_children = [ NodePath("RightFootAnchor") ]
-bones/29/bound_children = [ NodePath("RightHandAnchor") ]
 
 [node name="LeftHandAnchor" parent="MonsterPuppet/Monster/Origin/MonsterArmature/Skeleton" index="1"]
 transform = Transform( 0.615399, -0.785011, 0.0710124, -0.00978325, -0.0976929, -0.995169, 0.788155, 0.611731, -0.0678, 3.34279, -0.991492, 1.59694 )

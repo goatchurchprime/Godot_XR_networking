@@ -15,6 +15,6 @@ func get_is_active():
 	var LRcontroller = LRappendage.get_child(1)
 	return LRhand.visible or LRcontroller.visible
 
-func get_joystick_axis(pickup_axis_id):
+func get_joystick_axis(pickup_axis_id) -> float:
 	return OpenXRallhandsdata.grippinchedjoyvalue_R if bright else OpenXRallhandsdata.grippinchedjoyvalue_L
 

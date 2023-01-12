@@ -21,6 +21,7 @@ onready var roty180 = Transform(Vector3(-1,0,0), Vector3(0,1,0), Vector3(0,0,-1)
 onready var mskel_bonerest_handcontrolR = roty180*mskel.get_bone_rest(hand_r_control)
 onready var mskel_bonerest_handcontrolR_inverse = mskel_bonerest_handcontrolR.inverse()
 onready var mskel_bonerest_handcontrolL = roty180*mskel.get_bone_rest(hand_r_control)
+onready var mskel_bonerest_handcontrolL_inverse = mskel_bonerest_handcontrolL.inverse()
 
 func _ready():
 	aplayer.play("throw")
@@ -61,6 +62,7 @@ func _physics_process(delta):
 	var humancofgz = 0.0
 	var conjh = Basis.rotated(Vector3(0,1,0), deg2rad(180))
 
+	var handcontrollerposeleft = OpenXRallhandsdata.gethandcontrollerpose(false)
 	var handcontrollerposeright = OpenXRallhandsdata.gethandcontrollerpose(true)
 	if handcontrollerposeright == null:
 		handcontrollerposeright = Transform(Ldinohandright.basis, Ldinohandright.origin)
@@ -80,51 +82,19 @@ func _physics_process(delta):
 	# 12. make a phone app version of redovar game.
 	
 	
-	
-	# (A.basis, A.origin)*(B.basis, B.origin)*(C.basis, C.orign) = 
-	# (A.basis*B.basis*C.basis, A.origin + A.basis*B.origin + A.basis*B.basis*C.origin)	
-	# hhdinobasisR = handrcontrol_bonerestCJ.inverse()*handcontrollerpose_relhead*handrcontrol_bonerestCJ
-	# hhdinobasisR.origin = handrcontrol_bonerestCJ.inverse().origin 
-	#      + handrcontrol_bonerestCJ.basis.inverse()*handcontrollerpose_relhead.origin 
-	#      + handrcontrol_bonerestCJ.basis.inverse()*handcontrollerpose_relhead.basis*handrcontrol_bonerestCJ.origin
-	
 	if handcontrollerposeright:
 		var handcontrollerpose_relhead = headcamhorizontaltransform_fromfloor.inverse()*handcontrollerposeright
-		mskel_bonerest_handcontrolR.basis
-		
-		var handrcontrol_bonerest = mskel.get_bone_rest(hand_r_control)
-		var cpos = handcontrollerpose_relhead.origin
-		var cposHR = cpos + Vector3(0, -humancofgy, -humancofgz)
-		#handcontrollerpose_relhead.origin = cposHR*dinoscale
-		var handrcontrol_bonerestCJ = Transform(conjh, Vector3.ZERO)*mskel.get_bone_rest(hand_r_control)
-		var sssP = mskel_bonerest_handcontrolR.basis.xform_inv(cposHR)*dinoscale
-		var hhdinobasisR = handrcontrol_bonerestCJ.inverse()*handcontrollerpose_relhead*handrcontrol_bonerestCJ
-#		print(hhdinobasisR.origin, sssP)
-#		print(handrcontrol_bonerestCJ.basis.inverse()*handcontrollerpose_relhead.origin)
-#		print(handrcontrol_bonerestCJ.basis.inverse()*(-handrcontrol_bonerestCJ.origin + \
-#			handcontrollerpose_relhead.origin + \
-#			handcontrollerpose_relhead.basis*handrcontrol_bonerestCJ.origin))
-#		print("j")
-#		print(Transform(hhdinobasisR.basis, sssP))
-#		print(Transform(mskel_bonerest_handcontrolR_inverse.basis*handcontrollerpose_relhead.basis*mskel_bonerest_handcontrolR.basis, 
-#						mskel_bonerest_handcontrolR_inverse.basis.xform(handcontrollerpose_relhead.origin + Vector3(0, -humancofgy, -humancofgz))*dinoscale))
-#		print(mskel_bonerest_handcontrolR_inverse.basis.xform(handcontrollerpose_relhead.origin + Vector3(0, -humancofgy, -humancofgz))*dinoscale)
-#		print(sssP)
-#		print(mskel_bonerest_handcontrolR_inverse.basis.xform(cposHR)*dinoscale)
-#		print(handcontrollerpose_relhead.origin + Vector3(0, -humancofgy, -humancofgz))
-#		print(cposHR)
-		#sssP = hhdinobasisR.origin
-
-
-#		mskel.set_bone_pose(hand_r_control, Transform(hhdinobasisR.basis, sssP))
-
 		mskel.set_bone_pose(hand_r_control, Transform(
 			mskel_bonerest_handcontrolR_inverse.basis * handcontrollerpose_relhead.basis * mskel_bonerest_handcontrolR.basis, 
 			mskel_bonerest_handcontrolR_inverse.basis.xform(handcontrollerpose_relhead.origin + Vector3(0, -humancofgy, -humancofgz))*dinoscale
 		))
 
-
-		$FrameStick.transform = $Monster.transform*mskel.get_bone_global_pose(hand_r_control)
+	if handcontrollerposeleft:
+		var handcontrollerpose_relhead = headcamhorizontaltransform_fromfloor.inverse()*handcontrollerposeleft
+		mskel.set_bone_pose(hand_l_control, Transform(
+			mskel_bonerest_handcontrolL_inverse.basis * handcontrollerpose_relhead.basis * mskel_bonerest_handcontrolL.basis, 
+			mskel_bonerest_handcontrolL_inverse.basis.xform(handcontrollerpose_relhead.origin + Vector3(0, -humancofgy, -humancofgz))*dinoscale
+		))
 	
 	var dinohandleft = OpenXRallhandsdata.gethandcontrollerpose(false)
 	if dinohandleft != null:

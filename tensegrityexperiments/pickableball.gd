@@ -25,7 +25,6 @@ func getsumpt(ballFrameN):
 	
 func _ready() -> void:
 	set_mode(RigidBody.MODE_KINEMATIC)
-	reset_transform_on_pickup = false
 	ranged_grab_method = RangedMethod.LERP
 	$MeshBall.get_surface_material(0).albedo_color = Color.darkcyan
 
