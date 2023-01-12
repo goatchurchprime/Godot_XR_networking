@@ -46,7 +46,6 @@ transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0
 mesh = SubResource( 1 )
 skin = SubResource( 2 )
 skeleton = NodePath("../left_quest2_controller_world")
-material/0 = null
 
 [node name="left_quest2_controller_world" type="Skeleton" parent="."]
 bones/0/name = "b_thumbstick"

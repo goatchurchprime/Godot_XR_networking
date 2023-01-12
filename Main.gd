@@ -145,6 +145,8 @@ func _physics_process(delta):
 
 
 func _process(delta):
+	$FPController/LeftHandController/FunctionPickup.enabled = not $FPController/ARVRController3.get_is_active()
+	$FPController/RightHandController/FunctionPickup.enabled = not $FPController/ARVRController4.get_is_active()
 	#if $FPController.interface != null and $FPController/OpenXRallhandsdata.is_active_R:
 	#	$FPController/RightHandController/FunctionPointer.active_button = VR_HANDTRACKING_INDEXTHUMB_PINCH
 	#else:

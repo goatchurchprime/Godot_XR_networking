@@ -575,6 +575,10 @@ etc=false
 warnings=false
 grip=false
 
+[godot_xr_tools]
+
+input/grip_threshold=0.5
+
 [input]
 
 ui_left={

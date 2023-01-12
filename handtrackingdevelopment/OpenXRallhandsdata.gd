@@ -97,8 +97,8 @@ enum {
 	JOY_ID_HANDLEFT = 0, 
 	JOY_ID_HANDRIGHT = 1, 
 
-	JOY_AXIS_THUMB_INDEX_PINCH = 7,
-	JOY_AXIS_THUMB_MIDDLE_PINCH = 6,
+	JOY_AXIS_THUMB_INDEX_PINCH = 7,   # VR_SECONDARY_Y_AXIS
+	JOY_AXIS_THUMB_MIDDLE_PINCH = 6,  # VR_SECONDARY_X_AXIS
 	JOY_AXIS_THUMB_RING_PINCH = 2,
 	JOY_AXIS_THUMB_LITTLE_PINCH = 4, 
 	
@@ -107,7 +107,7 @@ enum {
 	JOY_AXIS_TRIGGER_BUTTON = 2,
 	JOY_AXIS_GRIP_BUTTON = 4
 
-	VR_BUTTON_THUMB_INDEX_PINCH = 7,
+	VR_BUTTON_THUMB_INDEX_PINCH = 7,  # VR_BUTTON_AX
 	VR_BUTTON_THUMB_MIDDLE_PINCH = 1,
 	VR_BUTTON_THUMB_RING_PINCH = 15,
 	VR_BUTTON_THUMB_LITTLE_PINCH = 2,
@@ -268,10 +268,10 @@ func _physics_process(delta):
 		Dt = 0
 		# as from void XRExtHandTrackingExtensionWrapper::update_handtracking() 
 		# these have the joystick settings
-#		print(arvrcontrollerleft.get_joystick_id(),",", arvrcontroller3.get_joystick_id(), "  ", arvrcontrollerleft.get_joystick_id(), "Rjoy ", arvrcontrollerright.get_joystick_axis(2), arvrcontrollerright.get_joystick_axis(3), " ", arvrcontrollerright.get_joystick_axis(4), " ", arvrcontroller4.get_joystick_axis(JOY_AXIS_THUMB_INDEX_PINCH), 
-#		"  ", Input.get_joy_axis(3, JOY_AXIS_THUMB_INDEX_PINCH), 
-#		" ", Input.get_joy_axis(arvrcontroller3.get_joystick_id(), JOY_AXIS_THUMB_INDEX_PINCH), 
-#		" ", Input.get_joy_axis(arvrcontroller3.get_joystick_id(), JOY_AXIS_THUMB_MIDDLE_PINCH))
+		print(arvrcontrollerleft.get_joystick_id(),",", arvrcontroller3.get_joystick_id(), "  ", arvrcontrollerleft.get_joystick_id(), "Rjoy ", arvrcontrollerright.get_joystick_axis(2), arvrcontrollerright.get_joystick_axis(3), " ", arvrcontrollerright.get_joystick_axis(4), " ", arvrcontroller4.get_joystick_axis(JOY_AXIS_THUMB_INDEX_PINCH), 
+		"  ", Input.get_joy_axis(3, JOY_AXIS_THUMB_INDEX_PINCH), 
+		" ", Input.get_joy_axis(arvrcontroller3.get_joystick_id(), JOY_AXIS_THUMB_INDEX_PINCH), 
+		" ", Input.get_joy_axis(arvrcontroller3.get_joystick_id(), JOY_AXIS_THUMB_MIDDLE_PINCH))
 
 func gethandcontrollerpose(bright):
 	if (pointer_pose_confidence_R if bright else pointer_pose_confidence_L) != TRACKING_CONFIDENCE_NOT_APPLICABLE:
