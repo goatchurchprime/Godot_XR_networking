@@ -10,7 +10,6 @@ var EndBallB = null
 # Called when this handle is added to the scene
 func _ready() -> void:
 	set_mode(RigidBody.MODE_KINEMATIC)
-	reset_transform_on_pickup = false
 	ranged_grab_method = RangedMethod.LERP
 	$MeshStrut.get_surface_material(0).albedo_color = Color.darkgreen
 	$MeshStrut.scale.z = strut_length

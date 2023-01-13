@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=2]
+[gd_scene load_steps=55 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
@@ -8,18 +8,32 @@
 [ext_resource path="res://addons/godot-xr-tools/objects/pickable.tscn" type="PackedScene" id=6]
 [ext_resource path="res://lorienexperiments/LorienHandControls.tscn" type="PackedScene" id=7]
 [ext_resource path="res://addons/godot-xr-tools/functions/movement_turn.tscn" type="PackedScene" id=8]
-[ext_resource path="res://LPVRPlayerAvatar.tscn" type="PackedScene" id=9]
+[ext_resource path="res://avatars/gxtplayeravatar/LPVRPlayerAvatar.tscn" type="PackedScene" id=9]
 [ext_resource path="res://tensegrityexperiments/TensegrityExperiments.tscn" type="PackedScene" id=10]
 [ext_resource path="res://addons/player-networking/NetworkGateway.tscn" type="PackedScene" id=11]
-[ext_resource path="res://addons/godot-xr-tools/objects/pickable.gd" type="Script" id=12]
-[ext_resource path="res://addons/godot-xr-tools/functions/function_pickup.tscn" type="PackedScene" id=13]
+[ext_resource path="res://addons/godot-xr-tools/objects/highlight/highlight_ring.tscn" type="PackedScene" id=12]
+[ext_resource path="res://avatars/monster/monsterpuppet.gd" type="Script" id=13]
 [ext_resource path="res://click04.wav" type="AudioStream" id=14]
 [ext_resource path="res://addons/godot-xr-tools/objects/viewport_2d_in_3d.tscn" type="PackedScene" id=15]
 [ext_resource path="res://addons/godot-openxr/scenes/left_hand_nodes.tscn" type="PackedScene" id=16]
 [ext_resource path="res://avatars/monster/monster.tscn" type="PackedScene" id=17]
 [ext_resource path="res://handtrackingdevelopment/OpenXRallhandsdata.tscn" type="PackedScene" id=18]
 [ext_resource path="res://tensegrityexperiments/PickableWire.tscn" type="PackedScene" id=19]
-[ext_resource path="res://addons/godot-xr-tools/functions/movement_climb.tscn" type="PackedScene" id=20]
+[ext_resource path="res://addons/godot-xr-tools/functions/function_pickup.tscn" type="PackedScene" id=20]
+[ext_resource path="res://addons/godot-xr-tools/objects/climbable.tscn" type="PackedScene" id=21]
+[ext_resource path="res://xrassets/left_quest2_controller.tscn" type="PackedScene" id=22]
+[ext_resource path="res://xrassets/right_quest2_controller.tscn" type="PackedScene" id=23]
+[ext_resource path="res://addons/godot-xr-tools/functions/function_pointer.tscn" type="PackedScene" id=24]
+
+[sub_resource type="CylinderMesh" id=36]
+top_radius = 0.012
+bottom_radius = 0.001
+height = 0.04
+radial_segments = 12
+rings = 0
+
+[sub_resource type="SpatialMaterial" id=37]
+albedo_color = Color( 0.65098, 0.764706, 0.0745098, 1 )
 
 [sub_resource type="CylinderMesh" id=20]
 top_radius = 0.008
@@ -28,8 +42,11 @@ height = 0.06
 radial_segments = 12
 rings = 0
 
+[sub_resource type="SpatialMaterial" id=40]
+albedo_color = Color( 0.764706, 0.0745098, 0.639216, 1 )
+
 [sub_resource type="SpatialMaterial" id=21]
-albedo_color = Color( 0.137255, 0.764706, 0.0745098, 1 )
+albedo_color = Color( 0.0745098, 0.462745, 0.764706, 1 )
 
 [sub_resource type="PlaneMesh" id=2]
 size = Vector2( 20, 20 )
@@ -49,20 +66,17 @@ extents = Vector3( 10, 0.1, 10 )
 resource_local_to_scene = true
 size = Vector2( 3, 2 )
 
-[sub_resource type="ViewportTexture" id=22]
+[sub_resource type="ViewportTexture" id=41]
 flags = 4
 
-[sub_resource type="SpatialMaterial" id=23]
+[sub_resource type="SpatialMaterial" id=42]
 flags_transparent = true
 params_cull_mode = 2
-albedo_texture = SubResource( 22 )
+albedo_texture = SubResource( 41 )
 
 [sub_resource type="BoxShape" id=19]
 resource_local_to_scene = true
 extents = Vector3( 1.5, 1, 0.01 )
-
-[sub_resource type="PhysicsMaterial" id=9]
-bounce = 0.51
 
 [sub_resource type="SphereShape" id=7]
 margin = 0.01
@@ -103,9 +117,24 @@ extents = Vector3( 0.05, 0.5, 0.05 )
 [sub_resource type="CubeMesh" id=25]
 size = Vector3( 0.1, 1, 0.1 )
 
+[sub_resource type="CylinderShape" id=29]
+radius = 0.5
+
 [sub_resource type="CylinderMesh" id=26]
 top_radius = 0.5
-bottom_radius = 0.4
+bottom_radius = 0.5
+
+[sub_resource type="CubeMesh" id=32]
+size = Vector3( 0.25, 4, 0.75 )
+
+[sub_resource type="SpatialMaterial" id=33]
+albedo_color = Color( 0.109804, 0.835294, 0.352941, 1 )
+
+[sub_resource type="CubeMesh" id=34]
+size = Vector3( 0.3, 0.3, 0.3 )
+
+[sub_resource type="SpatialMaterial" id=35]
+albedo_color = Color( 0.937255, 0.490196, 0.0784314, 1 )
 
 [node name="Main" type="Spatial"]
 script = ExtResource( 1 )
@@ -127,38 +156,59 @@ order = 10
 max_speed = 3.0
 strafe = true
 
-[node name="FunctionPickup" parent="FPController/LeftHandController" index="1" instance=ExtResource( 13 )]
-grab_collision_mask = 4097
-ranged_collision_mask = 4097
+[node name="FunctionPickup" parent="FPController/LeftHandController" index="1" instance=ExtResource( 20 )]
 
-[node name="HandUIHook" type="RemoteTransform" parent="FPController/LeftHandController" index="2"]
-transform = Transform( -4.37114e-08, -1, 0, 0.707107, -3.09086e-08, 0.707107, -0.707107, 3.09086e-08, 0.707107, -0.1, 0, 0 )
+[node name="MarkerCone" type="MeshInstance" parent="FPController/LeftHandController/FunctionPickup"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+mesh = SubResource( 36 )
+skeleton = NodePath("../../../ARVRController3")
+material/0 = SubResource( 37 )
+
+[node name="left_quest2_controller" parent="FPController/LeftHandController" index="2" instance=ExtResource( 22 )]
+transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0.01, 0.05 )
 
 [node name="RightHandController" parent="FPController" index="3"]
 visible = true
 
-[node name="FunctionPickup" parent="FPController/RightHandController" index="0" instance=ExtResource( 13 )]
-grab_collision_mask = 4097
-ranged_collision_mask = 4097
+[node name="MovementTurn" parent="FPController/RightHandController" index="0" instance=ExtResource( 8 )]
+turn_mode = 1
+step_turn_delay = 2000.0
 
-[node name="MovementTurn" parent="FPController/RightHandController" index="1" instance=ExtResource( 8 )]
+[node name="FunctionPickup" parent="FPController/RightHandController" index="1" instance=ExtResource( 20 )]
+
+[node name="MarkerCone" type="MeshInstance" parent="FPController/RightHandController/FunctionPickup"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+mesh = SubResource( 20 )
+skeleton = NodePath("../../../ARVRController3")
+material/0 = SubResource( 40 )
+
+[node name="right_quest2_controller" parent="FPController/RightHandController" index="2" instance=ExtResource( 23 )]
+transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0.01, 0.05 )
 
 [node name="ARVRController3" type="ARVRController" parent="FPController"]
 controller_id = 3
 
-[node name="MeshInstance" type="MeshInstance" parent="FPController/ARVRController3"]
+[node name="FunctionPickup" parent="FPController/ARVRController3" instance=ExtResource( 20 )]
+pickup_axis_id = 6
+action_button_id = 7
+
+[node name="MarkerCone" type="MeshInstance" parent="FPController/ARVRController3/FunctionPickup"]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
-visible = false
 mesh = SubResource( 20 )
+skeleton = NodePath("../..")
 material/0 = SubResource( 21 )
 
 [node name="ARVRController4" type="ARVRController" parent="FPController"]
 controller_id = 4
 
-[node name="MeshInstance" type="MeshInstance" parent="FPController/ARVRController4"]
+[node name="FunctionPickup" parent="FPController/ARVRController4" instance=ExtResource( 20 )]
+pickup_axis_id = 6
+action_button_id = 7
+
+[node name="MarkerCone" type="MeshInstance" parent="FPController/ARVRController4/FunctionPickup"]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
-visible = false
 mesh = SubResource( 20 )
+skeleton = NodePath("../..")
 material/0 = SubResource( 21 )
 
 [node name="OpenXRallhandsdata" parent="FPController" instance=ExtResource( 18 )]
@@ -171,9 +221,8 @@ script = ExtResource( 2 )
 
 [node name="Left_hand" parent="FPController" instance=ExtResource( 16 )]
 
-[node name="MovementClimb" parent="FPController" instance=ExtResource( 20 )]
-left_pickup = NodePath("../LeftHandController/FunctionPickup")
-right_pickup = NodePath("../RightHandController/FunctionPickup")
+[node name="FunctionPointer" parent="FPController" instance=ExtResource( 24 )]
+show_target = true
 
 [node name="Floor" type="StaticBody" parent="."]
 
@@ -186,7 +235,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0 )
 shape = SubResource( 6 )
 
 [node name="ViewportNetworkGateway" parent="." instance=ExtResource( 15 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.401293, 1.48204, -2.6145 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.597506, 1.48204, -2.6145 )
 viewport_size = Vector2( 550, 400 )
 collision_layer = 8704
 
@@ -218,7 +267,7 @@ items = [ "me", null, false, 0, null ]
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource( 16 )
-material/0 = SubResource( 23 )
+material/0 = SubResource( 42 )
 
 [node name="StaticBody" parent="ViewportNetworkGateway" index="2"]
 collision_layer = 8704
@@ -228,30 +277,24 @@ viewport_size = Vector2( 550, 400 )
 shape = SubResource( 19 )
 
 [node name="Players" type="Spatial" parent="."]
+visible = false
 
 [node name="LPVRPlayerAvatar" parent="Players" instance=ExtResource( 9 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.653152, 1.22849, 0 )
 
-[node name="SportBall" type="RigidBody" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.54476, 1.91887, -4.03967 )
-collision_layer = 4097
-collision_mask = 4097
-physics_material_override = SubResource( 9 )
-contacts_reported = 1
-contact_monitor = true
-can_sleep = false
-angular_velocity = Vector3( 5, 0, 0 )
-script = ExtResource( 12 )
+[node name="SportBall" parent="." instance=ExtResource( 6 )]
 
-[node name="CollisionShape" type="CollisionShape" parent="SportBall"]
+[node name="CollisionShape" parent="SportBall" index="0"]
 shape = SubResource( 7 )
 
-[node name="MeshInstance" type="MeshInstance" parent="SportBall/CollisionShape"]
+[node name="MeshInstance" type="MeshInstance" parent="SportBall"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.54476, 1.91887, -4.03967 )
 mesh = SubResource( 8 )
+skeleton = NodePath("../CollisionShape")
 
 [node name="bouncesound" type="AudioStreamPlayer3D" parent="SportBall"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.54476, -1.91887, 4.03967 )
 stream = ExtResource( 14 )
+
+[node name="HighlightRing" parent="SportBall" instance=ExtResource( 12 )]
 
 [node name="Wall" type="StaticBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5.51366, -10.3501 )
@@ -313,41 +356,133 @@ visible = false
 extents = Vector3( 12, 10, 13 )
 
 [node name="LorienHandControls" parent="." instance=ExtResource( 7 )]
+visible = false
 
 [node name="TensegrityExperiments" parent="." instance=ExtResource( 10 )]
 visible = false
-
-[node name="Monster" parent="." instance=ExtResource( 17 )]
-transform = Transform( -0.0864958, 0, -0.180329, 0, 0.2, 0, 0.180329, 0, -0.0864958, -3.85101, 1.51881, -2.8849 )
 
 [node name="Wire" parent="." instance=ExtResource( 19 )]
 
 [node name="PickableBox" parent="." instance=ExtResource( 6 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.21791, 0.553108, -0.884537 )
 ranged_grab_method = 2
+ranged_grab_speed = 10.0
 
-[node name="CollisionShape" parent="PickableBox" index="1"]
+[node name="CollisionShape" parent="PickableBox" index="0"]
 shape = SubResource( 24 )
 
 [node name="MeshInstance" type="MeshInstance" parent="PickableBox"]
 mesh = SubResource( 25 )
 
-[node name="ClimbableBox" parent="." instance=ExtResource( 6 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.517, 1, 0 )
-mode = 1
-ranged_grab_method = 0
+[node name="HighlightRing" parent="PickableBox" instance=ExtResource( 12 )]
 
-[node name="MeshInstance" type="MeshInstance" parent="ClimbableBox"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.695835 )
+[node name="PickableBox2" parent="." instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.81502, 0.553108, -0.884537 )
+ranged_grab_method = 2
+ranged_grab_speed = 10.0
+
+[node name="CollisionShape" parent="PickableBox2" index="0"]
+shape = SubResource( 24 )
+
+[node name="MeshInstance" type="MeshInstance" parent="PickableBox2"]
+mesh = SubResource( 25 )
+
+[node name="HighlightRing" parent="PickableBox2" instance=ExtResource( 12 )]
+
+[node name="PickableBox3" parent="." instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.3109, 0.553108, -0.884537 )
+ranged_grab_method = 2
+ranged_grab_speed = 10.0
+
+[node name="CollisionShape" parent="PickableBox3" index="0"]
+shape = SubResource( 24 )
+
+[node name="MeshInstance" type="MeshInstance" parent="PickableBox3"]
+mesh = SubResource( 25 )
+
+[node name="HighlightRing" parent="PickableBox3" instance=ExtResource( 12 )]
+
+[node name="PickableBox4" parent="." instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.95457, 0.553108, -0.884537 )
+ranged_grab_method = 2
+ranged_grab_speed = 10.0
+
+[node name="CollisionShape" parent="PickableBox4" index="0"]
+shape = SubResource( 24 )
+
+[node name="MeshInstance" type="MeshInstance" parent="PickableBox4"]
+mesh = SubResource( 25 )
+
+[node name="HighlightRing" parent="PickableBox4" instance=ExtResource( 12 )]
+
+[node name="ClimbableCylinder" parent="." instance=ExtResource( 21 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.517, 1, -1.06835 )
+
+[node name="CollisionShape" parent="ClimbableCylinder" index="0"]
+shape = SubResource( 29 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ClimbableCylinder"]
 mesh = SubResource( 26 )
+skeleton = NodePath("")
+
+[node name="MonsterPuppet" type="Spatial" parent="."]
+script = ExtResource( 13 )
+
+[node name="Monster" parent="MonsterPuppet" instance=ExtResource( 17 )]
+transform = Transform( 0.1, 0, 0.173205, 0, 0.2, 0, -0.173205, 0, 0.1, -1.41636, 1.51881, -2.32625 )
+
+[node name="MonsterArmature" parent="MonsterPuppet/Monster/Origin" index="0"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+
+[node name="Skeleton" parent="MonsterPuppet/Monster/Origin/MonsterArmature" index="0"]
+bones/8/rest = Transform( 0.967, 0.121, 0.224, 0.131, 0.52, -0.844, -0.218, 0.846, 0.487, 0, 2.283, 0 )
+bones/18/bound_children = [ NodePath("LeftFootAnchor") ]
+bones/22/bound_children = [ NodePath("LeftHandAnchor") ]
+bones/25/bound_children = [ NodePath("RightFootAnchor") ]
+bones/29/bound_children = [ NodePath("RightHandAnchor") ]
+
+[node name="LeftHandAnchor" parent="MonsterPuppet/Monster/Origin/MonsterArmature/Skeleton" index="1"]
+transform = Transform( 0.615399, -0.785011, 0.0710124, -0.00978325, -0.0976929, -0.995169, 0.788155, 0.611731, -0.0678, 3.34279, -0.991492, 1.59694 )
+
+[node name="RightHandAnchor" parent="MonsterPuppet/Monster/Origin/MonsterArmature/Skeleton" index="2"]
+transform = Transform( 0.615399, 0.785011, -0.0710124, 0.00978325, -0.0976929, -0.995169, -0.788155, 0.611731, -0.0678, -3.34279, -0.991492, 1.59694 )
+
+[node name="LeftFootAnchor" parent="MonsterPuppet/Monster/Origin/MonsterArmature/Skeleton" index="3"]
+transform = Transform( 1, -7.10543e-15, 2.38419e-07, 2.29679e-07, -0.268273, -0.963343, 6.39612e-08, 0.963343, -0.268273, 1.8, -6.28817, -2.23979 )
+
+[node name="RightFootAnchor" parent="MonsterPuppet/Monster/Origin/MonsterArmature/Skeleton" index="4"]
+transform = Transform( 1, 7.10543e-15, -2.38419e-07, -2.29679e-07, -0.268273, -0.963343, -6.39612e-08, 0.963343, -0.268273, -1.8, -6.28817, -2.23979 )
+
+[node name="FrameStick" type="MeshInstance" parent="MonsterPuppet"]
+visible = false
+mesh = SubResource( 32 )
+material/0 = SubResource( 33 )
+
+[node name="MeshInstance" type="MeshInstance" parent="MonsterPuppet/FrameStick"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, -2, 0.2 )
+mesh = SubResource( 34 )
+material/0 = SubResource( 35 )
+
+[node name="FrameStick2" type="MeshInstance" parent="MonsterPuppet"]
+visible = false
+mesh = SubResource( 32 )
+material/0 = SubResource( 33 )
+
+[node name="MeshInstance" type="MeshInstance" parent="MonsterPuppet/FrameStick2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, -2, 0.2 )
+mesh = SubResource( 34 )
+material/0 = SubResource( 35 )
 
 [editable path="FPController"]
 [editable path="FPController/OpenXRallhandsdata"]
 [editable path="FPController/Left_hand"]
 [editable path="ViewportNetworkGateway"]
 [editable path="ViewportNetworkGateway/Viewport/NetworkGateway"]
-[editable path="Players/LPVRPlayerAvatar"]
-[editable path="Players/LPVRPlayerAvatar/LeftAppendage/4f_moved_hand_l"]
-[editable path="Players/LPVRPlayerAvatar/RightAppendage/4f_moved_hand_l"]
+[editable path="SportBall"]
 [editable path="PickableBox"]
-[editable path="ClimbableBox"]
+[editable path="PickableBox2"]
+[editable path="PickableBox3"]
+[editable path="PickableBox4"]
+[editable path="ClimbableCylinder"]
+[editable path="MonsterPuppet/Monster"]
+[editable path="MonsterPuppet/Monster/Origin"]

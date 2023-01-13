@@ -18,28 +18,13 @@ var is_the_local_player = false
 var shrinkavatartransform = Transform()
 
 func _ready():
-	assert ($FunctionPointer.active_button == XRTools.Buttons.VR_ACTION and $FunctionPointer.action == "")
 	if is_the_local_player:
 		OpenXRallhandsdata.connect("vr_button_action", self, "_on_vr_button")
 
-var bright_active_pointer = false
-var bactive_pointer_not_released = false
-	
+
 func _on_vr_button(button: int, bpressed: bool, bright: bool):
 	if not bpressed:
 		print("vr_buttonRelease ", button, " ", "R" if bright else "L")
-	if button == XRTools.Buttons.VR_TRIGGER:
-		if bright == bright_active_pointer:
-			if bpressed:
-				$FunctionPointer._on_button_pressed(XRTools.Buttons.VR_ACTION)
-			elif bactive_pointer_not_released:
-				$FunctionPointer._on_button_release(XRTools.Buttons.VR_ACTION)
-			bactive_pointer_not_released = bpressed
-		else:
-			if bactive_pointer_not_released:
-				$FunctionPointer._on_button_release(XRTools.Buttons.VR_ACTION)
-				bactive_pointer_not_released = false
-			bright_active_pointer = bright
 	
 func processavatarhand(LRAppendage, palm_joint_confidence, joint_transforms, gxthandrestdata, LRHandController, bright):
 	var LRhand = LRAppendage.get_child(0)
@@ -62,19 +47,11 @@ func processavatarhand(LRAppendage, palm_joint_confidence, joint_transforms, gxt
 		LRhand.visible = false
 		LRAppendage.transform = LRHandController.transform
 		LRcontroller.visible = true
+
 	else:
 		LRhand.visible = false
 		LRcontroller.visible = false
 
-func processpointer():
-	if (OpenXRallhandsdata.pointer_pose_confidence_R if bright_active_pointer else OpenXRallhandsdata.pointer_pose_confidence_L) == OpenXRallhandsdata.TRACKING_CONFIDENCE_HIGH:
-		$FunctionPointer.transform = OpenXRallhandsdata.pointer_pose_transform_R if bright_active_pointer else OpenXRallhandsdata.pointer_pose_transform_L
-		var pinchedvalue = OpenXRallhandsdata.triggerpinchedjoyvalue_R if bright_active_pointer else OpenXRallhandsdata.triggerpinchedjoyvalue_L
-		$FunctionPointer/IntensityMarker.scale = Vector3(1,pinchedvalue*2+0.5,1)
-		if not $FunctionPointer.enabled:
-			$FunctionPointer.set_enabled(true)
-	elif $FunctionPointer.enabled:
-		$FunctionPointer.set_enabled(false)
 
 func PAV_processlocalavatarposition(delta):
 	assert (is_the_local_player)
@@ -82,7 +59,6 @@ func PAV_processlocalavatarposition(delta):
 	$HeadCam.transform = arvrorigin.get_node("ARVRCamera").transform
 	processavatarhand($LeftAppendage, OpenXRallhandsdata.palm_joint_confidence_L, OpenXRallhandsdata.joint_transforms_L, gxtlefthandrestdata, LeftHandController, false)
 	processavatarhand($RightAppendage, OpenXRallhandsdata.palm_joint_confidence_R, OpenXRallhandsdata.joint_transforms_R, gxtrighthandrestdata, RightHandController, true)
-	processpointer()
 		
 #var controller_pose_transform_L : Transform = Transform()
 #var controller_pose_transform_R : Transform = Transform()
