@@ -350,11 +350,6 @@ _global_script_classes=[ {
 "path": "res://addons/godot-xr-tools/functions/movement_jump.gd"
 }, {
 "base": "XRToolsMovementProvider",
-"class": "XRToolsMovementNonVRKeyboard",
-"language": "GDScript",
-"path": "res://addons/godot-xr-tools/functions/movement_nonvrkeyboard.gd"
-}, {
-"base": "XRToolsMovementProvider",
 "class": "XRToolsMovementPhysicalJump",
 "language": "GDScript",
 "path": "res://addons/godot-xr-tools/functions/movement_physical_jump.gd"
@@ -523,7 +518,6 @@ _global_script_class_icons={
 "XRToolsMovementGlide": "",
 "XRToolsMovementGrapple": "",
 "XRToolsMovementJump": "",
-"XRToolsMovementNonVRKeyboard": "",
 "XRToolsMovementPhysicalJump": "",
 "XRToolsMovementProvider": "res://addons/godot-xr-tools/editor/icons/movement_provider.svg",
 "XRToolsMovementSprint": "",

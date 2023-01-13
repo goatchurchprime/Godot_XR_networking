@@ -19,8 +19,8 @@ export var QUESTstartupprotocol = "webrtc"
 
 # symlinks from the addons directory
 # ln -s ../../LorienAsset/lorien/addons/LorienInfiniteCanvas/
-# ln -s ../../godot-xr-tools/addons/godot-xr-tools/ .
-# ln -s ../../godot-xr-tools-stable/addons/godot-xr-tools/ .
+# ln -s ../../godot-xr-tools_IN_XR_Networking/addons/godot-xr-tools/ .
+#    checkouted with single-pointer branch
 
 #    don't forget to checkout to 2.5.0
 

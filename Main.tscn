@@ -1,4 +1,4 @@
-[gd_scene load_steps=54 format=2]
+[gd_scene load_steps=55 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
@@ -23,6 +23,7 @@
 [ext_resource path="res://addons/godot-xr-tools/objects/climbable.tscn" type="PackedScene" id=21]
 [ext_resource path="res://xrassets/left_quest2_controller.tscn" type="PackedScene" id=22]
 [ext_resource path="res://xrassets/right_quest2_controller.tscn" type="PackedScene" id=23]
+[ext_resource path="res://addons/godot-xr-tools/functions/function_pointer.tscn" type="PackedScene" id=24]
 
 [sub_resource type="CylinderMesh" id=36]
 top_radius = 0.012
@@ -219,6 +220,9 @@ pause_mode = 2
 script = ExtResource( 2 )
 
 [node name="Left_hand" parent="FPController" instance=ExtResource( 16 )]
+
+[node name="FunctionPointer" parent="FPController" instance=ExtResource( 24 )]
+show_target = true
 
 [node name="Floor" type="StaticBody" parent="."]
 
