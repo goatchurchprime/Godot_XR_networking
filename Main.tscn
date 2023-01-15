@@ -1,4 +1,4 @@
-[gd_scene load_steps=51 format=2]
+[gd_scene load_steps=54 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
@@ -21,8 +21,11 @@
 [ext_resource path="res://tensegrityexperiments/PickableWire.tscn" type="PackedScene" id=19]
 [ext_resource path="res://addons/godot-xr-tools/functions/function_pickup.tscn" type="PackedScene" id=20]
 [ext_resource path="res://addons/godot-xr-tools/objects/climbable.tscn" type="PackedScene" id=21]
-[ext_resource path="res://addons/godot-xr-tools/xr/start_xr.gd" type="Script" id=22]
+[ext_resource path="res://xrassets/left_quest2_controller.tscn" type="PackedScene" id=22]
+[ext_resource path="res://xrassets/right_quest2_controller.tscn" type="PackedScene" id=23]
 [ext_resource path="res://addons/godot-xr-tools/functions/function_pointer.tscn" type="PackedScene" id=24]
+[ext_resource path="res://addons/godot-xr-tools/xr/start_xr.gd" type="Script" id=25]
+[ext_resource path="res://addons/godot-openxr/config/HandCompatibilityController.gd" type="Script" id=26]
 
 [sub_resource type="CylinderMesh" id=20]
 top_radius = 0.008
@@ -128,7 +131,7 @@ PCstartupprotocol = "none"
 QUESTstartupprotocol = "none"
 
 [node name="XRToolsStartXR" type="Node" parent="."]
-script = ExtResource( 22 )
+script = ExtResource( 25 )
 
 [node name="FPController" type="ARVROrigin" parent="."]
 
@@ -141,24 +144,43 @@ current = true
 
 [node name="LeftHandController" type="ARVRController" parent="FPController"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1, -0.5 )
-
-[node name="FunctionPickup" parent="FPController/LeftHandController" instance=ExtResource( 20 )]
+script = ExtResource( 26 )
 
 [node name="MovementDirect" parent="FPController/LeftHandController" instance=ExtResource( 5 )]
 enabled = true
 order = 10
 max_speed = 10.0
-strafe = false
+strafe = true
+
+[node name="FunctionPickup" parent="FPController/LeftHandController" instance=ExtResource( 20 )]
+
+[node name="MarkerCone" type="MeshInstance" parent="FPController/LeftHandController/FunctionPickup"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+mesh = SubResource( 20 )
+skeleton = NodePath("../../../ARVRController3")
+material/0 = SubResource( 21 )
+
+[node name="left_quest2_controller" parent="FPController/LeftHandController" instance=ExtResource( 22 )]
+transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0.05 )
 
 [node name="RightHandController" type="ARVRController" parent="FPController"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1, -0.5 )
 controller_id = 2
 
-[node name="FunctionPickup" parent="FPController/RightHandController" instance=ExtResource( 20 )]
-
 [node name="MovementTurn" parent="FPController/RightHandController" instance=ExtResource( 8 )]
 turn_mode = 1
 step_turn_delay = 2000.0
+
+[node name="FunctionPickup" parent="FPController/RightHandController" instance=ExtResource( 20 )]
+
+[node name="MarkerCone" type="MeshInstance" parent="FPController/RightHandController/FunctionPickup"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+mesh = SubResource( 20 )
+skeleton = NodePath("../../../ARVRController3")
+material/0 = SubResource( 21 )
+
+[node name="right_quest2_controller" parent="FPController/RightHandController" instance=ExtResource( 23 )]
+transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0.05 )
 
 [node name="ARVRController3" type="ARVRController" parent="FPController"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.9, 0.5 )
@@ -456,6 +478,9 @@ material/0 = SubResource( 35 )
 [editable path="FPController/Left_hand"]
 [editable path="ViewportNetworkGateway"]
 [editable path="ViewportNetworkGateway/Viewport/NetworkGateway"]
+[editable path="Players/LPVRPlayerAvatar"]
+[editable path="Players/LPVRPlayerAvatar/LeftAppendage/4f_moved_hand_l"]
+[editable path="Players/LPVRPlayerAvatar/RightAppendage/4f_moved_hand_l"]
 [editable path="SportBall"]
 [editable path="PickableBox"]
 [editable path="PickableBox2"]
