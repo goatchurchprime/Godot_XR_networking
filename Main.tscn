@@ -1,4 +1,4 @@
-[gd_scene load_steps=54 format=2]
+[gd_scene load_steps=61 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
@@ -8,7 +8,7 @@
 [ext_resource path="res://addons/godot-xr-tools/objects/pickable.tscn" type="PackedScene" id=6]
 [ext_resource path="res://lorienexperiments/LorienHandControls.tscn" type="PackedScene" id=7]
 [ext_resource path="res://addons/godot-xr-tools/functions/movement_turn.tscn" type="PackedScene" id=8]
-[ext_resource path="res://avatars/gxtplayeravatar/LPVRPlayerAvatar.tscn" type="PackedScene" id=9]
+[ext_resource path="res://avatars/tunnelvrplayeravatar/VRPlayerAvatar.tscn" type="PackedScene" id=9]
 [ext_resource path="res://tensegrityexperiments/TensegrityExperiments.tscn" type="PackedScene" id=10]
 [ext_resource path="res://addons/player-networking/NetworkGateway.tscn" type="PackedScene" id=11]
 [ext_resource path="res://addons/godot-xr-tools/objects/highlight/highlight_ring.tscn" type="PackedScene" id=12]
@@ -23,9 +23,10 @@
 [ext_resource path="res://addons/godot-xr-tools/objects/climbable.tscn" type="PackedScene" id=21]
 [ext_resource path="res://xrassets/left_quest2_controller.tscn" type="PackedScene" id=22]
 [ext_resource path="res://xrassets/right_quest2_controller.tscn" type="PackedScene" id=23]
-[ext_resource path="res://addons/godot-xr-tools/functions/function_pointer.tscn" type="PackedScene" id=24]
+[ext_resource path="res://addons/godot-xr-tools/hands/scenes/lowpoly/left_fullglove_low.tscn" type="PackedScene" id=24]
 [ext_resource path="res://addons/godot-xr-tools/xr/start_xr.gd" type="Script" id=25]
-[ext_resource path="res://HandCompatibilityController.gd" type="Script" id=26]
+[ext_resource path="res://addons/godot-xr-tools/functions/function_handtracking.tscn" type="PackedScene" id=26]
+[ext_resource path="res://addons/godot-xr-tools/hands/scenes/lowpoly/right_fullglove_low.tscn" type="PackedScene" id=27]
 
 [sub_resource type="CylinderMesh" id=20]
 top_radius = 0.008
@@ -36,6 +37,37 @@ rings = 0
 
 [sub_resource type="SpatialMaterial" id=21]
 albedo_color = Color( 0.0745098, 0.462745, 0.764706, 1 )
+
+[sub_resource type="AnimationNodeAnimation" id=36]
+animation = "Grip"
+
+[sub_resource type="AnimationNodeAnimation" id=37]
+animation = "Grip"
+
+[sub_resource type="AnimationNodeBlend2" id=38]
+filter_enabled = true
+filters = [ "Armature/Skeleton:Little_Distal_R", "Armature/Skeleton:Little_Intermediate_R", "Armature/Skeleton:Little_Proximal_R", "Armature/Skeleton:Middle_Distal_R", "Armature/Skeleton:Middle_Intermediate_R", "Armature/Skeleton:Middle_Proximal_R", "Armature/Skeleton:Ring_Distal_R", "Armature/Skeleton:Ring_Intermediate_R", "Armature/Skeleton:Ring_Proximal_R", "Armature/Skeleton:Thumb_Distal_R", "Armature/Skeleton:Thumb_Proximal_R" ]
+
+[sub_resource type="AnimationNodeAnimation" id=39]
+animation = "Grip 5"
+
+[sub_resource type="AnimationNodeBlend2" id=40]
+filter_enabled = true
+filters = [ "Armature/Skeleton:Index_Distal_R", "Armature/Skeleton:Index_Intermediate_R", "Armature/Skeleton:Index_Proximal_R" ]
+
+[sub_resource type="AnimationNodeBlendTree" id=41]
+graph_offset = Vector2( -753.664, -85.6991 )
+nodes/ClosedHand1/node = SubResource( 36 )
+nodes/ClosedHand1/position = Vector2( -600, 300 )
+nodes/ClosedHand2/node = SubResource( 37 )
+nodes/ClosedHand2/position = Vector2( -360, 300 )
+nodes/Grip/node = SubResource( 38 )
+nodes/Grip/position = Vector2( 0, 40 )
+nodes/OpenHand/node = SubResource( 39 )
+nodes/OpenHand/position = Vector2( -600, 100 )
+nodes/Trigger/node = SubResource( 40 )
+nodes/Trigger/position = Vector2( -360, 40 )
+node_connections = [ "output", 0, "Grip", "Trigger", 0, "OpenHand", "Trigger", 1, "ClosedHand1", "Grip", 0, "Trigger", "Grip", 1, "ClosedHand2" ]
 
 [sub_resource type="PlaneMesh" id=2]
 size = Vector2( 20, 20 )
@@ -55,13 +87,13 @@ extents = Vector3( 10, 0.1, 10 )
 resource_local_to_scene = true
 size = Vector2( 3, 2 )
 
-[sub_resource type="ViewportTexture" id=36]
+[sub_resource type="ViewportTexture" id=42]
 flags = 4
 
-[sub_resource type="SpatialMaterial" id=37]
+[sub_resource type="SpatialMaterial" id=43]
 flags_transparent = true
 params_cull_mode = 2
-albedo_texture = SubResource( 36 )
+albedo_texture = SubResource( 42 )
 
 [sub_resource type="BoxShape" id=19]
 resource_local_to_scene = true
@@ -144,10 +176,8 @@ current = true
 
 [node name="LeftHandController" type="ARVRController" parent="FPController"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1, -0.5 )
-script = ExtResource( 26 )
 
 [node name="PositioningLayer" type="Spatial" parent="FPController/LeftHandController"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 1 )
 
 [node name="MovementDirect" parent="FPController/LeftHandController/PositioningLayer" instance=ExtResource( 5 )]
 enabled = true
@@ -185,6 +215,12 @@ material/0 = SubResource( 21 )
 [node name="right_quest2_controller" parent="FPController/RightHandController" instance=ExtResource( 23 )]
 transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0.05 )
 
+[node name="RightHand" parent="FPController/RightHandController" instance=ExtResource( 27 )]
+
+[node name="AnimationTree" parent="FPController/RightHandController/RightHand" index="1"]
+tree_root = SubResource( 41 )
+active = false
+
 [node name="ARVRController3" type="ARVRController" parent="FPController"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.9, 0.5 )
 controller_id = 3
@@ -192,9 +228,6 @@ controller_id = 3
 [node name="ARVRController4" type="ARVRController" parent="FPController"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.9, -0.5 )
 controller_id = 4
-
-[node name="OpenXRallhandsdata" parent="FPController" instance=ExtResource( 18 )]
-pause_mode = 2
 
 [node name="PlayerBody" parent="FPController" instance=ExtResource( 4 )]
 
@@ -204,9 +237,13 @@ script = ExtResource( 2 )
 [node name="Left_hand" parent="FPController" instance=ExtResource( 16 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 1, -0.5 )
 
-[node name="FunctionPointer" parent="FPController" instance=ExtResource( 24 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1.1, 0.5 )
-show_target = true
+[node name="OpenXRallhandsdata" parent="FPController" instance=ExtResource( 18 )]
+
+[node name="FunctionHandtracking" parent="FPController" instance=ExtResource( 26 )]
+
+[node name="LeftHand" parent="FPController/FunctionHandtracking" instance=ExtResource( 24 )]
+
+[node name="RightHand" parent="FPController/FunctionHandtracking" instance=ExtResource( 27 )]
 
 [node name="Floor" type="StaticBody" parent="."]
 
@@ -225,7 +262,6 @@ collision_layer = 8704
 
 [node name="Viewport" parent="ViewportNetworkGateway" index="0"]
 size = Vector2( 550, 400 )
-render_target_update_mode = 1
 
 [node name="NetworkGateway" parent="ViewportNetworkGateway/Viewport" index="0" instance=ExtResource( 11 )]
 
@@ -251,7 +287,7 @@ items = [ "me", null, false, 0, null ]
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource( 16 )
-material/0 = SubResource( 37 )
+material/0 = SubResource( 43 )
 
 [node name="StaticBody" parent="ViewportNetworkGateway" index="2"]
 collision_layer = 8704
@@ -263,7 +299,7 @@ shape = SubResource( 19 )
 [node name="Players" type="Spatial" parent="."]
 visible = false
 
-[node name="LPVRPlayerAvatar" parent="Players" instance=ExtResource( 9 )]
+[node name="VRPlayerAvatar" parent="Players" instance=ExtResource( 9 )]
 
 [node name="SportBall" parent="." instance=ExtResource( 6 )]
 
@@ -457,13 +493,13 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, -2, 0.2 )
 mesh = SubResource( 34 )
 material/0 = SubResource( 35 )
 
-[editable path="FPController/OpenXRallhandsdata"]
+[editable path="FPController/RightHandController/RightHand"]
+[editable path="FPController/RightHandController/RightHand/Hand_low_R"]
 [editable path="FPController/Left_hand"]
+[editable path="FPController/OpenXRallhandsdata"]
+[editable path="FPController/FunctionHandtracking"]
 [editable path="ViewportNetworkGateway"]
 [editable path="ViewportNetworkGateway/Viewport/NetworkGateway"]
-[editable path="Players/LPVRPlayerAvatar"]
-[editable path="Players/LPVRPlayerAvatar/LeftAppendage/4f_moved_hand_l"]
-[editable path="Players/LPVRPlayerAvatar/RightAppendage/4f_moved_hand_l"]
 [editable path="SportBall"]
 [editable path="PickableBox"]
 [editable path="PickableBox2"]

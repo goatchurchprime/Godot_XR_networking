@@ -215,7 +215,7 @@ static func setshapetobonesOVR(joint_transforms, ovrhandrestdata):
 	var pknucklering = joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_RING_PROXIMAL_EXT].origin
 	var pknuckleindex = joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_INDEX_PROXIMAL_EXT].origin
 	var rhx = joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_MIDDLE_METACARPAL_EXT].basis.x
-	print("dd ", rhx.dot(pknucklering - pknuckleindex))
+	#print("dd ", rhx.dot(pknucklering - pknuckleindex))
 	
 	
 	var handbasis = basisfrom(h["hi1"] - h["hwr"], h["hr1"] - h["hwr"])

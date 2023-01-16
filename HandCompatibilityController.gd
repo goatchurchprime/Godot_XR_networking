@@ -43,6 +43,7 @@ func get_is_active() -> bool:
 	if res != prevactive:
 		prevactive = res
 		print(" controller ", controller_id, " now ", ("active" if res else "INactive"))
+		get_child(0).transform = Transform()
 	return res
 
 func get_joystick_axis(pickup_axis_id : int) -> float:
