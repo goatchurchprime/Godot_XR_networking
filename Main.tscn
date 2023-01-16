@@ -1,4 +1,4 @@
-[gd_scene load_steps=61 format=2]
+[gd_scene load_steps=73 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" type="Script" id=2]
@@ -66,6 +66,68 @@ nodes/Grip/position = Vector2( 0, 40 )
 nodes/OpenHand/node = SubResource( 39 )
 nodes/OpenHand/position = Vector2( -600, 100 )
 nodes/Trigger/node = SubResource( 40 )
+nodes/Trigger/position = Vector2( -360, 40 )
+node_connections = [ "output", 0, "Grip", "Trigger", 0, "OpenHand", "Trigger", 1, "ClosedHand1", "Grip", 0, "Trigger", "Grip", 1, "ClosedHand2" ]
+
+[sub_resource type="AnimationNodeAnimation" id=44]
+animation = "Grip"
+
+[sub_resource type="AnimationNodeAnimation" id=45]
+animation = "Grip"
+
+[sub_resource type="AnimationNodeBlend2" id=46]
+filter_enabled = true
+filters = [ "Armature/Skeleton:Little_Distal_L", "Armature/Skeleton:Little_Intermediate_L", "Armature/Skeleton:Little_Proximal_L", "Armature/Skeleton:Middle_Distal_L", "Armature/Skeleton:Middle_Intermediate_L", "Armature/Skeleton:Middle_Proximal_L", "Armature/Skeleton:Ring_Distal_L", "Armature/Skeleton:Ring_Intermediate_L", "Armature/Skeleton:Ring_Proximal_L", "Armature/Skeleton:Thumb_Distal_L", "Armature/Skeleton:Thumb_Proximal_L" ]
+
+[sub_resource type="AnimationNodeAnimation" id=47]
+animation = "Grip 5"
+
+[sub_resource type="AnimationNodeBlend2" id=48]
+filter_enabled = true
+filters = [ "Armature/Skeleton:Index_Distal_L", "Armature/Skeleton:Index_Intermediate_L", "Armature/Skeleton:Index_Proximal_L" ]
+
+[sub_resource type="AnimationNodeBlendTree" id=49]
+graph_offset = Vector2( -798.981, 58.67 )
+nodes/ClosedHand1/node = SubResource( 44 )
+nodes/ClosedHand1/position = Vector2( -600, 300 )
+nodes/ClosedHand2/node = SubResource( 45 )
+nodes/ClosedHand2/position = Vector2( -360, 300 )
+nodes/Grip/node = SubResource( 46 )
+nodes/Grip/position = Vector2( 0, 20 )
+nodes/OpenHand/node = SubResource( 47 )
+nodes/OpenHand/position = Vector2( -600, 100 )
+nodes/Trigger/node = SubResource( 48 )
+nodes/Trigger/position = Vector2( -360, 20 )
+node_connections = [ "output", 0, "Grip", "Trigger", 0, "OpenHand", "Trigger", 1, "ClosedHand1", "Grip", 0, "Trigger", "Grip", 1, "ClosedHand2" ]
+
+[sub_resource type="AnimationNodeAnimation" id=50]
+animation = "Grip"
+
+[sub_resource type="AnimationNodeAnimation" id=51]
+animation = "Grip"
+
+[sub_resource type="AnimationNodeBlend2" id=52]
+filter_enabled = true
+filters = [ "Armature/Skeleton:Little_Distal_R", "Armature/Skeleton:Little_Intermediate_R", "Armature/Skeleton:Little_Proximal_R", "Armature/Skeleton:Middle_Distal_R", "Armature/Skeleton:Middle_Intermediate_R", "Armature/Skeleton:Middle_Proximal_R", "Armature/Skeleton:Ring_Distal_R", "Armature/Skeleton:Ring_Intermediate_R", "Armature/Skeleton:Ring_Proximal_R", "Armature/Skeleton:Thumb_Distal_R", "Armature/Skeleton:Thumb_Proximal_R" ]
+
+[sub_resource type="AnimationNodeAnimation" id=53]
+animation = "Grip 5"
+
+[sub_resource type="AnimationNodeBlend2" id=54]
+filter_enabled = true
+filters = [ "Armature/Skeleton:Index_Distal_R", "Armature/Skeleton:Index_Intermediate_R", "Armature/Skeleton:Index_Proximal_R" ]
+
+[sub_resource type="AnimationNodeBlendTree" id=55]
+graph_offset = Vector2( -753.664, -85.6991 )
+nodes/ClosedHand1/node = SubResource( 50 )
+nodes/ClosedHand1/position = Vector2( -600, 300 )
+nodes/ClosedHand2/node = SubResource( 51 )
+nodes/ClosedHand2/position = Vector2( -360, 300 )
+nodes/Grip/node = SubResource( 52 )
+nodes/Grip/position = Vector2( 0, 40 )
+nodes/OpenHand/node = SubResource( 53 )
+nodes/OpenHand/position = Vector2( -600, 100 )
+nodes/Trigger/node = SubResource( 54 )
 nodes/Trigger/position = Vector2( -360, 40 )
 node_connections = [ "output", 0, "Grip", "Trigger", 0, "OpenHand", "Trigger", 1, "ClosedHand1", "Grip", 0, "Trigger", "Grip", 1, "ClosedHand2" ]
 
@@ -242,8 +304,15 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 1, -0.5 )
 [node name="FunctionHandtracking" parent="FPController" instance=ExtResource( 26 )]
 
 [node name="LeftHand" parent="FPController/FunctionHandtracking" instance=ExtResource( 24 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1418, 0 )
+
+[node name="AnimationTree" parent="FPController/FunctionHandtracking/LeftHand" index="1"]
+tree_root = SubResource( 49 )
 
 [node name="RightHand" parent="FPController/FunctionHandtracking" instance=ExtResource( 27 )]
+
+[node name="AnimationTree" parent="FPController/FunctionHandtracking/RightHand" index="1"]
+tree_root = SubResource( 55 )
 
 [node name="Floor" type="StaticBody" parent="."]
 
@@ -297,17 +366,16 @@ viewport_size = Vector2( 550, 400 )
 shape = SubResource( 19 )
 
 [node name="Players" type="Spatial" parent="."]
-visible = false
 
 [node name="VRPlayerAvatar" parent="Players" instance=ExtResource( 9 )]
 
 [node name="SportBall" parent="." instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.43823, 3.95023, -2.82623 )
 
 [node name="CollisionShape" parent="SportBall" index="0"]
 shape = SubResource( 7 )
 
 [node name="MeshInstance" type="MeshInstance" parent="SportBall"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.54476, 1.91887, -4.03967 )
 mesh = SubResource( 8 )
 skeleton = NodePath("../CollisionShape")
 
@@ -497,7 +565,10 @@ material/0 = SubResource( 35 )
 [editable path="FPController/RightHandController/RightHand/Hand_low_R"]
 [editable path="FPController/Left_hand"]
 [editable path="FPController/OpenXRallhandsdata"]
-[editable path="FPController/FunctionHandtracking"]
+[editable path="FPController/FunctionHandtracking/LeftHand"]
+[editable path="FPController/FunctionHandtracking/LeftHand/Hand_low_L"]
+[editable path="FPController/FunctionHandtracking/RightHand"]
+[editable path="FPController/FunctionHandtracking/RightHand/Hand_low_R"]
 [editable path="ViewportNetworkGateway"]
 [editable path="ViewportNetworkGateway/Viewport/NetworkGateway"]
 [editable path="SportBall"]

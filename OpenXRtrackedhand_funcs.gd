@@ -114,6 +114,7 @@ static func setfingerbonesGXT(ib1, tproximal, tintermediate, tdistal, ttip, bone
 
 static func setshapetobonesLowPoly(joint_transforms, bonerest, bright=true):
 	var rotz90 = Transform(Basis(Vector3(0,0,1), deg2rad(90 if bright else -90)))
+	bright = false
 
 	var wristtransform = joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_WRIST_EXT]*rotz90
 	var bonepose = { "handtransform":wristtransform }
@@ -148,7 +149,7 @@ static func setshapetobonesLowPoly(joint_transforms, bonerest, bright=true):
 	setfingerbonesGXT(20, joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_LITTLE_PROXIMAL_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_LITTLE_INTERMEDIATE_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_LITTLE_DISTAL_EXT], joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_LITTLE_TIP_EXT], bonerest, bonepose, t0boneposeG, bright)
 
 	#OpenXRallhandsdata.Dcheckbonejointalignment(joint_transforms)
-	if not bright:
+	if false and not bright:
 		for i in range(1, 25):
 			bonepose[i].origin = Vector3(0,0,0)
 

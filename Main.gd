@@ -26,6 +26,11 @@ export var QUESTstartupprotocol = "webrtc"
 
 # We will consider making my own FPConroller with these other sub-controllers in it
 
+# Working to get the right hand tracking values to copy in
+# Then work out how to write a pose, or assign a pose to something
+
+
+
 func _ready():
 	#$FPController/LeftHandController/Function_Direct_movement.nonVRkeyboard = true
 
