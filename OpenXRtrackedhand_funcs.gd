@@ -114,7 +114,9 @@ static func setfingerbonesGXT(ib1, tproximal, tintermediate, tdistal, ttip, bone
 
 static func setshapetobonesLowPoly(joint_transforms, bonerest, bright=true):
 	var rotz90 = Transform(Basis(Vector3(0,0,1), deg2rad(90 if bright else -90)))
-	bright = false
+
+# trying to find what is required to stop the hand turning inside out 
+#	bright = false
 
 	var wristtransform = joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_WRIST_EXT]*rotz90
 	var bonepose = { "handtransform":wristtransform }
@@ -128,8 +130,9 @@ static func setshapetobonesLowPoly(joint_transforms, bonerest, bright=true):
 	var thdistal = joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_THUMB_DISTAL_EXT]
 	var thtip = joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_THUMB_TIP_EXT]
 
-	var Ds = 1 if bright else -1
 	var t0boneposeG = tRboneposeGR*bonerest[0]*bonepose[0]
+
+	var Ds = 1 if bright else -1
 	var t1bonerestG = t0boneposeG*bonerest[1]
 	var t1boneposeGT = transform_set_look_at_with_y(thmetacarpal.origin, thproximal.origin, -thmetacarpal.basis.x*Ds, bright)
 	bonepose[1] = t1bonerestG.inverse()*t1boneposeGT

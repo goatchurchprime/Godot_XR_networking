@@ -23,7 +23,6 @@ func _ready():
 	
 	var handuihook = lefthandcontroller.get_node("HandUIHook")
 	handuihook.remote_path = handuihook.get_path_to($tensegrityUI)
-
 	$tensegrityUI/Viewport/Control/strutplus.connect("pressed", self, "strutplusbutton")
 	
 	
