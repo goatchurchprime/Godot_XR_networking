@@ -31,3 +31,4 @@ transform = Transform( -4.37114e-08, -1, 0, 0.707107, -3.09086e-08, 0.707107, -0
 screen_size = Vector2( 0.2, 0.1 )
 transparent = 0
 scene = ExtResource( 3 )
+collision_layer = 65536

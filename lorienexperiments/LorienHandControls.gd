@@ -400,12 +400,13 @@ func fingerdrawing(delta):
 
 
 func _physics_process(delta):
-	flathandsresetdetection(delta)
-	sidehanddragdetection(delta)
-	upperhanddetection(delta)
-	fingerdrawing(delta)
-	var bflathandmarkeractive = ($shrinkavatartransform/flathandmarker.scale.z != 0.0)
-	if buttonmask == 0 and not bflathandmarkeractive:
-		thumbdownundodetection(delta)
+	if OpenXRallhandsdata:
+		flathandsresetdetection(delta)
+		sidehanddragdetection(delta)
+		upperhanddetection(delta)
+		fingerdrawing(delta)
+		var bflathandmarkeractive = ($shrinkavatartransform/flathandmarker.scale.z != 0.0)
+		if buttonmask == 0 and not bflathandmarkeractive:
+			thumbdownundodetection(delta)
 
 

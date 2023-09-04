@@ -53,6 +53,8 @@ func _physics_process(delta):
 	Dt += delta
 	if Dt > 1:
 		Dt = 0
+	if not OpenXRallhandsdata:
+		return
 
 	var zheadback = Vector3(OpenXRallhandsdata.headcam_pose.basis.z.x, 0, OpenXRallhandsdata.headcam_pose.basis.z.z).normalized()
 	var headcamhorizontalbasis = Basis(Vector3(0,1,0).cross(zheadback), Vector3(0,1,0), zheadback)

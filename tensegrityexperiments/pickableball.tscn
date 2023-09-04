@@ -22,13 +22,13 @@ collision_layer = 4096
 collision_mask = 4096
 mode = 3
 script = ExtResource( 2 )
-reset_transform_on_pickup = false
+picked_up_layer = 16
 ranged_grab_method = 2
 
-[node name="CollisionShape" parent="." index="1"]
+[node name="CollisionShape" parent="." index="0"]
 shape = SubResource( 44 )
 
-[node name="MeshBall" type="MeshInstance" parent="." index="2"]
+[node name="MeshBall" type="MeshInstance" parent="." index="1"]
 mesh = SubResource( 45 )
 material/0 = SubResource( 46 )
 

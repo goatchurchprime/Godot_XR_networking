@@ -185,6 +185,11 @@ _global_script_classes=[ {
 "path": "res://addons/godot-xr-tools/examples/fall_damage.gd"
 }, {
 "base": "Spatial",
+"class": "XRToolsFunctionHandtracking",
+"language": "GDScript",
+"path": "res://addons/godot-xr-tools/functions/function_handtracking.gd"
+}, {
+"base": "Spatial",
 "class": "XRToolsFunctionPickup",
 "language": "GDScript",
 "path": "res://addons/godot-xr-tools/functions/function_pickup.gd"
@@ -485,6 +490,7 @@ _global_script_class_icons={
 "XRTools": "",
 "XRToolsClimbable": "res://addons/godot-xr-tools/editor/icons/hand.svg",
 "XRToolsFallDamage": "",
+"XRToolsFunctionHandtracking": "res://addons/godot-xr-tools/editor/icons/hand.svg",
 "XRToolsFunctionPickup": "res://addons/godot-xr-tools/editor/icons/function.svg",
 "XRToolsFunctionPointer": "res://addons/godot-xr-tools/editor/icons/function.svg",
 "XRToolsFunctionPoseDetector": "res://addons/godot-xr-tools/editor/icons/hand.svg",

@@ -26,6 +26,11 @@ export var QUESTstartupprotocol = "webrtc"
 
 # We will consider making my own FPConroller with these other sub-controllers in it
 
+# Working to get the right hand tracking values to copy in
+# Then work out how to write a pose, or assign a pose to something
+
+
+
 func _ready():
 	#$FPController/LeftHandController/Function_Direct_movement.nonVRkeyboard = true
 
@@ -145,8 +150,8 @@ func _physics_process(delta):
 
 
 func _process(delta):
-	$FPController/LeftHandController/FunctionPickup.enabled = not $FPController/ARVRController3.get_is_active()
-	$FPController/RightHandController/FunctionPickup.enabled = not $FPController/ARVRController4.get_is_active()
+	#$FPController/LeftHandController/FunctionPickup.enabled = not $FPController/ARVRController3.get_is_active()
+	#$FPController/RightHandController/FunctionPickup.enabled = not $FPController/ARVRController4.get_is_active()
 	#if $FPController.interface != null and $FPController/OpenXRallhandsdata.is_active_R:
 	#	$FPController/RightHandController/FunctionPointer.active_button = VR_HANDTRACKING_INDEXTHUMB_PINCH
 	#else:
