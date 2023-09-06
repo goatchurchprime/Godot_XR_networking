@@ -1,19 +1,19 @@
-extends Spatial
+extends Node3D
 
 
-onready var arvrorigin = get_node("/root/Main/FPController")
+@onready var arvrorigin = get_node("/root/Main/FPController")
 var labeltext = "unknown"
 
-onready var LeftHandController = arvrorigin.get_node("LeftHandController")
-onready var RightHandController = arvrorigin.get_node("RightHandController")
-onready var OpenXRallhandsdata = arvrorigin.get_node_or_null("OpenXRallhandsdata")
+@onready var LeftHandController = arvrorigin.get_node("LeftHandController")
+@onready var RightHandController = arvrorigin.get_node("RightHandController")
+@onready var OpenXRallhandsdata = arvrorigin.get_node_or_null("OpenXRallhandsdata")
 
 const TRACKING_CONFIDENCE_HIGH = 2
 
 var ovrhandrightrestdata = null
 var ovrhandleftrestdata = null
 
-var shrinkavatartransform = Transform()
+var shrinkavatartransform = Transform3D()
 
 func _ready():
 	ovrhandrightrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata($ovr_right_hand_model)
@@ -42,47 +42,47 @@ func processavatarhand(palm_joint_confidence, joint_transforms, ovr_LR_hand_mode
 
 func PAV_processlocalavatarposition(delta):
 	transform = shrinkavatartransform*arvrorigin.transform
-	$HeadCam.transform = arvrorigin.get_node("ARVRCamera").transform
+	$HeadCam.transform = arvrorigin.get_node("XRCamera3D").transform
 	if OpenXRallhandsdata:
 		processavatarhand(OpenXRallhandsdata.palm_joint_confidence_L, OpenXRallhandsdata.joint_transforms_L, $ovr_left_hand_model, ovrhandleftrestdata, $ControllerLeft, LeftHandController)
 		processavatarhand(OpenXRallhandsdata.palm_joint_confidence_R, OpenXRallhandsdata.joint_transforms_R, $ovr_right_hand_model, ovrhandrightrestdata, $ControllerRight, RightHandController)
 
 func setpaddlebody(active):
 	$ControllerRight/PaddleBody.visible = active
-	$ControllerRight/PaddleBody/CollisionShape.disabled = not active
+	$ControllerRight/PaddleBody/CollisionShape3D.disabled = not active
 
 func PAV_avatartoframedata():
 	var fd = {  NCONSTANTS2.CFI_VRORIGIN_POSITION: transform.origin, 
-				NCONSTANTS2.CFI_VRORIGIN_ROTATION: transform.basis.get_rotation_quat(), 
+				NCONSTANTS2.CFI_VRORIGIN_ROTATION: transform.basis.get_rotation_quaternion(), 
 				NCONSTANTS2.CFI_VRHEAD_POSITION: $HeadCam.transform.origin, 
-				NCONSTANTS2.CFI_VRHEAD_ROTATION: $HeadCam.transform.basis.get_rotation_quat() 
+				NCONSTANTS2.CFI_VRHEAD_ROTATION: $HeadCam.transform.basis.get_rotation_quaternion() 
 			 }
 			
 	if $ovr_left_hand_model.visible:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE] = -1.0
 		fd[NCONSTANTS2.CFI_VRHANDLEFT_POSITION] = $ovr_left_hand_model.transform.origin
-		fd[NCONSTANTS2.CFI_VRHANDLEFT_ROTATION] = $ovr_left_hand_model.transform.basis.get_rotation_quat()
+		fd[NCONSTANTS2.CFI_VRHANDLEFT_ROTATION] = $ovr_left_hand_model.transform.basis.get_rotation_quaternion()
 		var skel = ovrhandleftrestdata["skel"]
 		for i in range(23):
-			fd[NCONSTANTS2.CFI_VRHANDLEFT_BONE_ROTATIONS+i] = skel.get_bone_pose(i).basis.get_rotation_quat()
+			fd[NCONSTANTS2.CFI_VRHANDLEFT_BONE_ROTATIONS+i] = skel.get_bone_pose(i).basis.get_rotation_quaternion()
 	elif $ControllerLeft.visible:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE] = 1.0
 		fd[NCONSTANTS2.CFI_VRHANDLEFT_POSITION] = $ControllerLeft.transform.origin
-		fd[NCONSTANTS2.CFI_VRHANDLEFT_ROTATION] = $ControllerLeft.transform.basis.get_rotation_quat()
+		fd[NCONSTANTS2.CFI_VRHANDLEFT_ROTATION] = $ControllerLeft.transform.basis.get_rotation_quaternion()
 	else:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE] = 0.0
 
 	if $ovr_right_hand_model.visible:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE] = -1.0
 		fd[NCONSTANTS2.CFI_VRHANDRIGHT_POSITION] = $ovr_right_hand_model.transform.origin
-		fd[NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION] = $ovr_right_hand_model.transform.basis.get_rotation_quat()
+		fd[NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION] = $ovr_right_hand_model.transform.basis.get_rotation_quaternion()
 		var skel = ovrhandrightrestdata["skel"]
 		for i in range(23):
-			fd[NCONSTANTS2.CFI_VRHANDRIGHT_BONE_ROTATIONS+i] = skel.get_bone_pose(i).basis.get_rotation_quat()
+			fd[NCONSTANTS2.CFI_VRHANDRIGHT_BONE_ROTATIONS+i] = skel.get_bone_pose(i).basis.get_rotation_quaternion()
 	elif $ControllerRight.visible:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE] = 1.0
 		fd[NCONSTANTS2.CFI_VRHANDRIGHT_POSITION] = $ControllerRight.transform.origin
-		fd[NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION] = $ControllerRight.transform.basis.get_rotation_quat()
+		fd[NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION] = $ControllerRight.transform.basis.get_rotation_quaternion()
 	else:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE] = 0.0
 
@@ -94,10 +94,10 @@ func overwritetranform(orgtransform, rot, pos):
 	if rot == null:
 		if pos == null:
 			return orgtransform
-		return Transform(orgtransform.basis, pos)
+		return Transform3D(orgtransform.basis, pos)
 	if pos == null:
-		return Transform(Basis(rot), orgtransform.origin)
-	return Transform(Basis(rot), pos)
+		return Transform3D(Basis(rot), orgtransform.origin)
+	return Transform3D(Basis(rot), pos)
 
 func PAV_framedatatoavatar(fd):
 	transform = overwritetranform(transform, fd.get(NCONSTANTS2.CFI_VRORIGIN_ROTATION), fd.get(NCONSTANTS2.CFI_VRORIGIN_POSITION))
@@ -114,21 +114,21 @@ func PAV_framedatatoavatar(fd):
 		
 	if $ovr_left_hand_model.visible:
 		$ovr_left_hand_model.transform = overwritetranform($ovr_left_hand_model.transform, fd.get(NCONSTANTS2.CFI_VRHANDLEFT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDLEFT_POSITION))
-		var skel = $ovr_left_hand_model/ArmatureLeft/Skeleton
+		var skel = $ovr_left_hand_model/ArmatureLeft/Skeleton3D
 		for i in range(23):
 			var frot = fd.get(NCONSTANTS2.CFI_VRHANDLEFT_BONE_ROTATIONS+i)
 			if frot != null:
-				skel.set_bone_pose(i, Transform(frot))
+				skel.set_bone_pose(i, Transform3D(frot))
 	elif $ControllerLeft.visible:
 		$ControllerLeft.transform = overwritetranform($ControllerLeft.transform, fd.get(NCONSTANTS2.CFI_VRHANDLEFT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDLEFT_POSITION))
 
 	if $ovr_right_hand_model.visible:
 		$ovr_right_hand_model.transform = overwritetranform($ovr_right_hand_model.transform, fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_POSITION))
-		var skel = $ovr_right_hand_model/ArmatureRight/Skeleton
+		var skel = $ovr_right_hand_model/ArmatureRight/Skeleton3D
 		for i in range(23):
 			var frot = fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_BONE_ROTATIONS+i)
 			if frot != null:
-				skel.set_bone_pose(i, Transform(frot))
+				skel.set_bone_pose(i, Transform3D(frot))
 	elif $ControllerRight.visible:
 		$ControllerRight.transform = overwritetranform($ControllerRight.transform, fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_POSITION))
 
@@ -143,14 +143,14 @@ var possibleusernames = ["Alice", "Beth", "Cath", "Dan", "Earl", "Fred", "George
 func PAV_initavatarlocal():
 	randomize()
 	labeltext = possibleusernames[randi()%len(possibleusernames)]
-	$ovr_left_hand_model/ArmatureLeft/Skeleton/l_handMeshNode.set_surface_material(0, load("res://xrassets/vrhandmaterial.tres"))
-	$ovr_right_hand_model/ArmatureRight/Skeleton/r_handMeshNode.set_surface_material(0, load("res://xrassets/vrhandmaterial.tres"))
+	$ovr_left_hand_model/ArmatureLeft/Skeleton3D/l_handMeshNode.set_surface_override_material(0, load("res://xrassets/vrhandmaterial.tres"))
+	$ovr_right_hand_model/ArmatureRight/Skeleton3D/r_handMeshNode.set_surface_override_material(0, load("res://xrassets/vrhandmaterial.tres"))
 
 func PAV_initavatarremote(avatardata):
 	labeltext = avatardata["labeltext"]
 
 func PAV_avatarinitdata():
-	var avatardata = { "avatarsceneresource":filename, 
+	var avatardata = { "avatarsceneresource":get_scene_file_path(), 
 					   "labeltext":labeltext
 					 }
 	return avatardata
@@ -165,7 +165,7 @@ static func PAV_changethinnedframedatafordoppelganger(fd, doppelnetoffset, isfra
 		else:
 			fd.erase(NCONSTANTS2.CFI_VRORIGIN_POSITION)
 	if fd.has(NCONSTANTS2.CFI_VRORIGIN_ROTATION):
-		fd[NCONSTANTS2.CFI_VRORIGIN_ROTATION] *= Quat(Vector3(0, 1, 0), deg2rad(180))
+		fd[NCONSTANTS2.CFI_VRORIGIN_ROTATION] *= Quaternion(Vector3(0, 1, 0), deg_to_rad(180))
 
 	if fd.has(NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY):
 		print("OPP setpaddlebody ", fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY])

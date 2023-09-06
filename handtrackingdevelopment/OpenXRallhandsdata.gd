@@ -1,4 +1,4 @@
-extends Spatial
+extends Node3D
 class_name OpenXRallhandsdata
 
 var specialist_openxr_gdns_script_loaded = false
@@ -9,15 +9,15 @@ var palm_joint_confidence_L = TRACKING_CONFIDENCE_NOT_APPLICABLE
 var palm_joint_confidence_R = TRACKING_CONFIDENCE_NOT_APPLICABLE
 var joint_transforms_L = [ ]
 var joint_transforms_R = [ ]
-var pointer_pose_transform_L : Transform = Transform()
-var pointer_pose_transform_R : Transform = Transform()
+var pointer_pose_transform_L : Transform3D = Transform3D()
+var pointer_pose_transform_R : Transform3D = Transform3D()
 var pointer_pose_confidence_L : int = TRACKING_CONFIDENCE_NOT_APPLICABLE
 var pointer_pose_confidence_R : int = TRACKING_CONFIDENCE_NOT_APPLICABLE
-var controller_pose_transform_L : Transform = Transform()
-var controller_pose_transform_R : Transform = Transform()
+var controller_pose_transform_L : Transform3D = Transform3D()
+var controller_pose_transform_R : Transform3D = Transform3D()
 var controller_pose_confidence_L : int = TRACKING_CONFIDENCE_NOT_APPLICABLE
 var controller_pose_confidence_R : int = TRACKING_CONFIDENCE_NOT_APPLICABLE
-var headcam_pose : Transform = Transform()
+var headcam_pose : Transform3D = Transform3D()
 
 var triggerpinchedjoyvalue_L : float = 0.0
 var triggerpinchedjoyvalue_R : float = 0.0
@@ -25,13 +25,13 @@ var grippinchedjoyvalue_L : float = 0.0
 var grippinchedjoyvalue_R : float = 0.0
 
 
-var arvrorigin : ARVROrigin
-var arvrheadcam : ARVRCamera
+var arvrorigin : XROrigin3D
+var arvrheadcam : XRCamera3D
 var arvrconfigurationnode : Node
-var arvrcontrollerleft : ARVRController
-var arvrcontrollerright : ARVRController
-var arvrcontroller3 : ARVRController
-var arvrcontroller4 : ARVRController
+var arvrcontrollerleft : XRController3D
+var arvrcontrollerright : XRController3D
+var arvrcontroller3 : XRController3D
+var arvrcontroller4 : XRController3D
 
 const XR_HAND_JOINT_COUNT_EXT = 26
 const XR_HAND_JOINTS_MOTION_RANGE_UNOBSTRUCTED_EXT = 0
@@ -105,7 +105,7 @@ enum {
 	JOY_AXIS_THUMBSTICK_X = 0, 
 	JOY_AXIS_THUMBSTICK_Y = 1, 
 	JOY_AXIS_TRIGGER_BUTTON = 2,
-	JOY_AXIS_GRIP_BUTTON = 4
+	JOY_AXIS_GRIP_BUTTON = 4,
 
 	VR_BUTTON_THUMB_INDEX_PINCH = 7,  # VR_BUTTON_AX
 	VR_BUTTON_THUMB_MIDDLE_PINCH = 1,
@@ -153,8 +153,8 @@ func _enter_tree():
 		$RightHandAimPose.action = "godot/aim_pose"
 		$RightHandAimPose.path = "/user/hand/right"
 		for i in range(XR_HAND_JOINT_COUNT_EXT):
-			joint_transforms_L.push_back(Transform())
-			joint_transforms_R.push_back(Transform())
+			joint_transforms_L.push_back(Transform3D())
+			joint_transforms_R.push_back(Transform3D())
 	else:
 		print("HAND TRACKING SYSTEM DISABLED")
 
@@ -162,16 +162,16 @@ func _enter_tree():
 func _ready():
 	arvrorigin = get_parent()
 	for child in arvrorigin.get_children():
-		if child.is_class("ARVRController"):
-			if child.controller_id == 1:
+		if child.is_class("XRController3D"):
+			if child.tracker == "left_hand":
 				arvrcontrollerleft = child
-			elif child.controller_id == 2:
+			elif child.tracker == "right_hand":
 				arvrcontrollerright = child
-			elif child.controller_id == 3:
-				arvrcontroller3 = child
-			elif child.controller_id == 4:
-				arvrcontroller4 = child
-		if child.is_class("ARVRCamera"):
+			#elif child.controller_id == 3:
+			#	arvrcontroller3 = child
+			#elif child.controller_id == 4:
+			#	arvrcontroller4 = child
+		if child.is_class("XRCamera3D"):
 			arvrheadcam = child
 		if child.get_script():
 			if child.get_script().get_path() == "res://addons/godot-openxr/config/OpenXRConfig.gdns":
@@ -181,14 +181,14 @@ func _ready():
 		print("OpenXR extensions ", arvrconfigurationnode.get_enabled_extensions())
 		#print("OpenXR action sets ", arvrconfigurationnode.get_action_sets())
 	
-	arvrcontrollerleft.connect("button_pressed", self, "cvr_button_action", [true, false, true])
-	arvrcontrollerleft.connect("button_release", self, "cvr_button_action", [false, false, true])
-	arvrcontrollerright.connect("button_pressed", self, "cvr_button_action", [true, true, true])
-	arvrcontrollerright.connect("button_release", self, "cvr_button_action", [false, true, true])
-	arvrcontroller3.connect("button_pressed", self, "cvr_button_action", [true, false, false])
-	arvrcontroller3.connect("button_release", self, "cvr_button_action", [false, false, false])
-	arvrcontroller4.connect("button_pressed", self, "cvr_button_action", [true, true, false])
-	arvrcontroller4.connect("button_release", self, "cvr_button_action", [false, true, false])
+	arvrcontrollerleft.connect("button_pressed", Callable(self, "cvr_button_action").bind(true, false, true))
+	arvrcontrollerleft.connect("button_released", Callable(self, "cvr_button_action").bind(false, false, true))
+	arvrcontrollerright.connect("button_pressed", Callable(self, "cvr_button_action").bind(true, true, true))
+	arvrcontrollerright.connect("button_released", Callable(self, "cvr_button_action").bind(false, true, true))
+#	arvrcontroller3.connect("button_pressed", Callable(self, "cvr_button_action").bind(true, false, false))
+#	arvrcontroller3.connect("button_released", Callable(self, "cvr_button_action").bind(false, false, false))
+#	arvrcontroller4.connect("button_pressed", Callable(self, "cvr_button_action").bind(true, true, false))
+#	arvrcontroller4.connect("button_released", Callable(self, "cvr_button_action").bind(false, true, false))
 
 func cvr_button_action(button: int, bpressed: bool, bright: bool, bcontroller: bool):
 	if bpressed:
@@ -213,7 +213,7 @@ static func Dcheckbonejointalignment(joint_transforms):
 		var ip = boneparentsToWrist[i]
 		var vp = joint_transforms[i].origin - joint_transforms[ip].origin
 		if ip != XR_HAND_JOINT_WRIST_EXT or i == XR_HAND_JOINT_MIDDLE_METACARPAL_EXT:
-			print(i, ",", ip, joint_transforms[ip].basis.inverse().xform(vp), joint_transforms[ip].basis.x.dot(vp))
+			print(i, ",", ip, joint_transforms[ip].basis.inverse() * (vp), joint_transforms[ip].basis.x.dot(vp))
 	var Dpalmpos = 0.5*(joint_transforms[XR_HAND_JOINT_MIDDLE_METACARPAL_EXT].origin + joint_transforms[XR_HAND_JOINT_MIDDLE_PROXIMAL_EXT].origin)
 	#var ta = joint_transforms[XR_HAND_JOINT_MIDDLE_METACARPAL_EXT].origin
 	var ta = joint_transforms[XR_HAND_JOINT_WRIST_EXT].origin
@@ -258,20 +258,20 @@ func _physics_process(delta):
 	controller_pose_transform_R = arvrcontrollerright.transform
 	headcam_pose = arvrheadcam.transform
 
-	triggerpinchedjoyvalue_L = (arvrcontroller3.get_joystick_axis(JOY_AXIS_THUMB_INDEX_PINCH)+1)/2 if arvrcontroller3.get_joystick_id() != -1 else arvrcontrollerleft.get_joystick_axis(JOY_AXIS_TRIGGER_BUTTON)
-	triggerpinchedjoyvalue_R = (arvrcontroller4.get_joystick_axis(JOY_AXIS_THUMB_INDEX_PINCH)+1)/2 if arvrcontroller4.get_joystick_id() != -1 else arvrcontrollerright.get_joystick_axis(JOY_AXIS_TRIGGER_BUTTON)
-	grippinchedjoyvalue_L = (arvrcontroller3.get_joystick_axis(JOY_AXIS_THUMB_MIDDLE_PINCH)+1)/2 if arvrcontroller3.get_joystick_id() != -1 else arvrcontrollerleft.get_joystick_axis(JOY_AXIS_GRIP_BUTTON)
-	grippinchedjoyvalue_R = (arvrcontroller4.get_joystick_axis(JOY_AXIS_THUMB_MIDDLE_PINCH)+1)/2 if arvrcontroller4.get_joystick_id() != -1 else arvrcontrollerright.get_joystick_axis(JOY_AXIS_GRIP_BUTTON)
+#	triggerpinchedjoyvalue_L = (arvrcontroller3.get_joystick_axis(JOY_AXIS_THUMB_INDEX_PINCH)+1)/2 if arvrcontroller3.get_joystick_id() != -1 else arvrcontrollerleft.get_joystick_axis(JOY_AXIS_TRIGGER_BUTTON)
+#	triggerpinchedjoyvalue_R = (arvrcontroller4.get_joystick_axis(JOY_AXIS_THUMB_INDEX_PINCH)+1)/2 if arvrcontroller4.get_joystick_id() != -1 else arvrcontrollerright.get_joystick_axis(JOY_AXIS_TRIGGER_BUTTON)
+	#grippinchedjoyvalue_L = (arvrcontroller3.get_joystick_axis(JOY_AXIS_THUMB_MIDDLE_PINCH)+1)/2 if arvrcontroller3.get_joystick_id() != -1 else arvrcontrollerleft.get_joystick_axis(JOY_AXIS_GRIP_BUTTON)
+	#grippinchedjoyvalue_R = (arvrcontroller4.get_joystick_axis(JOY_AXIS_THUMB_MIDDLE_PINCH)+1)/2 if arvrcontroller4.get_joystick_id() != -1 else arvrcontrollerright.get_joystick_axis(JOY_AXIS_GRIP_BUTTON)
 		
 	Dt += delta
 	if Dt > 2.0:
 		Dt = 0
 		# as from void XRExtHandTrackingExtensionWrapper::update_handtracking() 
 		# these have the joystick settings
-		print(arvrcontrollerleft.get_joystick_id(),",", arvrcontroller3.get_joystick_id(), "  ", arvrcontrollerleft.get_joystick_id(), "Rjoy ", arvrcontrollerright.get_joystick_axis(2), arvrcontrollerright.get_joystick_axis(3), " ", arvrcontrollerright.get_joystick_axis(4), " ", arvrcontroller4.get_joystick_axis(JOY_AXIS_THUMB_INDEX_PINCH), 
-		"  ", Input.get_joy_axis(3, JOY_AXIS_THUMB_INDEX_PINCH), 
-		" ", Input.get_joy_axis(arvrcontroller3.get_joystick_id(), JOY_AXIS_THUMB_INDEX_PINCH), 
-		" ", Input.get_joy_axis(arvrcontroller3.get_joystick_id(), JOY_AXIS_THUMB_MIDDLE_PINCH))
+#		print(arvrcontrollerleft.get_joystick_id(),",", arvrcontroller3.get_joystick_id(), "  ", arvrcontrollerleft.get_joystick_id(), "Rjoy ", arvrcontrollerright.get_joystick_axis(2), arvrcontrollerright.get_joystick_axis(3), " ", arvrcontrollerright.get_joystick_axis(4), " ", arvrcontroller4.get_joystick_axis(JOY_AXIS_THUMB_INDEX_PINCH), 
+#			"  ", Input.get_joy_axis(3, int(JOY_AXIS_THUMB_INDEX_PINCH)), 
+#			" ", Input.get_joy_axis(arvrcontroller3.get_joystick_id(), int(JOY_AXIS_THUMB_INDEX_PINCH)), 
+#			" ", Input.get_joy_axis(arvrcontroller3.get_joystick_id(), int(JOY_AXIS_THUMB_MIDDLE_PINCH)))
 
 func gethandcontrollerpose(bright):
 	if (pointer_pose_confidence_R if bright else pointer_pose_confidence_L) != TRACKING_CONFIDENCE_NOT_APPLICABLE:

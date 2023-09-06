@@ -1,21 +1,21 @@
-extends Spatial
+extends Node3D
 
-onready var NetworkGateway = $ViewportNetworkGateway/Viewport/NetworkGateway
+@onready var NetworkGateway = $ViewportNetworkGateway/Viewport/NetworkGateway
 
-export var webrtcroomname = "grapefruit"
+@export var webrtcroomname = "grapefruit"
 
 #export var webrtcbroker = "mosquitto.doesliverpool.xyz"
 
 # use this one for WebXR because it can only come from HTML5 served from an https:// link
-export var webrtcbroker = "wss://mosquitto.doesliverpool.xyz:8081"  
+@export var webrtcbroker = "wss://mosquitto.doesliverpool.xyz:8081"  
 #export var webrtcbroker = "ws://mosquitto.doesliverpool.xyz:8080"
 #export var webrtcbroker = "ssl://mosquitto.doesliverpool.xyz:8884"
 #export var webrtcbroker = "mosquitto.doesliverpool.xyz:1883"
 
 
 # "ws://broker.mqttdashboard.com:8000"
-export var PCstartupprotocol = "webrtc"
-export var QUESTstartupprotocol = "webrtc"
+@export var PCstartupprotocol = "webrtc"
+@export var QUESTstartupprotocol = "webrtc"
 
 # symlinks from the addons directory
 # ln -s ../../LorienAsset/lorien/addons/LorienInfiniteCanvas/
@@ -46,17 +46,17 @@ func _ready():
 			NetworkGateway.initialstatenormal(NetworkGateway.NETWORK_PROTOCOL.ENET, NetworkGateway.NETWORK_OPTIONS.AS_SERVER)
 			$FPController/PlayerBody
 
-	get_node("/root").msaa = Viewport.MSAA_4X
-	$FPController/RightHandController.connect("button_pressed", self, "vr_right_button_pressed")
-	$FPController/RightHandController.connect("button_release", self, "vr_right_button_release")
-	$FPController/LeftHandController.connect("button_pressed", self, "vr_left_button_pressed")
+	#get_node("/root").msaa = SubViewport.MSAA_4X
+	$FPController/RightHandController.connect("button_pressed", Callable(self, "vr_right_button_pressed"))
+	$FPController/RightHandController.connect("button_released", Callable(self, "vr_right_button_release"))
+	$FPController/LeftHandController.connect("button_pressed", Callable(self, "vr_left_button_pressed"))
 	$FPController/LeftHandController.set_process(false)
 	$FPController/RightHandController.set_process(false)
 
 
 	$FPController/PlayerBody.default_physics.move_drag = 45
-	$SportBall.connect("body_entered", self, "ball_body_entered")
-	$SportBall.connect("body_exited", self, "ball_body_exited")
+	$SportBall.connect("body_entered", Callable(self, "ball_body_entered"))
+	$SportBall.connect("body_exited", Callable(self, "ball_body_exited"))
 
 	NetworkGateway.set_process_input(false)
 	if webrtcroomname:
@@ -66,9 +66,9 @@ func ball_body_entered(body):
 	#print("ball_body_entered ", body)
 	if body.name == "PaddleBody":
 		$SportBall/bouncesound.play()
-		body.get_node("CollisionShape/MeshInstance").get_surface_material(0).emission_enabled = true
-		yield(get_tree().create_timer(0.2), "timeout")
-		body.get_node("CollisionShape/MeshInstance").get_surface_material(0).emission_enabled = false
+		body.get_node("CollisionShape3D/MeshInstance3D").get_surface_override_material(0).emission_enabled = true
+		await get_tree().create_timer(0.2).timeout
+		body.get_node("CollisionShape3D/MeshInstance3D").get_surface_override_material(0).emission_enabled = false
 		
 func ball_body_exited(body):	
 	#if body.name == "PaddleBody":
@@ -92,7 +92,7 @@ func vr_right_button_pressed(button: int):
 		if $ViewportNetworkGateway.visible:
 			$ViewportNetworkGateway.visible = false
 		else:
-			var headtrans = $FPController/ARVRCamera.global_transform
+			var headtrans = $FPController/XRCamera3D.global_transform
 			$ViewportNetworkGateway.look_at_from_position(headtrans.origin + headtrans.basis.z*-3, 
 														  headtrans.origin + headtrans.basis.z*-3, 
 														  Vector3(0, 1, 0))
@@ -111,9 +111,9 @@ func vr_right_button_release(button: int):
 func vr_left_button_pressed(button: int):
 	print("vr left button pressd ", button)
 	if button == VR_BUTTON_BY:
-		$SportBall.transform.origin = $FPController/ARVRCamera.global_transform.origin + \
+		$SportBall.transform.origin = $FPController/XRCamera3D.global_transform.origin + \
 									  Vector3(0, 2, 0) + \
-									  $FPController/ARVRCamera.global_transform.basis.z*-0.75
+									  $FPController/XRCamera3D.global_transform.basis.z*-0.75
 		
 	if button == VR_BUTTON_AX:
 		pass
@@ -126,18 +126,18 @@ func vr_left_button_pressed(button: int):
 			
 func _input(event):
 	if event is InputEventKey and not event.echo:
-		if event.scancode == KEY_M and event.pressed:
+		if event.keycode == KEY_M and event.pressed:
 			vr_right_button_pressed(VR_BUTTON_BY)
-		if event.scancode == KEY_F and event.pressed:
+		if event.keycode == KEY_F and event.pressed:
 			vr_left_button_pressed(VR_BUTTON_BY)
-		if event.scancode == KEY_G and event.pressed:
-			NetworkGateway.get_node("PlayerConnections/Doppelganger").pressed = not NetworkGateway.get_node("PlayerConnections/Doppelganger").pressed
-		if (event.scancode == KEY_2):
+		if event.keycode == KEY_G and event.pressed:
+			NetworkGateway.get_node("PlayerConnections/Doppelganger").button_pressed = not NetworkGateway.get_node("PlayerConnections/Doppelganger").pressed
+		if (event.keycode == KEY_2):
 			NetworkGateway.selectandtrigger_networkoption(NetworkGateway.NETWORK_OPTIONS.LOCAL_NETWORK)
-		if event.scancode == KEY_SHIFT:
+		if event.keycode == KEY_SHIFT:
 			vr_right_button_pressed(VR_GRIP) if event.pressed else vr_right_button_release(VR_GRIP)
-		if event.scancode == KEY_Q and event.pressed:
-			var mqtt = get_node("/root/Main/ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT")
+		if event.keycode == KEY_Q and event.pressed:
+			var mqtt = get_node("/root/Main/ViewportNetworkGateway/SubViewport/NetworkGateway/MQTTsignalling/MQTT")
 			mqtt.publish("hand/pos", "hithere")
 
 func _physics_process(delta):

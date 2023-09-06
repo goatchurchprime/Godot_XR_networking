@@ -41,7 +41,7 @@ static func veclengstretchrat(vecB, vecT):
 
 static func getovrhandrestdata(ovrhandmodel):
 	var ovrhanddata = { "ovrhandmodel":ovrhandmodel }
-	var skel = ovrhandmodel.get_node("ArmatureRight/Skeleton") if ovrhandmodel.has_node("ArmatureRight") else ovrhandmodel.get_node("ArmatureLeft/Skeleton")	
+	var skel = ovrhandmodel.get_node("ArmatureRight/Skeleton3D") if ovrhandmodel.has_node("ArmatureRight") else ovrhandmodel.get_node("ArmatureLeft/Skeleton3D")	
 	ovrhanddata["skel"] = skel
 	for i in range(24):
 		ovrhanddata[i] = skel.get_bone_rest(i)
@@ -61,7 +61,7 @@ static func getovrhandrestdata(ovrhandmodel):
 
 static func getlowpolyhandrestdata(lrhand):
 	var lowpolyhanddata = { "lrhand":lrhand }
-	var skel = lrhand.get_node("RightHand/Armature_Left/Skeleton") if lrhand.has_node("RightHand") else lrhand.get_node("LeftHand/Armature_Left/Skeleton")
+	var skel = lrhand.get_node("RightHand/Armature_Left/Skeleton3D") if lrhand.has_node("RightHand") else lrhand.get_node("LeftHand/Armature_Left/Skeleton3D")
 	lowpolyhanddata["skel"] = skel
 	for i in range(25):
 		lowpolyhanddata[i] = skel.get_bone_rest(i)
@@ -70,7 +70,7 @@ static func getlowpolyhandrestdata(lrhand):
 
 static func getGXThandrestdata(lrhand):
 	var gxthanddata = { "lrhand":lrhand }	
-	var skel = lrhand.get_child(0).get_node("Armature/Skeleton")
+	var skel = lrhand.get_child(0).get_node("Armature/Skeleton3D")
 	gxthanddata["skel"] = skel
 	for i in range(25):
 		gxthanddata[i] = skel.get_bone_rest(i)
@@ -88,7 +88,7 @@ static func transform_set_look_at_with_y(pfrom, pto, p_up, bright):
 	v_y = v_z.cross(v_x)
 	v_x = v_x.normalized()
 	v_y = v_y.normalized()
-	return Transform(Basis(v_y if bright else -v_y, v_z, -v_x), pfrom)
+	return Transform3D(Basis(v_y if bright else -v_y, v_z, -v_x), pfrom)
 
 static func setfingerbonesGXT(ib1, tproximal, tintermediate, tdistal, ttip, bonerest, bonepose, t0boneposeG, bright):
 	var ib2 = ib1+1
@@ -113,7 +113,7 @@ static func setfingerbonesGXT(ib1, tproximal, tintermediate, tdistal, ttip, bone
 
 
 static func setshapetobonesLowPoly(joint_transforms, bonerest, bright=true):
-	var rotz90 = Transform(Basis(Vector3(0,0,1), deg2rad(90 if bright else -90)))
+	var rotz90 = Transform3D(Basis(Vector3(0,0,1), deg_to_rad(90 if bright else -90)))
 
 # trying to find what is required to stop the hand turning inside out 
 #	bright = false
@@ -121,9 +121,9 @@ static func setshapetobonesLowPoly(joint_transforms, bonerest, bright=true):
 	var wristtransform = joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_WRIST_EXT]*rotz90
 	var bonepose = { "handtransform":wristtransform }
 	for i in range(25):
-		bonepose[i] = Transform()
-	bonepose[0] = Transform(Basis(), -bonerest[0].basis.xform_inv(bonerest[0].origin))
-	
+		bonepose[i] = Transform3D()
+	bonepose[0] = Transform3D(Basis(), -bonerest[0].basis.xform_inv(bonerest[0].origin))
+		
 	var tRboneposeGR = bonepose["handtransform"]*bonerest["skeltrans"]
 	var thmetacarpal = joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_THUMB_METACARPAL_EXT]
 	var thproximal = joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_THUMB_PROXIMAL_EXT]
@@ -188,23 +188,23 @@ static func setvecstobonesG(ibR, ib0, p1, p2, p3, p4, ovrhandrestdata, ovrhandpo
 	var t0boneposebasis = rotationtoalign(t1bonerest.origin, t0bonerestG.basis.inverse()*vec1)
 	#var t0boneposeorigin = tRboneposeG.affine_inverse()*p1 - t0bonerest.origin
 	var t0boneposeorigin = t0bonerestG.affine_inverse()*p1
-	var t0bonepose = Transform(t0boneposebasis, t0boneposeorigin)
+	var t0bonepose = Transform3D(t0boneposebasis, t0boneposeorigin)
 	var t0boneposeG = t0bonerestG*t0bonepose
 
 	var t1bonerestG = t0boneposeG*t1bonerest
 	var t1boneposebasis = rotationtoalign(t2bonerest.origin, t1bonerestG.basis.inverse()*vec2)
 	var vec1rat = veclengstretchrat(t0boneposeG.basis*t1bonerest.origin, vec1)
-	var t1bonepose = Transform(t1boneposebasis, t1bonerest.origin*vec1rat)
+	var t1bonepose = Transform3D(t1boneposebasis, t1bonerest.origin*vec1rat)
 	var t1boneposeG = t1bonerestG*t1bonepose
 
 	var t2bonerestG = t1boneposeG*t2bonerest
 	var t2boneposebasis = rotationtoalign(t3bonerest.origin, t2bonerestG.basis.inverse()*vec3)
 	var vec2rat = veclengstretchrat(t1boneposeG.basis*(t2bonerest.origin), vec2)
-	var t2bonepose = Transform(t2boneposebasis, t2bonerest.origin*vec2rat)
+	var t2bonepose = Transform3D(t2boneposebasis, t2bonerest.origin*vec2rat)
 	var t2boneposeG = t2bonerestG*t2bonepose
 
 	var vec3rat = veclengstretchrat(t2boneposeG.basis*(t3bonerest.origin), vec3)
-	var t3bonepose = Transform(Basis(), t3bonerest.origin*vec3rat)
+	var t3bonepose = Transform3D(Basis(), t3bonerest.origin*vec3rat)
 	
 	ovrhandpose[ib0] = t0bonepose
 	ovrhandpose[ib1] = t1bonepose
@@ -233,13 +233,13 @@ static func setshapetobonesOVR(joint_transforms, ovrhandrestdata):
 
 	var ovrhandmodelbasis = handbasis*ovrhandrestdata["wristtransinverse"]
 	var ovrhandmodelorigin = h["hi1"] - ovrhandmodelbasis*ovrhandrestdata["posindex1"]
-	var ovrhandpose = { "handtransform":Transform(ovrhandmodelbasis, ovrhandmodelorigin) }
+	var ovrhandpose = { "handtransform":Transform3D(ovrhandmodelbasis, ovrhandmodelorigin) }
 
-	ovrhandpose[0] = Transform()
+	ovrhandpose[0] = Transform3D()
 	var tRboneposeGR = ovrhandpose["handtransform"]*ovrhandrestdata["skeltrans"]
 	var tRboneposeGR0 = tRboneposeGR*ovrhandrestdata[0]*ovrhandpose[0]
 
-	ovrhandpose[1] = Transform()
+	ovrhandpose[1] = Transform3D()
 	var tRboneposeGR1 = tRboneposeGR0*ovrhandrestdata[1]*ovrhandpose[1]
 	setvecstobonesG(1, 2, h["ht0"], h["ht1"], h["ht2"], h["ht3"], ovrhandrestdata, ovrhandpose, tRboneposeGR1)
 
@@ -247,7 +247,7 @@ static func setshapetobonesOVR(joint_transforms, ovrhandrestdata):
 	setvecstobonesG(0, 10, h["hm1"], h["hm2"], h["hm3"], h["hm4"], ovrhandrestdata, ovrhandpose, tRboneposeGR0)
 	setvecstobonesG(0, 14, h["hr1"], h["hr2"], h["hr3"], h["hr4"], ovrhandrestdata, ovrhandpose, tRboneposeGR0)
 
-	ovrhandpose[18] = Transform()
+	ovrhandpose[18] = Transform3D()
 	var tRboneposeGR18 = tRboneposeGR0*ovrhandrestdata[18]*ovrhandpose[18]
 	setvecstobonesG(18, 19, h["hl1"], h["hl2"], h["hl3"], h["hl4"], ovrhandrestdata, ovrhandpose, tRboneposeGR18)
 	
@@ -287,7 +287,7 @@ static func setshapetobonesRPM(h, skelarmrest, rpmhandspose, rpmhandrestdata, br
 	var vecupperarm = elbowpos - shoulderpos
 	var vecforearm = wristpos - elbowpos
 	var skelarmposebasis = rotationtoalign(rpmhandrestdata[35-di].origin, skelarmrest.basis.inverse()*vecupperarm)
-	rpmhandspose[34-di] = Transform(skelarmposebasis, Vector3(0,0,0))
+	rpmhandspose[34-di] = Transform3D(skelarmposebasis, Vector3(0,0,0))
 	#rpmhandspose[34-di] = Transform()
 	
 	var skelarmtrans = skelarmrest*rpmhandspose[34-di]
@@ -304,7 +304,7 @@ static func setshapetobonesRPM(h, skelarmrest, rpmhandspose, rpmhandrestdata, br
 	#elbowpos = skelforearmtrans.origin = skelforearmrest.origin + skelforearmrest.basis*skelforearmposeorigin
 	var skelforearmposeorigin = skelforearmrest.basis.inverse()*(elbowpos - skelforearmrest.origin)
 	var skelforearmposebasis = rotationtoalign(rpmhandrestdata[36-di].origin, skelforearmrest.basis.inverse()*vecforearm)
-	rpmhandspose[35-di] = Transform(skelforearmposebasis, skelforearmposeorigin)
+	rpmhandspose[35-di] = Transform3D(skelforearmposebasis, skelforearmposeorigin)
 	var skelforearmtrans = skelforearmrest*rpmhandspose[35-di]
 	var skelhandrest = skelforearmtrans*rpmhandrestdata[36-di]
 
@@ -319,7 +319,7 @@ static func setshapetobonesRPM(h, skelarmrest, rpmhandspose, rpmhandrestdata, br
 	#skelhandtrans = skelhandrest*Transform(skelhandposebasis, skelhandposeorigin)
 	#wristpos = skelhandtrans.origin = skelhandrest.origin + skelhandrest.basis*skelhandposeorigin
 	var skelhandposeorigin = skelhandrest.basis.inverse()*(wristpos - skelhandrest.origin)
-	rpmhandspose[36-di] = Transform(skelhandposebasis, skelhandposeorigin)
+	rpmhandspose[36-di] = Transform3D(skelhandposebasis, skelhandposeorigin)
 	var skelhandtrans = skelforearmtrans*rpmhandrestdata[36-di]*rpmhandspose[36-di]
 
 	setvecstobonesG(36-di, 37-di, h["ht0"], h["ht1"], h["ht2"], h["ht3"], rpmhandrestdata, rpmhandspose, skelhandtrans)
@@ -330,7 +330,7 @@ static func setshapetobonesRPM(h, skelarmrest, rpmhandspose, rpmhandrestdata, br
 
 static func getrpmhandrestdata(rpmavatar):
 	var rpmavatardata = { "rpmavatar":rpmavatar }
-	var skel = rpmavatar.get_node("Armature/Skeleton")
+	var skel = rpmavatar.get_node("Armature/Skeleton3D")
 	rpmavatardata["skel"] = skel
 
 	for i in range(34, 57):

@@ -5,10 +5,10 @@
 [ext_resource path="res://xrassets/left_quest2_controller.tscn" type="PackedScene" id=3]
 [ext_resource path="res://xrassets/right_quest2_contoller.tscn" type="PackedScene" id=4]
 
-[sub_resource type="CubeMesh" id=1]
+[sub_resource type="BoxMesh" id=1]
 size = Vector3( 0.2, 0.1, 0.1 )
 
-[sub_resource type="SpatialMaterial" id=2]
+[sub_resource type="StandardMaterial3D" id=2]
 albedo_color = Color( 0.105882, 0.188235, 0.509804, 1 )
 
 [sub_resource type="SphereMesh" id=3]
@@ -17,32 +17,32 @@ height = 0.3
 radial_segments = 24
 rings = 24
 
-[sub_resource type="SpatialMaterial" id=4]
+[sub_resource type="StandardMaterial3D" id=4]
 albedo_color = Color( 0.741176, 0.623529, 0.584314, 1 )
 
-[node name="RPMPlayerAvatar" type="Spatial"]
+[node name="RPMPlayerAvatar" type="Node3D"]
 script = ExtResource( 2 )
 
-[node name="HeadCam" type="CSGMesh" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.06202, 0 )
+[node name="HeadCam" type="CSGMesh3D" parent="."]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.06202, 0 )
 visible = false
 mesh = SubResource( 1 )
 material = SubResource( 2 )
 
-[node name="skullcomponent" type="CSGMesh" parent="HeadCam"]
-transform = Transform( 0.9, 0, 0, 0, 1, 0, 0, 0, 0.98, 0, -0.051, 0.085 )
+[node name="skullcomponent" type="CSGMesh3D" parent="HeadCam"]
+transform = Transform3D( 0.9, 0, 0, 0, 1, 0, 0, 0, 0.98, 0, -0.051, 0.085 )
 mesh = SubResource( 3 )
 material = SubResource( 4 )
 
-[node name="ControllerLeft" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.307861, 1.45455, -0.346588 )
+[node name="ControllerLeft" type="Node3D" parent="."]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.307861, 1.45455, -0.346588 )
 
 [node name="left_quest2_controller" parent="ControllerLeft" instance=ExtResource( 3 )]
 
-[node name="ControllerRight" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.319285, 1.46837, -0.39732 )
+[node name="ControllerRight" type="Node3D" parent="."]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.319285, 1.46837, -0.39732 )
 
 [node name="right_quest2_contoller" parent="ControllerRight" instance=ExtResource( 4 )]
 
 [node name="readyplayerme_avatar" parent="." instance=ExtResource( 1 )]
-transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0 )
+transform = Transform3D( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0 )

@@ -1,12 +1,12 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=7 format=3 uid="uid://drxw8a26y8m5x"]
 
-[ext_resource path="res://addons/godot-xr-tools/objects/pickable.tscn" type="PackedScene" id=1]
-[ext_resource path="res://tensegrityexperiments/PickableWire.gd" type="Script" id=2]
+[ext_resource type="PackedScene" uid="uid://c8l60rnugru40" path="res://addons/godot-xr-tools/objects/pickable.tscn" id="1"]
+[ext_resource type="Script" path="res://tensegrityexperiments/PickableWire.gd" id="2"]
 
-[sub_resource type="BoxShape" id=4]
-extents = Vector3( 0.01, 0.01, 1 )
+[sub_resource type="BoxShape3D" id="4"]
+size = Vector3(0.01, 0.01, 1)
 
-[sub_resource type="CylinderMesh" id=6]
+[sub_resource type="CylinderMesh" id="6"]
 resource_local_to_scene = true
 top_radius = 0.01
 bottom_radius = 0.01
@@ -14,11 +14,10 @@ height = 1.0
 radial_segments = 4
 rings = 0
 
-[sub_resource type="SpatialMaterial" id=3]
-resource_local_to_scene = true
-albedo_color = Color( 0.180392, 0.129412, 0.2, 1 )
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4ahjj"]
+albedo_color = Color(1, 1, 0.466667, 1)
 
-[sub_resource type="CylinderMesh" id=5]
+[sub_resource type="CylinderMesh" id="5"]
 resource_local_to_scene = true
 top_radius = 0.01
 bottom_radius = 0.01
@@ -26,32 +25,29 @@ height = 1.0
 radial_segments = 4
 rings = 0
 
-[node name="Wire" instance=ExtResource( 1 )]
+[node name="Wire" instance=ExtResource("1")]
 collision_layer = 4096
 collision_mask = 4096
-mode = 3
-script = ExtResource( 2 )
-reset_transform_on_pickup = false
-ranged_grab_method = 2
+script = ExtResource("2")
 min_wirelength = 0.4
+ranged_grab_method = 2
 
-[node name="CollisionShape" parent="." index="1"]
-shape = SubResource( 4 )
+[node name="CollisionShape3D" parent="." index="0"]
+shape = SubResource("4")
 
-[node name="SMeshWire" type="Spatial" parent="." index="2"]
+[node name="SMeshWire" type="Node3D" parent="." index="1"]
 
-[node name="MeshWire" type="MeshInstance" parent="SMeshWire" index="0"]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
-mesh = SubResource( 6 )
+[node name="MeshWire" type="MeshInstance3D" parent="SMeshWire" index="0"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("6")
 skeleton = NodePath("../..")
-material/0 = SubResource( 3 )
+surface_material_override/0 = SubResource("StandardMaterial3D_4ahjj")
 
-[node name="SMeshWire2" type="Spatial" parent="." index="3"]
+[node name="SMeshWire2" type="Node3D" parent="." index="2"]
 
-[node name="MeshWire2" type="MeshInstance" parent="SMeshWire2" index="0"]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
-mesh = SubResource( 5 )
+[node name="MeshWire2" type="MeshInstance3D" parent="SMeshWire2" index="0"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("5")
 skeleton = NodePath("../..")
-material/0 = SubResource( 3 )
 
 [connection signal="highlight_updated" from="." to="." method="_on_PickableStrut_highlight_updated"]

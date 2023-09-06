@@ -25,44 +25,44 @@ height = 0.04
 radial_segments = 12
 rings = 0
 
-[sub_resource type="SpatialMaterial" id=4]
+[sub_resource type="StandardMaterial3D" id=4]
 albedo_color = Color( 0.839216, 0.247059, 0.968627, 1 )
 
-[node name="OpenXRallhandsdata" type="Spatial"]
+[node name="OpenXRallhandsdata" type="Node3D"]
 script = ExtResource( 2 )
 
-[node name="LeftHandSkelPose" type="Spatial" parent="."]
+[node name="LeftHandSkelPose" type="Node3D" parent="."]
 script = ExtResource( 1 )
 
-[node name="LeftHandBlankSkeleton" type="Skeleton" parent="LeftHandSkelPose"]
+[node name="LeftHandBlankSkeleton" type="Skeleton3D" parent="LeftHandSkelPose"]
 script = ExtResource( 3 )
 
-[node name="RightHandSkelPose" type="Spatial" parent="."]
+[node name="RightHandSkelPose" type="Node3D" parent="."]
 script = ExtResource( 1 )
 
-[node name="RightHandBlankSkeleton" type="Skeleton" parent="RightHandSkelPose"]
+[node name="RightHandBlankSkeleton" type="Skeleton3D" parent="RightHandSkelPose"]
 script = ExtResource( 3 )
 
-[node name="LeftHandAimPose" type="Spatial" parent="."]
+[node name="LeftHandAimPose" type="Node3D" parent="."]
 script = ExtResource( 1 )
 
-[node name="MeshInstance" type="MeshInstance" parent="LeftHandAimPose"]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LeftHandAimPose"]
+transform = Transform3D( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
 visible = false
 mesh = SubResource( 2 )
 
-[node name="RightHandAimPose" type="Spatial" parent="."]
+[node name="RightHandAimPose" type="Node3D" parent="."]
 script = ExtResource( 1 )
 
-[node name="MeshInstance" type="MeshInstance" parent="RightHandAimPose"]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RightHandAimPose"]
+transform = Transform3D( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
 visible = false
 mesh = SubResource( 1 )
 
-[node name="LeftHandGripPose" type="Spatial" parent="."]
+[node name="LeftHandGripPose" type="Node3D" parent="."]
 script = ExtResource( 1 )
 
-[node name="MeshInstance" type="MeshInstance" parent="LeftHandGripPose"]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LeftHandGripPose"]
+transform = Transform3D( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
 mesh = SubResource( 3 )
 material/0 = SubResource( 4 )

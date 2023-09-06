@@ -3,57 +3,57 @@
 [node name="Control" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_right = -724.0
-margin_bottom = -300.0
+offset_right = -724.0
+offset_bottom = -300.0
 
 [node name="record" type="Button" parent="."]
-margin_left = 346.0
-margin_top = 179.0
-margin_right = 439.0
-margin_bottom = 201.0
+offset_left = 346.0
+offset_top = 179.0
+offset_right = 439.0
+offset_bottom = 201.0
 toggle_mode = true
 text = "record finger"
 
 [node name="ToolSelection" type="OptionButton" parent="."]
-margin_left = 148.0
-margin_top = 235.0
-margin_right = 301.0
-margin_bottom = 281.0
+offset_left = 148.0
+offset_top = 235.0
+offset_right = 301.0
+offset_bottom = 281.0
 text = "Brush"
 items = [ "Brush", null, false, 0, null, "Rectangle", null, false, 1, null, "Circle", null, false, 2, null, "Line", null, false, 3, null, "Eraser", null, false, 4, null ]
 selected = 0
 
 [node name="Scalesize" type="OptionButton" parent="."]
-margin_left = 12.0
-margin_top = 239.0
-margin_right = 135.0
-margin_bottom = 276.0
+offset_left = 12.0
+offset_top = 239.0
+offset_right = 135.0
+offset_bottom = 276.0
 text = "Scale 1"
 items = [ "Scale 1", null, false, 0, null, "Scale 0.5", null, false, 1, null, "Scale 0.25", null, false, 2, null ]
 selected = 0
 
 [node name="ColorPickerButton" type="ColorPickerButton" parent="."]
-margin_left = 242.0
-margin_top = 23.0
-margin_right = 319.0
-margin_bottom = 71.0
-rect_scale = Vector2( 0.5, 0.5 )
+offset_left = 242.0
+offset_top = 23.0
+offset_right = 319.0
+offset_bottom = 71.0
+scale = Vector2( 0.5, 0.5 )
 text = "pencil"
 color = Color( 1, 1, 1, 1 )
 edit_alpha = false
 
 [node name="Label" type="Label" parent="ColorPickerButton"]
-margin_top = -30.0
-margin_right = 40.0
-margin_bottom = 1.0
+offset_top = -30.0
+offset_right = 40.0
+offset_bottom = 1.0
 text = "Pen Color
 "
 
 [node name="Flathandsurfacedepth" type="VSlider" parent="."]
-margin_left = 13.0
-margin_top = 22.0
-margin_right = 29.0
-margin_bottom = 226.0
+offset_left = 13.0
+offset_top = 22.0
+offset_right = 29.0
+offset_bottom = 226.0
 min_value = -0.05
 max_value = 0.05
 step = 0.001
@@ -62,89 +62,89 @@ tick_count = 21
 ticks_on_borders = true
 
 [node name="Label" type="Label" parent="Flathandsurfacedepth"]
-margin_left = -10.0
-margin_top = -18.0
-margin_right = 31.0
-margin_bottom = -4.0
+offset_left = -10.0
+offset_top = -18.0
+offset_right = 31.0
+offset_bottom = -4.0
 text = "TableY"
 
 [node name="ActiveDY" type="VSlider" parent="."]
-margin_left = 65.0
-margin_top = 22.0
-margin_right = 81.0
-margin_bottom = 221.0
+offset_left = 65.0
+offset_top = 22.0
+offset_right = 81.0
+offset_bottom = 221.0
 max_value = 200.0
 tick_count = 21
 ticks_on_borders = true
 
 [node name="Label" type="Label" parent="ActiveDY"]
-margin_left = -17.0
-margin_top = -18.0
-margin_right = 42.0
-margin_bottom = -4.0
+offset_left = -17.0
+offset_top = -18.0
+offset_right = 42.0
+offset_bottom = -4.0
 text = "Active dY"
 
 [node name="precolors" type="Control" parent="."]
-margin_left = 238.0
-margin_top = 52.0
-margin_right = 282.0
-margin_bottom = 110.0
+offset_left = 238.0
+offset_top = 52.0
+offset_right = 282.0
+offset_bottom = 110.0
 
 [node name="Precolor1" type="Button" parent="precolors"]
-margin_left = -5.0
-margin_top = 4.0
-margin_right = 37.0
-margin_bottom = 29.0
+offset_left = -5.0
+offset_top = 4.0
+offset_right = 37.0
+offset_bottom = 29.0
 text = "     "
 
 [node name="ColorRect" type="ColorRect" parent="precolors/Precolor1"]
-margin_left = 7.0
-margin_top = 5.0
-margin_right = 37.0
-margin_bottom = 20.0
+offset_left = 7.0
+offset_top = 5.0
+offset_right = 37.0
+offset_bottom = 20.0
 mouse_filter = 1
 color = Color( 0.909804, 0.0627451, 0.0627451, 1 )
 
 [node name="Precolor2" type="Button" parent="precolors"]
-margin_left = -4.0
-margin_top = 33.0
-margin_right = 35.0
-margin_bottom = 58.0
+offset_left = -4.0
+offset_top = 33.0
+offset_right = 35.0
+offset_bottom = 58.0
 text = "     "
 
 [node name="ColorRect" type="ColorRect" parent="precolors/Precolor2"]
-margin_left = 5.0
-margin_top = 4.0
-margin_right = 35.0
-margin_bottom = 19.0
+offset_left = 5.0
+offset_top = 4.0
+offset_right = 35.0
+offset_bottom = 19.0
 mouse_filter = 1
 color = Color( 0.0627451, 0.831373, 0.909804, 1 )
 
 [node name="Precolor3" type="Button" parent="precolors"]
-margin_left = -3.0
-margin_top = 61.0
-margin_right = 36.0
-margin_bottom = 86.0
+offset_left = -3.0
+offset_top = 61.0
+offset_right = 36.0
+offset_bottom = 86.0
 text = "     "
 
 [node name="ColorRect" type="ColorRect" parent="precolors/Precolor3"]
-margin_left = 5.0
-margin_top = 4.0
-margin_right = 35.0
-margin_bottom = 19.0
+offset_left = 5.0
+offset_top = 4.0
+offset_right = 35.0
+offset_bottom = 19.0
 mouse_filter = 1
 color = Color( 0.823529, 0.909804, 0.0627451, 1 )
 
 [node name="Precolor4" type="Button" parent="precolors"]
-margin_left = -3.0
-margin_top = 91.0
-margin_right = 36.0
-margin_bottom = 116.0
+offset_left = -3.0
+offset_top = 91.0
+offset_right = 36.0
+offset_bottom = 116.0
 text = "     "
 
 [node name="ColorRect" type="ColorRect" parent="precolors/Precolor4"]
-margin_left = 5.0
-margin_top = 4.0
-margin_right = 35.0
-margin_bottom = 19.0
+offset_left = 5.0
+offset_top = 4.0
+offset_right = 35.0
+offset_bottom = 19.0
 mouse_filter = 1

@@ -1,11 +1,11 @@
 extends Node
 
-onready var arvrorigin = get_node("/root/Main/FPController")
-onready var arvrcamera = arvrorigin.get_node("ARVRCamera")
+@onready var arvrorigin = get_node("/root/Main/FPController")
+@onready var arvrcamera = arvrorigin.get_node("XRCamera3D")
 
 const horizontal_speed = 2.0
 func _process(delta):
-	if ARVRServer.primary_interface == null:
+	if XRServer.primary_interface == null:
 		var dlr = (-1 if Input.is_action_pressed("ui_left") else 0) + (1 if Input.is_action_pressed("ui_right") else 0)
 		var dud = (-1 if Input.is_action_pressed("ui_up") else 0) + (1 if Input.is_action_pressed("ui_down") else 0)
 		if dlr != 0 or dud != 0:
