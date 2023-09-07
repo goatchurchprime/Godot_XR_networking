@@ -4,13 +4,13 @@
 [ext_resource type="Script" path="res://tensegrityexperiments/PickableStrut.gd" id="2"]
 
 [sub_resource type="BoxShape3D" id="1"]
-size = Vector3(0.01, 0.01, 0.15)
+size = Vector3(0.01, 0.01, 0.3)
 
 [sub_resource type="BoxMesh" id="2"]
 size = Vector3(0.02, 0.02, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_46pdx"]
-albedo_color = Color(0.235294, 1, 1, 1)
+albedo_color = Color(0, 0.392157, 0, 1)
 
 [node name="Strut" instance=ExtResource("1")]
 collision_layer = 4096
@@ -23,7 +23,7 @@ ranged_grab_method = 2
 shape = SubResource("1")
 
 [node name="MeshStrut" type="MeshInstance3D" parent="." index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.3, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.6, 0, 0, 0)
 mesh = SubResource("2")
 surface_material_override/0 = SubResource("StandardMaterial3D_46pdx")
 

@@ -4,12 +4,12 @@ extends Node3D
 @onready var aplayer = $Monster/Origin/AnimationPlayer
 @onready var OpenXRallhandsdata = get_node("../FPController/OpenXRallhandsdata")
 
-@onready var forearm_r = mskel.find_bone("forearm_r")         # 7
-@onready var hand_r = mskel.find_bone("hand_r")               # 28
+@onready var forearm_r = mskel.find_bone("forearm .R")         # 7
+@onready var hand_r = mskel.find_bone("hand .R")               # 28
 @onready var hand_r_control = mskel.get_bone_parent(hand_r)   # 27 arm_control_r
 
-@onready var forearm_l = mskel.find_bone("forearm_l")         # 6
-@onready var hand_l = mskel.find_bone("hand_l")               # 21
+@onready var forearm_l = mskel.find_bone("forearm .L")         # 6
+@onready var hand_l = mskel.find_bone("hand .L")               # 21
 @onready var hand_l_control = mskel.get_bone_parent(hand_l)   # 20 arm_control_l
 @onready var pelvis = mskel.find_bone("pelvis")               # 0
 @onready var chest = mskel.find_bone("chest")                 # 1
@@ -25,6 +25,9 @@ extends Node3D
 
 func _ready():
 	aplayer.play("throw")
+	assert (forearm_r != -1 and forearm_l != -1)
+	assert (hand_r != -1 and hand_l != -1)
+	assert (pelvis != -1 and chest != -1 and neck != -1 and head != -1)
 
 var Dt = 0
 @onready var dinoscale = 1.0/$Monster.scale.x
@@ -92,7 +95,7 @@ func _physics_process(delta):
 	if handcontrollerposeleft:
 		var handcontrollerpose_relhead = headcamhorizontaltransform_fromfloor.inverse()*handcontrollerposeleft
 		mskel.set_bone_pose_rotation(hand_l_control, Quaternion(mskel_bonerest_handcontrolL_inverse.basis * handcontrollerpose_relhead.basis * mskel_bonerest_handcontrolL.basis)) 
-		mskel.set_bone_pose_rotation(hand_l_control, mskel_bonerest_handcontrolL_inverse.basis * (handcontrollerpose_relhead.origin + Vector3(0, -humancofgy, -humancofgz))*dinoscale)
+		mskel.set_bone_pose_position(hand_l_control, mskel_bonerest_handcontrolL_inverse.basis * (handcontrollerpose_relhead.origin + Vector3(0, -humancofgy, -humancofgz))*dinoscale)
 	
 	var dinohandleft = OpenXRallhandsdata.gethandcontrollerpose(false)
 	if dinohandleft != null:

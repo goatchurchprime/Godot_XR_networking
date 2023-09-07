@@ -14,7 +14,7 @@ radial_segments = 16
 rings = 8
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jmcvy"]
-albedo_color = Color(1, 0.223529, 1, 1)
+albedo_color = Color(0, 0.545098, 0.545098, 1)
 
 [node name="Ball" instance=ExtResource("1")]
 collision_layer = 4096
