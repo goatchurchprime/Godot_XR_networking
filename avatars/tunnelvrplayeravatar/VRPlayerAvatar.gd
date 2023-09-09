@@ -19,6 +19,12 @@ func _ready():
 	ovrhandrightrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata($ovr_right_hand_model)
 	ovrhandleftrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata($ovr_left_hand_model)
 	
+	var Dskel = $ovr_left_hand_model/ArmatureLeft/Skeleton3D
+	print(Dskel.get_bone_name(0), " ", Dskel.get_bone_parent(0))
+	print(Dskel.get_bone_name(6), " ", Dskel.get_bone_parent(6))
+	print(Dskel.get_bone_name(7), " ", Dskel.get_bone_parent(7))
+	print(Dskel.get_bone_name(8), " ", Dskel.get_bone_parent(8))
+	
 func processavatarhand(palm_joint_confidence, joint_transforms, ovr_LR_hand_model, ovrhandLRrestdata, ControllerLR, LRHandController):
 	if palm_joint_confidence != -1:
 		ControllerLR.visible = false

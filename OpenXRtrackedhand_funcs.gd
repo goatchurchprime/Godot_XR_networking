@@ -122,7 +122,7 @@ static func setshapetobonesLowPoly(joint_transforms, bonerest, bright=true):
 	var bonepose = { "handtransform":wristtransform }
 	for i in range(25):
 		bonepose[i] = Transform3D()
-	bonepose[0] = Transform3D(Basis(), -bonerest[0].basis.xform_inv(bonerest[0].origin))
+	bonepose[0] = Transform3D(Basis(), bonerest[0].basis.inverse() * (-bonerest[0].origin))
 		
 	var tRboneposeGR = bonepose["handtransform"]*bonerest["skeltrans"]
 	var thmetacarpal = joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_THUMB_METACARPAL_EXT]
@@ -243,13 +243,13 @@ static func setshapetobonesOVR(joint_transforms, ovrhandrestdata):
 	var tRboneposeGR1 = tRboneposeGR0*ovrhandrestdata[1]*ovrhandpose[1]
 	setvecstobonesG(1, 2, h["ht0"], h["ht1"], h["ht2"], h["ht3"], ovrhandrestdata, ovrhandpose, tRboneposeGR1)
 
-	setvecstobonesG(0, 6, h["hi1"], h["hi2"], h["hi3"], h["hi4"], ovrhandrestdata, ovrhandpose, tRboneposeGR0)
-	setvecstobonesG(0, 10, h["hm1"], h["hm2"], h["hm3"], h["hm4"], ovrhandrestdata, ovrhandpose, tRboneposeGR0)
-	setvecstobonesG(0, 14, h["hr1"], h["hr2"], h["hr3"], h["hr4"], ovrhandrestdata, ovrhandpose, tRboneposeGR0)
+#	setvecstobonesG(0, 6, h["hi1"], h["hi2"], h["hi3"], h["hi4"], ovrhandrestdata, ovrhandpose, tRboneposeGR0)
+#	setvecstobonesG(0, 10, h["hm1"], h["hm2"], h["hm3"], h["hm4"], ovrhandrestdata, ovrhandpose, tRboneposeGR0)
+#	setvecstobonesG(0, 14, h["hr1"], h["hr2"], h["hr3"], h["hr4"], ovrhandrestdata, ovrhandpose, tRboneposeGR0)
 
-	ovrhandpose[18] = Transform3D()
-	var tRboneposeGR18 = tRboneposeGR0*ovrhandrestdata[18]*ovrhandpose[18]
-	setvecstobonesG(18, 19, h["hl1"], h["hl2"], h["hl3"], h["hl4"], ovrhandrestdata, ovrhandpose, tRboneposeGR18)
+#	ovrhandpose[18] = Transform3D()
+#	var tRboneposeGR18 = tRboneposeGR0*ovrhandrestdata[18]*ovrhandpose[18]
+#	setvecstobonesG(18, 19, h["hl1"], h["hl2"], h["hl3"], h["hl4"], ovrhandrestdata, ovrhandpose, tRboneposeGR18)
 	
 	return ovrhandpose
 

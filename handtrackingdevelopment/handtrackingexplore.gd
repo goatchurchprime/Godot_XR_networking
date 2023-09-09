@@ -69,8 +69,11 @@ func _ready():
 	for i in range(25):
 		$quickjointnodes.add_child(mi.duplicate())
 	applyjointpose(jointtransforms[0])
+	
+	
 	$TrackballCameraOrigin.transform.origin = jointtransforms[0][0].origin
-
+	
+	var Dskel = $ovr_right_hand_model/ArmatureRight/Skeleton3D
 
 # (A.basis, A.origin)*(B.basis, B.origin) = (A.basis*B.basis, A.origin + A.basis*B.origin)ovrhandrestdata
 func sethandposfromnodes():
@@ -86,12 +89,15 @@ func sethandposfromnodes():
 		var skel = gxthandrestdata["skel"]
 		print(skel, " ", $RightHandGXT/hand_r/Armature_Left/Skeleton3D)
 		for i in range(25):
-			skel.set_bone_pose(i, gxthandpose[i])
+			var t = skel.get_bone_rest(i)
+			t = skel.get_bone_rest(i) * gxthandpose[i]
+			skel.set_bone_pose_rotation(i, Quaternion(t.basis))
+			skel.set_bone_pose_position(i, t.origin)
 		$RightHandGXT.transform = gxthandpose["handtransform"]
 		$MeshInstance_marker.global_transform = skel.global_transform*skel.get_bone_global_pose(3)
 
 		#$MeshInstance_marker/MeshInstance_marker.scale = Vector3(0.1,0.1,1)
-		#return 		
+		return 		
 		
 	
 	if false and $RightHand.visible:
@@ -135,8 +141,8 @@ func sethandposfromnodes():
 		var rpmhandspose = { }
 		OpenXRtrackedhand_funcs.setshapetobonesRPM(h, skelrightarmrest, rpmhandspose, rpmavatarhandrestdata, true)
 		for i in range(34, 57):
-			skel.set_bone_pose(i, rpmhandspose[i])
-			skel.set_bone_pose(i, Transform3D(rpmhandspose[i].basis))
+			#skel.set_bone_pose(i, rpmhandspose[i])
+			skel.set_bone_pose_rotation(i, Quaternion(rpmhandspose[i].basis))
 		$MeshInstance_marker.global_transform = skelrightarmrest
 		$MeshInstance_marker.global_transform = skel.global_transform*skel.get_bone_global_pose(34)
 		$MeshInstance_marker3.global_transform = skel.global_transform*skel.get_bone_global_pose(35)
@@ -148,7 +154,10 @@ func sethandposfromnodes():
 	var skel = ovrhandrestdata["skel"]
 	ovrhandmodel.transform = ovrhandpose["handtransform"]
 	for i in range(23):
-		skel.set_bone_pose(i, ovrhandpose[i])
+		if ovrhandpose.has(i):
+			var t = skel.get_bone_rest(i) #  * ovrhandpose[i]
+			skel.set_bone_pose_rotation(i, Quaternion(t.basis))
+			#skel.set_bone_pose_position(i, ovrhandpose[i].origin)
 
 	#$MeshInstance.global_transform.origin = $Right_hand.global_transform*h["hi1"]
 	#$MeshInstance_marker.global_transform = skel.global_transform*skel.get_bone_global_pose(5)

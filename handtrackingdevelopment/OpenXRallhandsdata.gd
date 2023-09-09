@@ -140,7 +140,25 @@ func setupopenxrpluginhandskeleton(handskelpose, _LR):
 		if i >= 2:
 			handskel.set_bone_parent(i, boneparentsToWrist[i])
 
+
+func setupopenxrhandskeleton(openxrhand, _LR):
+	assert (len(XRbone_names) == XR_HAND_JOINT_COUNT_EXT)
+	assert (len(boneparentsToWrist) == XR_HAND_JOINT_COUNT_EXT)
+	var handskel = openxrhand.get_child(0)
+	for i in range(len(XRbone_names)):
+		handskel.add_bone(XRbone_names[i] + _LR)
+		if i >= 2:
+			handskel.set_bone_parent(i, boneparentsToWrist[i])
+	openxrhand.set_hand_skeleton(NodePath(handskel.get_name()))
+
+
 func _enter_tree():
+	setupopenxrhandskeleton($OpenXRHandLeft, "_L")
+	for i in range(XR_HAND_JOINT_COUNT_EXT):
+		joint_transforms_L.push_back(Transform3D())
+		joint_transforms_R.push_back(Transform3D())
+	
+	
 	specialist_openxr_gdns_script_loaded = ("path" in $LeftHandSkelPose)
 	print("Handtrack enabled ", specialist_openxr_gdns_script_loaded, " ", $LeftHandSkelPose.get_script())
 	if specialist_openxr_gdns_script_loaded:
@@ -157,6 +175,8 @@ func _enter_tree():
 			joint_transforms_R.push_back(Transform3D())
 	else:
 		print("HAND TRACKING SYSTEM DISABLED")
+
+
 
 
 func _ready():
@@ -190,22 +210,22 @@ func _ready():
 #	arvrcontroller4.connect("button_pressed", Callable(self, "cvr_button_action").bind(true, true, false))
 #	arvrcontroller4.connect("button_released", Callable(self, "cvr_button_action").bind(false, true, false))
 
-func cvr_button_action(button: int, bpressed: bool, bright: bool, bcontroller: bool):
+func cvr_button_action(button: String, bpressed: bool, bright: bool, bcontroller: bool):
 	if bpressed:
 		print("vr_button_action ", button, " R" if bright else " L", " ", "controller" if bcontroller else "hand")
-	if bcontroller:
-		if button == VR_BUTTON_TOUCH_AX or button == VR_BUTTON_TOUCH_BY:
-			return
-	else:
-		if button == VR_BUTTON_THUMB_INDEX_PINCH_VIA_CONTROLLER_SIGNAL:
-			return
-		elif button == VR_BUTTON_THUMB_INDEX_PINCH:
-			button = VR_BUTTON_TRIGGER
-		elif button == VR_BUTTON_THUMB_MIDDLE_PINCH:
-			button = VR_BUTTON_GRIP
-		else:
-			return
-	emit_signal("vr_button_action", button, bpressed, bright)
+#	if bcontroller:
+#		if button == VR_BUTTON_TOUCH_AX or button == VR_BUTTON_TOUCH_BY:
+#			return
+#	else:
+#		if button == VR_BUTTON_THUMB_INDEX_PINCH_VIA_CONTROLLER_SIGNAL:
+#			return
+#		elif button == VR_BUTTON_THUMB_INDEX_PINCH:
+#			button = VR_BUTTON_TRIGGER
+#		elif button == VR_BUTTON_THUMB_MIDDLE_PINCH:
+#			button = VR_BUTTON_GRIP
+#		else:
+#			return
+#	emit_signal("vr_button_action", button, bpressed, bright)
 	
 
 static func Dcheckbonejointalignment(joint_transforms):
@@ -238,7 +258,8 @@ func skel_backtoOXRjointtransforms(joint_transforms, skel):
 		joint_transforms[i] = joint_transforms[ip] * skel.get_bone_pose(i)
 	if joint_transforms[XR_HAND_JOINT_THUMB_PROXIMAL_EXT].origin == Vector3.ZERO:
 		return TRACKING_CONFIDENCE_NONE
-	return skel.get_parent().get_tracking_confidence()
+	return TRACKING_CONFIDENCE_HIGH
+	#return skel.get_parent().get_tracking_confidence()
 
 var Dt = 0
 
@@ -257,6 +278,10 @@ func _physics_process(delta):
 	controller_pose_transform_L = arvrcontrollerleft.transform
 	controller_pose_transform_R = arvrcontrollerright.transform
 	headcam_pose = arvrheadcam.transform
+
+	palm_joint_confidence_L = skel_backtoOXRjointtransforms(joint_transforms_L, $OpenXRHandLeft/LeftHandBlankSkeleton) \
+			if $OpenXRHandLeft.visible else TRACKING_CONFIDENCE_NOT_APPLICABLE
+
 
 #	triggerpinchedjoyvalue_L = (arvrcontroller3.get_joystick_axis(JOY_AXIS_THUMB_INDEX_PINCH)+1)/2 if arvrcontroller3.get_joystick_id() != -1 else arvrcontrollerleft.get_joystick_axis(JOY_AXIS_TRIGGER_BUTTON)
 #	triggerpinchedjoyvalue_R = (arvrcontroller4.get_joystick_axis(JOY_AXIS_THUMB_INDEX_PINCH)+1)/2 if arvrcontroller4.get_joystick_id() != -1 else arvrcontrollerright.get_joystick_axis(JOY_AXIS_TRIGGER_BUTTON)

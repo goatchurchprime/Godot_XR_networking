@@ -21,7 +21,6 @@ driver/enable_input=true
 
 [autoload]
 
-LorAL="res://addons/LorienInfiniteCanvas/LorAL.tscn"
 XRToolsUserSettings="*res://addons/godot-xr-tools/user_settings/user_settings.gd"
 
 [editor_plugins]
@@ -97,6 +96,7 @@ common/enable_pause_aware_picking=true
 
 [rendering]
 
+renderer/rendering_method="mobile"
 textures/vram_compression/import_etc2_astc=true
 environment/defaults/default_environment="res://default_env.tres"
 quality/driver/driver_name="GLES2"

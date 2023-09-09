@@ -1,45 +1,57 @@
-[gd_scene load_steps=57 format=3 uid="uid://ckhwmlkgnklol"]
+[gd_scene load_steps=60 format=3 uid="uid://ckhwmlkgnklol"]
 
 [ext_resource type="Script" path="res://Main.gd" id="1"]
 [ext_resource type="Script" path="res://handtrackingdevelopment/HandtrackingDevelopment.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://clc5dre31iskm" path="res://addons/godot-xr-tools/xr/start_xr.tscn" id="2_y037t"]
 [ext_resource type="PackedScene" uid="uid://diyu06cw06syv" path="res://addons/godot-xr-tools/player/player_body.tscn" id="4"]
 [ext_resource type="PackedScene" uid="uid://bl2nuu3qhlb5k" path="res://addons/godot-xr-tools/functions/movement_direct.tscn" id="5"]
 [ext_resource type="PackedScene" uid="uid://c8l60rnugru40" path="res://addons/godot-xr-tools/objects/pickable.tscn" id="6"]
 [ext_resource type="PackedScene" uid="uid://b6bk2pj8vbj28" path="res://addons/godot-xr-tools/functions/movement_turn.tscn" id="8"]
-[ext_resource type="PackedScene" path="res://avatars/tunnelvrplayeravatar/VRPlayerAvatar.tscn" id="9"]
 [ext_resource type="PackedScene" uid="uid://d3ks4lq6u0swe" path="res://tensegrityexperiments/TensegrityExperiments.tscn" id="10"]
 [ext_resource type="PackedScene" uid="uid://cfmoahalri06d" path="res://addons/player-networking/NetworkGateway.tscn" id="11"]
 [ext_resource type="PackedScene" uid="uid://da2qgxxwwitl6" path="res://addons/godot-xr-tools/objects/highlight/highlight_ring.tscn" id="12"]
 [ext_resource type="Script" path="res://avatars/monster/monsterpuppet.gd" id="13"]
 [ext_resource type="AudioStream" uid="uid://bpilxj5jvyxba" path="res://click04.wav" id="14"]
 [ext_resource type="PackedScene" uid="uid://clujaf3u776a3" path="res://addons/godot-xr-tools/objects/viewport_2d_in_3d.tscn" id="15"]
-[ext_resource type="PackedScene" path="res://addons/godot-openxr/scenes/left_hand_nodes.tscn" id="16"]
+[ext_resource type="PackedScene" uid="uid://2arpc0v4vxbd" path="res://avatars/gxtplayeravatar/LPVRPlayerAvatar.tscn" id="15_7jfa7"]
+[ext_resource type="PackedScene" uid="uid://b52ykv4mwh5s" path="res://addons/godot-openxr/scenes/right_hand_nodes.tscn" id="15_iqi8k"]
+[ext_resource type="PackedScene" uid="uid://bu0eikgvbcv6x" path="res://addons/godot-openxr/scenes/left_hand_nodes.tscn" id="16"]
+[ext_resource type="PackedScene" uid="uid://cqhw276realc" path="res://addons/godot-xr-tools/functions/function_pointer.tscn" id="16_j5krt"]
 [ext_resource type="PackedScene" uid="uid://ck2gyhhrb4h57" path="res://avatars/monster/monster.tscn" id="17"]
-[ext_resource type="PackedScene" path="res://handtrackingdevelopment/OpenXRallhandsdata.tscn" id="18"]
+[ext_resource type="PackedScene" uid="uid://c5up7tcoje7p1" path="res://handtrackingdevelopment/OpenXRallhandsdata.tscn" id="18"]
 [ext_resource type="PackedScene" uid="uid://drxw8a26y8m5x" path="res://tensegrityexperiments/PickableWire.tscn" id="19"]
 [ext_resource type="PackedScene" uid="uid://b4ysuy43poobf" path="res://addons/godot-xr-tools/functions/function_pickup.tscn" id="20"]
 [ext_resource type="PackedScene" uid="uid://cjyilbm4ucc7s" path="res://addons/godot-xr-tools/objects/climbable.tscn" id="21"]
-[ext_resource type="PackedScene" path="res://xrassets/left_quest2_controller.tscn" id="22"]
-[ext_resource type="PackedScene" path="res://xrassets/right_quest2_controller.tscn" id="23"]
-[ext_resource type="Script" path="res://addons/godot-xr-tools/xr/start_xr.gd" id="25"]
 [ext_resource type="PackedScene" uid="uid://xqimcf20s2jp" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/right_fullglove_low.tscn" id="27"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_wuwme"]
 resource_local_to_scene = true
 size = Vector2(3, 2)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_rxp87"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_ynlyg"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4qbaa"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hbwov"]
 transparency = 1
 cull_mode = 2
-albedo_texture = SubResource("ViewportTexture_rxp87")
+albedo_texture = SubResource("ViewportTexture_ynlyg")
 texture_filter = 1
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ttrwc"]
 resource_local_to_scene = true
 size = Vector3(3, 2, 0.02)
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_58518"]
+sky_curve = 0.0512265
+ground_bottom_color = Color(0.278431, 0.12549, 0.0823529, 1)
+ground_curve = 0.393966
+
+[sub_resource type="Sky" id="Sky_gwala"]
+sky_material = SubResource("ProceduralSkyMaterial_58518")
+
+[sub_resource type="Environment" id="Environment_spl7d"]
+background_mode = 2
+sky = SubResource("Sky_gwala")
 
 [sub_resource type="CylinderMesh" id="20"]
 top_radius = 0.008
@@ -48,34 +60,34 @@ height = 0.06
 radial_segments = 12
 rings = 0
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_8o16h"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_v37yi"]
 animation = &"Grip"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_svubu"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_5vp5f"]
 animation = &"Grip"
 
-[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_g4y7s"]
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_x8o65"]
 filter_enabled = true
 filters = ["Armature/Skeleton3D:Little_Distal_R", "Armature/Skeleton3D:Little_Intermediate_R", "Armature/Skeleton3D:Little_Metacarpal_R", "Armature/Skeleton3D:Little_Proximal_R", "Armature/Skeleton3D:Middle_Distal_R", "Armature/Skeleton3D:Middle_Intermediate_R", "Armature/Skeleton3D:Middle_Metacarpal_R", "Armature/Skeleton3D:Middle_Proximal_R", "Armature/Skeleton3D:Ring_Distal_R", "Armature/Skeleton3D:Ring_Intermediate_R", "Armature/Skeleton3D:Ring_Metacarpal_R", "Armature/Skeleton3D:Ring_Proximal_R", "Armature/Skeleton3D:Thumb_Distal_R", "Armature/Skeleton3D:Thumb_Metacarpal_R", "Armature/Skeleton3D:Thumb_Proximal_R", "Armature/Skeleton:Little_Distal_R", "Armature/Skeleton:Little_Intermediate_R", "Armature/Skeleton:Little_Proximal_R", "Armature/Skeleton:Middle_Distal_R", "Armature/Skeleton:Middle_Intermediate_R", "Armature/Skeleton:Middle_Proximal_R", "Armature/Skeleton:Ring_Distal_R", "Armature/Skeleton:Ring_Intermediate_R", "Armature/Skeleton:Ring_Proximal_R", "Armature/Skeleton:Thumb_Distal_R", "Armature/Skeleton:Thumb_Proximal_R"]
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_7vgr6"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_6ielv"]
 animation = &"Grip 5"
 
-[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_7fc2e"]
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_pj2on"]
 filter_enabled = true
 filters = ["Armature/Skeleton3D:Index_Distal_R", "Armature/Skeleton3D:Index_Intermediate_R", "Armature/Skeleton3D:Index_Metacarpal_R", "Armature/Skeleton3D:Index_Proximal_R", "Armature/Skeleton:Index_Distal_R", "Armature/Skeleton:Index_Intermediate_R", "Armature/Skeleton:Index_Proximal_R"]
 
-[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_qui1p"]
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_kfyvm"]
 graph_offset = Vector2(-552.664, 107.301)
-nodes/ClosedHand1/node = SubResource("AnimationNodeAnimation_8o16h")
+nodes/ClosedHand1/node = SubResource("AnimationNodeAnimation_v37yi")
 nodes/ClosedHand1/position = Vector2(-600, 300)
-nodes/ClosedHand2/node = SubResource("AnimationNodeAnimation_svubu")
+nodes/ClosedHand2/node = SubResource("AnimationNodeAnimation_5vp5f")
 nodes/ClosedHand2/position = Vector2(-360, 300)
-nodes/Grip/node = SubResource("AnimationNodeBlend2_g4y7s")
+nodes/Grip/node = SubResource("AnimationNodeBlend2_x8o65")
 nodes/Grip/position = Vector2(0, 40)
-nodes/OpenHand/node = SubResource("AnimationNodeAnimation_7vgr6")
+nodes/OpenHand/node = SubResource("AnimationNodeAnimation_6ielv")
 nodes/OpenHand/position = Vector2(-600, 100)
-nodes/Trigger/node = SubResource("AnimationNodeBlend2_7fc2e")
+nodes/Trigger/node = SubResource("AnimationNodeBlend2_pj2on")
 nodes/Trigger/position = Vector2(-360, 40)
 node_connections = [&"output", 0, &"Grip", &"Grip", 0, &"Trigger", &"Grip", 1, &"ClosedHand2", &"Trigger", 0, &"OpenHand", &"Trigger", 1, &"ClosedHand1"]
 
@@ -84,12 +96,12 @@ size = Vector2(20, 20)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_6x3fc"]
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_dfm08"]
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fawg6"]
 noise = SubResource("FastNoiseLite_6x3fc")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vxt1b"]
 albedo_color = Color(0.627451, 1, 1, 1)
-albedo_texture = SubResource("NoiseTexture2D_dfm08")
+albedo_texture = SubResource("NoiseTexture2D_fawg6")
 
 [sub_resource type="BoxShape3D" id="6"]
 size = Vector3(20, 0.1, 20)
@@ -162,6 +174,8 @@ script = ExtResource("1")
 PCstartupprotocol = "none"
 QUESTstartupprotocol = "none"
 
+[node name="StartXR" parent="." instance=ExtResource("2_y037t")]
+
 [node name="ViewportNetworkGateway" parent="." instance=ExtResource("15")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.29126, -2.73833)
 scene = ExtResource("11")
@@ -172,7 +186,7 @@ size = Vector2i(550, 400)
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource("QuadMesh_wuwme")
-surface_material_override/0 = SubResource("StandardMaterial3D_4qbaa")
+surface_material_override/0 = SubResource("StandardMaterial3D_hbwov")
 
 [node name="StaticBody3D" parent="ViewportNetworkGateway" index="2"]
 viewport_size = Vector2(550, 400)
@@ -180,15 +194,13 @@ viewport_size = Vector2(550, 400)
 [node name="CollisionShape3D" parent="ViewportNetworkGateway/StaticBody3D" index="0"]
 shape = SubResource("BoxShape3D_ttrwc")
 
-[node name="XRToolsStartXR" type="Node" parent="."]
-script = ExtResource("25")
-
 [node name="FPController" type="XROrigin3D" parent="."]
 
 [node name="Configuration" type="Node" parent="FPController"]
 
 [node name="XRCamera3D" type="XRCamera3D" parent="FPController"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+environment = SubResource("Environment_spl7d")
 current = true
 
 [node name="LeftHandController" type="XRController3D" parent="FPController"]
@@ -205,10 +217,6 @@ strafe = true
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
 mesh = SubResource("20")
 skeleton = NodePath("../../../ARVRController3")
-
-[node name="left_quest2_controller" parent="FPController/LeftHandController" instance=ExtResource("22")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0.05)
-visible = false
 
 [node name="HandUIHook" type="RemoteTransform3D" parent="FPController/LeftHandController"]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -0.1, 0, 0)
@@ -228,24 +236,21 @@ transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 
 mesh = SubResource("20")
 skeleton = NodePath("../../../ARVRController3")
 
-[node name="right_quest2_controller" parent="FPController/RightHandController" instance=ExtResource("23")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0.05)
-visible = false
-
 [node name="RightHand" parent="FPController/RightHandController" instance=ExtResource("27")]
-visible = false
 
 [node name="AnimationTree" parent="FPController/RightHandController/RightHand" index="1"]
-tree_root = SubResource("AnimationNodeBlendTree_qui1p")
+tree_root = SubResource("AnimationNodeBlendTree_kfyvm")
 active = false
 
 [node name="ARVRController3" type="XRController3D" parent="FPController"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.9, 0.5)
 tracker = &"left_hand"
+pose = &"skeleton"
 
 [node name="ARVRController4" type="XRController3D" parent="FPController"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.9, -0.5)
 tracker = &"right_hand"
+pose = &"skeleton"
 
 [node name="PlayerBody" parent="FPController" instance=ExtResource("4")]
 
@@ -256,6 +261,10 @@ script = ExtResource("2")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 1, -0.5)
 
 [node name="OpenXRallhandsdata" parent="FPController" instance=ExtResource("18")]
+
+[node name="Right_hand" parent="FPController" instance=ExtResource("15_iqi8k")]
+
+[node name="FunctionPointer" parent="FPController" instance=ExtResource("16_j5krt")]
 
 [node name="Floor" type="StaticBody3D" parent="."]
 
@@ -269,7 +278,7 @@ shape = SubResource("6")
 
 [node name="Players" type="Node3D" parent="."]
 
-[node name="VRPlayerAvatar" parent="Players" instance=ExtResource("9")]
+[node name="LPVRPlayerAvatar" parent="Players" instance=ExtResource("15_7jfa7")]
 
 [node name="SportBall" parent="." instance=ExtResource("6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.43823, 3.95023, -2.82623)

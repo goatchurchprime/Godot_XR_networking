@@ -34,6 +34,7 @@ extends Node3D
 func _ready():
 	#$FPController/LeftHandController/Function_Direct_movement.nonVRkeyboard = true
 
+
 	if OS.has_feature("QUEST"):
 		if QUESTstartupprotocol == "webrtc":
 			NetworkGateway.initialstatemqttwebrtc(NetworkGateway.NETWORK_OPTIONS_MQTT_WEBRTC.AS_NECESSARY, webrtcroomname, webrtcbroker)
