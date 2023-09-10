@@ -102,7 +102,8 @@ func _physics_process(delta):
 		var dhandleft = Vector3(-dinohandleft.origin.x, dinohandleft.origin.y - humancofgy, -(dinohandleft.origin.z - humancofgz))
 		var handlcontrol_bonerest = mskel.get_bone_rest(hand_l_control)
 		var sssQ = (dhandleft*dinoscale) * handlcontrol_bonerest
-		mskel.set_bone_pose(hand_l_control, Transform3D(dinohandleft.basis.inverse(), sssQ))
+		mskel.set_bone_pose_rotation(hand_l_control, Quaternion(dinohandleft.basis.inverse()))
+		#mskel.set_bone_pose_rotation(hand_l_control, Quaternion(dinohandleft.basis.inverse(), sssQ))
 
 	var hhdinobasis = OpenXRallhandsdata.headcam_pose.basis
 #	$FrameStick2.transform.basis = hhdinobasis.scaled(Vector3(0.2,0.2,0.2))

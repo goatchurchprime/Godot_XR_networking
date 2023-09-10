@@ -1,6 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://c5up7tcoje7p1"]
+[gd_scene load_steps=7 format=3 uid="uid://c5up7tcoje7p1"]
 
 [ext_resource type="Script" path="res://handtrackingdevelopment/OpenXRallhandsdata.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://dlyoujvmtmlt0" path="res://addons/godot-openxr/assets/valve_hand_models/right_hand.glb" id="2_k8ucw"]
+[ext_resource type="PackedScene" uid="uid://begt2gyxwcjsw" path="res://addons/godot-openxr/assets/valve_hand_models/left_hand.glb" id="3_20tq1"]
 
 [sub_resource type="CylinderMesh" id="2"]
 top_radius = 0.005
@@ -57,3 +59,15 @@ mesh = SubResource("3")
 [node name="OpenXRHandLeft" type="OpenXRHand" parent="."]
 
 [node name="LeftHandBlankSkeleton" type="Skeleton3D" parent="OpenXRHandLeft"]
+
+[node name="OpenXRHandRight" type="OpenXRHand" parent="."]
+hand = 1
+
+[node name="RightHandBlankSkeleton" type="Skeleton3D" parent="OpenXRHandRight"]
+
+[node name="ValveRightHandModel" parent="." instance=ExtResource("2_k8ucw")]
+
+[node name="ValveLeftHandModel" parent="." instance=ExtResource("3_20tq1")]
+
+[editable path="ValveRightHandModel"]
+[editable path="ValveLeftHandModel"]

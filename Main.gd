@@ -78,18 +78,18 @@ func ball_body_exited(body):
 		
 
 const VR_BUTTON_BY = 1
-const VR_BUTTON_AX = 7
+const VR_BUTTON_AX = "ax_button"
 const VR_GRIP = 2
 const VR_TRIGGER = 15
 const VR_BUTTON_4 = 4
 const VR_HANDTRACKING_INDEXTHUMB_PINCH = VR_BUTTON_4
 	
-func pose_right_button_pressed(button: int):
+func pose_right_button_pressed(button: String):
 	print("pose_right_button_pressed ", button)
 
-func vr_right_button_pressed(button: int):
+func vr_right_button_pressed(button: String):
 	print("vr right button pressed ", button)
-	if button == VR_BUTTON_BY:
+	if button == "by_button":
 		if $ViewportNetworkGateway.visible:
 			$ViewportNetworkGateway.visible = false
 		else:
@@ -99,7 +99,7 @@ func vr_right_button_pressed(button: int):
 														  Vector3(0, 1, 0))
 			$ViewportNetworkGateway.visible = true
 			
-	if button == VR_GRIP:
+	if button == "grip_click":
 		pass #if NetworkGateway.get_node("PlayerConnections").LocalPlayer.has_method("setpaddlebody"):
 		#	NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(true)
 
@@ -109,34 +109,33 @@ func vr_right_button_release(button: int):
 		if NetworkGateway.get_node("PlayerConnections").LocalPlayer.has_method("setpaddlebody"):
 			NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(false)
 
-func vr_left_button_pressed(button: int):
+func vr_left_button_pressed(button: String):
 	print("vr left button pressd ", button)
-	if button == VR_BUTTON_BY:
+	if button == "by_button":
 		$SportBall.transform.origin = $FPController/XRCamera3D.global_transform.origin + \
 									  Vector3(0, 2, 0) + \
 									  $FPController/XRCamera3D.global_transform.basis.z*-0.75
 		
-	if button == VR_BUTTON_AX:
+	if button == "ax_button":
 		pass
-	if button == VR_BUTTON_4:
-		pass
+	if button == "by_button":
 		#$FPController/HandtrackingDevelopment.lefthandfingertap()
-		#print("Publishing Right hand XR transforms to mqtt hand/pos")
-		#$ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT.publish("hand/pos", var2str($FPController/OpenXRallhandsdata.joint_transforms_R))
+		print("Publishing Right hand XR transforms to mqtt hand/pos")
+		$ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT.publish("hand/pos", var_to_str($FPController/OpenXRallhandsdata.joint_transforms_R))
 
 			
 func _input(event):
 	if event is InputEventKey and not event.echo:
 		if event.keycode == KEY_M and event.pressed:
-			vr_right_button_pressed(VR_BUTTON_BY)
+			vr_right_button_pressed("by_button")
 		if event.keycode == KEY_F and event.pressed:
-			vr_left_button_pressed(VR_BUTTON_BY)
+			vr_left_button_pressed("by_button")
 		if event.keycode == KEY_G and event.pressed:
 			NetworkGateway.get_node("PlayerConnections/Doppelganger").button_pressed = not NetworkGateway.get_node("PlayerConnections/Doppelganger").pressed
 		if (event.keycode == KEY_2):
 			NetworkGateway.selectandtrigger_networkoption(NetworkGateway.NETWORK_OPTIONS.LOCAL_NETWORK)
 		if event.keycode == KEY_SHIFT:
-			vr_right_button_pressed(VR_GRIP) if event.pressed else vr_right_button_release(VR_GRIP)
+			vr_right_button_pressed("grip_click") if event.pressed else vr_right_button_release(VR_GRIP)
 		if event.keycode == KEY_Q and event.pressed:
 			var mqtt = get_node("/root/Main/ViewportNetworkGateway/SubViewport/NetworkGateway/MQTTsignalling/MQTT")
 			mqtt.publish("hand/pos", "hithere")
@@ -150,6 +149,7 @@ func _physics_process(delta):
 			$SportBall.transform.origin = Vector3(0, 2, -3)
 
 
+var Dt = 0
 func _process(delta):
 	#$FPController/LeftHandController/FunctionPickup.enabled = not $FPController/ARVRController3.get_is_active()
 	#$FPController/RightHandController/FunctionPickup.enabled = not $FPController/ARVRController4.get_is_active()
@@ -158,6 +158,12 @@ func _process(delta):
 	#else:
 	#	$FPController/RightHandController/FunctionPointer.active_button = VR_TRIGGER
 	pass
+	
+	Dt += delta
+	if Dt >= 10:
+		print("Printing the hand positions")
+		$ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT.publish("hand/pos", var_to_str($FPController/OpenXRallhandsdata.joint_transforms_R))
+		Dt = 0
 	
 
 #** Remove the debug printing messages

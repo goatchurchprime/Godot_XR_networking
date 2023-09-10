@@ -21,9 +21,9 @@ func _ready():
 	
 	var Dskel = $ovr_left_hand_model/ArmatureLeft/Skeleton3D
 	print(Dskel.get_bone_name(0), " ", Dskel.get_bone_parent(0))
-	print(Dskel.get_bone_name(6), " ", Dskel.get_bone_parent(6))
-	print(Dskel.get_bone_name(7), " ", Dskel.get_bone_parent(7))
-	print(Dskel.get_bone_name(8), " ", Dskel.get_bone_parent(8))
+	print(Dskel.get_bone_name(9), " ", Dskel.get_bone_parent(9))
+	print(Dskel.get_bone_name(10), " ", Dskel.get_bone_parent(10))
+	print(Dskel.get_bone_name(11), " ", Dskel.get_bone_parent(11))
 	
 func processavatarhand(palm_joint_confidence, joint_transforms, ovr_LR_hand_model, ovrhandLRrestdata, ControllerLR, LRHandController):
 	if palm_joint_confidence != -1:
@@ -32,8 +32,9 @@ func processavatarhand(palm_joint_confidence, joint_transforms, ovr_LR_hand_mode
 			var ovrhandpose = OpenXRtrackedhand_funcs.setshapetobonesOVR(joint_transforms, ovrhandLRrestdata)
 			ovr_LR_hand_model.transform = ovrhandpose["handtransform"]
 			var skel = ovrhandLRrestdata["skel"]
-			for i in range(23):
-				skel.set_bone_pose(i, ovrhandpose[i])
+			for i in range(33):
+				if ovrhandpose.has(i):
+					skel.set_bone_pose_rotation(i, Quaternion(ovrhandpose[i].basis))
 			ovr_LR_hand_model.visible = true
 		else:
 			ovr_LR_hand_model.visible = false
@@ -121,20 +122,20 @@ func PAV_framedatatoavatar(fd):
 	if $ovr_left_hand_model.visible:
 		$ovr_left_hand_model.transform = overwritetranform($ovr_left_hand_model.transform, fd.get(NCONSTANTS2.CFI_VRHANDLEFT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDLEFT_POSITION))
 		var skel = $ovr_left_hand_model/ArmatureLeft/Skeleton3D
-		for i in range(23):
+		for i in range(33):
 			var frot = fd.get(NCONSTANTS2.CFI_VRHANDLEFT_BONE_ROTATIONS+i)
 			if frot != null:
-				skel.set_bone_pose(i, Transform3D(frot))
+				skel.set_bone_pose_rotation(i, Quaternion(frot.basis))
 	elif $ControllerLeft.visible:
 		$ControllerLeft.transform = overwritetranform($ControllerLeft.transform, fd.get(NCONSTANTS2.CFI_VRHANDLEFT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDLEFT_POSITION))
 
 	if $ovr_right_hand_model.visible:
 		$ovr_right_hand_model.transform = overwritetranform($ovr_right_hand_model.transform, fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_POSITION))
 		var skel = $ovr_right_hand_model/ArmatureRight/Skeleton3D
-		for i in range(23):
+		for i in range(33):
 			var frot = fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_BONE_ROTATIONS+i)
 			if frot != null:
-				skel.set_bone_pose(i, Transform3D(frot))
+				skel.set_bone_pose_rotation(i, Quaternion(frot.basis))
 	elif $ControllerRight.visible:
 		$ControllerRight.transform = overwritetranform($ControllerRight.transform, fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_POSITION))
 

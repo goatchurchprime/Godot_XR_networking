@@ -41,19 +41,28 @@ static func veclengstretchrat(vecB, vecT):
 
 static func getovrhandrestdata(ovrhandmodel):
 	var ovrhanddata = { "ovrhandmodel":ovrhandmodel }
+	var slr = "r" if ovrhandmodel.has_node("ArmatureRight") else "l"
 	var skel = ovrhandmodel.get_node("ArmatureRight/Skeleton3D") if ovrhandmodel.has_node("ArmatureRight") else ovrhandmodel.get_node("ArmatureLeft/Skeleton3D")	
 	ovrhanddata["skel"] = skel
-	for i in range(24):
+	for i in range(34):
 		ovrhanddata[i] = skel.get_bone_rest(i)
 		
+	ovrhanddata["b_wrist"] = skel.find_bone("b_%s_wrist" % slr)
+	ovrhanddata["b_thumb0"] = skel.find_bone("b_%s_thumb0" % slr)
+	ovrhanddata["b_index1"] = skel.find_bone("b_%s_index1" % slr)
+	ovrhanddata["b_middle1"] = skel.find_bone("b_%s_middle1" % slr)
+	ovrhanddata["b_ring1"] = skel.find_bone("b_%s_ring1" % slr)
+	ovrhanddata["b_pinky0"] = skel.find_bone("b_%s_pinky0" % slr)
+	
 	var hminverse = ovrhandmodel.global_transform.basis.inverse()
 	var skelgtrans = skel.global_transform
-	var globalbonepose6 = ovrhanddata[0]*ovrhanddata[6]
-	var globalbonepose14 = ovrhanddata[0]*ovrhanddata[14]
+	var globalbonepose6 = ovrhanddata[0]*ovrhanddata[ovrhanddata["b_index1"]]
+	var globalbonepose14 = ovrhanddata[0]*ovrhanddata[ovrhanddata["b_ring1"]]
 
 	ovrhanddata["posindex1"] = hminverse*((skelgtrans*globalbonepose6).origin - skelgtrans.origin)
 	ovrhanddata["posring1"] = hminverse*((skelgtrans*globalbonepose14).origin - skelgtrans.origin)
 
+	print("ppppooos  ", ovrhanddata["posindex1"], ovrhanddata["posring1"])
 	ovrhanddata["wristtransinverse"] = basisfrom(ovrhanddata["posindex1"], ovrhanddata["posring1"]).inverse()
 	ovrhanddata["skeltrans"] = ovrhandmodel.global_transform.affine_inverse()*skelgtrans
 	
@@ -221,7 +230,9 @@ static func setshapetobonesOVR(joint_transforms, ovrhandrestdata):
 	var rhx = joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_MIDDLE_METACARPAL_EXT].basis.x
 	#print("dd ", rhx.dot(pknucklering - pknuckleindex))
 	
-	
+	if h["hi1"].is_equal_approx(h["hr1"]):
+		return { "handtransform":joint_transforms[0] }
+		
 	var handbasis = basisfrom(h["hi1"] - h["hwr"], h["hr1"] - h["hwr"])
 	#var handbasis = basisfrom(joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_INDEX_PROXIMAL_EXT].origin - joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_WRIST_EXT].origin, joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_RING_PROXIMAL_EXT].origin - joint_transforms[OpenXRallhandsdata.XR_HAND_JOINT_WRIST_EXT].origin)
 	#print(handbasis.x, (pknucklering - pknuckleindex).normalized())
@@ -241,16 +252,20 @@ static func setshapetobonesOVR(joint_transforms, ovrhandrestdata):
 
 	ovrhandpose[1] = Transform3D()
 	var tRboneposeGR1 = tRboneposeGR0*ovrhandrestdata[1]*ovrhandpose[1]
-	setvecstobonesG(1, 2, h["ht0"], h["ht1"], h["ht2"], h["ht3"], ovrhandrestdata, ovrhandpose, tRboneposeGR1)
+	setvecstobonesG(ovrhandrestdata["b_thumb0"], ovrhandrestdata["b_thumb0"]+1, h["ht0"], h["ht1"], h["ht2"], h["ht3"], ovrhandrestdata, ovrhandpose, tRboneposeGR1)
 
-#	setvecstobonesG(0, 6, h["hi1"], h["hi2"], h["hi3"], h["hi4"], ovrhandrestdata, ovrhandpose, tRboneposeGR0)
-#	setvecstobonesG(0, 10, h["hm1"], h["hm2"], h["hm3"], h["hm4"], ovrhandrestdata, ovrhandpose, tRboneposeGR0)
-#	setvecstobonesG(0, 14, h["hr1"], h["hr2"], h["hr3"], h["hr4"], ovrhandrestdata, ovrhandpose, tRboneposeGR0)
+	setvecstobonesG(ovrhandrestdata["b_wrist"], ovrhandrestdata["b_index1"], h["hi1"], h["hi2"], h["hi3"], h["hi4"], ovrhandrestdata, ovrhandpose, tRboneposeGR0)
+	setvecstobonesG(ovrhandrestdata["b_wrist"], ovrhandrestdata["b_middle1"], h["hm1"], h["hm2"], h["hm3"], h["hm4"], ovrhandrestdata, ovrhandpose, tRboneposeGR0)
+	setvecstobonesG(ovrhandrestdata["b_wrist"], ovrhandrestdata["b_ring1"], h["hr1"], h["hr2"], h["hr3"], h["hr4"], ovrhandrestdata, ovrhandpose, tRboneposeGR0)
 
-#	ovrhandpose[18] = Transform3D()
-#	var tRboneposeGR18 = tRboneposeGR0*ovrhandrestdata[18]*ovrhandpose[18]
-#	setvecstobonesG(18, 19, h["hl1"], h["hl2"], h["hl3"], h["hl4"], ovrhandrestdata, ovrhandpose, tRboneposeGR18)
+	var pinky0 = ovrhandrestdata["b_pinky0"]
+	ovrhandpose[pinky0] = Transform3D()
+	var tRboneposeGR18 = tRboneposeGR0*ovrhandrestdata[pinky0]*ovrhandpose[pinky0]
+	setvecstobonesG(pinky0, pinky0+1, h["hl1"], h["hl2"], h["hl3"], h["hl4"], ovrhandrestdata, ovrhandpose, tRboneposeGR18)
 	
+	for i in range(28):
+		if ovrhandpose.has(i):
+			ovrhandpose[i] = ovrhandrestdata[i] * ovrhandpose[i]
 	return ovrhandpose
 
 

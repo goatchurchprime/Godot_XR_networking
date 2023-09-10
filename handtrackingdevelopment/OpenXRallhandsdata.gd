@@ -141,24 +141,34 @@ func setupopenxrpluginhandskeleton(handskelpose, _LR):
 			handskel.set_bone_parent(i, boneparentsToWrist[i])
 
 
-func setupopenxrhandskeleton(openxrhand, _LR):
+func setupopenxrhandskeleton(openxrhand, _LR, valveskel):
 	assert (len(XRbone_names) == XR_HAND_JOINT_COUNT_EXT)
 	assert (len(boneparentsToWrist) == XR_HAND_JOINT_COUNT_EXT)
 	var handskel = openxrhand.get_child(0)
-	for i in range(len(XRbone_names)):
-		handskel.add_bone(XRbone_names[i] + _LR)
-		if i >= 2:
-			handskel.set_bone_parent(i, boneparentsToWrist[i])
+	if valveskel != null:
+		valveskel.get_parent().remove_child(valveskel)
+		openxrhand.remove_child(handskel)
+		valveskel.set_name(handskel.get_name())
+		openxrhand.add_child(valveskel)
+		handskel = valveskel
+	else:
+		for i in range(len(XRbone_names)):
+			handskel.add_bone(XRbone_names[i] + _LR)
+			handskel.set_bone_rest(i, Transform3D(Basis(), Vector3(0.0, 0.0, -0.1)))
+			handskel.set_bone_pose_position(i, Vector3(0.0, 0.0, -0.1))
+			if i >= 2:
+				handskel.set_bone_parent(i, boneparentsToWrist[i])
+	print(handskel.get_bone_rest(7))
+	print(handskel.get_bone_pose(11))
 	openxrhand.set_hand_skeleton(NodePath(handskel.get_name()))
-
+	
 
 func _enter_tree():
-	setupopenxrhandskeleton($OpenXRHandLeft, "_L")
+	setupopenxrhandskeleton($OpenXRHandLeft, "_L", $ValveLeftHandModel/Armature_001/Skeleton3D)
+	setupopenxrhandskeleton($OpenXRHandRight, "_R", $ValveRightHandModel/Armature/Skeleton3D)
 	for i in range(XR_HAND_JOINT_COUNT_EXT):
 		joint_transforms_L.push_back(Transform3D())
 		joint_transforms_R.push_back(Transform3D())
-	
-	
 	specialist_openxr_gdns_script_loaded = ("path" in $LeftHandSkelPose)
 	print("Handtrack enabled ", specialist_openxr_gdns_script_loaded, " ", $LeftHandSkelPose.get_script())
 	if specialist_openxr_gdns_script_loaded:
@@ -254,15 +264,23 @@ func skel_backtoOXRjointtransforms(joint_transforms, skel):
 	joint_transforms[0] = skel.get_parent().transform
 	joint_transforms[1] = joint_transforms[0] * skel.get_bone_pose(1)
 	for i in range(2, XR_HAND_JOINT_COUNT_EXT):
-		var ip = boneparentsToWrist[i]
+		#var ip = boneparentsToWrist[i]   # wrong by one, wrist wrong place
+		var ip = skel.get_bone_parent(i)
 		joint_transforms[i] = joint_transforms[ip] * skel.get_bone_pose(i)
+
+	# reshuffle around to it is as expected by the subsequent code where the palm was number 1
+	for i in range(XR_HAND_JOINT_COUNT_EXT-1, 1, -1):
+		joint_transforms[i] = joint_transforms[i-1]
+
+
 	if joint_transforms[XR_HAND_JOINT_THUMB_PROXIMAL_EXT].origin == Vector3.ZERO:
 		return TRACKING_CONFIDENCE_NONE
 	return TRACKING_CONFIDENCE_HIGH
 	#return skel.get_parent().get_tracking_confidence()
 
-var Dt = 0
 
+
+var Dt = 0
 func _physics_process(delta):
 	if specialist_openxr_gdns_script_loaded:
 		palm_joint_confidence_L = skel_backtoOXRjointtransforms(joint_transforms_L, $LeftHandSkelPose/LeftHandBlankSkeleton) \
@@ -281,16 +299,25 @@ func _physics_process(delta):
 
 	palm_joint_confidence_L = skel_backtoOXRjointtransforms(joint_transforms_L, $OpenXRHandLeft/LeftHandBlankSkeleton) \
 			if $OpenXRHandLeft.visible else TRACKING_CONFIDENCE_NOT_APPLICABLE
+	palm_joint_confidence_R = skel_backtoOXRjointtransforms(joint_transforms_R, $OpenXRHandRight/RightHandBlankSkeleton) \
+			if $OpenXRHandRight.visible else TRACKING_CONFIDENCE_NOT_APPLICABLE
 
 
 #	triggerpinchedjoyvalue_L = (arvrcontroller3.get_joystick_axis(JOY_AXIS_THUMB_INDEX_PINCH)+1)/2 if arvrcontroller3.get_joystick_id() != -1 else arvrcontrollerleft.get_joystick_axis(JOY_AXIS_TRIGGER_BUTTON)
 #	triggerpinchedjoyvalue_R = (arvrcontroller4.get_joystick_axis(JOY_AXIS_THUMB_INDEX_PINCH)+1)/2 if arvrcontroller4.get_joystick_id() != -1 else arvrcontrollerright.get_joystick_axis(JOY_AXIS_TRIGGER_BUTTON)
 	#grippinchedjoyvalue_L = (arvrcontroller3.get_joystick_axis(JOY_AXIS_THUMB_MIDDLE_PINCH)+1)/2 if arvrcontroller3.get_joystick_id() != -1 else arvrcontrollerleft.get_joystick_axis(JOY_AXIS_GRIP_BUTTON)
 	#grippinchedjoyvalue_R = (arvrcontroller4.get_joystick_axis(JOY_AXIS_THUMB_MIDDLE_PINCH)+1)/2 if arvrcontroller4.get_joystick_id() != -1 else arvrcontrollerright.get_joystick_axis(JOY_AXIS_GRIP_BUTTON)
-		
+
+	skel_backtoOXRjointtransforms(joint_transforms_R, $OpenXRHandRight/RightHandBlankSkeleton)
+	
 	Dt += delta
 	if Dt > 2.0:
 		Dt = 0
+		print()
+		print(joint_transforms_R[7])
+		print(joint_transforms_R[11])
+		print($OpenXRHandRight/RightHandBlankSkeleton.get_bone_pose(7))
+#		print("palm confidence ", palm_joint_confidence_L, "  ", palm_joint_confidence_R)
 		# as from void XRExtHandTrackingExtensionWrapper::update_handtracking() 
 		# these have the joystick settings
 #		print(arvrcontrollerleft.get_joystick_id(),",", arvrcontroller3.get_joystick_id(), "  ", arvrcontrollerleft.get_joystick_id(), "Rjoy ", arvrcontrollerright.get_joystick_axis(2), arvrcontrollerright.get_joystick_axis(3), " ", arvrcontrollerright.get_joystick_axis(4), " ", arvrcontroller4.get_joystick_axis(JOY_AXIS_THUMB_INDEX_PINCH), 

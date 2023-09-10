@@ -101,3 +101,5 @@ transform = Transform3D(-4.37114e-08, -1, -4.37114e-08, 0, -4.37114e-08, 1, -1, 
 
 [editable path="ControllerLeft/left_quest2_controller"]
 [editable path="ControllerRight/right_quest2_contoller"]
+[editable path="ovr_right_hand_model"]
+[editable path="ovr_left_hand_model"]

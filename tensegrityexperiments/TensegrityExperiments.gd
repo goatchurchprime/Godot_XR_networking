@@ -47,8 +47,8 @@ func vr_right_dropped():
 		pickedwire = null
 
 
-const VR_BUTTON_AX = 7
-func vr_right_button_pressed(button: int):
+const VR_BUTTON_AX = "ax_button"
+func vr_right_button_pressed(button: String):
 	print("--vr right button pressed ", button)
 	if button == VR_BUTTON_AX:
 		var lefthandobject = lefthandcontroller.get_node("FunctionPickup").picked_up_object
@@ -121,7 +121,7 @@ func ballwires(delta):
 		strut.setstrutends(ballFrameN)
 
 
-func vr_right_button_release(button: int):
+func vr_right_button_release(button: String):
 	print("--vr right button release ", button)
 	if button == VR_BUTTON_AX:
 		if ballfromline:
