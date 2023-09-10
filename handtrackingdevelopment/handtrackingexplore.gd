@@ -71,8 +71,10 @@ func Dskel_backtoOXRjointtransforms(joint_transforms, skel):
 		print(i, " ", skel.get_bone_name(i), " ", ip)
 		joint_transforms[i] = joint_transforms[ip] * skel.get_bone_rest(i)
 		#joint_transforms[i] = joint_transforms[0]*skel.get_bone_global_pose(i)
-	for i in range(XR_HAND_JOINT_COUNT_EXT-1, 1, -1):
+	var jwrist = joint_transforms[XR_HAND_JOINT_COUNT_EXT-1]
+	for i in range(XR_HAND_JOINT_COUNT_EXT-1, -1, -1):
 		joint_transforms[i] = joint_transforms[i-1]
+	joint_transforms[0] = jwrist
 	
 var ovrhandrestdata = null
 var lowpolyhandrestdata = null
@@ -81,8 +83,8 @@ var gxthandrestdata = null
 func _ready():
 	ovrhandrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata(ovrhandmodel)
 	#lowpolyhandrestdata = OpenXRtrackedhand_funcs.getlowpolyhandrestdata($RightHand)
-	rpmavatarhandrestdata = OpenXRtrackedhand_funcs.getrpmhandrestdata(rpmavatar)
-	gxthandrestdata = OpenXRtrackedhand_funcs.getGXThandrestdata($RightHandGXT)
+	#rpmavatarhandrestdata = OpenXRtrackedhand_funcs.getrpmhandrestdata(rpmavatar)
+	#gxthandrestdata = OpenXRtrackedhand_funcs.getGXThandrestdata($RightHandGXT)
 	#$RightHandGXT/AnimationTree.active = false
 	Dskel_backtoOXRjointtransforms(jointtransforms[0], $ValveHandModelLeft/Armature_001/Skeleton3D)
 	
@@ -104,7 +106,7 @@ func sethandposfromnodes():
 #	$MeshInstance_marker2.global_transform = $Right_hand/Wrist/ThumbMetacarpal/ThumbProximal/ThumbDistal.global_transform
 	$MeshInstance_marker2.global_transform.origin = h["ht3"]
 
-	if $RightHandGXT.visible:
+	if false and $RightHandGXT.visible:
 		var gxthandpose = OpenXRtrackedhand_funcs.setshapetobonesLowPoly(joint_transforms, gxthandrestdata, true)
 		var skel = gxthandrestdata["skel"]
 		print(skel, " ", $RightHandGXT/hand_r/Armature_Left/Skeleton3D)
@@ -173,7 +175,7 @@ func sethandposfromnodes():
 	var ovrhandpose = OpenXRtrackedhand_funcs.setshapetobonesOVR(joint_transforms, ovrhandrestdata)
 	var skel = ovrhandrestdata["skel"]
 	ovrhandmodel.transform = ovrhandpose["handtransform"]
-	for i in range(33):
+	for i in ovrhandrestdata["boneindexes"]:
 		if ovrhandpose.has(i):
 			skel.set_bone_pose_rotation(i, Quaternion(ovrhandpose[i].basis))
 			skel.set_bone_pose_position(i, ovrhandpose[i].origin)

@@ -184,28 +184,6 @@ func _ready():
 				arvrconfigurationnode = child
 				
 	
-	arvrcontrollerleft.connect("button_pressed", Callable(self, "cvr_button_action").bind(true, false, true))
-	arvrcontrollerleft.connect("button_released", Callable(self, "cvr_button_action").bind(false, false, true))
-	arvrcontrollerright.connect("button_pressed", Callable(self, "cvr_button_action").bind(true, true, true))
-	arvrcontrollerright.connect("button_released", Callable(self, "cvr_button_action").bind(false, true, true))
-
-func cvr_button_action(button: String, bpressed: bool, bright: bool, bcontroller: bool):
-	if bpressed:
-		print("vr_button_action ", button, " R" if bright else " L", " ", "controller" if bcontroller else "hand")
-#	if bcontroller:
-#		if button == VR_BUTTON_TOUCH_AX or button == VR_BUTTON_TOUCH_BY:
-#			return
-#	else:
-#		if button == VR_BUTTON_THUMB_INDEX_PINCH_VIA_CONTROLLER_SIGNAL:
-#			return
-#		elif button == VR_BUTTON_THUMB_INDEX_PINCH:
-#			button = VR_BUTTON_TRIGGER
-#		elif button == VR_BUTTON_THUMB_MIDDLE_PINCH:
-#			button = VR_BUTTON_GRIP
-#		else:
-#			return
-#	emit_signal("vr_button_action", button, bpressed, bright)
-	
 
 static func Dcheckbonejointalignment(joint_transforms):
 	for i in range(2, XR_HAND_JOINT_COUNT_EXT):
@@ -238,8 +216,10 @@ func skel_backtoOXRjointtransforms(joint_transforms, skel):
 		joint_transforms[i] = joint_transforms[ip] * skel.get_bone_pose(i)
 
 	# reshuffle around to it is as expected by the subsequent code where the palm was number 1
-	for i in range(XR_HAND_JOINT_COUNT_EXT-1, 1, -1):
+	var jwrist = joint_transforms[XR_HAND_JOINT_COUNT_EXT-1]
+	for i in range(XR_HAND_JOINT_COUNT_EXT-1, -1, -1):
 		joint_transforms[i] = joint_transforms[i-1]
+	joint_transforms[0] = jwrist
 
 
 	if joint_transforms[XR_HAND_JOINT_THUMB_PROXIMAL_EXT].origin == Vector3.ZERO:

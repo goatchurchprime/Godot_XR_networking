@@ -133,7 +133,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.013, 0.941, -0.225)
 
 [node name="ValveHandModelLeft" parent="." instance=ExtResource("9_5u350")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.042322, 0.841457, 0)
-visible = false
 
 [editable path="ovr_right_hand_model"]
 [editable path="readyplayerme_avatar"]

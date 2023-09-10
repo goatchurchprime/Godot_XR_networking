@@ -17,14 +17,6 @@ var is_the_local_player = false
 
 var shrinkavatartransform = Transform3D()
 
-func _ready():
-	if is_the_local_player:
-		OpenXRallhandsdata.connect("vr_button_action", Callable(self, "_on_vr_button"))
-
-
-func _on_vr_button(button: int, bpressed: bool, bright: bool):
-	if not bpressed:
-		print("vr_buttonRelease ", button, " ", "R" if bright else "L")
 	
 func processavatarhand(LRAppendage, palm_joint_confidence, joint_transforms, gxthandrestdata, LRHandController, bright):
 	var LRhand = LRAppendage.get_child(0)

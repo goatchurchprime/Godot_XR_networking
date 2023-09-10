@@ -1,6 +1,5 @@
 extends Node3D
 
-
 @onready var arvrorigin = get_node("/root/Main/FPController")
 var labeltext = "unknown"
 
@@ -30,9 +29,10 @@ func processavatarhand(palm_joint_confidence, joint_transforms, ovr_LR_hand_mode
 			var ovrhandpose = OpenXRtrackedhand_funcs.setshapetobonesOVR(joint_transforms, ovrhandLRrestdata)
 			ovr_LR_hand_model.transform = ovrhandpose["handtransform"]
 			var skel = ovrhandLRrestdata["skel"]
-			for i in range(33):
+			for i in ovrhandLRrestdata["boneindexes"]:
 				if ovrhandpose.has(i):
 					skel.set_bone_pose_rotation(i, Quaternion(ovrhandpose[i].basis))
+					skel.set_bone_pose_position(i, ovrhandpose[i].origin)
 			ovr_LR_hand_model.visible = true
 		else:
 			ovr_LR_hand_model.visible = false
@@ -68,7 +68,7 @@ func PAV_avatartoframedata():
 		fd[NCONSTANTS2.CFI_VRHANDLEFT_POSITION] = $ovr_left_hand_model.transform.origin
 		fd[NCONSTANTS2.CFI_VRHANDLEFT_ROTATION] = $ovr_left_hand_model.transform.basis.get_rotation_quaternion()
 		var skel = ovrhandleftrestdata["skel"]
-		for i in range(23):
+		for i in ovrhandleftrestdata["boneindexes"]:
 			fd[NCONSTANTS2.CFI_VRHANDLEFT_BONE_ROTATIONS+i] = skel.get_bone_pose(i).basis.get_rotation_quaternion()
 	elif $ControllerLeft.visible:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE] = 1.0
@@ -82,7 +82,7 @@ func PAV_avatartoframedata():
 		fd[NCONSTANTS2.CFI_VRHANDRIGHT_POSITION] = $ovr_right_hand_model.transform.origin
 		fd[NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION] = $ovr_right_hand_model.transform.basis.get_rotation_quaternion()
 		var skel = ovrhandrightrestdata["skel"]
-		for i in range(23):
+		for i in ovrhandrightrestdata["boneindexes"]:
 			fd[NCONSTANTS2.CFI_VRHANDRIGHT_BONE_ROTATIONS+i] = skel.get_bone_pose(i).basis.get_rotation_quaternion()
 	elif $ControllerRight.visible:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE] = 1.0
@@ -120,7 +120,7 @@ func PAV_framedatatoavatar(fd):
 	if $ovr_left_hand_model.visible:
 		$ovr_left_hand_model.transform = overwritetransform($ovr_left_hand_model.transform, fd.get(NCONSTANTS2.CFI_VRHANDLEFT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDLEFT_POSITION))
 		var skel = $ovr_left_hand_model/ArmatureLeft/Skeleton3D
-		for i in range(33):
+		for i in ovrhandleftrestdata["boneindexes"]:
 			var frot = fd.get(NCONSTANTS2.CFI_VRHANDLEFT_BONE_ROTATIONS+i)
 			if frot != null:
 				skel.set_bone_pose_rotation(i, frot)
@@ -130,7 +130,7 @@ func PAV_framedatatoavatar(fd):
 	if $ovr_right_hand_model.visible:
 		$ovr_right_hand_model.transform = overwritetransform($ovr_right_hand_model.transform, fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_POSITION))
 		var skel = $ovr_right_hand_model/ArmatureRight/Skeleton3D
-		for i in range(33):
+		for i in ovrhandrightrestdata["boneindexes"]:
 			var frot = fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_BONE_ROTATIONS+i)
 			if frot != null:
 				skel.set_bone_pose_rotation(i, frot)
@@ -140,7 +140,6 @@ func PAV_framedatatoavatar(fd):
 	if fd.has(NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY):
 		print("remote setpaddlebody ", fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY])
 		setpaddlebody(fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY])
-
 
 		
 var possibleusernames = ["Alice", "Beth", "Cath", "Dan", "Earl", "Fred", "George", "Harry", "Ivan", "John", "Kevin", "Larry", "Martin", "Oliver", "Peter", "Quentin", "Robert", "Samuel", "Thomas", "Ulrik", "Victor", "Wayne", "Xavier", "Youngs", "Zephir"]
