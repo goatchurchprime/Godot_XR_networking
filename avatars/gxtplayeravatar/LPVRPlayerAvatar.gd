@@ -60,12 +60,6 @@ func PAV_processlocalavatarposition(delta):
 	processavatarhand($LeftAppendage, OpenXRallhandsdata.palm_joint_confidence_L, OpenXRallhandsdata.joint_transforms_L, gxtlefthandrestdata, LeftHandController, false)
 	processavatarhand($RightAppendage, OpenXRallhandsdata.palm_joint_confidence_R, OpenXRallhandsdata.joint_transforms_R, gxtrighthandrestdata, RightHandController, true)
 		
-#var controller_pose_transform_L : Transform = Transform()
-#var controller_pose_transform_R : Transform = Transform()
-#var controller_pose_confidence_L : int = TRACKING_CONFIDENCE_NOT_APPLICABLE
-#var controller_pose_confidence_R : int = TRACKING_CONFIDENCE_NOT_APPLICABLE
-
-
 
 func setpaddlebody(active):
 	$RightAppendage/PaddleBody.visible = active

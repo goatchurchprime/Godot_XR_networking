@@ -18,12 +18,10 @@ var shrinkavatartransform = Transform3D()
 func _ready():
 	ovrhandrightrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata($ovr_right_hand_model)
 	ovrhandleftrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata($ovr_left_hand_model)
-	
-	var Dskel = $ovr_left_hand_model/ArmatureLeft/Skeleton3D
-	print(Dskel.get_bone_name(0), " ", Dskel.get_bone_parent(0))
-	print(Dskel.get_bone_name(9), " ", Dskel.get_bone_parent(9))
-	print(Dskel.get_bone_name(10), " ", Dskel.get_bone_parent(10))
-	print(Dskel.get_bone_name(11), " ", Dskel.get_bone_parent(11))
+	var bluematerial = $HeadCam.material.duplicate()
+	bluematerial.albedo_color = Color("#2876ea")
+	$ovr_right_hand_model/ArmatureRight/Skeleton3D/r_handMeshNode.set_surface_override_material(0, bluematerial)	
+	$ovr_left_hand_model/ArmatureLeft/Skeleton3D/l_handMeshNode.set_surface_override_material(0, bluematerial)
 	
 func processavatarhand(palm_joint_confidence, joint_transforms, ovr_LR_hand_model, ovrhandLRrestdata, ControllerLR, LRHandController):
 	if palm_joint_confidence != -1:
@@ -97,7 +95,7 @@ func PAV_avatartoframedata():
 
 	return fd
 
-func overwritetranform(orgtransform, rot, pos):
+func overwritetransform(orgtransform, rot, pos):
 	if rot == null:
 		if pos == null:
 			return orgtransform
@@ -107,8 +105,8 @@ func overwritetranform(orgtransform, rot, pos):
 	return Transform3D(Basis(rot), pos)
 
 func PAV_framedatatoavatar(fd):
-	transform = overwritetranform(transform, fd.get(NCONSTANTS2.CFI_VRORIGIN_ROTATION), fd.get(NCONSTANTS2.CFI_VRORIGIN_POSITION))
-	$HeadCam.transform = overwritetranform($HeadCam.transform, fd.get(NCONSTANTS2.CFI_VRHEAD_ROTATION), fd.get(NCONSTANTS2.CFI_VRHEAD_POSITION))
+	transform = overwritetransform(transform, fd.get(NCONSTANTS2.CFI_VRORIGIN_ROTATION), fd.get(NCONSTANTS2.CFI_VRORIGIN_POSITION))
+	$HeadCam.transform = overwritetransform($HeadCam.transform, fd.get(NCONSTANTS2.CFI_VRHEAD_ROTATION), fd.get(NCONSTANTS2.CFI_VRHEAD_POSITION))
 
 	if fd.has(NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE):
 		var hcleftfade = fd.get(NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE)
@@ -120,26 +118,25 @@ func PAV_framedatatoavatar(fd):
 		$ovr_right_hand_model.visible = (hcrightfade < 0.0)
 		
 	if $ovr_left_hand_model.visible:
-		$ovr_left_hand_model.transform = overwritetranform($ovr_left_hand_model.transform, fd.get(NCONSTANTS2.CFI_VRHANDLEFT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDLEFT_POSITION))
+		$ovr_left_hand_model.transform = overwritetransform($ovr_left_hand_model.transform, fd.get(NCONSTANTS2.CFI_VRHANDLEFT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDLEFT_POSITION))
 		var skel = $ovr_left_hand_model/ArmatureLeft/Skeleton3D
 		for i in range(33):
 			var frot = fd.get(NCONSTANTS2.CFI_VRHANDLEFT_BONE_ROTATIONS+i)
 			if frot != null:
-				skel.set_bone_pose_rotation(i, Quaternion(frot.basis))
+				skel.set_bone_pose_rotation(i, frot)
 	elif $ControllerLeft.visible:
-		$ControllerLeft.transform = overwritetranform($ControllerLeft.transform, fd.get(NCONSTANTS2.CFI_VRHANDLEFT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDLEFT_POSITION))
+		$ControllerLeft.transform = overwritetransform($ControllerLeft.transform, fd.get(NCONSTANTS2.CFI_VRHANDLEFT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDLEFT_POSITION))
 
 	if $ovr_right_hand_model.visible:
-		$ovr_right_hand_model.transform = overwritetranform($ovr_right_hand_model.transform, fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_POSITION))
+		$ovr_right_hand_model.transform = overwritetransform($ovr_right_hand_model.transform, fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_POSITION))
 		var skel = $ovr_right_hand_model/ArmatureRight/Skeleton3D
 		for i in range(33):
 			var frot = fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_BONE_ROTATIONS+i)
 			if frot != null:
-				skel.set_bone_pose_rotation(i, Quaternion(frot.basis))
+				skel.set_bone_pose_rotation(i, frot)
 	elif $ControllerRight.visible:
-		$ControllerRight.transform = overwritetranform($ControllerRight.transform, fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_POSITION))
+		$ControllerRight.transform = overwritetransform($ControllerRight.transform, fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_POSITION))
 
-		
 	if fd.has(NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY):
 		print("remote setpaddlebody ", fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY])
 		setpaddlebody(fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY])
@@ -176,3 +173,4 @@ static func PAV_changethinnedframedatafordoppelganger(fd, doppelnetoffset, isfra
 
 	if fd.has(NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY):
 		print("OPP setpaddlebody ", fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY])
+

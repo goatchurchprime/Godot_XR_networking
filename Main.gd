@@ -48,12 +48,9 @@ func _ready():
 			$FPController/PlayerBody
 
 	#get_node("/root").msaa = SubViewport.MSAA_4X
-	$FPController/RightHandController.connect("button_pressed", Callable(self, "vr_right_button_pressed"))
-	$FPController/RightHandController.connect("button_released", Callable(self, "vr_right_button_release"))
-	$FPController/LeftHandController.connect("button_pressed", Callable(self, "vr_left_button_pressed"))
-	$FPController/LeftHandController.set_process(false)
-	$FPController/RightHandController.set_process(false)
-
+	$FPController/RightHandController.button_pressed.connect(vr_right_button_pressed)
+	$FPController/RightHandController.button_released.connect(vr_right_button_release)
+	$FPController/LeftHandController.button_pressed.connect(vr_left_button_pressed)
 
 	$FPController/PlayerBody.default_physics.move_drag = 45
 	$SportBall.connect("body_entered", Callable(self, "ball_body_entered"))
@@ -72,8 +69,8 @@ func ball_body_entered(body):
 		body.get_node("CollisionShape3D/MeshInstance3D").get_surface_override_material(0).emission_enabled = false
 		
 func ball_body_exited(body):	
-	#if body.name == "PaddleBody":
-	#	body.get_node("CollisionShape/MeshInstance").get_surface_material(0).emission_enabled = false
+	if body.name == "PaddleBody":
+		body.get_node("CollisionShape/MeshInstance").get_surface_material(0).emission_enabled = false
 	pass
 		
 
@@ -84,9 +81,6 @@ const VR_TRIGGER = 15
 const VR_BUTTON_4 = 4
 const VR_HANDTRACKING_INDEXTHUMB_PINCH = VR_BUTTON_4
 	
-func pose_right_button_pressed(button: String):
-	print("pose_right_button_pressed ", button)
-
 func vr_right_button_pressed(button: String):
 	print("vr right button pressed ", button)
 	if button == "by_button":
@@ -100,12 +94,12 @@ func vr_right_button_pressed(button: String):
 			$ViewportNetworkGateway.visible = true
 			
 	if button == "grip_click":
-		pass #if NetworkGateway.get_node("PlayerConnections").LocalPlayer.has_method("setpaddlebody"):
-		#	NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(true)
+		if NetworkGateway.get_node("PlayerConnections").LocalPlayer.has_method("setpaddlebody"):
+			NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(true)
 
 	
-func vr_right_button_release(button: int):
-	if button == VR_GRIP:
+func vr_right_button_release(button: String):
+	if button == "grip_click":
 		if NetworkGateway.get_node("PlayerConnections").LocalPlayer.has_method("setpaddlebody"):
 			NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(false)
 
@@ -135,7 +129,7 @@ func _input(event):
 		if (event.keycode == KEY_2):
 			NetworkGateway.selectandtrigger_networkoption(NetworkGateway.NETWORK_OPTIONS.LOCAL_NETWORK)
 		if event.keycode == KEY_SHIFT:
-			vr_right_button_pressed("grip_click") if event.pressed else vr_right_button_release(VR_GRIP)
+			vr_right_button_pressed("grip_click") if event.pressed else vr_right_button_release("grip_click")
 		if event.keycode == KEY_Q and event.pressed:
 			var mqtt = get_node("/root/Main/ViewportNetworkGateway/SubViewport/NetworkGateway/MQTTsignalling/MQTT")
 			mqtt.publish("hand/pos", "hithere")
@@ -161,8 +155,8 @@ func _process(delta):
 	
 	Dt += delta
 	if Dt >= 10:
-		print("Printing the hand positions")
-		$ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT.publish("hand/pos", var_to_str($FPController/OpenXRallhandsdata.joint_transforms_R))
+		#print("Printing the hand positions")
+		#$ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT.publish("hand/pos", var_to_str($FPController/OpenXRallhandsdata.joint_transforms_R))
 		Dt = 0
 	
 

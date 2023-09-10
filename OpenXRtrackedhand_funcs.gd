@@ -62,7 +62,7 @@ static func getovrhandrestdata(ovrhandmodel):
 	ovrhanddata["posindex1"] = hminverse*((skelgtrans*globalbonepose6).origin - skelgtrans.origin)
 	ovrhanddata["posring1"] = hminverse*((skelgtrans*globalbonepose14).origin - skelgtrans.origin)
 
-	print("ppppooos  ", ovrhanddata["posindex1"], ovrhanddata["posring1"])
+	print("ppppooos  ", slr, " ", (ovrhanddata["posindex1"] - ovrhanddata["posring1"]).length())
 	ovrhanddata["wristtransinverse"] = basisfrom(ovrhanddata["posindex1"], ovrhanddata["posring1"]).inverse()
 	ovrhanddata["skeltrans"] = ovrhandmodel.global_transform.affine_inverse()*skelgtrans
 	

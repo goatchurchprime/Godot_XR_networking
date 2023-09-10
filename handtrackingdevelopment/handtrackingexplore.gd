@@ -79,9 +79,6 @@ var lowpolyhandrestdata = null
 var rpmavatarhandrestdata = null
 var gxthandrestdata = null
 func _ready():
-	#Dskel_backtoOXRjointtransforms(jointtransforms[0], $ValveHandModelRight/Armature/Skeleton3D)
-	#print(var_to_str(jointtransforms[0]))
-	
 	ovrhandrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata(ovrhandmodel)
 	#lowpolyhandrestdata = OpenXRtrackedhand_funcs.getlowpolyhandrestdata($RightHand)
 	rpmavatarhandrestdata = OpenXRtrackedhand_funcs.getrpmhandrestdata(rpmavatar)
@@ -178,7 +175,7 @@ func sethandposfromnodes():
 	for i in range(33):
 		if ovrhandpose.has(i):
 			skel.set_bone_pose_rotation(i, Quaternion(ovrhandpose[i].basis))
-			#skel.set_bone_pose_position(i, ovrhandpose[i].origin)
+			skel.set_bone_pose_position(i, ovrhandpose[i].origin)
 
 	#$MeshInstance.global_transform.origin = $Right_hand.global_transform*h["hi1"]
 	#$MeshInstance_marker.global_transform = skel.global_transform*skel.get_bone_global_pose(5)
