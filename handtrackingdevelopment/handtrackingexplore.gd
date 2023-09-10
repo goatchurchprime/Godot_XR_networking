@@ -1,7 +1,7 @@
 extends Node3D
 
-
-@onready var ovrhandmodel = $ovr_right_hand_model
+var bleft = true
+@onready var ovrhandmodel =$ovr_left_hand_model if bleft else $ovr_right_hand_model
 #onready var skel = $ovr_right_hand_model/ArmatureRight/Skeleton
 @onready var rpmavatar = $readyplayerme_avatar
 
@@ -84,7 +84,8 @@ func _ready():
 	rpmavatarhandrestdata = OpenXRtrackedhand_funcs.getrpmhandrestdata(rpmavatar)
 	gxthandrestdata = OpenXRtrackedhand_funcs.getGXThandrestdata($RightHandGXT)
 	#$RightHandGXT/AnimationTree.active = false
-
+	Dskel_backtoOXRjointtransforms(jointtransforms[0], $ValveHandModelLeft/Armature_001/Skeleton3D)
+	
 	var mi = $quickjointnodes.get_child(0)
 	while $quickjointnodes.get_child_count() < 26:
 		$quickjointnodes.add_child(mi.duplicate())

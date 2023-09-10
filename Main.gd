@@ -155,8 +155,8 @@ func _process(delta):
 	
 	Dt += delta
 	if Dt >= 10:
-		#print("Printing the hand positions")
-		#$ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT.publish("hand/pos", var_to_str($FPController/OpenXRallhandsdata.joint_transforms_R))
+		print("Printing the hand positions")
+		$ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT.publish("hand/pos", var_to_str($FPController/OpenXRallhandsdata.joint_transforms_L))
 		Dt = 0
 	
 

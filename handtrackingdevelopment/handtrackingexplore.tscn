@@ -1,12 +1,14 @@
-[gd_scene load_steps=17 format=3 uid="uid://bt2eepp05p8kl"]
+[gd_scene load_steps=19 format=3 uid="uid://bt2eepp05p8kl"]
 
 [ext_resource type="PackedScene" uid="uid://dqc0gtk8ekr8u" path="res://xrassets/ovr_right_hand_model.glb" id="1"]
 [ext_resource type="Script" path="res://handtrackingdevelopment/handtrackingexplore.gd" id="2"]
 [ext_resource type="PackedScene" uid="uid://ckb7rftru8yke" path="res://xrassets/readyplayerme_avatar.glb" id="3"]
+[ext_resource type="PackedScene" uid="uid://cpgv6grdpa0ny" path="res://xrassets/ovr_left_hand_model.glb" id="3_vuvok"]
 [ext_resource type="Script" path="res://addons/goutte.camera.trackball/trackball_camera.gd" id="4"]
 [ext_resource type="PackedScene" uid="uid://bcuooalxbfh1l" path="res://xrassets/4f_moved_hand_l.glb" id="5"]
 [ext_resource type="PackedScene" uid="uid://clujaf3u776a3" path="res://addons/godot-xr-tools/objects/viewport_2d_in_3d.tscn" id="6"]
 [ext_resource type="PackedScene" uid="uid://dlyoujvmtmlt0" path="res://addons/godot-openxr/assets/valve_hand_models/right_hand.glb" id="7_x6bjb"]
+[ext_resource type="PackedScene" uid="uid://begt2gyxwcjsw" path="res://addons/godot-openxr/assets/valve_hand_models/left_hand.glb" id="9_5u350"]
 
 [sub_resource type="BoxMesh" id="3"]
 size = Vector3(0.004, 0.03, 0.004)
@@ -73,8 +75,12 @@ surface_material_override/0 = SubResource("StandardMaterial3D_kyfo3")
 [node name="ovr_right_hand_model" parent="." instance=ExtResource("1")]
 transform = Transform3D(0.470566, 0.313517, 0.824788, 0.805183, 0.229751, -0.546713, -0.3609, 0.92137, -0.144325, -0.408264, 0.10582, 0.060482)
 
+[node name="ovr_left_hand_model" parent="." instance=ExtResource("3_vuvok")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.566518, 0, 0)
+
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.925065, -0.301336, 0.231195, 0.0305464, 0.66577, 0.745531, -0.378578, -0.682603, 0.625085, -0.527739, 2.77645, 0)
+visible = false
 shadow_enabled = true
 
 [node name="readyplayerme_avatar" parent="." instance=ExtResource("3")]
@@ -124,6 +130,9 @@ transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="ValveHandModelRight" parent="." instance=ExtResource("7_x6bjb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.013, 0.941, -0.225)
+
+[node name="ValveHandModelLeft" parent="." instance=ExtResource("9_5u350")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.042322, 0.841457, 0)
 visible = false
 
 [editable path="ovr_right_hand_model"]

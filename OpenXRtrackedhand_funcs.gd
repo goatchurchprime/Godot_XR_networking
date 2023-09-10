@@ -263,7 +263,7 @@ static func setshapetobonesOVR(joint_transforms, ovrhandrestdata):
 	var tRboneposeGR18 = tRboneposeGR0*ovrhandrestdata[pinky0]*ovrhandpose[pinky0]
 	setvecstobonesG(pinky0, pinky0+1, h["hl1"], h["hl2"], h["hl3"], h["hl4"], ovrhandrestdata, ovrhandpose, tRboneposeGR18)
 	
-	for i in range(28):
+	for i in range(35):
 		if ovrhandpose.has(i):
 			ovrhandpose[i] = ovrhandrestdata[i] * ovrhandpose[i]
 	return ovrhandpose
