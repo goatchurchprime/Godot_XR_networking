@@ -25,27 +25,13 @@
 resource_local_to_scene = true
 size = Vector2(3, 2)
 
-<<<<<<< HEAD
-[sub_resource type="ViewportTexture" id="ViewportTexture_khngy"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_bkoh7"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eolp3"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_web4f"]
 transparency = 1
 cull_mode = 2
-albedo_texture = SubResource("ViewportTexture_khngy")
-=======
-[sub_resource type="ViewportTexture" id="ViewportTexture_rng13"]
-viewport_path = NodePath("Viewport")
-
-<<<<<<< Updated upstream
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u8sov"]
-=======
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uij81"]
->>>>>>> Stashed changes
-transparency = 1
-cull_mode = 2
-albedo_texture = SubResource("ViewportTexture_rng13")
->>>>>>> master
+albedo_texture = SubResource("ViewportTexture_bkoh7")
 texture_filter = 1
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ttrwc"]
@@ -182,15 +168,7 @@ size = Vector2i(550, 400)
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource("QuadMesh_wuwme")
-<<<<<<< HEAD
-surface_material_override/0 = SubResource("StandardMaterial3D_eolp3")
-=======
-<<<<<<< Updated upstream
-surface_material_override/0 = SubResource("StandardMaterial3D_u8sov")
-=======
-surface_material_override/0 = SubResource("StandardMaterial3D_uij81")
->>>>>>> Stashed changes
->>>>>>> master
+surface_material_override/0 = SubResource("StandardMaterial3D_web4f")
 
 [node name="StaticBody3D" parent="ViewportNetworkGateway" index="2"]
 viewport_size = Vector2(550, 400)
