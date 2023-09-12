@@ -89,20 +89,21 @@ func _physics_process(delta):
 	
 	if handcontrollerposeright:
 		var handcontrollerpose_relhead = headcamhorizontaltransform_fromfloor.inverse()*handcontrollerposeright
-		mskel.set_bone_pose_rotation(hand_r_control, Quaternion(mskel_bonerest_handcontrolR_inverse.basis * handcontrollerpose_relhead.basis * mskel_bonerest_handcontrolR.basis))
-		mskel.set_bone_pose_position(hand_r_control, mskel_bonerest_handcontrolR_inverse.basis * (handcontrollerpose_relhead.origin + Vector3(0, -humancofgy, -humancofgz))*dinoscale)
+		var t = mskel.get_bone_rest(hand_r_control) * mskel_bonerest_handcontrolR_inverse * handcontrollerpose_relhead * mskel_bonerest_handcontrolR
+		mskel.set_bone_pose_rotation(hand_r_control, Quaternion(t.basis))
+		#mskel.set_bone_pose_position(hand_r_control, mskel_bonerest_handcontrolR_inverse.basis * (handcontrollerpose_relhead.origin + Vector3(0, -humancofgy, -humancofgz))*dinoscale)
 
 	if handcontrollerposeleft:
 		var handcontrollerpose_relhead = headcamhorizontaltransform_fromfloor.inverse()*handcontrollerposeleft
-		mskel.set_bone_pose_rotation(hand_l_control, Quaternion(mskel_bonerest_handcontrolL_inverse.basis * handcontrollerpose_relhead.basis * mskel_bonerest_handcontrolL.basis)) 
-		mskel.set_bone_pose_position(hand_l_control, mskel_bonerest_handcontrolL_inverse.basis * (handcontrollerpose_relhead.origin + Vector3(0, -humancofgy, -humancofgz))*dinoscale)
+		mskel.set_bone_pose_rotation(hand_l_control, Quaternion(mskel.get_bone_rest(hand_l_control).basis * mskel_bonerest_handcontrolL_inverse.basis * handcontrollerpose_relhead.basis * mskel_bonerest_handcontrolL.basis)) 
+		#mskel.set_bone_pose_position(hand_l_control, mskel_bonerest_handcontrolL_inverse.basis * (handcontrollerpose_relhead.origin + Vector3(0, -humancofgy, -humancofgz))*dinoscale)
 	
 	var dinohandleft = OpenXRallhandsdata.gethandcontrollerpose(false)
 	if dinohandleft != null:
 		var dhandleft = Vector3(-dinohandleft.origin.x, dinohandleft.origin.y - humancofgy, -(dinohandleft.origin.z - humancofgz))
 		var handlcontrol_bonerest = mskel.get_bone_rest(hand_l_control)
 		var sssQ = (dhandleft*dinoscale) * handlcontrol_bonerest
-		mskel.set_bone_pose_rotation(hand_l_control, Quaternion(dinohandleft.basis.inverse()))
+		mskel.set_bone_pose_rotation(hand_l_control, Quaternion(mskel.get_bone_rest(hand_l_control).basis * dinohandleft.basis.inverse()))
 		#mskel.set_bone_pose_rotation(hand_l_control, Quaternion(dinohandleft.basis.inverse(), sssQ))
 
 	var hhdinobasis = OpenXRallhandsdata.headcam_pose.basis

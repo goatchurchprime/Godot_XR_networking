@@ -52,6 +52,7 @@ func _ready():
 	$FPController/RightHandController.button_released.connect(vr_right_button_release)
 	$FPController/LeftHandController.button_pressed.connect(vr_left_button_pressed)
 
+
 	$FPController/PlayerBody.default_physics.move_drag = 45
 	$SportBall.connect("body_entered", Callable(self, "ball_body_entered"))
 	$SportBall.connect("body_exited", Callable(self, "ball_body_exited"))
@@ -83,6 +84,9 @@ const VR_HANDTRACKING_INDEXTHUMB_PINCH = VR_BUTTON_4
 	
 func vr_right_button_pressed(button: String):
 	print("vr right button pressed ", button)
+	if button == "select_button":
+		$FPController/FunctionPointer._on_button_pressed("trigger_click", $FPController/RightHandController)
+	
 	if button == "by_button":
 		if $ViewportNetworkGateway.visible:
 			$ViewportNetworkGateway.visible = false
@@ -99,6 +103,8 @@ func vr_right_button_pressed(button: String):
 
 	
 func vr_right_button_release(button: String):
+	if button == "select_button":
+		$FPController/FunctionPointer._on_button_released("trigger_click", $FPController/RightHandController)
 	if button == "grip_click":
 		if NetworkGateway.get_node("PlayerConnections").LocalPlayer.has_method("setpaddlebody"):
 			NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(false)
@@ -117,6 +123,8 @@ func vr_left_button_pressed(button: String):
 		print("Publishing Right hand XR transforms to mqtt hand/pos")
 		$ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT.publish("hand/pos", var_to_str($FPController/OpenXRallhandsdata.joint_transforms_R))
 
+			
+	
 			
 func _input(event):
 	if event is InputEventKey and not event.echo:
@@ -159,6 +167,9 @@ func _process(delta):
 		#$ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT.publish("hand/pos", var_to_str($FPController/OpenXRallhandsdata.joint_transforms_L))
 		Dt = 0
 	
+
+
+
 
 #** Remove the debug printing messages
 #** make the -1 controllerid named
