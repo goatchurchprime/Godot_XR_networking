@@ -128,6 +128,8 @@ func _input(event):
 			NetworkGateway.get_node("PlayerConnections/Doppelganger").button_pressed = not NetworkGateway.get_node("PlayerConnections/Doppelganger").pressed
 		if (event.keycode == KEY_2):
 			NetworkGateway.selectandtrigger_networkoption(NetworkGateway.NETWORK_OPTIONS.LOCAL_NETWORK)
+		if (event.keycode == KEY_3):
+			NetworkGateway.selectandtrigger_networkoption(NetworkGateway.NETWORK_OPTIONS.AS_SERVER)
 		if event.keycode == KEY_SHIFT:
 			vr_right_button_pressed("grip_click") if event.pressed else vr_right_button_release("grip_click")
 		if event.keycode == KEY_Q and event.pressed:
