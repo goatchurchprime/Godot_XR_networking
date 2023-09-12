@@ -117,35 +117,6 @@ enum {
 	VR_BUTTON_THUMB_INDEX_PINCH_VIA_CONTROLLER_SIGNAL = 4,
 }
 
-
-
-func setupopenxrpluginhandskeleton(handskelpose, _LR):
-	# for these parameters see https://github.com/GodotVR/godot_openxr/blob/master/src/gdclasses/OpenXRPose.cpp
-	handskelpose.action = "SkeletonBase"
-	handskelpose.path = "/user/hand/right" if _LR == "_R" else "/user/hand/left"
-
-	# for these parameters see https://github.com/GodotVR/godot_openxr/blob/master/src/gdclasses/OpenXRSkeleton.cpp
-	assert (len(XRbone_names) == XR_HAND_JOINT_COUNT_EXT)
-	assert (len(boneparentsToWrist) == XR_HAND_JOINT_COUNT_EXT)
-	var handskel = handskelpose.get_child(0)
-	handskel.hand = 1 if _LR == "_R" else 0
-	handskel.motion_range = XR_HAND_JOINTS_MOTION_RANGE_UNOBSTRUCTED_EXT
-	for i in range(len(XRbone_names)):
-		handskel.add_bone(XRbone_names[i] + _LR)
-		if i >= 2:
-			handskel.set_bone_parent(i, boneparentsToWrist[i])
-
-
-func setupopenxrhandskeletonvalve(openxrhand, _LR, valveskel):
-	assert (len(XRbone_names) == XR_HAND_JOINT_COUNT_EXT)
-	assert (len(boneparentsToWrist) == XR_HAND_JOINT_COUNT_EXT)
-	var handskel = openxrhand.get_child(0)
-	valveskel.get_parent().remove_child(valveskel)
-	openxrhand.remove_child(handskel)
-	valveskel.set_name(handskel.get_name())
-	openxrhand.add_child(valveskel)
-	handskel = valveskel
-
 func setupopenxrhandskeleton(openxrskel, LR, jointtransforms):
 	assert (len(XRbone_names) == XR_HAND_JOINT_COUNT_EXT)
 	assert (len(boneparentsToWrist) == XR_HAND_JOINT_COUNT_EXT)
@@ -160,64 +131,20 @@ func setupopenxrhandskeleton(openxrskel, LR, jointtransforms):
 			openxrskel.set_bone_parent(i, boneparentsToWrist[i])
 		jointtransforms.push_back(Transform3D())
 
-func printvalvehands():
-	print("const valveboneresttransforms = {")
-	for LR in [ "L", "R" ]:
-		var skel = $ValveLeftHandModel/Armature_001/Skeleton3D if LR == "L" else $ValveRightHandModel/Armature/Skeleton3D
-		for s in XRbone_names:
-			var sl = s + "_" + LR
-			var i = skel.find_bone(sl)
-			assert (i != -1)
-			var t = skel.get_bone_rest(i)
-			var lt = 6-int((len(sl)+3)/4)
-			print('\t"%s":%sTransform3D(Vector3%s, Vector3%s, Vector3%s, Vector3%s), ' % [ sl, "\t\t\t\t\t".substr(0, lt), t.basis.x, t.basis.y, t.basis.z, t.origin ])
-	print("}")
-	
-
 func _enter_tree():
 	setupopenxrhandskeleton($OpenXRHandLeft/LeftHandBlankSkeleton, "L", joint_transforms_L)
 	setupopenxrhandskeleton($OpenXRHandRight/RightHandBlankSkeleton, "R", joint_transforms_R)
 
 func _ready():
-	#printvalvehands()
-	#setupopenxrhandskeletonvalve($OpenXRHandLeft, "_L", $ValveLeftHandModel/Armature_001/Skeleton3D)
-	#setupopenxrhandskeletonvalve($OpenXRHandRight, "_R", $ValveRightHandModel/Armature/Skeleton3D)
 	if $knucklepositionsLeft.visible:
 		while $knucklepositionsLeft.get_child_count() < XR_HAND_JOINT_COUNT_EXT:
 			$knucklepositionsLeft.add_child($knucklepositionsLeft.get_child(0).duplicate())
 
-	arvrorigin = get_parent()
-	for child in arvrorigin.get_children():
-		if child.is_class("XRController3D"):
-			if child.tracker == "left_hand":
-				arvrcontrollerleft = child
-			elif child.tracker == "right_hand":
-				arvrcontrollerright = child
-		if child.is_class("XRCamera3D"):
-			arvrheadcam = child
+	arvrorigin = XRHelpers.get_xr_origin(self)
+	arvrcontrollerleft = XRHelpers.get_left_controller(self)
+	arvrcontrollerright = XRHelpers.get_right_controller(self)
+	arvrheadcam = XRHelpers.get_xr_camera(self)
 	
-
-
-static func Dcheckbonejointalignment(joint_transforms):
-	for i in range(2, XR_HAND_JOINT_COUNT_EXT):
-		var ip = boneparentsToWrist[i]
-		var vp = joint_transforms[i].origin - joint_transforms[ip].origin
-		if ip != XR_HAND_JOINT_WRIST_EXT or i == XR_HAND_JOINT_MIDDLE_METACARPAL_EXT:
-			print(i, ",", ip, joint_transforms[ip].basis.inverse() * (vp), joint_transforms[ip].basis.x.dot(vp))
-	var Dpalmpos = 0.5*(joint_transforms[XR_HAND_JOINT_MIDDLE_METACARPAL_EXT].origin + joint_transforms[XR_HAND_JOINT_MIDDLE_PROXIMAL_EXT].origin)
-	#var ta = joint_transforms[XR_HAND_JOINT_MIDDLE_METACARPAL_EXT].origin
-	var ta = joint_transforms[XR_HAND_JOINT_WRIST_EXT].origin
-	var tb = joint_transforms[XR_HAND_JOINT_MIDDLE_PROXIMAL_EXT].origin
-	var tp = joint_transforms[XR_HAND_JOINT_PALM_EXT].origin
-	var vab = tb - ta
-	var tlam = (tp - ta).dot(vab)/vab.length_squared()
-	print("palm ", Dpalmpos - joint_transforms[XR_HAND_JOINT_PALM_EXT].origin)
-	print("Dpalm lam ", tlam, " perp ", (ta + vab*tlam - tp).length()) # joint_transforms[XR_HAND_JOINT_PALM_EXT].origin, joint_transforms[XR_HAND_JOINT_MIDDLE_METACARPAL_EXT].origin, joint_transforms[XR_HAND_JOINT_MIDDLE_PROXIMAL_EXT].origin)
-	print("tpalm ", joint_transforms[XR_HAND_JOINT_PALM_EXT].basis.z.cross(joint_transforms[XR_HAND_JOINT_MIDDLE_METACARPAL_EXT].basis.z))
-	if 0:   # test tips bases are same as previous bone
-		for itip in [ XR_HAND_JOINT_THUMB_TIP_EXT, XR_HAND_JOINT_INDEX_TIP_EXT, XR_HAND_JOINT_MIDDLE_TIP_EXT, XR_HAND_JOINT_MIDDLE_TIP_EXT, XR_HAND_JOINT_RING_TIP_EXT, XR_HAND_JOINT_LITTLE_TIP_EXT]:
-			var iptip = boneparentsToWrist[itip]
-			print("tip", itip, joint_transforms[itip].basis.inverse()*joint_transforms[iptip].basis)
 
 		
 func skel_backtoOXRjointtransforms(joint_transforms, skel):
@@ -250,29 +177,26 @@ func OXRjointtransforms(joint_transforms, skel):
 func _process(delta):
 	if $OpenXRHandLeft.visible:
 		OXRjointtransforms(joint_transforms_L, $OpenXRHandLeft/LeftHandBlankSkeleton)
+		palm_joint_confidence_L = TRACKING_CONFIDENCE_HIGH
+		if $knucklepositionsLeft.visible:
+			for i in range(min(XR_HAND_JOINT_COUNT_EXT, $knucklepositionsLeft.get_child_count())):
+				$knucklepositionsLeft.get_child(i).transform.origin = joint_transforms_L[i].origin
+
+	else:
+		palm_joint_confidence_L = TRACKING_CONFIDENCE_NOT_APPLICABLE
+
 	if $OpenXRHandRight.visible:
 		OXRjointtransforms(joint_transforms_R, $OpenXRHandRight/RightHandBlankSkeleton)
+		palm_joint_confidence_R = TRACKING_CONFIDENCE_HIGH
+	else:
+		palm_joint_confidence_R = TRACKING_CONFIDENCE_NOT_APPLICABLE
 
-	if $knucklepositionsLeft.visible:
-		for i in range(min(XR_HAND_JOINT_COUNT_EXT, $knucklepositionsLeft.get_child_count())):
-			$knucklepositionsLeft.get_child(i).transform.origin = joint_transforms_L[i].origin
-			
-var Dt = 0
-func D_physics_process(delta):
 	controller_pose_confidence_L = arvrcontrollerleft.get_pose().tracking_confidence if arvrcontrollerleft.get_is_active() else TRACKING_CONFIDENCE_NOT_APPLICABLE
 	controller_pose_confidence_R = arvrcontrollerright.get_pose().tracking_confidence if arvrcontrollerright.get_is_active() else TRACKING_CONFIDENCE_NOT_APPLICABLE
 	controller_pose_transform_L = arvrcontrollerleft.transform
 	controller_pose_transform_R = arvrcontrollerright.transform
 	headcam_pose = arvrheadcam.transform
 
-	palm_joint_confidence_L = skel_backtoOXRjointtransforms(joint_transforms_L, $OpenXRHandLeft/LeftHandBlankSkeleton) \
-			if $OpenXRHandLeft.visible else TRACKING_CONFIDENCE_NOT_APPLICABLE
-	palm_joint_confidence_R = skel_backtoOXRjointtransforms(joint_transforms_R, $OpenXRHandRight/RightHandBlankSkeleton) \
-			if $OpenXRHandRight.visible else TRACKING_CONFIDENCE_NOT_APPLICABLE
-
-	Dt += delta
-	if Dt > 2.0:
-		Dt = 0
 
 func gethandcontrollerpose(bright):
 	if (pointer_pose_confidence_R if bright else pointer_pose_confidence_L) != TRACKING_CONFIDENCE_NOT_APPLICABLE:
