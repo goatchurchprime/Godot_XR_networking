@@ -146,7 +146,7 @@ func _physics_process(delta):
 var Dt = 0
 func _process(delta):
 	#$FPController/LeftHandController/FunctionPickup.enabled = not $FPController/ARVRController3.get_is_active()
-	#$FPController/RightHandController/FunctionPickup.enabled = not $FPController/ARVRController4.get_is_active()
+	#$FPController/RightHandController/FunctionPickupwwWs.enabled = not $FPController/ARVRController4.get_is_active()
 	#if $FPController.interface != null and $FPController/OpenXRallhandsdata.is_active_R:
 	#	$FPController/RightHandController/FunctionPointer.active_button = VR_HANDTRACKING_INDEXTHUMB_PINCH
 	#else:
@@ -155,8 +155,8 @@ func _process(delta):
 	
 	Dt += delta
 	if Dt >= 10:
-		print("Printing the hand positions")
-		$ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT.publish("hand/pos", var_to_str($FPController/OpenXRallhandsdata.joint_transforms_L))
+		#print("Printing the hand positions")
+		#$ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT.publish("hand/pos", var_to_str($FPController/OpenXRallhandsdata.joint_transforms_L))
 		Dt = 0
 	
 
