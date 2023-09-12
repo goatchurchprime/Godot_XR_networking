@@ -16,7 +16,7 @@ inputs.android.url = "github:tadfisher/android-nixpkgs";
 
 outputs = { self, nixpkgs, android }: rec {
     system = "x86_64-linux";
-    version = "4.2.dev.4";
+    version = "4.2.dev4";
     pkgs = import nixpkgs { inherit system; config = { allowUnfree = true; android_sdk.accept_license = true; }; };
 
     androidenv = android.sdk.x86_64-linux (sdkPkgs: with sdkPkgs; [
@@ -77,8 +77,8 @@ outputs = { self, nixpkgs, android }: rec {
                     downloadToTemp = true;
                     postFetch = ''
                        ${unzip}/bin/unzip $downloadedFile -d ./
-                        mkdir -p $out/templates/${version}.stable
-                        mv ./templates/* $out/templates/${version}.stable
+                        mkdir -p $out/templates/${version}.dev4
+                        mv ./templates/* $out/templates/${version}.dev4
                     '';
                 };
                 in
