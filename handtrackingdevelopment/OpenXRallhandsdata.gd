@@ -93,31 +93,29 @@ func _ready():
 	arvrcontrollerright = XRHelpers.get_right_controller(self)
 	arvrheadcam = XRHelpers.get_xr_camera(self)
 	
-<<<<<<< Updated upstream
 
-		
-func skel_backtoOXRjointtransforms(joint_transforms, skel):
-	joint_transforms[0] = skel.get_parent().transform
-	joint_transforms[1] = joint_transforms[0] * skel.get_bone_pose(1)
+
+static func Dcheckbonejointalignment(joint_transforms):
 	for i in range(2, XR_HAND_JOINT_COUNT_EXT):
-		#var ip = boneparentsToWrist[i]   # wrong by one, wrist wrong place
-		var ip = skel.get_bone_parent(i)
-		joint_transforms[i] = joint_transforms[ip] * skel.get_bone_pose(i)
+		var ip = boneparentsToWrist[i]
+		var vp = joint_transforms[i].origin - joint_transforms[ip].origin
+		if ip != XR_HAND_JOINT_WRIST_EXT or i == XR_HAND_JOINT_MIDDLE_METACARPAL_EXT:
+			print(i, ",", ip, joint_transforms[ip].basis.inverse() * (vp), joint_transforms[ip].basis.x.dot(vp))
+	var Dpalmpos = 0.5*(joint_transforms[XR_HAND_JOINT_MIDDLE_METACARPAL_EXT].origin + joint_transforms[XR_HAND_JOINT_MIDDLE_PROXIMAL_EXT].origin)
+	#var ta = joint_transforms[XR_HAND_JOINT_MIDDLE_METACARPAL_EXT].origin
+	var ta = joint_transforms[XR_HAND_JOINT_WRIST_EXT].origin
+	var tb = joint_transforms[XR_HAND_JOINT_MIDDLE_PROXIMAL_EXT].origin
+	var tp = joint_transforms[XR_HAND_JOINT_PALM_EXT].origin
+	var vab = tb - ta
+	var tlam = (tp - ta).dot(vab)/vab.length_squared()
+	print("palm ", Dpalmpos - joint_transforms[XR_HAND_JOINT_PALM_EXT].origin)
+	print("Dpalm lam ", tlam, " perp ", (ta + vab*tlam - tp).length()) # joint_transforms[XR_HAND_JOINT_PALM_EXT].origin, joint_transforms[XR_HAND_JOINT_MIDDLE_METACARPAL_EXT].origin, joint_transforms[XR_HAND_JOINT_MIDDLE_PROXIMAL_EXT].origin)
+	print("tpalm ", joint_transforms[XR_HAND_JOINT_PALM_EXT].basis.z.cross(joint_transforms[XR_HAND_JOINT_MIDDLE_METACARPAL_EXT].basis.z))
+	if 0:   # test tips bases are same as previous bone
+		for itip in [ XR_HAND_JOINT_THUMB_TIP_EXT, XR_HAND_JOINT_INDEX_TIP_EXT, XR_HAND_JOINT_MIDDLE_TIP_EXT, XR_HAND_JOINT_MIDDLE_TIP_EXT, XR_HAND_JOINT_RING_TIP_EXT, XR_HAND_JOINT_LITTLE_TIP_EXT]:
+			var iptip = boneparentsToWrist[itip]
+			print("tip", itip, joint_transforms[itip].basis.inverse()*joint_transforms[iptip].basis)
 
-	# reshuffle around to it is as expected by the subsequent code where the palm was number 1
-	var jwrist = joint_transforms[XR_HAND_JOINT_COUNT_EXT-1]
-	for i in range(XR_HAND_JOINT_COUNT_EXT-1, -1, -1):
-		joint_transforms[i] = joint_transforms[i-1]
-	joint_transforms[0] = jwrist
-
-
-	if joint_transforms[XR_HAND_JOINT_THUMB_PROXIMAL_EXT].origin == Vector3.ZERO:
-		return TRACKING_CONFIDENCE_NONE
-	return TRACKING_CONFIDENCE_HIGH
-	#return skel.get_parent().get_tracking_confidence()
-
-=======
->>>>>>> Stashed changes
 func OXRjointtransforms(joint_transforms, skel):
 	joint_transforms[0] = skel.get_parent().transform
 	joint_transforms[1] = joint_transforms[0] * skel.get_bone_pose(1)
