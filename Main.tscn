@@ -25,13 +25,13 @@
 resource_local_to_scene = true
 size = Vector2(3, 2)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_pgjo0"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_khngy"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vxcy4"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eolp3"]
 transparency = 1
 cull_mode = 2
-albedo_texture = SubResource("ViewportTexture_pgjo0")
+albedo_texture = SubResource("ViewportTexture_khngy")
 texture_filter = 1
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ttrwc"]
@@ -168,7 +168,7 @@ size = Vector2i(550, 400)
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource("QuadMesh_wuwme")
-surface_material_override/0 = SubResource("StandardMaterial3D_vxcy4")
+surface_material_override/0 = SubResource("StandardMaterial3D_eolp3")
 
 [node name="StaticBody3D" parent="ViewportNetworkGateway" index="2"]
 viewport_size = Vector2(550, 400)
@@ -411,8 +411,6 @@ mesh = SubResource("34")
 
 [editable path="ViewportNetworkGateway"]
 [editable path="FPController/OpenXRallhandsdata"]
-[editable path="FPController/OpenXRallhandsdata/ValveRightHandModel"]
-[editable path="FPController/OpenXRallhandsdata/ValveLeftHandModel"]
 [editable path="FPController/FunctionPointer"]
 [editable path="SportBall"]
 [editable path="PickableBox"]

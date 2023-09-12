@@ -1,7 +1,6 @@
 extends Node3D
 class_name OpenXRallhandsdata
 
-
 var palm_joint_confidence_L = TRACKING_CONFIDENCE_NOT_APPLICABLE
 var palm_joint_confidence_R = TRACKING_CONFIDENCE_NOT_APPLICABLE
 var joint_transforms_L = [ ]
@@ -16,11 +15,6 @@ var controller_pose_transform_R : Transform3D = Transform3D()
 var controller_pose_confidence_L : int = TRACKING_CONFIDENCE_NOT_APPLICABLE
 var controller_pose_confidence_R : int = TRACKING_CONFIDENCE_NOT_APPLICABLE
 var headcam_pose : Transform3D = Transform3D()
-
-var triggerpinchedjoyvalue_L : float = 0.0
-var triggerpinchedjoyvalue_R : float = 0.0
-var grippinchedjoyvalue_L : float = 0.0
-var grippinchedjoyvalue_R : float = 0.0
 
 var arvrorigin : XROrigin3D
 var arvrheadcam : XRCamera3D
@@ -70,52 +64,6 @@ enum {
 	XR_HAND_JOINT_LITTLE_TIP_EXT = 25
 }
 
-const xrfingers = [
-	XR_HAND_JOINT_THUMB_PROXIMAL_EXT, XR_HAND_JOINT_THUMB_DISTAL_EXT, XR_HAND_JOINT_THUMB_TIP_EXT, 
-	XR_HAND_JOINT_INDEX_PROXIMAL_EXT, XR_HAND_JOINT_INDEX_INTERMEDIATE_EXT, XR_HAND_JOINT_INDEX_DISTAL_EXT, XR_HAND_JOINT_INDEX_TIP_EXT, 
-	XR_HAND_JOINT_MIDDLE_PROXIMAL_EXT, XR_HAND_JOINT_MIDDLE_INTERMEDIATE_EXT, XR_HAND_JOINT_MIDDLE_DISTAL_EXT, XR_HAND_JOINT_MIDDLE_TIP_EXT, 
-	XR_HAND_JOINT_RING_PROXIMAL_EXT, XR_HAND_JOINT_RING_INTERMEDIATE_EXT, XR_HAND_JOINT_RING_DISTAL_EXT, XR_HAND_JOINT_RING_TIP_EXT, 
-	XR_HAND_JOINT_LITTLE_PROXIMAL_EXT, XR_HAND_JOINT_LITTLE_INTERMEDIATE_EXT, XR_HAND_JOINT_LITTLE_DISTAL_EXT, XR_HAND_JOINT_LITTLE_TIP_EXT 
-]
-
-const xrbones_necessary_to_measure_extent = [
-	XR_HAND_JOINT_PALM_EXT, 
-	XR_HAND_JOINT_THUMB_TIP_EXT, 
-	XR_HAND_JOINT_INDEX_PROXIMAL_EXT, XR_HAND_JOINT_INDEX_TIP_EXT, 
-	XR_HAND_JOINT_LITTLE_PROXIMAL_EXT, XR_HAND_JOINT_LITTLE_TIP_EXT 
-]
-
-enum {
-	JOY_ID_CONTROLLER_LEFT = 2, 
-	JOY_ID_CONTROLLER_RIGHT = 3, 
-	JOY_ID_HANDLEFT = 0, 
-	JOY_ID_HANDRIGHT = 1, 
-
-	JOY_AXIS_THUMB_INDEX_PINCH = 7,   # VR_SECONDARY_Y_AXIS
-	JOY_AXIS_THUMB_MIDDLE_PINCH = 6,  # VR_SECONDARY_X_AXIS
-	JOY_AXIS_THUMB_RING_PINCH = 2,
-	JOY_AXIS_THUMB_LITTLE_PINCH = 4, 
-	
-	JOY_AXIS_THUMBSTICK_X = 0, 
-	JOY_AXIS_THUMBSTICK_Y = 1, 
-	JOY_AXIS_TRIGGER_BUTTON = 2,
-	JOY_AXIS_GRIP_BUTTON = 4,
-
-	VR_BUTTON_THUMB_INDEX_PINCH = 7,  # VR_BUTTON_AX
-	VR_BUTTON_THUMB_MIDDLE_PINCH = 1,
-	VR_BUTTON_THUMB_RING_PINCH = 15,
-	VR_BUTTON_THUMB_LITTLE_PINCH = 2,
-
-	VR_BUTTON_TRIGGER = 15,
-	VR_BUTTON_GRIP = 2,
-	VR_BUTTON_TOUCH_AX = 5, 
-	VR_BUTTON_AX = 7, 
-	VR_BUTTON_TOUCH_BY = 6,
-	VR_BUTTON_BY = 1,
-	VR_BUTTON_TOUCH_PAD = 12,
-	VR_BUTTON_PAD = 14,
-	VR_BUTTON_THUMB_INDEX_PINCH_VIA_CONTROLLER_SIGNAL = 4,
-}
 
 func setupopenxrhandskeleton(openxrskel, LR, jointtransforms):
 	assert (len(XRbone_names) == XR_HAND_JOINT_COUNT_EXT)
@@ -145,6 +93,7 @@ func _ready():
 	arvrcontrollerright = XRHelpers.get_right_controller(self)
 	arvrheadcam = XRHelpers.get_xr_camera(self)
 	
+<<<<<<< Updated upstream
 
 		
 func skel_backtoOXRjointtransforms(joint_transforms, skel):
@@ -167,6 +116,8 @@ func skel_backtoOXRjointtransforms(joint_transforms, skel):
 	return TRACKING_CONFIDENCE_HIGH
 	#return skel.get_parent().get_tracking_confidence()
 
+=======
+>>>>>>> Stashed changes
 func OXRjointtransforms(joint_transforms, skel):
 	joint_transforms[0] = skel.get_parent().transform
 	joint_transforms[1] = joint_transforms[0] * skel.get_bone_pose(1)
