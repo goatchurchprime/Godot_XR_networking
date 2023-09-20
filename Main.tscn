@@ -25,13 +25,13 @@
 resource_local_to_scene = true
 size = Vector2(3, 2)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_mig14"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_quhwg"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j1l06"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kq0x5"]
 transparency = 1
 cull_mode = 2
-albedo_texture = SubResource("ViewportTexture_mig14")
+albedo_texture = SubResource("ViewportTexture_quhwg")
 texture_filter = 1
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ttrwc"]
@@ -168,7 +168,7 @@ size = Vector2i(650, 400)
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource("QuadMesh_wuwme")
-surface_material_override/0 = SubResource("StandardMaterial3D_j1l06")
+surface_material_override/0 = SubResource("StandardMaterial3D_kq0x5")
 
 [node name="StaticBody3D" parent="ViewportNetworkGateway" index="2"]
 viewport_size = Vector2(650, 400)
@@ -244,6 +244,7 @@ shape = SubResource("6")
 [node name="Players" type="Node3D" parent="."]
 
 [node name="VRPlayerAvatar" parent="Players" instance=ExtResource("9")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.18862, 0)
 
 [node name="SportBall" parent="." instance=ExtResource("6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.43823, 3.95023, -2.82623)
