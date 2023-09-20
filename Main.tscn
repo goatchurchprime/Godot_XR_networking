@@ -25,13 +25,13 @@
 resource_local_to_scene = true
 size = Vector2(3, 2)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_bkoh7"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_mig14"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_web4f"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j1l06"]
 transparency = 1
 cull_mode = 2
-albedo_texture = SubResource("ViewportTexture_bkoh7")
+albedo_texture = SubResource("ViewportTexture_mig14")
 texture_filter = 1
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ttrwc"]
@@ -161,17 +161,17 @@ QUESTstartupprotocol = "none"
 [node name="ViewportNetworkGateway" parent="." instance=ExtResource("15")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.29126, -2.73833)
 scene = ExtResource("11")
-viewport_size = Vector2(550, 400)
+viewport_size = Vector2(650, 400)
 
 [node name="Viewport" parent="ViewportNetworkGateway" index="0"]
-size = Vector2i(550, 400)
+size = Vector2i(650, 400)
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource("QuadMesh_wuwme")
-surface_material_override/0 = SubResource("StandardMaterial3D_web4f")
+surface_material_override/0 = SubResource("StandardMaterial3D_j1l06")
 
 [node name="StaticBody3D" parent="ViewportNetworkGateway" index="2"]
-viewport_size = Vector2(550, 400)
+viewport_size = Vector2(650, 400)
 
 [node name="CollisionShape3D" parent="ViewportNetworkGateway/StaticBody3D" index="0"]
 shape = SubResource("BoxShape3D_ttrwc")
