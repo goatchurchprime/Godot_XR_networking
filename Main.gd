@@ -45,15 +45,15 @@ func _ready():
 			NetworkGateway.initialstatemqttwebrtc(NetworkGateway.NETWORK_OPTIONS_MQTT_WEBRTC.AS_NECESSARY, webrtcroomname, webrtcbroker)
 		elif PCstartupprotocol == "enet":
 			NetworkGateway.initialstatenormal(NetworkGateway.NETWORK_PROTOCOL.ENET, NetworkGateway.NETWORK_OPTIONS.AS_SERVER)
-			$FPController/PlayerBody
+			$XROrigin3D/PlayerBody
 
 	#get_node("/root").msaa = SubViewport.MSAA_4X
-	$FPController/RightHandController.button_pressed.connect(vr_right_button_pressed)
-	$FPController/RightHandController.button_released.connect(vr_right_button_release)
-	$FPController/LeftHandController.button_pressed.connect(vr_left_button_pressed)
+	$XROrigin3D/RightHandController.button_pressed.connect(vr_right_button_pressed)
+	$XROrigin3D/RightHandController.button_released.connect(vr_right_button_release)
+	$XROrigin3D/LeftHandController.button_pressed.connect(vr_left_button_pressed)
 
 
-	$FPController/PlayerBody.default_physics.move_drag = 45
+	$XROrigin3D/PlayerBody.default_physics.move_drag = 45
 	$SportBall.connect("body_entered", Callable(self, "ball_body_entered"))
 	$SportBall.connect("body_exited", Callable(self, "ball_body_exited"))
 
@@ -85,13 +85,13 @@ const VR_HANDTRACKING_INDEXTHUMB_PINCH = VR_BUTTON_4
 func vr_right_button_pressed(button: String):
 	print("vr right button pressed ", button)
 	if button == "select_button":
-		$FPController/FunctionPointer._on_button_pressed("trigger_click", $FPController/RightHandController)
+		$XROrigin3D/FunctionPointer._on_button_pressed("trigger_click", $XROrigin3D/RightHandController)
 	
 	if button == "by_button":
 		if $ViewportNetworkGateway.visible:
 			$ViewportNetworkGateway.visible = false
 		else:
-			var headtrans = $FPController/XRCamera3D.global_transform
+			var headtrans = $XROrigin3D/XRCamera3D.global_transform
 			$ViewportNetworkGateway.look_at_from_position(headtrans.origin + headtrans.basis.z*-3, 
 														  headtrans.origin + headtrans.basis.z*-3, 
 														  Vector3(0, 1, 0))
@@ -104,7 +104,7 @@ func vr_right_button_pressed(button: String):
 	
 func vr_right_button_release(button: String):
 	if button == "select_button":
-		$FPController/FunctionPointer._on_button_released("trigger_click", $FPController/RightHandController)
+		$XROrigin3D/FunctionPointer._on_button_released("trigger_click", $XROrigin3D/RightHandController)
 	if button == "grip_click":
 		if NetworkGateway.get_node("PlayerConnections").LocalPlayer.has_method("setpaddlebody"):
 			NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(false)
@@ -112,16 +112,16 @@ func vr_right_button_release(button: String):
 func vr_left_button_pressed(button: String):
 	print("vr left button pressd ", button)
 	if button == "by_button":
-		$SportBall.transform.origin = $FPController/XRCamera3D.global_transform.origin + \
+		$SportBall.transform.origin = $XROrigin3D/XRCamera3D.global_transform.origin + \
 									  Vector3(0, 2, 0) + \
-									  $FPController/XRCamera3D.global_transform.basis.z*-0.75
+									  $XROrigin3D/XRCamera3D.global_transform.basis.z*-0.75
 		
 	if button == "ax_button":
 		pass
 	if button == "by_button":
 		#$FPController/HandtrackingDevelopment.lefthandfingertap()
 		print("Publishing Right hand XR transforms to mqtt hand/pos")
-		$ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT.publish("hand/pos", var_to_str($FPController/OpenXRallhandsdata.joint_transforms_R))
+		$ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT.publish("hand/pos", var_to_str($XROrigin3D/OpenXRallhandsdata.joint_transforms_R))
 
 			
 	
@@ -133,21 +133,21 @@ func _input(event):
 		if event.keycode == KEY_F and event.pressed:
 			vr_left_button_pressed("by_button")
 		if event.keycode == KEY_G and event.pressed:
-			NetworkGateway.get_node("PlayerConnections/Doppelganger").button_pressed = not NetworkGateway.get_node("PlayerConnections/Doppelganger").pressed
+			NetworkGateway.get_node("DoppelgangerPanel/hbox/VBox_enable/DoppelgangerEnable").button_pressed = not NetworkGateway.get_node("DoppelgangerPanel/hbox/VBox_enable/DoppelgangerEnable").button_pressed
 		if (event.keycode == KEY_2):
 			NetworkGateway.selectandtrigger_networkoption(NetworkGateway.NETWORK_OPTIONS.LOCAL_NETWORK)
 		if (event.keycode == KEY_3):
 			NetworkGateway.selectandtrigger_networkoption(NetworkGateway.NETWORK_OPTIONS.AS_SERVER)
-		if event.keycode == KEY_SHIFT:
-			vr_right_button_pressed("grip_click") if event.pressed else vr_right_button_release("grip_click")
-		if event.keycode == KEY_Q and event.pressed:
-			var mqtt = get_node("/root/Main/ViewportNetworkGateway/SubViewport/NetworkGateway/MQTTsignalling/MQTT")
-			mqtt.publish("hand/pos", "hithere")
+		#if event.keycode == KEY_SHIFT:
+		#	vr_right_button_pressed("grip_click") if event.pressed else vr_right_button_release("grip_click")
+		#if event.keycode == KEY_Q and event.pressed:
+		#	var mqtt = get_node("/root/Main/ViewportNetworkGateway/SubViewport/NetworkGateway/MQTTsignalling/MQTT")
+		#	mqtt.publish("hand/pos", "hithere")
 
 func _physics_process(delta):
 	var lowestfloorheight = -30
-	if $FPController.transform.origin.y < lowestfloorheight:
-		$FPController.transform.origin = Vector3(0, 2, 0)
+	if $XROrigin3D.transform.origin.y < lowestfloorheight:
+		$XROrigin3D.transform.origin = Vector3(0, 2, 0)
 	if has_node("SportBall"):
 		if $SportBall.transform.origin.y < -3:
 			$SportBall.transform.origin = Vector3(0, 2, -3)
@@ -156,7 +156,7 @@ func _physics_process(delta):
 var Dt = 0
 func _process(delta):
 	#$FPController/LeftHandController/FunctionPickup.enabled = not $FPController/ARVRController3.get_is_active()
-	#$FPController/RightHandController/FunctionPickupwwWs.enabled = not $FPController/ARVRController4.get_is_active()
+	#$FPControllxer/RightHandController/FunctionPickupwwWs.enabled = not $FPController/ARVRController4.get_is_active()
 	#if $FPController.interface != null and $FPController/OpenXRallhandsdata.is_active_R:
 	#	$FPController/RightHandController/FunctionPointer.active_button = VR_HANDTRACKING_INDEXTHUMB_PINCH
 	#else:

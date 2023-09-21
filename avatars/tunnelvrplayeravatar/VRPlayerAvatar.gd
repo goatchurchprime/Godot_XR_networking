@@ -1,13 +1,20 @@
 extends Node3D
 
-@onready var arvrorigin = get_node("/root/Main/FPController")
+@onready var arvrorigin = XRHelpers.get_xr_origin(get_node("/root/Main/XROrigin3D"))
 var labeltext = "unknown"
 
-@onready var LeftHandController = arvrorigin.get_node("LeftHandController")
-@onready var RightHandController = arvrorigin.get_node("RightHandController")
-@onready var OpenXRallhandsdata = arvrorigin.get_node_or_null("OpenXRallhandsdata")
+@onready var LeftHandController = XRHelpers.get_left_controller(arvrorigin)
+@onready var RightHandController = XRHelpers.get_right_controller(arvrorigin)
+@onready var OpenXRHandLeft = arvrorigin.get_node_or_null("OpenXRHandLeft")
+@onready var OpenXRHandRight = arvrorigin.get_node_or_null("OpenXRHandRight")
+
 
 const TRACKING_CONFIDENCE_HIGH = 2
+const TRACKING_CONFIDENCE_NOT_APPLICABLE = -1
+const TRACKING_CONFIDENCE_NONE = 0
+
+var joint_transforms_L = [ ]
+var joint_transforms_R = [ ]
 
 var ovrhandrightrestdata = null
 var ovrhandleftrestdata = null
@@ -22,8 +29,12 @@ func _ready():
 	$ovr_right_hand_model/ArmatureRight/Skeleton3D/r_handMeshNode.set_surface_override_material(0, bluematerial)	
 	$ovr_left_hand_model/ArmatureLeft/Skeleton3D/l_handMeshNode.set_surface_override_material(0, bluematerial)
 	
+	for i in range(OpenXRInterface.HAND_JOINT_MAX):
+		joint_transforms_L.push_back(Transform3D())
+		joint_transforms_R.push_back(Transform3D())
+		
 func processavatarhand(palm_joint_confidence, joint_transforms, ovr_LR_hand_model, ovrhandLRrestdata, ControllerLR, LRHandController):
-	if palm_joint_confidence != -1:
+	if palm_joint_confidence != TRACKING_CONFIDENCE_NOT_APPLICABLE:
 		ControllerLR.visible = false
 		if palm_joint_confidence == TRACKING_CONFIDENCE_HIGH: 
 			var ovrhandpose = OpenXRtrackedhand_funcs.setshapetobonesOVR(joint_transforms, ovrhandLRrestdata)
@@ -45,12 +56,20 @@ func processavatarhand(palm_joint_confidence, joint_transforms, ovr_LR_hand_mode
 		ovr_LR_hand_model.visible = false
 		ControllerLR.visible = false
 
+
+
 func PAV_processlocalavatarposition(delta):
 	transform = shrinkavatartransform*arvrorigin.transform
 	$HeadCam.transform = arvrorigin.get_node("XRCamera3D").transform
-	if OpenXRallhandsdata:
-		processavatarhand(OpenXRallhandsdata.palm_joint_confidence_L, OpenXRallhandsdata.joint_transforms_L, $ovr_left_hand_model, ovrhandleftrestdata, $ControllerLeft, LeftHandController)
-		processavatarhand(OpenXRallhandsdata.palm_joint_confidence_R, OpenXRallhandsdata.joint_transforms_R, $ovr_right_hand_model, ovrhandrightrestdata, $ControllerRight, RightHandController)
+	var xr_interface = XRServer.primary_interface
+	if xr_interface:
+		var palm_joint_confidence_L = TRACKING_CONFIDENCE_HIGH if OpenXRHandLeft.visible else TRACKING_CONFIDENCE_NONE
+		var palm_joint_confidence_R = TRACKING_CONFIDENCE_HIGH if OpenXRHandRight.visible else TRACKING_CONFIDENCE_NONE
+		for i in range(OpenXRInterface.HAND_JOINT_MAX):
+			joint_transforms_L[i] = Transform3D(Basis(xr_interface.get_hand_joint_rotation(0, i)), xr_interface.get_hand_joint_position(0, i))
+			joint_transforms_R[i] = Transform3D(Basis(xr_interface.get_hand_joint_rotation(1, i)), xr_interface.get_hand_joint_position(1, i))
+		processavatarhand(palm_joint_confidence_L, joint_transforms_L, $ovr_left_hand_model, ovrhandleftrestdata, $ControllerLeft, LeftHandController)
+		processavatarhand(palm_joint_confidence_R, joint_transforms_R, $ovr_right_hand_model, ovrhandrightrestdata, $ControllerRight, RightHandController)
 
 func setpaddlebody(active):
 	$ControllerRight/PaddleBody.visible = active

@@ -2,7 +2,7 @@ extends Node3D
 
 @onready var mskel = $Monster/Origin/MonsterArmature/Skeleton3D
 @onready var aplayer = $Monster/Origin/AnimationPlayer
-@onready var OpenXRallhandsdata = get_node("../FPController/OpenXRallhandsdata")
+@onready var OpenXRallhandsdata = get_node_or_null("../XROrigin3D/OpenXRallhandsdata")
 
 @onready var forearm_r = mskel.find_bone("forearm .R")         # 7
 @onready var hand_r = mskel.find_bone("hand .R")               # 28

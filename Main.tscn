@@ -1,4 +1,4 @@
-[gd_scene load_steps=54 format=3 uid="uid://ckhwmlkgnklol"]
+[gd_scene load_steps=52 format=3 uid="uid://ckhwmlkgnklol"]
 
 [ext_resource type="Script" path="res://Main.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://clc5dre31iskm" path="res://addons/godot-xr-tools/xr/start_xr.tscn" id="2_y037t"]
@@ -16,22 +16,22 @@
 [ext_resource type="PackedScene" uid="uid://clujaf3u776a3" path="res://addons/godot-xr-tools/objects/viewport_2d_in_3d.tscn" id="15"]
 [ext_resource type="PackedScene" uid="uid://cqhw276realc" path="res://addons/godot-xr-tools/functions/function_pointer.tscn" id="16_j5krt"]
 [ext_resource type="PackedScene" uid="uid://ck2gyhhrb4h57" path="res://avatars/monster/monster.tscn" id="17"]
-[ext_resource type="PackedScene" uid="uid://c5up7tcoje7p1" path="res://handtrackingdevelopment/OpenXRallhandsdata.tscn" id="18"]
 [ext_resource type="PackedScene" uid="uid://drxw8a26y8m5x" path="res://tensegrityexperiments/PickableWire.tscn" id="19"]
 [ext_resource type="PackedScene" uid="uid://b4ysuy43poobf" path="res://addons/godot-xr-tools/functions/function_pickup.tscn" id="20"]
 [ext_resource type="PackedScene" uid="uid://cjyilbm4ucc7s" path="res://addons/godot-xr-tools/objects/climbable.tscn" id="21"]
+[ext_resource type="PackedScene" uid="uid://ctltchlf2j2r4" path="res://addons/xr-simulator/XRSimulator.tscn" id="21_8gxkp"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_wuwme"]
 resource_local_to_scene = true
 size = Vector2(3, 2)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_quhwg"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_bblix"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kq0x5"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1nrf0"]
 transparency = 1
 cull_mode = 2
-albedo_texture = SubResource("ViewportTexture_quhwg")
+albedo_texture = SubResource("ViewportTexture_bblix")
 texture_filter = 1
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ttrwc"]
@@ -56,16 +56,6 @@ bottom_radius = 0.001
 height = 0.06
 radial_segments = 12
 rings = 0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_81ek3"]
-albedo_color = Color(1, 0, 0, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_danrk"]
-material = SubResource("StandardMaterial3D_81ek3")
-radius = 0.015
-height = 0.03
-radial_segments = 10
-rings = 5
 
 [sub_resource type="BoxMesh" id="BoxMesh_omx8q"]
 resource_local_to_scene = true
@@ -168,7 +158,7 @@ size = Vector2i(650, 400)
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource("QuadMesh_wuwme")
-surface_material_override/0 = SubResource("StandardMaterial3D_kq0x5")
+surface_material_override/0 = SubResource("StandardMaterial3D_1nrf0")
 
 [node name="StaticBody3D" parent="ViewportNetworkGateway" index="2"]
 viewport_size = Vector2(650, 400)
@@ -176,60 +166,55 @@ viewport_size = Vector2(650, 400)
 [node name="CollisionShape3D" parent="ViewportNetworkGateway/StaticBody3D" index="0"]
 shape = SubResource("BoxShape3D_ttrwc")
 
-[node name="FPController" type="XROrigin3D" parent="."]
+[node name="XROrigin3D" type="XROrigin3D" parent="."]
 
-[node name="XRCamera3D" type="XRCamera3D" parent="FPController"]
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 environment = SubResource("Environment_spl7d")
 current = true
 
-[node name="LeftHandController" type="XRController3D" parent="FPController"]
+[node name="LeftHandController" type="XRController3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1, -0.5)
 tracker = &"left_hand"
+pose = &"aim"
 
-[node name="MovementDirect" parent="FPController/LeftHandController" instance=ExtResource("5")]
+[node name="MovementDirect" parent="XROrigin3D/LeftHandController" instance=ExtResource("5")]
 max_speed = 2.0
 strafe = true
 
-[node name="FunctionPickup" parent="FPController/LeftHandController" instance=ExtResource("20")]
+[node name="FunctionPickup" parent="XROrigin3D/LeftHandController" instance=ExtResource("20")]
 
-[node name="MarkerCone" type="MeshInstance3D" parent="FPController/LeftHandController/FunctionPickup"]
+[node name="MarkerCone" type="MeshInstance3D" parent="XROrigin3D/LeftHandController/FunctionPickup"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
 mesh = SubResource("20")
 skeleton = NodePath("")
 
-[node name="RightHandController" type="XRController3D" parent="FPController"]
+[node name="RightHandController" type="XRController3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1, -0.5)
 tracker = &"right_hand"
 
-[node name="MovementTurn" parent="FPController/RightHandController" instance=ExtResource("8")]
+[node name="MovementTurn" parent="XROrigin3D/RightHandController" instance=ExtResource("8")]
 turn_mode = 1
 step_turn_delay = 2000.0
 
-[node name="FunctionPickup" parent="FPController/RightHandController" instance=ExtResource("20")]
+[node name="FunctionPickup" parent="XROrigin3D/RightHandController" instance=ExtResource("20")]
 
-[node name="MarkerCone" type="MeshInstance3D" parent="FPController/RightHandController/FunctionPickup"]
+[node name="MarkerCone" type="MeshInstance3D" parent="XROrigin3D/RightHandController/FunctionPickup"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
 mesh = SubResource("20")
 skeleton = NodePath("")
 
-[node name="OpenXRallhandsdata" parent="FPController" instance=ExtResource("18")]
+[node name="OpenXRHandLeft" type="OpenXRHand" parent="XROrigin3D"]
 
-[node name="knucklepositionsLeft" type="Node3D" parent="FPController/OpenXRallhandsdata"]
+[node name="OpenXRHandRight" type="OpenXRHand" parent="XROrigin3D"]
+hand = 1
 
-[node name="knuckle0" type="MeshInstance3D" parent="FPController/OpenXRallhandsdata/knucklepositionsLeft"]
-mesh = SubResource("SphereMesh_danrk")
+[node name="PlayerBody" parent="XROrigin3D" instance=ExtResource("4")]
 
-[node name="PlayerBody" parent="FPController" instance=ExtResource("4")]
+[node name="FunctionPointer" parent="XROrigin3D" instance=ExtResource("16_j5krt")]
 
-[node name="FunctionPointer" parent="FPController" instance=ExtResource("16_j5krt")]
-
-[node name="Laser" parent="FPController/FunctionPointer" index="1"]
+[node name="Laser" parent="XROrigin3D/FunctionPointer" index="1"]
 mesh = SubResource("BoxMesh_omx8q")
-
-[node name="XRController3D" type="XRController3D" parent="FPController"]
-tracker = &"left_hand"
-pose = &"aim"
 
 [node name="Floor" type="StaticBody3D" parent="."]
 
@@ -410,9 +395,11 @@ mesh = SubResource("32")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, -2, 0.2)
 mesh = SubResource("34")
 
+[node name="XRSimulator" parent="." instance=ExtResource("21_8gxkp")]
+xr_origin = NodePath("../XROrigin3D")
+
 [editable path="ViewportNetworkGateway"]
-[editable path="FPController/OpenXRallhandsdata"]
-[editable path="FPController/FunctionPointer"]
+[editable path="XROrigin3D/FunctionPointer"]
 [editable path="SportBall"]
 [editable path="PickableBox"]
 [editable path="PickableBox2"]

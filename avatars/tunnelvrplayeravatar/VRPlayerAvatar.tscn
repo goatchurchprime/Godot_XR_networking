@@ -49,6 +49,7 @@ material = SubResource("4")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.307861, -0.332077, -0.346588)
 
 [node name="left_quest2_controller" parent="ControllerLeft" instance=ExtResource("7")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0.15)
 
 [node name="left_quest2_controller_world" parent="ControllerLeft/left_quest2_controller" index="1"]
 show_rest_only = true
@@ -57,6 +58,7 @@ show_rest_only = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.319285, -0.267242, -0.39732)
 
 [node name="right_quest2_contoller" parent="ControllerRight" instance=ExtResource("6")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0.15)
 
 [node name="right_quest2_controller_world" parent="ControllerRight/right_quest2_contoller" index="0"]
 show_rest_only = true
@@ -82,8 +84,8 @@ bones/5/scale = Vector3(1, 1, 1)
 [node name="PaddleBody" type="CharacterBody3D" parent="ControllerRight"]
 transform = Transform3D(0.752357, 0.658755, 0, -0.658755, 0.752357, 0, 0, 0, 1, 0.011775, -0.044319, -0.348128)
 visible = false
-collision_layer = 4096
-collision_mask = 4096
+collision_layer = 4100
+collision_mask = 4100
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ControllerRight/PaddleBody"]
 transform = Transform3D(0.704795, 0.709411, 0, -0.709411, 0.704795, 0, 0, 0, 1, 0, 0, 0)

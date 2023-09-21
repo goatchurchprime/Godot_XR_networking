@@ -92,7 +92,6 @@ func _ready():
 	arvrcontrollerleft = XRHelpers.get_left_controller(self)
 	arvrcontrollerright = XRHelpers.get_right_controller(self)
 	arvrheadcam = XRHelpers.get_xr_camera(self)
-	
 
 
 static func Dcheckbonejointalignment(joint_transforms):
@@ -125,17 +124,29 @@ func OXRjointtransforms(joint_transforms, skel):
 
 func _process(delta):
 	if $OpenXRHandLeft.visible:
-		OXRjointtransforms(joint_transforms_L, $OpenXRHandLeft/LeftHandBlankSkeleton)
+
+		var xr_interface = XRServer.primary_interface
+		if xr_interface != null:
+			for i in range(XR_HAND_JOINT_COUNT_EXT):
+				joint_transforms_L[i] = Transform3D(Basis(xr_interface.get_hand_joint_rotation(0, i)), xr_interface.get_hand_joint_position(0, i))
+		else:
+			OXRjointtransforms(joint_transforms_L, $OpenXRHandLeft/LeftHandBlankSkeleton)
 		palm_joint_confidence_L = TRACKING_CONFIDENCE_HIGH
 		if $knucklepositionsLeft.visible:
 			for i in range(min(XR_HAND_JOINT_COUNT_EXT, $knucklepositionsLeft.get_child_count())):
-				$knucklepositionsLeft.get_child(i).transform.origin = joint_transforms_L[i].origin
+				$knucklepositionsLeft.get_child(i).transform = joint_transforms_L[i]
 
 	else:
 		palm_joint_confidence_L = TRACKING_CONFIDENCE_NOT_APPLICABLE
 
+
 	if $OpenXRHandRight.visible:
-		OXRjointtransforms(joint_transforms_R, $OpenXRHandRight/RightHandBlankSkeleton)
+		var xr_interface = XRServer.primary_interface
+		if xr_interface != null:
+			for i in range(XR_HAND_JOINT_COUNT_EXT):
+				joint_transforms_R[i] = Transform3D(Basis(xr_interface.get_hand_joint_rotation(1, i)), xr_interface.get_hand_joint_position(1, i))
+		else:
+			OXRjointtransforms(joint_transforms_R, $OpenXRHandRight/RightHandBlankSkeleton)
 		palm_joint_confidence_R = TRACKING_CONFIDENCE_HIGH
 	else:
 		palm_joint_confidence_R = TRACKING_CONFIDENCE_NOT_APPLICABLE

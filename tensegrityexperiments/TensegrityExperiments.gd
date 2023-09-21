@@ -4,8 +4,8 @@ var pickableballscene = load("tensegrityexperiments/pickableball.tscn")
 var pickablestrutscene = load("tensegrityexperiments/PickableStrut.tscn")
 var pickablewirescene = load("tensegrityexperiments/PickableWire.tscn")
 
-@onready var righthandcontroller = get_node("/root/Main/FPController/RightHandController")
-@onready var lefthandcontroller = get_node("/root/Main/FPController/LeftHandController")
+@onready var righthandcontroller = get_node("/root/Main/XROrigin3D/RightHandController")
+@onready var lefthandcontroller = get_node("/root/Main/XROrigin3D/LeftHandController")
 
 func _ready():
 	if not visible:
