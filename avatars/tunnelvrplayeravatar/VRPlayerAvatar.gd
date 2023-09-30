@@ -1,13 +1,22 @@
 extends Node3D
 
-@onready var arvrorigin = get_node("/root/Main/FPController")
+@onready var arvrorigin = XRHelpers.get_xr_origin(get_node("/root/Main/XROrigin3D"))
 var labeltext = "unknown"
 
-@onready var LeftHandController = arvrorigin.get_node("LeftHandController")
-@onready var RightHandController = arvrorigin.get_node("RightHandController")
-@onready var OpenXRallhandsdata = arvrorigin.get_node_or_null("OpenXRallhandsdata")
+@onready var LeftHandController = XRHelpers.get_left_controller(arvrorigin)
+@onready var RightHandController = XRHelpers.get_right_controller(arvrorigin)
+@onready var OpenXRHandLeft = arvrorigin.get_node_or_null("OpenXRHandLeft")
+@onready var OpenXRHandRight = arvrorigin.get_node_or_null("OpenXRHandRight")
+
+var clientawaitingspawnpoint = false
+var nextframeisfirst = false
 
 const TRACKING_CONFIDENCE_HIGH = 2
+const TRACKING_CONFIDENCE_NOT_APPLICABLE = -1
+const TRACKING_CONFIDENCE_NONE = 0
+
+var joint_transforms_L = [ ]
+var joint_transforms_R = [ ]
 
 var ovrhandrightrestdata = null
 var ovrhandleftrestdata = null
@@ -22,8 +31,62 @@ func _ready():
 	$ovr_right_hand_model/ArmatureRight/Skeleton3D/r_handMeshNode.set_surface_override_material(0, bluematerial)	
 	$ovr_left_hand_model/ArmatureLeft/Skeleton3D/l_handMeshNode.set_surface_override_material(0, bluematerial)
 	
+	for i in range(OpenXRInterface.HAND_JOINT_MAX):
+		joint_transforms_L.push_back(Transform3D())
+		joint_transforms_R.push_back(Transform3D())
+		
+
+var possibleusernames = ["Alice", "Beth", "Cath", "Dan", "Earl", "Fred", "George", "Harry", "Ivan", "John", "Kevin", "Larry", "Martin", "Oliver", "Peter", "Quentin", "Robert", "Samuel", "Thomas", "Ulrik", "Victor", "Wayne", "Xavier", "Youngs", "Zephir"]
+func PF_initlocalplayer():
+	randomize()
+	labeltext = possibleusernames[randi()%len(possibleusernames)]
+	$ovr_left_hand_model/ArmatureLeft/Skeleton3D/l_handMeshNode.set_surface_override_material(0, load("res://xrassets/vrhandmaterial.tres"))
+	$ovr_right_hand_model/ArmatureRight/Skeleton3D/r_handMeshNode.set_surface_override_material(0, load("res://xrassets/vrhandmaterial.tres"))
+
+func PF_connectedtoserver():
+	if not multiplayer.is_server():
+		clientawaitingspawnpoint = true
+
+func spawnpointfornewplayer():
+	var sfd = {  NCONSTANTS2.CFI_VRORIGIN_POSITION: transform.origin, 
+				 NCONSTANTS2.CFI_VRORIGIN_ROTATION: transform.basis.get_rotation_quaternion()
+			  }
+	sfd[NCONSTANTS2.CFI_VRORIGIN_ROTATION] *= Quaternion(Vector3(0,1,0), deg_to_rad(45))
+	sfd[NCONSTANTS2.CFI_VRORIGIN_POSITION] += Vector3(1,0,-1.5)
+	return sfd
+
+func spawnpointreceivedfromserver(sfd):
+	print("** spawnpointreceivedfromserver", sfd)
+	arvrorigin.transform = Transform3D(Basis(sfd[NCONSTANTS2.CFI_VRORIGIN_ROTATION]), sfd[NCONSTANTS2.CFI_VRORIGIN_POSITION])
+	clientawaitingspawnpoint = false
+	nextframeisfirst = true
+
+func PF_datafornewconnectedplayer():
+	var avatardata = { "avatarsceneresource":get_scene_file_path(), 
+					   "labeltext":labeltext
+					 }
+	if multiplayer.is_server():
+		avatardata["spawnframedata"] = spawnpointfornewplayer()
+
+	# if we are already spawned then we should send our position
+	if not clientawaitingspawnpoint:
+		avatardata["framedata0"] = get_node("PlayerFrame").framedata0.duplicate()
+		avatardata["framedata0"].erase(NCONSTANTS.CFI_TIMESTAMP_F0)
+
+	return avatardata
+
+func PF_startupdatafromconnectedplayer(avatardata, localplayer):
+	labeltext = avatardata["labeltext"]
+	if "framedata0" in avatardata:
+		get_node("PlayerFrame").networkedavatarthinnedframedata(avatardata["framedata0"])
+	else:
+		visible = false
+	if "spawnframedata" in avatardata:
+		localplayer.spawnpointreceivedfromserver(avatardata["spawnframedata"])
+
+
 func processavatarhand(palm_joint_confidence, joint_transforms, ovr_LR_hand_model, ovrhandLRrestdata, ControllerLR, LRHandController):
-	if palm_joint_confidence != -1:
+	if palm_joint_confidence != TRACKING_CONFIDENCE_NOT_APPLICABLE:
 		ControllerLR.visible = false
 		if palm_joint_confidence == TRACKING_CONFIDENCE_HIGH: 
 			var ovrhandpose = OpenXRtrackedhand_funcs.setshapetobonesOVR(joint_transforms, ovrhandLRrestdata)
@@ -45,24 +108,37 @@ func processavatarhand(palm_joint_confidence, joint_transforms, ovr_LR_hand_mode
 		ovr_LR_hand_model.visible = false
 		ControllerLR.visible = false
 
-func PAV_processlocalavatarposition(delta):
+
+
+func PF_processlocalavatarposition(delta):
+	if clientawaitingspawnpoint:
+		return false
 	transform = shrinkavatartransform*arvrorigin.transform
 	$HeadCam.transform = arvrorigin.get_node("XRCamera3D").transform
-	if OpenXRallhandsdata:
-		processavatarhand(OpenXRallhandsdata.palm_joint_confidence_L, OpenXRallhandsdata.joint_transforms_L, $ovr_left_hand_model, ovrhandleftrestdata, $ControllerLeft, LeftHandController)
-		processavatarhand(OpenXRallhandsdata.palm_joint_confidence_R, OpenXRallhandsdata.joint_transforms_R, $ovr_right_hand_model, ovrhandrightrestdata, $ControllerRight, RightHandController)
+	var xr_interface = XRServer.primary_interface
+	if xr_interface:
+		var palm_joint_confidence_L = TRACKING_CONFIDENCE_HIGH if OpenXRHandLeft.visible else TRACKING_CONFIDENCE_NONE
+		var palm_joint_confidence_R = TRACKING_CONFIDENCE_HIGH if OpenXRHandRight.visible else TRACKING_CONFIDENCE_NONE
+		for i in range(OpenXRInterface.HAND_JOINT_MAX):
+			joint_transforms_L[i] = Transform3D(Basis(xr_interface.get_hand_joint_rotation(0, i)), xr_interface.get_hand_joint_position(0, i))
+			joint_transforms_R[i] = Transform3D(Basis(xr_interface.get_hand_joint_rotation(1, i)), xr_interface.get_hand_joint_position(1, i))
+		processavatarhand(palm_joint_confidence_L, joint_transforms_L, $ovr_left_hand_model, ovrhandleftrestdata, $ControllerLeft, LeftHandController)
+		processavatarhand(palm_joint_confidence_R, joint_transforms_R, $ovr_right_hand_model, ovrhandrightrestdata, $ControllerRight, RightHandController)
+	if clientawaitingspawnpoint:
+		return false
+	return true
 
 func setpaddlebody(active):
 	$ControllerRight/PaddleBody.visible = active
 	$ControllerRight/PaddleBody/CollisionShape3D.disabled = not active
 
-func PAV_avatartoframedata():
+func PF_avatartoframedata():
 	var fd = {  NCONSTANTS2.CFI_VRORIGIN_POSITION: transform.origin, 
 				NCONSTANTS2.CFI_VRORIGIN_ROTATION: transform.basis.get_rotation_quaternion(), 
 				NCONSTANTS2.CFI_VRHEAD_POSITION: $HeadCam.transform.origin, 
-				NCONSTANTS2.CFI_VRHEAD_ROTATION: $HeadCam.transform.basis.get_rotation_quaternion() 
+				NCONSTANTS2.CFI_VRHEAD_ROTATION: $HeadCam.transform.basis.get_rotation_quaternion(), 
+				NCONSTANTS.CFI_VISIBLE: visible 
 			 }
-			
 	if $ovr_left_hand_model.visible:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE] = -1.0
 		fd[NCONSTANTS2.CFI_VRHANDLEFT_POSITION] = $ovr_left_hand_model.transform.origin
@@ -92,6 +168,9 @@ func PAV_avatartoframedata():
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE] = 0.0
 
 	fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY] = $ControllerRight/PaddleBody.visible
+	if nextframeisfirst:
+		fd[NCONSTANTS.CFI_NOTHINFRAME] = 1
+		nextframeisfirst = false
 
 	return fd
 
@@ -104,9 +183,11 @@ func overwritetransform(orgtransform, rot, pos):
 		return Transform3D(Basis(rot), orgtransform.origin)
 	return Transform3D(Basis(rot), pos)
 
-func PAV_framedatatoavatar(fd):
+func PF_framedatatoavatar(fd):
 	transform = overwritetransform(transform, fd.get(NCONSTANTS2.CFI_VRORIGIN_ROTATION), fd.get(NCONSTANTS2.CFI_VRORIGIN_POSITION))
 	$HeadCam.transform = overwritetransform($HeadCam.transform, fd.get(NCONSTANTS2.CFI_VRHEAD_ROTATION), fd.get(NCONSTANTS2.CFI_VRHEAD_POSITION))
+	if fd.has(NCONSTANTS.CFI_VISIBLE):
+		visible = fd[NCONSTANTS.CFI_VISIBLE]
 
 	if fd.has(NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE):
 		var hcleftfade = fd.get(NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE)
@@ -141,25 +222,9 @@ func PAV_framedatatoavatar(fd):
 		print("remote setpaddlebody ", fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY])
 		setpaddlebody(fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY])
 
-		
-var possibleusernames = ["Alice", "Beth", "Cath", "Dan", "Earl", "Fred", "George", "Harry", "Ivan", "John", "Kevin", "Larry", "Martin", "Oliver", "Peter", "Quentin", "Robert", "Samuel", "Thomas", "Ulrik", "Victor", "Wayne", "Xavier", "Youngs", "Zephir"]
-func PAV_initavatarlocal():
-	randomize()
-	labeltext = possibleusernames[randi()%len(possibleusernames)]
-	$ovr_left_hand_model/ArmatureLeft/Skeleton3D/l_handMeshNode.set_surface_override_material(0, load("res://xrassets/vrhandmaterial.tres"))
-	$ovr_right_hand_model/ArmatureRight/Skeleton3D/r_handMeshNode.set_surface_override_material(0, load("res://xrassets/vrhandmaterial.tres"))
-
-func PAV_initavatarremote(avatardata):
-	labeltext = avatardata["labeltext"]
-
-func PAV_avatarinitdata():
-	var avatardata = { "avatarsceneresource":get_scene_file_path(), 
-					   "labeltext":labeltext
-					 }
-	return avatardata
 	
 
-static func PAV_changethinnedframedatafordoppelganger(fd, doppelnetoffset, isframe0):
+static func PF_changethinnedframedatafordoppelganger(fd, doppelnetoffset, isframe0):
 	fd[NCONSTANTS.CFI_TIMESTAMP] += doppelnetoffset
 	fd[NCONSTANTS.CFI_TIMESTAMPPREV] += doppelnetoffset
 	if fd.has(NCONSTANTS2.CFI_VRORIGIN_POSITION):
