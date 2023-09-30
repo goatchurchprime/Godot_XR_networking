@@ -152,7 +152,7 @@ func _physics_process(delta):
 		if $SportBall.transform.origin.y < -3:
 			$SportBall.transform.origin = Vector3(0, 2, -3)
 
-
+ 
 var Dt = 0
 func _process(delta):
 	#$FPController/LeftHandController/FunctionPickup.enabled = not $FPController/ARVRController3.get_is_active()

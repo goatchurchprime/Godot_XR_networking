@@ -1,9 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://bgw2tanm4il3j"]
+[gd_scene load_steps=13 format=3 uid="uid://bgw2tanm4il3j"]
 
 [ext_resource type="Script" path="res://avatars/tunnelvrplayeravatar/VRPlayerAvatar.gd" id="2"]
 [ext_resource type="PackedScene" uid="uid://dqc0gtk8ekr8u" path="res://xrassets/ovr_right_hand_model.glb" id="3"]
 [ext_resource type="PackedScene" uid="uid://cpgv6grdpa0ny" path="res://xrassets/ovr_left_hand_model.glb" id="5"]
 [ext_resource type="PackedScene" path="res://xrassets/right_quest2_contoller.tscn" id="6"]
+[ext_resource type="PackedScene" uid="uid://cgr1r84ekajtk" path="res://xrassets/ovr_left_hand_model_b.glb" id="6_k6jvt"]
 [ext_resource type="PackedScene" uid="uid://c83vlx50waes5" path="res://xrassets/left_quest2_controller.tscn" id="7"]
 
 [sub_resource type="BoxMesh" id="1"]
@@ -98,10 +99,15 @@ mesh = SubResource("6")
 [node name="ovr_right_hand_model" parent="." instance=ExtResource("3")]
 transform = Transform3D(-4.37114e-08, -1, 4.37114e-08, 0, -4.37114e-08, -1, 1, -4.37114e-08, 1.91069e-15, 0.337105, -0.42626, -0.236405)
 
-[node name="ovr_left_hand_model" parent="." instance=ExtResource("5")]
+[node name="ovr_left_hand_model_a" parent="." instance=ExtResource("5")]
 transform = Transform3D(-4.37114e-08, -1, -4.37114e-08, 0, -4.37114e-08, 1, -1, 4.37114e-08, 1.91069e-15, -0.263509, -0.42626, -0.236405)
+visible = false
+
+[node name="ovr_left_hand_model" parent="." instance=ExtResource("6_k6jvt")]
+transform = Transform3D(-4.37114e-08, -1, -4.37114e-08, 0, -4.37114e-08, 1, -1, 4.37114e-08, 1.91069e-15, 0, -0.310354, -0.37668)
 
 [editable path="ControllerLeft/left_quest2_controller"]
 [editable path="ControllerRight/right_quest2_contoller"]
 [editable path="ovr_right_hand_model"]
+[editable path="ovr_left_hand_model_a"]
 [editable path="ovr_left_hand_model"]
