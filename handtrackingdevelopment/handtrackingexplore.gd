@@ -86,7 +86,7 @@ func _ready():
 	#rpmavatarhandrestdata = OpenXRtrackedhand_funcs.getrpmhandrestdata(rpmavatar)
 	#gxthandrestdata = OpenXRtrackedhand_funcs.getGXThandrestdata($RightHandGXT)
 	#$RightHandGXT/AnimationTree.active = false
-	Dskel_backtoOXRjointtransforms(jointtransforms[0], $ValveHandModelLeft/Armature_001/Skeleton3D)
+	#Dskel_backtoOXRjointtransforms(jointtransforms[0], $ValveHandModelLeft/Armature_001/Skeleton3D)
 	
 	var mi = $quickjointnodes.get_child(0)
 	while $quickjointnodes.get_child_count() < 26:

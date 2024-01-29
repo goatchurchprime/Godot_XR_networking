@@ -78,7 +78,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.566518, 0, 0)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.925065, -0.301336, 0.231195, 0.0305464, 0.66577, 0.745531, -0.378578, -0.682603, 0.625085, -0.527739, 2.77645, 0)
-visible = false
 shadow_enabled = true
 
 [node name="readyplayerme_avatar" parent="." instance=ExtResource("3")]

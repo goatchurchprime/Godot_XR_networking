@@ -157,3 +157,7 @@ static func setshapetobonesOVR(joint_transforms, ovrhandrestdata):
 		ovrhandpose[i] = ovrhandrestdata[i] * ovrhandpose[i]
 	return ovrhandpose
 
+static func setshapetobonesLowPoly(joint_transforms, bonerest, bright=true):
+	return null
+static func setshapetobonesRPM(h, skelarmrest, rpmhandspose, rpmhandrestdata, bright):
+	return null

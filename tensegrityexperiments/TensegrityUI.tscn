@@ -1,4 +1,4 @@
-[gd_scene format=2]
+[gd_scene format=3 uid="uid://cnq8oyyailf74"]
 
 [node name="Control" type="Control"]
 anchor_right = 1.0
@@ -17,5 +17,5 @@ offset_top = 12.0
 offset_right = 236.0
 offset_bottom = 32.0
 text = "no-group"
-items = [ "no-group", null, false, 0, null, "wiregroup 1", null, false, 1, null, "wiregroup 2", null, false, 2, null ]
+items = ["no-group", null, false, 0, null, "wiregroup 1", null, false, 1, null, "wiregroup 2", null, false, 2, null]
 selected = 0

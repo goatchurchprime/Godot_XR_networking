@@ -23,7 +23,6 @@ Use the AssetLib to install the "Godot XR Tools - AR and VR helper library" plug
 check out https://github.com/GodotVR/godot-xr-tools next to your Godot_XR_networking directory before going into the Godot_XR_networking/addons directory 
 and executing `ln -s ../../godot-xr-tools/addons/godot-xr-tools/ godot-xr-tools`.)
 
-
 3. **Networking workbench**
 
 The networking workbench is not in the AssetLib, so you will need to check out or download the repository 
@@ -49,7 +48,16 @@ If you also want to use WebRTC capability you will need to download the latest p
  the correct arm8 libaries
 
 
-6. **Opus library**
+6. **Auto hand tracking**
+
+The networking workbench is not in the AssetLib, so you will need to check out or download the repository 
+https://github.com/Godot-Dojo/Godot-XR-AH and copy its
+Godot-XR-AH/addons/xr-autohandtracker directory into the Godot_XR_networking/addons directory.
+
+(Alternatively go into the Godot_XR_networking/addons directory and execute
+`ln -s ../../Godot-XR-AH/addons/xr-autohandtracker/ xr-autohandtracker`.)
+
+7. **Opus library**
 
 These haven't been recompiled for Godot4, but should done at some point.  This will enable VOIP over the networks using the 
 similar logic of buffering and syncronizing as we do for the avatar motions 
