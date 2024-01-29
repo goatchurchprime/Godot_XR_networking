@@ -32,9 +32,6 @@ extends Node3D
 
 
 func _ready():
-	#$FPController/LeftHandController/Function_Direct_movement.nonVRkeyboard = true
-
-
 	if OS.has_feature("QUEST"):
 		if QUESTstartupprotocol == "webrtc":
 			NetworkGateway.initialstatemqttwebrtc(NetworkGateway.NETWORK_OPTIONS_MQTT_WEBRTC.AS_NECESSARY, webrtcroomname, webrtcbroker)
@@ -75,18 +72,8 @@ func ball_body_exited(body):
 	pass
 		
 
-const VR_BUTTON_BY = 1
-const VR_BUTTON_AX = "ax_button"
-const VR_GRIP = 2
-const VR_TRIGGER = 15
-const VR_BUTTON_4 = 4
-const VR_HANDTRACKING_INDEXTHUMB_PINCH = VR_BUTTON_4
-	
 func vr_right_button_pressed(button: String):
 	print("vr right button pressed ", button)
-	if button == "select_button":
-		$XROrigin3D/FunctionPointer._on_button_pressed("trigger_click", $XROrigin3D/RightHandController)
-	
 	if button == "by_button":
 		if $ViewportNetworkGateway.visible:
 			$ViewportNetworkGateway.visible = false
@@ -103,8 +90,6 @@ func vr_right_button_pressed(button: String):
 
 	
 func vr_right_button_release(button: String):
-	if button == "select_button":
-		$XROrigin3D/FunctionPointer._on_button_released("trigger_click", $XROrigin3D/RightHandController)
 	if button == "grip_click":
 		if NetworkGateway.get_node("PlayerConnections").LocalPlayer.has_method("setpaddlebody"):
 			NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(false)
@@ -121,7 +106,7 @@ func vr_left_button_pressed(button: String):
 	if button == "by_button":
 		#$FPController/HandtrackingDevelopment.lefthandfingertap()
 		print("Publishing Right hand XR transforms to mqtt hand/pos")
-		$ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT.publish("hand/pos", var_to_str($XROrigin3D/OpenXRallhandsdata.joint_transforms_R))
+		#$ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT.publish("hand/pos", var_to_str($XROrigin3D/OpenXRallhandsdata.joint_transforms_R))
 
 			
 	
@@ -153,21 +138,8 @@ func _physics_process(delta):
 			$SportBall.transform.origin = Vector3(0, 2, -3)
 
  
-var Dt = 0
 func _process(delta):
-	#$FPController/LeftHandController/FunctionPickup.enabled = not $FPController/ARVRController3.get_is_active()
-	#$FPControllxer/RightHandController/FunctionPickupwwWs.enabled = not $FPController/ARVRController4.get_is_active()
-	#if $FPController.interface != null and $FPController/OpenXRallhandsdata.is_active_R:
-	#	$FPController/RightHandController/FunctionPointer.active_button = VR_HANDTRACKING_INDEXTHUMB_PINCH
-	#else:
-	#	$FPController/RightHandController/FunctionPointer.active_button = VR_TRIGGER
 	pass
-	
-	Dt += delta
-	if Dt >= 10:
-		#print("Printing the hand positions")
-		#$ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT.publish("hand/pos", var_to_str($FPController/OpenXRallhandsdata.joint_transforms_L))
-		Dt = 0
 	
 
 
