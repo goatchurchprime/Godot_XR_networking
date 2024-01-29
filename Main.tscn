@@ -54,13 +54,13 @@ subdivide_depth = 20
 resource_local_to_scene = true
 size = Vector2(3, 2)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_75jny"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_q48an"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yjrj4"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a60rq"]
 transparency = 1
 cull_mode = 2
-albedo_texture = SubResource("ViewportTexture_75jny")
+albedo_texture = SubResource("ViewportTexture_q48an")
 texture_filter = 1
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ttrwc"]
@@ -220,7 +220,7 @@ size = Vector2i(650, 400)
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource("QuadMesh_wuwme")
-surface_material_override/0 = SubResource("StandardMaterial3D_yjrj4")
+surface_material_override/0 = SubResource("StandardMaterial3D_a60rq")
 
 [node name="StaticBody3D" parent="ViewportNetworkGateway" index="2"]
 viewport_size = Vector2(650, 400)
@@ -412,9 +412,6 @@ mesh = SubResource("34")
 [editable path="Players/VRPlayerAvatar"]
 [editable path="Players/VRPlayerAvatar/ControllerLeft/left_quest2_controller"]
 [editable path="Players/VRPlayerAvatar/ControllerRight/right_quest2_contoller"]
-[editable path="Players/VRPlayerAvatar/ovr_right_hand_model"]
-[editable path="Players/VRPlayerAvatar/ovr_left_hand_model_a"]
-[editable path="Players/VRPlayerAvatar/ovr_left_hand_model"]
 [editable path="Players/VRPlayerAvatar/hand_l"]
 [editable path="Players/VRPlayerAvatar/hand_r"]
 [editable path="SportBall"]

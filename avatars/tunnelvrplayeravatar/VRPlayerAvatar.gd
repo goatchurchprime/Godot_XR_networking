@@ -64,8 +64,6 @@ func PF_startupdatafromconnectedplayer(avatardata, localplayer):
 	if "spawnframedata" in avatardata:
 		localplayer.spawnpointreceivedfromserver(avatardata["spawnframedata"])
 
-
-
 func skelbonescopy(skela, skelb):
 	for i in range(skela.get_bone_count()):
 		skela.set_bone_pose_rotation(i, skelb.get_bone_pose_rotation(i))
