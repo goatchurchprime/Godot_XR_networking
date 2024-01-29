@@ -121,7 +121,7 @@ func vr_left_button_pressed(button: String):
 	if button == "by_button":
 		#$FPController/HandtrackingDevelopment.lefthandfingertap()
 		print("Publishing Right hand XR transforms to mqtt hand/pos")
-		$ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT.publish("hand/pos", var_to_str($XROrigin3D/OpenXRallhandsdata.joint_transforms_R))
+		#$ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT.publish("hand/pos", var_to_str($XROrigin3D/OpenXRallhandsdata.joint_transforms_R))
 
 			
 	

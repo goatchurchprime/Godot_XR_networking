@@ -109,21 +109,19 @@ func processavatarhand(palm_joint_confidence, joint_transforms, ovr_LR_hand_mode
 		ControllerLR.visible = false
 
 
+func skelbonescopy(skela, skelb):
+	for i in range(skela.get_bone_count()):
+		skela.set_bone_pose_rotation(i, skelb.get_bone_pose_rotation(i))
 
 func PF_processlocalavatarposition(delta):
 	if clientawaitingspawnpoint:
 		return false
 	transform = shrinkavatartransform*arvrorigin.transform
 	$HeadCam.transform = arvrorigin.get_node("XRCamera3D").transform
-	var xr_interface = XRServer.primary_interface
-	if xr_interface:
-		var palm_joint_confidence_L = TRACKING_CONFIDENCE_HIGH if OpenXRHandLeft.visible else TRACKING_CONFIDENCE_NONE
-		var palm_joint_confidence_R = TRACKING_CONFIDENCE_HIGH if OpenXRHandRight.visible else TRACKING_CONFIDENCE_NONE
-		for i in range(OpenXRInterface.HAND_JOINT_MAX):
-			joint_transforms_L[i] = Transform3D(Basis(xr_interface.get_hand_joint_rotation(0, i)), xr_interface.get_hand_joint_position(0, i))
-			joint_transforms_R[i] = Transform3D(Basis(xr_interface.get_hand_joint_rotation(1, i)), xr_interface.get_hand_joint_position(1, i))
-		processavatarhand(palm_joint_confidence_L, joint_transforms_L, $ovr_left_hand_model, ovrhandleftrestdata, $ControllerLeft, LeftHandController)
-		processavatarhand(palm_joint_confidence_R, joint_transforms_R, $ovr_right_hand_model, ovrhandrightrestdata, $ControllerRight, RightHandController)
+	$hand_l.transform = arvrorigin.global_transform.inverse()*arvrorigin.get_node("LeftHandController/LeftHand/Hand_Glove_low_L").global_transform
+	skelbonescopy($hand_l/Armature/Skeleton3D, arvrorigin.get_node("LeftHandController/LeftHand/Hand_Glove_low_L/Armature/Skeleton3D"))
+	$hand_r.transform = arvrorigin.global_transform.inverse()*arvrorigin.get_node("RightHandController/RightHand/Hand_low_R").global_transform
+	skelbonescopy($hand_r/Armature/Skeleton3D, arvrorigin.get_node("RightHandController/RightHand/Hand_low_R/Armature/Skeleton3D"))
 	if clientawaitingspawnpoint:
 		return false
 	return true
@@ -139,13 +137,13 @@ func PF_avatartoframedata():
 				NCONSTANTS2.CFI_VRHEAD_ROTATION: $HeadCam.transform.basis.get_rotation_quaternion(), 
 				NCONSTANTS.CFI_VISIBLE: visible 
 			 }
-	if $ovr_left_hand_model.visible:
+	if $hand_l.visible:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE] = -1.0
-		fd[NCONSTANTS2.CFI_VRHANDLEFT_POSITION] = $ovr_left_hand_model.transform.origin
-		fd[NCONSTANTS2.CFI_VRHANDLEFT_ROTATION] = $ovr_left_hand_model.transform.basis.get_rotation_quaternion()
-		var skel = ovrhandleftrestdata["skel"]
-		for i in ovrhandleftrestdata["boneindexes"]:
-			fd[NCONSTANTS2.CFI_VRHANDLEFT_BONE_ROTATIONS+i] = skel.get_bone_pose(i).basis.get_rotation_quaternion()
+		fd[NCONSTANTS2.CFI_VRHANDLEFT_POSITION] = $hand_l.transform.origin
+		fd[NCONSTANTS2.CFI_VRHANDLEFT_ROTATION] = $hand_l.transform.basis.get_rotation_quaternion()
+		var skel = $hand_l/Armature/Skeleton3D
+		for i in range(skel.get_bone_count()):
+			fd[NCONSTANTS2.CFI_VRHANDLEFT_BONE_ROTATIONS+i] = skel.get_bone_pose_rotation(i)
 	elif $ControllerLeft.visible:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE] = 1.0
 		fd[NCONSTANTS2.CFI_VRHANDLEFT_POSITION] = $ControllerLeft.transform.origin
@@ -153,13 +151,13 @@ func PF_avatartoframedata():
 	else:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE] = 0.0
 
-	if $ovr_right_hand_model.visible:
+	if $hand_r.visible:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE] = -1.0
-		fd[NCONSTANTS2.CFI_VRHANDRIGHT_POSITION] = $ovr_right_hand_model.transform.origin
-		fd[NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION] = $ovr_right_hand_model.transform.basis.get_rotation_quaternion()
-		var skel = ovrhandrightrestdata["skel"]
-		for i in ovrhandrightrestdata["boneindexes"]:
-			fd[NCONSTANTS2.CFI_VRHANDRIGHT_BONE_ROTATIONS+i] = skel.get_bone_pose(i).basis.get_rotation_quaternion()
+		fd[NCONSTANTS2.CFI_VRHANDRIGHT_POSITION] = $hand_r.transform.origin
+		fd[NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION] = $hand_r.transform.basis.get_rotation_quaternion()
+		var skel = $hand_r/Armature/Skeleton3D
+		for i in range(skel.get_bone_count()):
+			fd[NCONSTANTS2.CFI_VRHANDRIGHT_BONE_ROTATIONS+i] = skel.get_bone_pose_rotation(i)
 	elif $ControllerRight.visible:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE] = 1.0
 		fd[NCONSTANTS2.CFI_VRHANDRIGHT_POSITION] = $ControllerRight.transform.origin
@@ -198,7 +196,15 @@ func PF_framedatatoavatar(fd):
 		$ControllerRight.visible = (hcrightfade > 0.0)
 		$ovr_right_hand_model.visible = (hcrightfade < 0.0)
 		
-	if $ovr_left_hand_model.visible:
+	if $hand_l.visible:
+		$hand_l.transform = overwritetransform($hand_l.transform, fd.get(NCONSTANTS2.CFI_VRHANDLEFT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDLEFT_POSITION))
+		var skel = $hand_l/Armature/Skeleton3D
+		for i in range(skel.get_bone_count()):
+			var frot = fd.get(NCONSTANTS2.CFI_VRHANDLEFT_BONE_ROTATIONS+i)
+			if frot != null:
+				skel.set_bone_pose_rotation(i, frot)
+
+	elif $ovr_left_hand_model.visible:
 		$ovr_left_hand_model.transform = overwritetransform($ovr_left_hand_model.transform, fd.get(NCONSTANTS2.CFI_VRHANDLEFT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDLEFT_POSITION))
 		var skel = $ovr_left_hand_model/ArmatureLeft/Skeleton3D
 		for i in ovrhandleftrestdata["boneindexes"]:
@@ -208,7 +214,15 @@ func PF_framedatatoavatar(fd):
 	elif $ControllerLeft.visible:
 		$ControllerLeft.transform = overwritetransform($ControllerLeft.transform, fd.get(NCONSTANTS2.CFI_VRHANDLEFT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDLEFT_POSITION))
 
-	if $ovr_right_hand_model.visible:
+	if $hand_r.visible:
+		$hand_r.transform = overwritetransform($hand_r.transform, fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_POSITION))
+		var skel = $hand_r/Armature/Skeleton3D
+		for i in range(skel.get_bone_count()):
+			var frot = fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_BONE_ROTATIONS+i)
+			if frot != null:
+				skel.set_bone_pose_rotation(i, frot)
+
+	elif $ovr_right_hand_model.visible:
 		$ovr_right_hand_model.transform = overwritetransform($ovr_right_hand_model.transform, fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_POSITION))
 		var skel = $ovr_right_hand_model/ArmatureRight/Skeleton3D
 		for i in ovrhandrightrestdata["boneindexes"]:
