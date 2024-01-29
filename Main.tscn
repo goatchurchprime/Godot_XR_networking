@@ -57,7 +57,7 @@ size = Vector2(3, 2)
 [sub_resource type="ViewportTexture" id="ViewportTexture_75jny"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ubmxi"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yjrj4"]
 transparency = 1
 cull_mode = 2
 albedo_texture = SubResource("ViewportTexture_75jny")
@@ -200,11 +200,6 @@ skeleton = NodePath("")
 
 [node name="AutoHandtracker" parent="XROrigin3D/RightHandController/RightHand" instance=ExtResource("6_4vxvi")]
 
-[node name="OpenXRHandLeft" type="OpenXRHand" parent="XROrigin3D"]
-
-[node name="OpenXRHandRight" type="OpenXRHand" parent="XROrigin3D"]
-hand = 1
-
 [node name="XRSimulator" parent="XROrigin3D" instance=ExtResource("21_8gxkp")]
 xr_origin = NodePath("..")
 
@@ -225,7 +220,7 @@ size = Vector2i(650, 400)
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource("QuadMesh_wuwme")
-surface_material_override/0 = SubResource("StandardMaterial3D_ubmxi")
+surface_material_override/0 = SubResource("StandardMaterial3D_yjrj4")
 
 [node name="StaticBody3D" parent="ViewportNetworkGateway" index="2"]
 viewport_size = Vector2(650, 400)

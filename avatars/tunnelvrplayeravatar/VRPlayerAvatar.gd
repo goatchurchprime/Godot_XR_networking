@@ -65,29 +65,6 @@ func PF_startupdatafromconnectedplayer(avatardata, localplayer):
 		localplayer.spawnpointreceivedfromserver(avatardata["spawnframedata"])
 
 
-func processavatarhand(palm_joint_confidence, joint_transforms, ovr_LR_hand_model, ovrhandLRrestdata, ControllerLR, LRHandController):
-	if palm_joint_confidence != TRACKING_CONFIDENCE_NOT_APPLICABLE:
-		ControllerLR.visible = false
-		if palm_joint_confidence == TRACKING_CONFIDENCE_HIGH: 
-			var ovrhandpose = OpenXRtrackedhand_funcs.setshapetobonesOVR(joint_transforms, ovrhandLRrestdata)
-			ovr_LR_hand_model.transform = ovrhandpose["handtransform"]
-			var skel = ovrhandLRrestdata["skel"]
-			for i in ovrhandLRrestdata["boneindexes"]:
-				if ovrhandpose.has(i):
-					skel.set_bone_pose_rotation(i, Quaternion(ovrhandpose[i].basis))
-					skel.set_bone_pose_position(i, ovrhandpose[i].origin)
-			ovr_LR_hand_model.visible = true
-		else:
-			ovr_LR_hand_model.visible = false
-
-	elif LRHandController.get_is_active():
-		ovr_LR_hand_model.visible = false
-		ControllerLR.transform = LRHandController.transform
-		ControllerLR.visible = true
-	else:
-		ovr_LR_hand_model.visible = false
-		ControllerLR.visible = false
-
 
 func skelbonescopy(skela, skelb):
 	for i in range(skela.get_bone_count()):

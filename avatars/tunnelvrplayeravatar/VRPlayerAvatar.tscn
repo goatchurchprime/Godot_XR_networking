@@ -1,10 +1,7 @@
-[gd_scene load_steps=17 format=3 uid="uid://bgw2tanm4il3j"]
+[gd_scene load_steps=14 format=3 uid="uid://bgw2tanm4il3j"]
 
 [ext_resource type="Script" path="res://avatars/tunnelvrplayeravatar/VRPlayerAvatar.gd" id="2"]
-[ext_resource type="PackedScene" uid="uid://dqc0gtk8ekr8u" path="res://xrassets/ovr_right_hand_model.glb" id="3"]
-[ext_resource type="PackedScene" uid="uid://cpgv6grdpa0ny" path="res://xrassets/ovr_left_hand_model.glb" id="5"]
 [ext_resource type="PackedScene" uid="uid://coia0xdb1hc3c" path="res://xrassets/right_quest2_contoller.tscn" id="6"]
-[ext_resource type="PackedScene" uid="uid://cgr1r84ekajtk" path="res://xrassets/ovr_left_hand_model_b.glb" id="6_k6jvt"]
 [ext_resource type="PackedScene" uid="uid://c83vlx50waes5" path="res://xrassets/left_quest2_controller.tscn" id="7"]
 [ext_resource type="PackedScene" uid="uid://dhaqth6q5yw4n" path="res://addons/godot-xr-tools/hands/model/hand_l.gltf" id="7_s2tnc"]
 [ext_resource type="Material" uid="uid://b718ylp68nhtc" path="res://addons/godot-xr-tools/hands/materials/glove_caucasian_green_camo.material" id="8_8gnxd"]
@@ -100,15 +97,6 @@ disabled = true
 [node name="MeshInstance3D" type="MeshInstance3D" parent="ControllerRight/PaddleBody/CollisionShape3D"]
 mesh = SubResource("6")
 
-[node name="ovr_right_hand_model" parent="." instance=ExtResource("3")]
-transform = Transform3D(-4.37114e-08, -1, 4.37114e-08, 0, -4.37114e-08, -1, 1, -4.37114e-08, 1.91069e-15, 0.337105, -0.42626, -0.236405)
-
-[node name="ovr_left_hand_model_a" parent="." instance=ExtResource("5")]
-transform = Transform3D(-4.37114e-08, -1, -4.37114e-08, 0, -4.37114e-08, 1, -1, 4.37114e-08, 1.91069e-15, -0.263509, -0.42626, -0.236405)
-
-[node name="ovr_left_hand_model" parent="." instance=ExtResource("6_k6jvt")]
-transform = Transform3D(-4.37114e-08, -1, -4.37114e-08, 0, -4.37114e-08, 1, -1, 4.37114e-08, 1.91069e-15, 0, -0.310354, -0.37668)
-
 [node name="hand_l" parent="." instance=ExtResource("7_s2tnc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.127978, -0.08176, -0.254065)
 
@@ -123,8 +111,5 @@ surface_material_override/0 = ExtResource("10_18cds")
 
 [editable path="ControllerLeft/left_quest2_controller"]
 [editable path="ControllerRight/right_quest2_contoller"]
-[editable path="ovr_right_hand_model"]
-[editable path="ovr_left_hand_model_a"]
-[editable path="ovr_left_hand_model"]
 [editable path="hand_l"]
 [editable path="hand_r"]
