@@ -15,6 +15,8 @@ const TRACKING_CONFIDENCE_NONE = 0
 
 var shrinkavatartransform = Transform3D()
 
+var projectedhands = false
+
 func _ready():
 	pass
 
@@ -77,6 +79,12 @@ func PF_processlocalavatarposition(delta):
 	skelbonescopy($hand_l/Armature/Skeleton3D, arvrorigin.get_node("LeftHandController/LeftHand/Hand_Glove_low_L/Armature/Skeleton3D"))
 	$hand_r.transform = arvrorigin.global_transform.inverse()*arvrorigin.get_node("RightHandController/RightHand/Hand_low_R").global_transform
 	skelbonescopy($hand_r/Armature/Skeleton3D, arvrorigin.get_node("RightHandController/RightHand/Hand_low_R/Armature/Skeleton3D"))
+	if projectedhands:
+		var headface = Vector3($HeadCam.transform.basis.z.x, 0, $HeadCam.transform.basis.z.z).normalized()
+		var headup = Vector3(headface.x, 0.8, headface.z)*0.25
+		$hand_r.transform.origin += Vector3(headface.x*0.2, 0.2, headface.z*0.2)
+		$hand_l.transform.origin += Vector3(headface.x*0.2, 0.2, headface.z*0.2)
+	
 	if clientawaitingspawnpoint:
 		return false
 	return true
