@@ -5,8 +5,6 @@ var labeltext = "unknown"
 
 @onready var LeftHandController = XRHelpers.get_left_controller(arvrorigin)
 @onready var RightHandController = XRHelpers.get_right_controller(arvrorigin)
-@onready var OpenXRHandLeft = arvrorigin.get_node_or_null("OpenXRHandLeft")
-@onready var OpenXRHandRight = arvrorigin.get_node_or_null("OpenXRHandRight")
 
 var clientawaitingspawnpoint = false
 var nextframeisfirst = false
@@ -15,33 +13,15 @@ const TRACKING_CONFIDENCE_HIGH = 2
 const TRACKING_CONFIDENCE_NOT_APPLICABLE = -1
 const TRACKING_CONFIDENCE_NONE = 0
 
-var joint_transforms_L = [ ]
-var joint_transforms_R = [ ]
-
-var ovrhandrightrestdata = null
-var ovrhandleftrestdata = null
-
 var shrinkavatartransform = Transform3D()
 
 func _ready():
-	ovrhandrightrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata($ovr_right_hand_model)
-	ovrhandleftrestdata = OpenXRtrackedhand_funcs.getovrhandrestdata($ovr_left_hand_model)
-	var bluematerial = $HeadCam.material.duplicate()
-	bluematerial.albedo_color = Color("#2876ea")
-	$ovr_right_hand_model/ArmatureRight/Skeleton3D/r_handMeshNode.set_surface_override_material(0, bluematerial)	
-	$ovr_left_hand_model/ArmatureLeft/Skeleton3D/l_handMeshNode.set_surface_override_material(0, bluematerial)
-	
-	for i in range(OpenXRInterface.HAND_JOINT_MAX):
-		joint_transforms_L.push_back(Transform3D())
-		joint_transforms_R.push_back(Transform3D())
-		
+	pass
 
 var possibleusernames = ["Alice", "Beth", "Cath", "Dan", "Earl", "Fred", "George", "Harry", "Ivan", "John", "Kevin", "Larry", "Martin", "Oliver", "Peter", "Quentin", "Robert", "Samuel", "Thomas", "Ulrik", "Victor", "Wayne", "Xavier", "Youngs", "Zephir"]
 func PF_initlocalplayer():
 	randomize()
 	labeltext = possibleusernames[randi()%len(possibleusernames)]
-	$ovr_left_hand_model/ArmatureLeft/Skeleton3D/l_handMeshNode.set_surface_override_material(0, load("res://xrassets/vrhandmaterial.tres"))
-	$ovr_right_hand_model/ArmatureRight/Skeleton3D/r_handMeshNode.set_surface_override_material(0, load("res://xrassets/vrhandmaterial.tres"))
 
 func PF_connectedtoserver():
 	if not multiplayer.is_server():
@@ -190,24 +170,16 @@ func PF_framedatatoavatar(fd):
 	if fd.has(NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE):
 		var hcleftfade = fd.get(NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE)
 		$ControllerLeft.visible = (hcleftfade > 0.0)
-		$ovr_left_hand_model.visible = (hcleftfade < 0.0)
+		$hand_l.visible = (hcleftfade < 0.0)
 	if fd.has(NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE):
 		var hcrightfade = fd.get(NCONSTANTS2.CFI_VRHANDCONTROLLERRIGHT_FADE)
 		$ControllerRight.visible = (hcrightfade > 0.0)
-		$ovr_right_hand_model.visible = (hcrightfade < 0.0)
+		$hand_r.visible = (hcrightfade < 0.0)
 		
 	if $hand_l.visible:
 		$hand_l.transform = overwritetransform($hand_l.transform, fd.get(NCONSTANTS2.CFI_VRHANDLEFT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDLEFT_POSITION))
 		var skel = $hand_l/Armature/Skeleton3D
 		for i in range(skel.get_bone_count()):
-			var frot = fd.get(NCONSTANTS2.CFI_VRHANDLEFT_BONE_ROTATIONS+i)
-			if frot != null:
-				skel.set_bone_pose_rotation(i, frot)
-
-	elif $ovr_left_hand_model.visible:
-		$ovr_left_hand_model.transform = overwritetransform($ovr_left_hand_model.transform, fd.get(NCONSTANTS2.CFI_VRHANDLEFT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDLEFT_POSITION))
-		var skel = $ovr_left_hand_model/ArmatureLeft/Skeleton3D
-		for i in ovrhandleftrestdata["boneindexes"]:
 			var frot = fd.get(NCONSTANTS2.CFI_VRHANDLEFT_BONE_ROTATIONS+i)
 			if frot != null:
 				skel.set_bone_pose_rotation(i, frot)
@@ -221,22 +193,12 @@ func PF_framedatatoavatar(fd):
 			var frot = fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_BONE_ROTATIONS+i)
 			if frot != null:
 				skel.set_bone_pose_rotation(i, frot)
-
-	elif $ovr_right_hand_model.visible:
-		$ovr_right_hand_model.transform = overwritetransform($ovr_right_hand_model.transform, fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_POSITION))
-		var skel = $ovr_right_hand_model/ArmatureRight/Skeleton3D
-		for i in ovrhandrightrestdata["boneindexes"]:
-			var frot = fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_BONE_ROTATIONS+i)
-			if frot != null:
-				skel.set_bone_pose_rotation(i, frot)
 	elif $ControllerRight.visible:
 		$ControllerRight.transform = overwritetransform($ControllerRight.transform, fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_ROTATION), fd.get(NCONSTANTS2.CFI_VRHANDRIGHT_POSITION))
 
 	if fd.has(NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY):
 		print("remote setpaddlebody ", fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY])
 		setpaddlebody(fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY])
-
-	
 
 static func PF_changethinnedframedatafordoppelganger(fd, doppelnetoffset, isframe0):
 	fd[NCONSTANTS.CFI_TIMESTAMP] += doppelnetoffset
