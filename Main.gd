@@ -123,6 +123,11 @@ func _input(event):
 			NetworkGateway.selectandtrigger_networkoption(NetworkGateway.NETWORK_OPTIONS.LOCAL_NETWORK)
 		if (event.keycode == KEY_3):
 			NetworkGateway.selectandtrigger_networkoption(NetworkGateway.NETWORK_OPTIONS.AS_SERVER)
+
+		if (event.keycode == KEY_4) and event.pressed:
+			NetworkGateway.get_node("PlayerConnections").LocalPlayer.projectedhands = not NetworkGateway.get_node("PlayerConnections").LocalPlayer.projectedhands
+			
+
 		#if event.keycode == KEY_SHIFT:
 		#	vr_right_button_pressed("grip_click") if event.pressed else vr_right_button_release("grip_click")
 		#if event.keycode == KEY_Q and event.pressed:
@@ -140,8 +145,6 @@ func _physics_process(delta):
  
 func _process(delta):
 	pass
-	
-
 
 
 
