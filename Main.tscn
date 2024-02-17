@@ -1,6 +1,7 @@
-[gd_scene load_steps=65 format=3 uid="uid://ckhwmlkgnklol"]
+[gd_scene load_steps=70 format=3 uid="uid://ckhwmlkgnklol"]
 
 [ext_resource type="Script" path="res://Main.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://obbgumvvb3yw" path="res://avatars/monster/mesh/redoran3.glb" id="2_6hbic"]
 [ext_resource type="PackedScene" uid="uid://clc5dre31iskm" path="res://addons/godot-xr-tools/xr/start_xr.tscn" id="2_y037t"]
 [ext_resource type="PackedScene" uid="uid://diyu06cw06syv" path="res://addons/godot-xr-tools/player/player_body.tscn" id="4"]
 [ext_resource type="PackedScene" uid="uid://bxm1ply47vaan" path="res://addons/godot-xr-tools/functions/movement_climb.tscn" id="4_5iym2"]
@@ -17,7 +18,6 @@
 [ext_resource type="PackedScene" uid="uid://cfmoahalri06d" path="res://addons/player-networking/NetworkGateway.tscn" id="11"]
 [ext_resource type="Material" path="res://addons/godot-xr-tools/materials/pointer.tres" id="11_6nfff"]
 [ext_resource type="PackedScene" uid="uid://da2qgxxwwitl6" path="res://addons/godot-xr-tools/objects/highlight/highlight_ring.tscn" id="12"]
-[ext_resource type="Script" path="res://avatars/monster/monsterpuppet.gd" id="13"]
 [ext_resource type="AudioStream" uid="uid://bpilxj5jvyxba" path="res://click04.wav" id="14"]
 [ext_resource type="PackedScene" uid="uid://clujaf3u776a3" path="res://addons/godot-xr-tools/objects/viewport_2d_in_3d.tscn" id="15"]
 [ext_resource type="PackedScene" uid="uid://cqhw276realc" path="res://addons/godot-xr-tools/functions/function_pointer.tscn" id="16_j5krt"]
@@ -26,7 +26,17 @@
 [ext_resource type="PackedScene" uid="uid://b4ysuy43poobf" path="res://addons/godot-xr-tools/functions/function_pickup.tscn" id="20"]
 [ext_resource type="PackedScene" uid="uid://cjyilbm4ucc7s" path="res://addons/godot-xr-tools/objects/climbable.tscn" id="21"]
 [ext_resource type="PackedScene" uid="uid://ctltchlf2j2r4" path="res://addons/xr-simulator/XRSimulator.tscn" id="21_8gxkp"]
+[ext_resource type="Script" path="res://manualposemaker/ManualPoseMaker.gd" id="27_6lv73"]
 [ext_resource type="PackedScene" uid="uid://dgdb1texynduw" path="res://addons/godot-xr-tools/objects/virtual_keyboard.tscn" id="51_rjdns"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jm5d6"]
+size = Vector3(0.2, 1, 0.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_p06i3"]
+size = Vector3(0.2, 1, 0.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j0g5e"]
+albedo_color = Color(3.08037e-06, 0.834992, 0.00261061, 1)
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_58518"]
 sky_curve = 0.0512265
@@ -47,34 +57,34 @@ height = 0.06
 radial_segments = 12
 rings = 0
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_m0oki"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_7ui7n"]
 animation = &"Grip"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_u8bf6"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_arh2c"]
 animation = &"Grip"
 
-[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_aer52"]
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_yxheo"]
 filter_enabled = true
 filters = ["Armature/Skeleton3D:Little_Distal_R", "Armature/Skeleton3D:Little_Intermediate_R", "Armature/Skeleton3D:Little_Metacarpal_R", "Armature/Skeleton3D:Little_Proximal_R", "Armature/Skeleton3D:Middle_Distal_R", "Armature/Skeleton3D:Middle_Intermediate_R", "Armature/Skeleton3D:Middle_Metacarpal_R", "Armature/Skeleton3D:Middle_Proximal_R", "Armature/Skeleton3D:Ring_Distal_R", "Armature/Skeleton3D:Ring_Intermediate_R", "Armature/Skeleton3D:Ring_Metacarpal_R", "Armature/Skeleton3D:Ring_Proximal_R", "Armature/Skeleton3D:Thumb_Distal_R", "Armature/Skeleton3D:Thumb_Metacarpal_R", "Armature/Skeleton3D:Thumb_Proximal_R", "Armature/Skeleton:Little_Distal_R", "Armature/Skeleton:Little_Intermediate_R", "Armature/Skeleton:Little_Proximal_R", "Armature/Skeleton:Middle_Distal_R", "Armature/Skeleton:Middle_Intermediate_R", "Armature/Skeleton:Middle_Proximal_R", "Armature/Skeleton:Ring_Distal_R", "Armature/Skeleton:Ring_Intermediate_R", "Armature/Skeleton:Ring_Proximal_R", "Armature/Skeleton:Thumb_Distal_R", "Armature/Skeleton:Thumb_Proximal_R"]
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_702xu"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_dut13"]
 animation = &"Grip 5"
 
-[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_tsqsb"]
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_qqw0a"]
 filter_enabled = true
 filters = ["Armature/Skeleton3D:Index_Distal_R", "Armature/Skeleton3D:Index_Intermediate_R", "Armature/Skeleton3D:Index_Metacarpal_R", "Armature/Skeleton3D:Index_Proximal_R", "Armature/Skeleton:Index_Distal_R", "Armature/Skeleton:Index_Intermediate_R", "Armature/Skeleton:Index_Proximal_R"]
 
-[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_t3jq7"]
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_j6qsk"]
 graph_offset = Vector2(-552.664, 107.301)
-nodes/ClosedHand1/node = SubResource("AnimationNodeAnimation_m0oki")
+nodes/ClosedHand1/node = SubResource("AnimationNodeAnimation_7ui7n")
 nodes/ClosedHand1/position = Vector2(-600, 300)
-nodes/ClosedHand2/node = SubResource("AnimationNodeAnimation_u8bf6")
+nodes/ClosedHand2/node = SubResource("AnimationNodeAnimation_arh2c")
 nodes/ClosedHand2/position = Vector2(-360, 300)
-nodes/Grip/node = SubResource("AnimationNodeBlend2_aer52")
+nodes/Grip/node = SubResource("AnimationNodeBlend2_yxheo")
 nodes/Grip/position = Vector2(0, 40)
-nodes/OpenHand/node = SubResource("AnimationNodeAnimation_702xu")
+nodes/OpenHand/node = SubResource("AnimationNodeAnimation_dut13")
 nodes/OpenHand/position = Vector2(-600, 100)
-nodes/Trigger/node = SubResource("AnimationNodeBlend2_tsqsb")
+nodes/Trigger/node = SubResource("AnimationNodeBlend2_qqw0a")
 nodes/Trigger/position = Vector2(-360, 40)
 node_connections = [&"Grip", 0, &"Trigger", &"Grip", 1, &"ClosedHand2", &"Trigger", 0, &"OpenHand", &"Trigger", 1, &"ClosedHand1", &"output", 0, &"Grip"]
 
@@ -88,13 +98,13 @@ subdivide_depth = 20
 resource_local_to_scene = true
 size = Vector2(3, 2)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_ii8yr"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_evl31"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c4xai"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ffiu6"]
 transparency = 1
 cull_mode = 2
-albedo_texture = SubResource("ViewportTexture_ii8yr")
+albedo_texture = SubResource("ViewportTexture_evl31")
 texture_filter = 1
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ttrwc"]
@@ -170,6 +180,9 @@ size = Vector3(0.05, 0.5, 0.05)
 [sub_resource type="BoxMesh" id="25"]
 size = Vector3(0.1, 1, 0.1)
 
+[sub_resource type="PrismMesh" id="PrismMesh_53dmp"]
+size = Vector3(0.01, 0.01, 0.3)
+
 [sub_resource type="CylinderShape3D" id="29"]
 
 [sub_resource type="CylinderMesh" id="26"]
@@ -184,6 +197,51 @@ size = Vector3(0.3, 0.3, 0.3)
 script = ExtResource("1")
 PCstartupprotocol = "none"
 QUESTstartupprotocol = "none"
+
+[node name="redoran3" parent="." instance=ExtResource("2_6hbic")]
+transform = Transform3D(0.0679928, 0, -0.0733279, 0, 0.1, 0, 0.0733279, 0, 0.0679928, 2.43613, 0.797336, -2.30108)
+
+[node name="Skeleton3D" parent="redoran3/MonsterArmature" index="0"]
+bones/0/position = Vector3(0.0817153, -2.19492, -3.27117)
+bones/0/rotation = Quaternion(0.287332, -0.0321373, 0.00964662, 0.957243)
+bones/1/rotation = Quaternion(-0.13614, 0.0222146, -0.0106383, 0.990384)
+bones/2/rotation = Quaternion(0.298409, 0.00448491, -0.00226909, 0.954425)
+bones/3/rotation = Quaternion(0.48161, 1.34462e-06, 8.70552e-07, 0.876386)
+bones/4/rotation = Quaternion(0.0316575, -3.45989e-06, -3.78784e-09, 0.999499)
+bones/7/rotation = Quaternion(0.0763801, 0.061587, 0.956489, -0.274777)
+bones/8/rotation = Quaternion(0.409971, -0.134561, -0.00171494, 0.902117)
+bones/10/rotation = Quaternion(-0.127545, -0.0648464, 0.37466, 0.916055)
+bones/12/rotation = Quaternion(-0.0230819, 0.167503, 0.946035, 0.276456)
+bones/13/rotation = Quaternion(0.421262, 0.122362, 0.0193305, 0.898438)
+bones/15/rotation = Quaternion(-0.209692, 0.026253, -0.735144, 0.64413)
+bones/17/rotation = Quaternion(0.969415, -0.00454635, -0.00414858, -0.245349)
+bones/18/rotation = Quaternion(0.206778, -0.00218485, 0.00749851, 0.978357)
+bones/19/rotation = Quaternion(0.150079, 0.0011529, 0.0152547, 0.988556)
+bones/20/rotation = Quaternion(0.0956063, 0.00263642, 0.0079066, 0.995384)
+bones/22/rotation = Quaternion(0.807659, 0.00587377, -0.10467, 0.580255)
+bones/23/rotation = Quaternion(0.749029, -2.92767e-08, 2.25336e-07, 0.662537)
+bones/27/rotation = Quaternion(0.95025, -0.00477782, 0.0322391, 0.309779)
+bones/28/rotation = Quaternion(0.280615, 1.25974e-08, -6.07237e-08, 0.95982)
+
+[node name="AnimationPlayer" parent="redoran3" index="1"]
+active = false
+
+[node name="ManualPoseMaker" type="Node3D" parent="."]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
+script = ExtResource("27_6lv73")
+
+[node name="ExampleBoneStick" type="CharacterBody3D" parent="ManualPoseMaker"]
+collision_layer = 4194304
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ManualPoseMaker/ExampleBoneStick"]
+transform = Transform3D(1, 0, 2.98023e-08, 0, 1, 0, -2.98023e-08, 0, 1, 0, 0.5, 0)
+shape = SubResource("BoxShape3D_jm5d6")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ManualPoseMaker/ExampleBoneStick/CollisionShape3D"]
+mesh = SubResource("BoxMesh_p06i3")
+skeleton = NodePath("../../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_j0g5e")
 
 [node name="XROrigin3D" type="XROrigin3D" parent="."]
 
@@ -205,6 +263,8 @@ strafe = true
 [node name="MovementClimb" parent="XROrigin3D/LeftHandController" instance=ExtResource("4_5iym2")]
 
 [node name="FunctionPickup" parent="XROrigin3D/LeftHandController" instance=ExtResource("20")]
+grab_collision_mask = 262156
+ranged_collision_mask = 12
 
 [node name="MarkerCone" type="MeshInstance3D" parent="XROrigin3D/LeftHandController/FunctionPickup"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
@@ -226,6 +286,8 @@ step_turn_delay = 2000.0
 [node name="MovementClimb" parent="XROrigin3D/RightHandController" instance=ExtResource("4_5iym2")]
 
 [node name="FunctionPickup" parent="XROrigin3D/RightHandController" instance=ExtResource("20")]
+grab_collision_mask = 262156
+ranged_collision_mask = 12
 
 [node name="MarkerCone" type="MeshInstance3D" parent="XROrigin3D/RightHandController/FunctionPickup"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
@@ -237,15 +299,36 @@ visible = false
 
 [node name="RightHand" parent="XROrigin3D/RightHandController" instance=ExtResource("9_a5o6e")]
 
+[node name="Skeleton3D" parent="XROrigin3D/RightHandController/RightHand/Hand_low_R/Armature" index="0"]
+bones/1/rotation = Quaternion(0.323537, 2.56577e-05, 0.0272204, 0.945824)
+bones/2/rotation = Quaternion(-0.0904441, 0.0415175, 0.166293, 0.981042)
+bones/3/rotation = Quaternion(-0.0466199, -0.020971, -0.0103276, 0.998639)
+bones/5/rotation = Quaternion(-0.00128455, 0.0116081, 0.0168259, 0.99979)
+bones/6/rotation = Quaternion(0.102925, 0.00993208, 0.00794419, 0.994608)
+bones/7/rotation = Quaternion(-0.012859, 0.0236108, 0.323258, 0.945929)
+bones/8/rotation = Quaternion(0.0120575, 0.00929193, 0.247472, 0.968775)
+bones/10/rotation = Quaternion(-0.0357539, 0.000400032, -0.00636763, 0.99934)
+bones/11/rotation = Quaternion(-0.00264964, 0.00114471, 0.125992, 0.992027)
+bones/12/rotation = Quaternion(0.0394225, -0.00193393, 0.228074, 0.972843)
+bones/13/rotation = Quaternion(-0.0123395, 0.00881294, 0.280669, 0.959685)
+bones/15/rotation = Quaternion(-0.0702656, -0.0101908, 0.0243307, 0.99718)
+bones/16/rotation = Quaternion(-0.0320634, 0.00223624, 0.0686366, 0.997124)
+bones/17/rotation = Quaternion(0.0253452, -0.00812462, 0.249005, 0.968136)
+bones/18/rotation = Quaternion(0.00252233, -0.00788073, 0.243204, 0.96994)
+bones/20/rotation = Quaternion(-0.0917369, -0.0203027, 0.010183, 0.995524)
+bones/21/rotation = Quaternion(-0.0625182, 0.000225721, 0.115393, 0.991351)
+bones/22/rotation = Quaternion(0.0585786, -0.0216483, 0.269905, 0.96086)
+bones/23/rotation = Quaternion(0.00687177, 0.00357275, 0.211953, 0.977249)
+
 [node name="BoneAttachment3D" type="BoneAttachment3D" parent="XROrigin3D/RightHandController/RightHand/Hand_low_R/Armature/Skeleton3D" index="1"]
-transform = Transform3D(0.54083, -0.840812, 0.0231736, 0.0826267, 0.0805244, 0.993322, -0.837063, -0.535304, 0.113024, -0.0399019, 0.0402829, -0.150096)
+transform = Transform3D(0.540829, -0.840813, 0.0231736, 0.0826268, 0.0805242, 0.993322, -0.837064, -0.535303, 0.113024, -0.039902, 0.0402828, -0.150096)
 bone_name = "Index_Tip_R"
 bone_idx = 9
 
 [node name="Poke" parent="XROrigin3D/RightHandController/RightHand/Hand_low_R/Armature/Skeleton3D/BoneAttachment3D" instance=ExtResource("7_xiqf5")]
 
 [node name="AnimationTree" parent="XROrigin3D/RightHandController/RightHand" index="1"]
-tree_root = SubResource("AnimationNodeBlendTree_t3jq7")
+tree_root = SubResource("AnimationNodeBlendTree_j6qsk")
 
 [node name="AutoHandtracker" parent="XROrigin3D/RightHandController/RightHand" instance=ExtResource("6_4vxvi")]
 
@@ -253,14 +336,19 @@ tree_root = SubResource("AnimationNodeBlendTree_t3jq7")
 xr_origin = NodePath("..")
 
 [node name="PlayerBody" parent="XROrigin3D" instance=ExtResource("4")]
+collision_layer = 524295
+collision_mask = 1015
 
 [node name="FunctionPointer" parent="XROrigin3D" instance=ExtResource("16_j5krt")]
+show_target = true
+target_radius = 0.01
 
 [node name="Laser" parent="XROrigin3D/FunctionPointer" index="1"]
 mesh = SubResource("BoxMesh_omx8q")
 
 [node name="VirtualKeyboard" parent="XROrigin3D" instance=ExtResource("51_rjdns")]
 transform = Transform3D(0.49751, -1.86265e-09, 0.0498422, -0.0252061, 0.43135, 0.251599, -0.0429988, -0.252859, 0.429201, 0, 0.7, -0.4)
+visible = false
 collision_layer = 5246976
 
 [node name="ViewportNetworkGateway" parent="." instance=ExtResource("15")]
@@ -273,18 +361,23 @@ size = Vector2i(650, 400)
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource("QuadMesh_wuwme")
-surface_material_override/0 = SubResource("StandardMaterial3D_c4xai")
+surface_material_override/0 = SubResource("StandardMaterial3D_ffiu6")
 
 [node name="StaticBody3D" parent="ViewportNetworkGateway" index="2"]
 viewport_size = Vector2(650, 400)
 
 [node name="CollisionShape3D" parent="ViewportNetworkGateway/StaticBody3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.00999999)
 shape = SubResource("BoxShape3D_ttrwc")
 
 [node name="Players" type="Node3D" parent="."]
 
 [node name="VRPlayerAvatar" parent="Players" instance=ExtResource("9")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.18862, 0)
+
+[node name="PaddleBody" parent="Players/VRPlayerAvatar/ControllerRight" index="1"]
+collision_layer = 0
+collision_mask = 4096
 
 [node name="Floor" type="StaticBody3D" parent="."]
 
@@ -391,19 +484,10 @@ shape = SubResource("24")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="PickableBox2"]
 mesh = SubResource("25")
 
-[node name="PickableBox3" parent="." instance=ExtResource("6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.3109, 0.553108, -0.884537)
-ranged_grab_method = 2
-ranged_grab_speed = 10.0
-
-[node name="CollisionShape3D" parent="PickableBox3" index="0"]
-shape = SubResource("24")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="PickableBox3"]
-mesh = SubResource("25")
-
 [node name="PickableBox4" parent="." instance=ExtResource("6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.95457, 0.553108, -0.884537)
+transform = Transform3D(0.230763, -0.97301, 0, 0.97301, 0.230763, 0, 0, 0, 1, -1.37321, 1.41401, -2.05084)
+collision_layer = 8
+collision_mask = 196623
 ranged_grab_method = 2
 ranged_grab_speed = 10.0
 
@@ -413,8 +497,30 @@ shape = SubResource("24")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="PickableBox4"]
 mesh = SubResource("25")
 
+[node name="HingeJoint3D" type="HingeJoint3D" parent="."]
+transform = Transform3D(0.230763, -0.972956, 0.010206, 0.97301, 0.23075, -0.00242052, 7.45058e-09, 0.0104891, 0.999945, -0.737203, 1.28749, -2.1382)
+node_a = NodePath("../PickableBox3")
+node_b = NodePath("../PickableBox4")
+params/bias = 0.38
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HingeJoint3D"]
+mesh = SubResource("PrismMesh_53dmp")
+
+[node name="PickableBox3" parent="." instance=ExtResource("6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.849171, 1.88594, -2.04938)
+collision_layer = 8
+collision_mask = 196623
+ranged_grab_method = 2
+ranged_grab_speed = 10.0
+
+[node name="CollisionShape3D" parent="PickableBox3" index="0"]
+shape = SubResource("24")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PickableBox3"]
+mesh = SubResource("25")
+
 [node name="ClimbableCylinder" parent="." instance=ExtResource("21")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.517, 1, -1.06835)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.53583, 1, -1.06835)
 
 [node name="CollisionShape3D" parent="ClimbableCylinder" index="0"]
 shape = SubResource("29")
@@ -424,16 +530,45 @@ mesh = SubResource("26")
 skeleton = NodePath("")
 
 [node name="MonsterPuppet" type="Node3D" parent="."]
-script = ExtResource("13")
 
 [node name="Monster" parent="MonsterPuppet" instance=ExtResource("17")]
 transform = Transform3D(0.1, 0, 0.173205, 0, 0.2, 0, -0.173205, 0, 0.1, -2.55334, 1.51881, -2.32625)
+
+[node name="Origin" parent="MonsterPuppet/Monster" index="0"]
+transform = Transform3D(1, 0, 2.98023e-08, 0, 1, 0, -2.98023e-08, 0, 1, 8.66026, 0, -5)
 
 [node name="MonsterArmature" parent="MonsterPuppet/Monster/Origin" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Skeleton3D" parent="MonsterPuppet/Monster/Origin/MonsterArmature" index="0"]
+bones/0/position = Vector3(-0.377575, -2.84203, -3.14909)
+bones/0/rotation = Quaternion(0.300364, 0.0659212, -0.0167433, 0.951397)
+bones/1/rotation = Quaternion(-0.167478, 0.0609329, -0.0358197, 0.983339)
+bones/2/rotation = Quaternion(0.250997, -0.118496, 0.0599237, 0.958837)
+bones/3/rotation = Quaternion(0.532495, 8.45286e-05, -0.000406807, 0.846433)
+bones/4/rotation = Quaternion(0.0316576, -3.4554e-06, -3.77325e-09, 0.999499)
+bones/5/rotation = Quaternion(0.0587972, -0.0896365, 0.849196, -0.517082)
+bones/6/rotation = Quaternion(0.877976, -0.0703687, -0.00518207, 0.473476)
+bones/7/rotation = Quaternion(-0.0355356, -0.0423562, 0.939017, 0.339397)
 bones/8/rest = Transform3D(0.967, 0.121, 0.224, 0.131, 0.52, -0.844, -0.218, 0.846, 0.487, 0, 2.283, 0)
+bones/8/rotation = Quaternion(0.63464, 0.113607, 0.00374578, 0.764402)
+bones/9/rotation = Quaternion(0.969396, 0.00676478, 0.00561362, -0.245344)
+bones/10/rotation = Quaternion(0.205645, -0.0293205, 0.100629, 0.972997)
+bones/11/rotation = Quaternion(0.149372, 0.00739538, 0.0978545, 0.983899)
+bones/12/rotation = Quaternion(0.0955216, 0.0135708, 0.0406984, 0.994502)
+bones/13/rotation = Quaternion(0.886894, 0.0449591, -0.328613, 0.321577)
+bones/14/rotation = Quaternion(0.478488, 2.94276e-08, 1.312e-07, 0.878094)
+bones/15/rotation = Quaternion(0.78146, -0.0549791, 0.0516263, 0.61938)
+bones/16/rotation = Quaternion(0.513548, 4.04304e-09, -1.06503e-07, 0.858061)
+bones/20/position = Vector3(2.98392, 1.086, -0.634806)
+bones/20/rotation = Quaternion(0.930406, 0.361888, 0.00611544, 0.0578277)
+bones/22/rotation = Quaternion(-0.235365, 0.0089176, 0.62915, 0.740739)
+bones/23/position = Vector3(2.29045, 1.99679, -9.89013)
+bones/26/position = Vector3(-2.10814, -4.37533, 4.97153)
+bones/27/position = Vector3(-2.76793, -0.278769, 0.884654)
+bones/27/rotation = Quaternion(0.875899, -0.480698, 0.0369984, -0.019013)
+bones/29/rotation = Quaternion(-0.174408, 0.00747827, -0.51042, 0.84202)
+bones/30/position = Vector3(-4.33065, 2.54244, -10)
 
 [node name="MonsterMesh" parent="MonsterPuppet/Monster/Origin/MonsterArmature/Skeleton3D" index="0"]
 transform = Transform3D(1, 0, 2.98023e-08, 0, 1, 0, -2.98023e-08, 0, 1, 0, 0, 0)
@@ -460,6 +595,37 @@ mesh = SubResource("32")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, -2, 0.2)
 mesh = SubResource("34")
 
+[node name="PickableBox5" parent="." instance=ExtResource("6")]
+transform = Transform3D(0.230763, -0.97301, 0, 0.97301, 0.230763, 0, 0, 0, 1, 0.532191, 1.41401, -2.05084)
+ranged_grab_method = 2
+ranged_grab_speed = 10.0
+
+[node name="CollisionShape3D" parent="PickableBox5" index="0"]
+shape = SubResource("24")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PickableBox5"]
+mesh = SubResource("25")
+
+[node name="HingeJoint3D2" type="HingeJoint3D" parent="PickableBox5"]
+transform = Transform3D(0.999999, 1.5825e-05, 0.00121218, 3.14415e-06, 0.999878, -0.0156004, -0.00121229, 0.0156003, 0.999877, 0.0259113, -0.659633, -0.0871594)
+node_a = NodePath("..")
+node_b = NodePath("../../PickableBox6")
+
+[node name="PickableBox6" parent="." instance=ExtResource("6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.05623, 1.88594, -2.04938)
+freeze = true
+ranged_grab_method = 2
+ranged_grab_speed = 10.0
+
+[node name="CollisionShape3D" parent="PickableBox6" index="0"]
+shape = SubResource("24")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PickableBox6"]
+mesh = SubResource("25")
+
+[connection signal="gui_input" from="ViewportNetworkGateway/Viewport/NetworkGateway" to="ViewportNetworkGateway/Viewport/NetworkGateway" method="_on_gui_input"]
+
+[editable path="redoran3"]
 [editable path="XROrigin3D/RightHandController/RightHand"]
 [editable path="XROrigin3D/RightHandController/RightHand/Hand_low_R"]
 [editable path="XROrigin3D/FunctionPointer"]
@@ -472,8 +638,10 @@ mesh = SubResource("34")
 [editable path="SportBall"]
 [editable path="PickableBox"]
 [editable path="PickableBox2"]
-[editable path="PickableBox3"]
 [editable path="PickableBox4"]
+[editable path="PickableBox3"]
 [editable path="ClimbableCylinder"]
 [editable path="MonsterPuppet/Monster"]
 [editable path="MonsterPuppet/Monster/Origin"]
+[editable path="PickableBox5"]
+[editable path="PickableBox6"]
