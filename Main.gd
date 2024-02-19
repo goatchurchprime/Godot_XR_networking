@@ -84,9 +84,9 @@ func vr_right_button_pressed(button: String):
 														  Vector3(0, 1, 0))
 			$ViewportNetworkGateway.visible = true
 			
-	if button == "grip_click":
-		if NetworkGateway.get_node("PlayerConnections").LocalPlayer.has_method("setpaddlebody"):
-			NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(true)
+	#if button == "grip_click":
+	#	if NetworkGateway.get_node("PlayerConnections").LocalPlayer.has_method("setpaddlebody"):
+	#		NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(true)
 
 	
 func vr_right_button_release(button: String):
