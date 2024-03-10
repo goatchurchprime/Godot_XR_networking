@@ -28,16 +28,44 @@ class VerletJoint:
 		pjlen = (ptransform.origin - pptransform.origin).length()
 		jlen = (btransform.origin - ptransform.origin).length()
 
-	func movebone(moveparent):
+	func movebone(moveparent, clam, posescene):
 		var jointpos = jbone.transform.origin - jbone.transform.basis.y*(jlen/2)
 		var pjointpos = pjbone.transform.origin + pjbone.transform.basis.y*(pjlen/2)
 		if moveparent:
+			var cenrot = pjbone.transform.origin + pjbone.transform.basis.y*clam
+			var b = posescene.rotationtoalign(pjbone.transform.basis.y, jointpos - cenrot)
+			pjbone.transform.basis = b*pjbone.transform.basis
+			pjointpos = pjbone.transform.origin + pjbone.transform.basis.y*(pjlen/2)
 			pjbone.transform.origin += jointpos - pjointpos
+
+
 		else:
+			var cenrot = jbone.transform.origin + jbone.transform.basis.y*clam
+			var b = posescene.rotationtoalign(jbone.transform.basis.y, jbone.transform.origin - pjointpos)
+			jbone.transform.basis = b*jbone.transform.basis
+			jointpos = jbone.transform.origin - jbone.transform.basis.y*(jlen/2)
 			jbone.transform.origin += pjointpos - jointpos 
 
 var vjoints = [ ]
 
+
+func minenergymove(j):
+	var bonesvisited = [ j ]
+	var bonesprocessing = [ j ]
+	while len(bonesprocessing) != 0:
+		var lj = bonesprocessing.pop_front()
+		var vjs = [ ]
+		for vjoint in vjoints:
+			if vjoint.j == lj and not bonesvisited.has(vjoint.pj):
+				vjoint.movebone(true, -0.5, self)
+				vjs.append(vjoint.pj)
+			if vjoint.pj == lj and not bonesvisited.has(vjoint.j):
+				vjoint.movebone(false, 0.5, self)
+				vjs.append(vjoint.j)
+		bonesprocessing.append_array(vjs)
+		bonesvisited.append_array(vjs)
+
+		
 static func rotationtoalign(a, b):
 	var axis = a.cross(b).normalized()
 	if (axis.length_squared() != 0):
@@ -46,7 +74,6 @@ static func rotationtoalign(a, b):
 		var angle_rads = acos(dot)
 		return Basis(axis, angle_rads)
 	return Basis()
-
 
 
 func updatebones():
@@ -73,20 +100,25 @@ func updatebones():
 				joint.node_b = NodePath("../../bonestick%d" % pj)
 		add_child(rj)
 		
-	for vjoint in vjoints:
-		vjoint.movebone(true)
+	#for vjoint in vjoints:
+	#	vjoint.movebone(true)
 
 
 	skel.reset_bone_poses()
 
 var pickedbones = [ ]
+var disableverlet = true
 
 func onbonestickpickedup(b):
 	print("pickup ", b.get_path())
 	pickedbones.append(b.name.to_int())
 func onbonestickdropped(b):
 	print("drop ", b.name, "  ", b.name.to_int()*1000)
-	pickedbones.erase(b.name.to_int())
+	var jdropped = b.name.to_int()
+	pickedbones.erase(jdropped)
+	if len(pickedbones) == 0 and disableverlet:
+		minenergymove(jdropped)
+
 
 func verletrun():
 	for j in pickedbones:
@@ -97,16 +129,18 @@ func verletrun():
 			var vjs = [ ]
 			for vjoint in vjoints:
 				if vjoint.j == lj and not bonesvisited.has(vjoint.pj):
-					vjoint.movebone(true)
+					vjoint.movebone(true, -0.5, self)
 					vjs.append(vjoint.pj)
 				if vjoint.pj == lj and not bonesvisited.has(vjoint.j):
-					vjoint.movebone(false)
+					vjoint.movebone(false, 0.5, self)
 					vjs.append(vjoint.j)
 			bonesprocessing.append_array(vjs)
 			bonesvisited.append_array(vjs)
 
 func _process(delta):
-	verletrun()
+	if not disableverlet:
+		verletrun()
+		verletrun()
 
 func _ready():
 	#var bonestickscene = load("res://manualposemaker/pickablebonestick.tscn")
