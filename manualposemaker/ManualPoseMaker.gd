@@ -19,7 +19,7 @@ func _ready():
 		bu.boneindex = j
 		var jparent = skel.get_bone_parent(j)
 		if jparent != -1:
-			bu.nextboneunitjoints = [ { "nextboneunit":jparent, "nextboneunitjoint":skel.get_bone_children(jparent).find(j) }]
+			bu.nextboneunitjoints = [ { "nextboneunit":jparent, "nextboneunitjoint":skel.get_bone_children(jparent).find(j)+1 }]
 		else:
 			bu.nextboneunitjoints = [ { } ]
 		var buc = skel.get_bone_children(j)
@@ -42,8 +42,9 @@ func _ready():
 		bu.bonecentre = sumboneunitjointpos/len(bu.nextboneunitjoints)
 		var sumbonelengths = 0.0
 		for i in range(len(bu.nextboneunitjoints)):
-			bu.nextboneunitjoints[i]["jointvector"] = boneunitjointspos[i] - bu.bonecentre
-			bu.bonemass += bu.nextboneunitjoints[i]["jointvector"].length()
+			var jointvectorabs = boneunitjointspos[i] - bu.bonecentre
+			bu.nextboneunitjoints[i]["jointvector"] = bu.bonequat.inverse()*jointvectorabs
+			bu.bonemass += jointvectorabs.length()
 		if len(bu.nextboneunitjoints) <= (2 if not bu.nextboneunitjoints[0].has("nextboneunit") else 1):
 			print("bonemass 0 on unit ", j)
 			bu.bonemass = 0.0
@@ -56,7 +57,7 @@ func _ready():
 			rj.picked_up.connect(onbonestickpickedup)
 			rj.dropped.connect(onbonestickdropped)
 			var vpb = bu.nextboneunitjoints[1]["jointvector"] - bu.nextboneunitjoints[0]["jointvector"]
-			print(j, " ", len(bu.nextboneunitjoints), "  ", Basis(bu.bonequat).inverse()*vpb)
+			#print(j, " ", len(bu.nextboneunitjoints), "  ", Basis(bu.bonequat).inverse()*vpb)
 			var vpblen = vpb.length()
 			rj.get_node("CollisionShape3D").shape.size.y = vpblen*1.8
 			rj.get_node("MeshInstance3D").mesh.size.y = vpblen*0.9
@@ -65,9 +66,65 @@ func _ready():
 			bu.bonestick.transform = Transform3D(bu.bonequat, bu.bonecentre)
 
 
-func minenergymove(jmoved):
-	print("minenergymove(jmoved)")
+var propbonequats = [ ]
+var propbonedisplacements = [ ]
+var bonejointsequence = [ ]  # [ [ boneunitindexj, nextjointindex ], ... ]
 
+func calcbonedisplacementsfromquats():
+	for i in range(len(bonejointsequence)):
+		var j = bonejointsequence[i][0]
+		var nextjointindex = bonejointsequence[i][1]
+		var bu = boneunits[j]
+		var buquat = bu.bonequat*propbonequats[j]
+		var bucentre = bu.bonecentre + propbonedisplacements[j]
+		var nexjnt = bu.nextboneunitjoints[nextjointindex]
+		var jointpos = bucentre + buquat*nexjnt["jointvector"]
+		var jnext = nexjnt["nextboneunit"]
+		var bunext = boneunits[jnext]
+		var nexjntback = bunext.nextboneunitjoints[nexjnt["nextboneunitjoint"]]
+		assert (nexjntback["nextboneunit"] == j and nexjntback["nextboneunitjoint"] == nextjointindex)
+		var bunextquat = bunext.bonequat*propbonequats[jnext]
+		var bunextgcentre = jointpos - bunextquat*nexjntback["jointvector"]
+		propbonedisplacements[jnext] = bunextgcentre - bunext.bonecentre
+	print(propbonedisplacements)
+
+func applybonequatsdisplacements():
+	propbonequats = [ ]
+	for j in range(len(boneunits)):
+		propbonequats.push_back(Quaternion())
+		propbonedisplacements.push_back(Vector3())
+		var bu = boneunits[j]
+		if bu.bonestick != null:
+			bu.bonequat = bu.bonequat*propbonequats[j]
+			bu.bonecentre = bu.bonecentre + propbonedisplacements[j]
+			bu.bonestick.transform = Transform3D(bu.bonequat, bu.bonecentre)
+
+func minenergymove(jmoved):
+	propbonequats = [ ]
+	propbonedisplacements = [ ]
+	for j in range(len(boneunits)):
+		propbonequats.push_back(Quaternion())
+		propbonedisplacements.push_back(Vector3())
+
+	boneunits[jmoved].bonequat = boneunits[jmoved].bonestick.transform.basis.get_rotation_quaternion()
+	boneunits[jmoved].bonecentre = boneunits[jmoved].bonestick.transform.origin
+	propbonequats[jmoved] = Quaternion()
+	propbonedisplacements[jmoved] = Vector3(0,0,0)
+	
+	var boneunitsvisited = [ jmoved ]
+	var boneunitsvisitedProcessed = 0
+	while boneunitsvisitedProcessed < len(boneunitsvisited):
+		var bu = boneunits[boneunitsvisited[boneunitsvisitedProcessed]]
+		for i in range(len(bu.nextboneunitjoints)):
+			if bu.nextboneunitjoints[i].has("nextboneunit"):
+				var ni = bu.nextboneunitjoints[i]["nextboneunit"]
+				if not boneunitsvisited.has(ni):
+					bonejointsequence.push_back([bu.boneindex, i])
+					boneunitsvisited.push_back(ni)
+		boneunitsvisitedProcessed += 1
+		
+	calcbonedisplacementsfromquats()
+	applybonequatsdisplacements()
 
 var pickedbones = [ ]
 func onbonestickpickedup(b):
