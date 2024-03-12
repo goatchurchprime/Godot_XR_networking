@@ -92,7 +92,7 @@ size = Vector2(3, 2)
 [sub_resource type="ViewportTexture" id="ViewportTexture_b2e2c"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4gori"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aqskk"]
 transparency = 1
 cull_mode = 2
 albedo_texture = SubResource("ViewportTexture_b2e2c")
@@ -373,7 +373,7 @@ visible = false
 collision_layer = 5246976
 
 [node name="ViewportNetworkGateway" parent="." instance=ExtResource("15")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.29126, -2.73833)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.29126, -3.78203)
 scene = ExtResource("11")
 viewport_size = Vector2(650, 400)
 
@@ -382,7 +382,7 @@ size = Vector2i(650, 400)
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource("QuadMesh_wuwme")
-surface_material_override/0 = SubResource("StandardMaterial3D_4gori")
+surface_material_override/0 = SubResource("StandardMaterial3D_aqskk")
 
 [node name="StaticBody3D" parent="ViewportNetworkGateway" index="2"]
 viewport_size = Vector2(650, 400)
