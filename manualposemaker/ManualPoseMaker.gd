@@ -67,39 +67,107 @@ func _ready():
 
 
 var propbonequats = [ ]
+var propbonedeltaquats = [ ] 
 var propbonedisplacements = [ ]
 var bonejointsequence = [ ]  # [ [ boneunitindexj, nextjointindex ], ... ]
 
-func calcbonedisplacementsfromquats():
+# Set a tiny propbonedeltaquats for each rotation parameter and calculate the energy differential numerically
+
+# interpolate in the direction of that quat gradient descent to find a lower value
+
+# Iterate this process on a keystroke
+
+# (also minimize against a sum including moment of inertia energy for a rod)
+
+# If it works, then do the direct calculation of the differential
+
+# leave the iterations going in a process
+
+# apply iterations on dragging as well, perhaps
+
+# map back to pose of the dinosaur
+
+func calcbonedisplacementsfromquats(lpropbonequats):
+	var lpropbonedisplacements = [ ]
+	for j in range(len(boneunits)):
+		lpropbonedisplacements.push_back(Vector3())
+
 	for i in range(len(bonejointsequence)):
 		var j = bonejointsequence[i][0]
 		var nextjointindex = bonejointsequence[i][1]
 		var bu = boneunits[j]
-		var buquat = bu.bonequat*propbonequats[j]
-		var bucentre = bu.bonecentre + propbonedisplacements[j]
+		var buquat = bu.bonequat*lpropbonequats[j]
+		var bucentre = bu.bonecentre + lpropbonedisplacements[j]
 		var nexjnt = bu.nextboneunitjoints[nextjointindex]
 		var jointpos = bucentre + buquat*nexjnt["jointvector"]
 		var jnext = nexjnt["nextboneunit"]
 		var bunext = boneunits[jnext]
 		var nexjntback = bunext.nextboneunitjoints[nexjnt["nextboneunitjoint"]]
 		assert (nexjntback["nextboneunit"] == j and nexjntback["nextboneunitjoint"] == nextjointindex)
-		var bunextquat = bunext.bonequat*propbonequats[jnext]
+		var bunextquat = bunext.bonequat*lpropbonequats[jnext]
 		var bunextgcentre = jointpos - bunextquat*nexjntback["jointvector"]
-		propbonedisplacements[jnext] = bunextgcentre - bunext.bonecentre
-	print(propbonedisplacements)
+		lpropbonedisplacements[jnext] = bunextgcentre - bunext.bonecentre
+	return lpropbonedisplacements
 
-func applybonequatsdisplacements():
-	propbonequats = [ ]
+func calcboneenergy(lpropbonedisplacements):
+	var E = 0.0
 	for j in range(len(boneunits)):
-		propbonequats.push_back(Quaternion())
-		propbonedisplacements.push_back(Vector3())
-		var bu = boneunits[j]
-		if bu.bonestick != null:
-			bu.bonequat = bu.bonequat*propbonequats[j]
-			bu.bonecentre = bu.bonecentre + propbonedisplacements[j]
-			bu.bonestick.transform = Transform3D(bu.bonequat, bu.bonecentre)
+		E += boneunits[j].bonemass*lpropbonedisplacements[j].length_squared()
+	return E
 
+
+func seebonequatsdisplacements(lpropbonedisplacements, lpropbonequats, bapply):
+	for j in range(len(boneunits)):
+		var bu = boneunits[j]
+		var lbonequat = bu.bonequat*lpropbonequats[j]
+		var lbonecentre = bu.bonecentre + lpropbonedisplacements[j]
+		if bu.bonestick != null:
+			bu.bonestick.transform = Transform3D(lbonequat, lbonecentre)
+		if bapply:
+			bu.bonequat = lbonequat
+			lpropbonequats[j] = Quaternion()
+			bu.bonecentre = lbonecentre
+			lpropbonedisplacements[j] = Vector3()
+
+func applyeps(lpropbonequats, di, eps):
+	var llpropbonequats = lpropbonequats.duplicate()
+	var w = sqrt(1 - eps*eps)
+	var di3 = di%3
+	var diI = int(di/3)
+	var qeps = Quaternion(eps, 0, 0, w)
+	if di3 == 1:
+		qeps = Quaternion(0, eps, 0, w)
+	if di3 == 2:
+		qeps = Quaternion(0, 0, eps, w)
+	llpropbonequats[diI] = lpropbonequats[diI]*qeps
+	return llpropbonequats
+
+func numericalgradient(E0, eps):
+	var gradv = [ ]
+	for di in range(len(boneunits)*3):
+		if int(di/3) != Djmoved:
+			var lpropbonequats = applyeps(propbonequats, di, eps)
+			var lpropbonedisplacements = calcbonedisplacementsfromquats(lpropbonequats)
+			var Ed = calcboneenergy(lpropbonedisplacements)
+			gradv.push_back((Ed - E0)/eps)
+		else:
+			gradv.push_back(0.0)
+	return gradv
+	
+func applygvdel(lpropbonequats, gv, delta):
+	var llpropbonequats = [ ]
+	for j in range(len(boneunits)):
+		var qx = gv[j*3]*delta
+		var qy = gv[j*3+1]*delta
+		var qz = gv[j*3+2]*delta
+		var q = Quaternion(qx, qy, qz, sqrt(1 - qx*qx - qy*qy - qz*qz))
+		llpropbonequats.push_back(lpropbonequats[j]*q)
+	return llpropbonequats
+
+
+var Djmoved = -1
 func minenergymove(jmoved):
+	Djmoved = jmoved
 	propbonequats = [ ]
 	propbonedisplacements = [ ]
 	for j in range(len(boneunits)):
@@ -123,8 +191,33 @@ func minenergymove(jmoved):
 					boneunitsvisited.push_back(ni)
 		boneunitsvisitedProcessed += 1
 		
-	calcbonedisplacementsfromquats()
-	applybonequatsdisplacements()
+	makegradstep()
+	#propbonedisplacements = calcbonedisplacementsfromquats(propbonequats)
+	#applybonequatsdisplacements()
+
+func makegradstep():
+	propbonedisplacements = calcbonedisplacementsfromquats(propbonequats)
+	var E0 = calcboneenergy(propbonedisplacements)
+	var gradv = numericalgradient(E0, 0.0001)
+	var m = 0.0
+	for i in range(len(gradv)):
+		m += gradv[i]*gradv[i]
+	print("Energy0 ", E0, "  ", m)
+	var c = 0.5
+	var tau = 0.5
+	var delta = 0.2
+	
+	for i in range(10):
+		var lpropbonequats = applygvdel(propbonequats, gradv, -delta)
+		var lpropbonedisplacements = calcbonedisplacementsfromquats(lpropbonequats)
+		var Ed = calcboneenergy(lpropbonedisplacements)
+		print(Ed, " ", delta)
+		if Ed < E0 - delta*c*m:
+			propbonequats = lpropbonequats
+			propbonedisplacements = lpropbonedisplacements
+			break
+		delta = delta*tau
+	seebonequatsdisplacements(propbonedisplacements, propbonequats, false)
 
 var pickedbones = [ ]
 func onbonestickpickedup(b):
@@ -137,9 +230,19 @@ func onbonestickdropped(b):
 	if len(pickedbones) == 0:
 		minenergymove(jdropped)
 
+var Ddd = 0
 func _input(event):
 	if event is InputEventKey:
 		if event.pressed:
 			if event.keycode == KEY_P:
-				get_node("bonestick7").transform.origin.x += 0.1
+				if Ddd < 3:
+					get_node("bonestick7").transform.origin.x += 0.1
+				else:
+					get_node("bonestick7").transform.origin.x += -0.1
+				Ddd += 1
 				minenergymove(7)
+			if event.keycode == KEY_O:
+				makegradstep()
+			if event.keycode == KEY_I:
+				seebonequatsdisplacements(propbonedisplacements, propbonequats, true)
+				
