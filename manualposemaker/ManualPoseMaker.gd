@@ -136,23 +136,19 @@ func calcboneenergy(lpropbonecentres):
 func seebonequatscentres(bapply):
 	for j in range(len(boneunits)):
 		var bu = boneunits[j]
-		var lbonequat = propbonequats[j]
-		var lbonecentre = propbonecentres[j]
 		if bu.bonestick != null:
-			bu.bonestick.transform = Transform3D(lbonequat, lbonecentre)
+			bu.bonestick.transform = Transform3D(propbonequats[j], propbonecentres[j])
 		if bapply:
-			bu.bonequat0 = lbonequat
-			propbonequats[j] = lbonequat
-			bu.bonecentre0 = lbonecentre
-			propbonecentres[j] = lbonecentre
+			bu.bonequat0 = propbonequats[j]
+			bu.bonecentre0 = propbonecentres[j]
 
 func quatfromvec(v):
 	var vlensq = v.length_squared()
 	return Quaternion(v.x, v.y, v.z, sqrt(1.0 - vlensq))
 
-func applyepsErg(lpropbonequats, j, v, eps, E0):
-	var llpropbonequats = lpropbonequats.duplicate()
-	llpropbonequats[j] = lpropbonequats[j]*quatfromvec(v*eps)
+func applyepsErg(j, v, eps, E0):
+	var llpropbonequats = propbonequats.duplicate()
+	llpropbonequats[j] = propbonequats[j]*quatfromvec(v*eps)
 	var llpropbonecentres = calcbonecentresfromquats(llpropbonequats)
 	var Ed = calcboneenergy(llpropbonecentres)
 	return (Ed - E0)/eps
@@ -161,19 +157,19 @@ func numericalgradient(E0, eps):
 	var gradv = [ ]
 	for j in range(len(boneunits)):
 		if j != Djmoved:
-			var gx = applyepsErg(propbonequats, j, Vector3(1,0,0), eps, E0)
-			var gy = applyepsErg(propbonequats, j, Vector3(0,1,0), eps, E0)
-			var gz = applyepsErg(propbonequats, j, Vector3(0,0,1), eps, E0)
+			var gx = applyepsErg(j, Vector3(1,0,0), eps, E0)
+			var gy = applyepsErg(j, Vector3(0,1,0), eps, E0)
+			var gz = applyepsErg(j, Vector3(0,0,1), eps, E0)
 			gradv.push_back(Vector3(gx, gy, gz))
 		else:
 			gradv.push_back(Vector3(0,0,0))
 	return gradv
 	
-func applygvdel(lpropbonequats, gv, delta):
+func applygvdel(gv, delta):
 	var llpropbonequats = [ ]
 	for j in range(len(boneunits)):
 		var q = quatfromvec(gv[j]*delta)
-		llpropbonequats.push_back(lpropbonequats[j]*q)
+		llpropbonequats.push_back(propbonequats[j]*q)
 	return llpropbonequats
 
 
@@ -224,7 +220,7 @@ func makegradstep():
 	var delta = 0.2
 	
 	for i in range(10):
-		var lpropbonequats = applygvdel(propbonequats, gradv, -delta)
+		var lpropbonequats = applygvdel(gradv, -delta)
 		var lpropbonecentres = calcbonecentresfromquats(lpropbonequats)
 		var Ed = calcboneenergy(lpropbonecentres)
 		if Ed < E0 - delta*c*m:
