@@ -180,6 +180,7 @@ func minenergymove(jmoved):
 	propbonedisplacements[jmoved] = Vector3(0,0,0)
 	
 	var boneunitsvisited = [ jmoved ]
+	bonejointsequence = [ ]
 	var boneunitsvisitedProcessed = 0
 	while boneunitsvisitedProcessed < len(boneunitsvisited):
 		var bu = boneunits[boneunitsvisited[boneunitsvisitedProcessed]]
@@ -191,9 +192,14 @@ func minenergymove(jmoved):
 					boneunitsvisited.push_back(ni)
 		boneunitsvisitedProcessed += 1
 		
-	makegradstep()
 	#propbonedisplacements = calcbonedisplacementsfromquats(propbonequats)
 	#applybonequatsdisplacements()
+	for i in range(10):
+		makegradstep()
+		await get_tree().create_timer(0.2).timeout
+	seebonequatsdisplacements(propbonedisplacements, propbonequats, true)
+
+
 
 func makegradstep():
 	propbonedisplacements = calcbonedisplacementsfromquats(propbonequats)
