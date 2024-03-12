@@ -13,6 +13,25 @@ class BoneUnit:
 	var bonemass : float
 	var nextboneunitjoints = [ ] # [ { jointvector, nextboneunit, nextboneunitjointindex } ]
 
+func setboneposefromunits():
+	var sca = skel.global_transform.basis.get_scale()
+	for j in range(len(boneunits)):
+		var bu = boneunits[j]
+		var jtrans = Transform3D(bu.bonequat, bu.bonecentre + bu.bonequat*bu.nextboneunitjoints[0]["jointvector"])
+		var jparent = skel.get_bone_parent(j)
+		var ptrans
+		if jparent != -1:
+			var bup = boneunits[jparent]
+			ptrans = Transform3D(bup.bonequat, bup.bonecentre + bup.bonequat*bup.nextboneunitjoints[0]["jointvector"])
+		else:
+			ptrans = Transform3D(Quaternion(skel.global_transform.basis), skel.global_transform.origin)
+			
+		var btrans = ptrans.inverse()*jtrans
+#		print(j, skel.get_bone_pose_position(j), btrans.origin/sca)
+#		print(j, skel.get_bone_pose_rotation(j), btrans.basis.get_rotation_quaternion())
+		skel.set_bone_pose_position(j, btrans.origin/sca)
+		skel.set_bone_pose_rotation(j, btrans.basis.get_rotation_quaternion())
+	
 func _ready():
 	for j in range(skel.get_bone_count()):
 		var bu = BoneUnit.new()
@@ -65,6 +84,7 @@ func _ready():
 			bu.bonestick = rj
 			bu.bonestick.transform = Transform3D(bu.bonequat, bu.bonecentre)
 
+	setboneposefromunits()
 
 var propbonequats = [ ]
 var propbonedeltaquats = [ ] 
@@ -86,6 +106,7 @@ var bonejointsequence = [ ]  # [ [ boneunitindexj, nextjointindex ], ... ]
 # apply iterations on dragging as well, perhaps
 
 # map back to pose of the dinosaur
+
 
 func calcbonedisplacementsfromquats(lpropbonequats):
 	var lpropbonedisplacements = [ ]
@@ -196,8 +217,9 @@ func minenergymove(jmoved):
 	#applybonequatsdisplacements()
 	for i in range(10):
 		makegradstep()
-		await get_tree().create_timer(0.2).timeout
+		await get_tree().create_timer(0.1).timeout
 	seebonequatsdisplacements(propbonedisplacements, propbonequats, true)
+	setboneposefromunits()
 
 
 
@@ -217,10 +239,10 @@ func makegradstep():
 		var lpropbonequats = applygvdel(propbonequats, gradv, -delta)
 		var lpropbonedisplacements = calcbonedisplacementsfromquats(lpropbonequats)
 		var Ed = calcboneenergy(lpropbonedisplacements)
-		print(Ed, " ", delta)
 		if Ed < E0 - delta*c*m:
 			propbonequats = lpropbonequats
 			propbonedisplacements = lpropbonedisplacements
+			print(Ed, " ", delta)
 			break
 		delta = delta*tau
 	seebonequatsdisplacements(propbonedisplacements, propbonequats, false)
@@ -249,6 +271,4 @@ func _input(event):
 				minenergymove(7)
 			if event.keycode == KEY_O:
 				makegradstep()
-			if event.keycode == KEY_I:
-				seebonequatsdisplacements(propbonedisplacements, propbonequats, true)
 				
