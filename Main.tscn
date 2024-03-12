@@ -92,7 +92,7 @@ size = Vector2(3, 2)
 [sub_resource type="ViewportTexture" id="ViewportTexture_b2e2c"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_aqskk"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lqpxd"]
 transparency = 1
 cull_mode = 2
 albedo_texture = SubResource("ViewportTexture_b2e2c")
@@ -382,7 +382,7 @@ size = Vector2i(650, 400)
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource("QuadMesh_wuwme")
-surface_material_override/0 = SubResource("StandardMaterial3D_aqskk")
+surface_material_override/0 = SubResource("StandardMaterial3D_lqpxd")
 
 [node name="StaticBody3D" parent="ViewportNetworkGateway" index="2"]
 viewport_size = Vector2(650, 400)
