@@ -3,8 +3,6 @@ extends Node3D
 @onready var skel = get_node("../redoran3/MonsterArmature/Skeleton3D")
 var bonestickscene = load("res://manualposemaker/vpickablebonestick.tscn")
 
-# return to VR version, and use the trigger being held 
-# to repeatedly fire off an animation on the end
 
 # Then ready to extend to two hand holding.
 # Move the image back
@@ -36,10 +34,6 @@ var bonestickscene = load("res://manualposemaker/vpickablebonestick.tscn")
 # If it works, then do the direct calculation of the differential
 
 # apply iterations on dragging as well, perhaps
-
-
-
-
 
 
 # we iterate on settings of these searching for the minimum, 
@@ -304,18 +298,14 @@ func derivejointsequence(jstart):
 					bonejointsequence.push_back(bje)
 					boneunitsvisited.push_back(nj)
 		boneunitsvisitedProcessed += 1
-	return bonejointsequence
+
 
 
 func minenergymove(pickedbones):
 	var jmoved = pickedbones[0]
 	derivejointsequence(jmoved)
-
-
 	boneunits[jmoved].bonequat0 = boneunits[jmoved].bonestick.transform.basis.get_rotation_quaternion()
 	boneunits[jmoved].bonecentre0 = boneunits[jmoved].bonestick.transform.origin
-
-
 
 	var t0 = Time.get_ticks_usec()
 	for i in range(10):
@@ -330,6 +320,7 @@ func minenergymove(pickedbones):
 	seebonequatscentres(true)
 	setboneposefromunits()
 	bonejointsequence = null
+
 
 func makegradstep(Ni):
 	var E0 = calcbonecentresfromquatsE()
@@ -363,16 +354,49 @@ func onbonestickpickedup(b):
 	allpickedbones.erase(jpicked)
 	allpickedbones.push_back(jpicked)
 
+var bupdatefinalondrop = false
 func onbonestickdropped(b):
 	print("drop ", b.name, "  ", b.name.to_int()*1000)
 	var jdropped = b.name.to_int()
 	pickedbones.erase(jdropped)
 	if len(pickedbones) == 0:
-		minenergymove(allpickedbones)
+		if bupdatefinalondrop:
+			minenergymove(allpickedbones)
 		allpickedbones = [ ]
 
-#func _physics_process(delta):
-	
+var Pjpickedbone = -1
+func _physics_process(delta):
+	if bupdatefinalondrop:
+		return
+	var physt0 = Time.get_ticks_usec()
+	if len(allpickedbones) and allpickedbones[0] != Pjpickedbone:
+		Pjpickedbone = allpickedbones[0]
+		derivejointsequence(Pjpickedbone)
+		bonejointseqstartticks = physt0
+		
+	if allpickedbones.has(Pjpickedbone):
+		boneunits[Pjpickedbone].bonequat0 = boneunits[Pjpickedbone].bonestick.transform.basis.get_rotation_quaternion()
+		boneunits[Pjpickedbone].bonecentre0 = boneunits[Pjpickedbone].bonestick.transform.origin
+		
+	if bonejointsequence != null:
+		var bEndIteration = false
+		for Ci in range(10):
+			var bstepped = makegradstep(Ci)
+			if not bstepped:
+				bEndIteration = true
+				break
+			var physt = Time.get_ticks_usec()
+			if physt - bonejointseqstartticks > 200000:
+				bEndIteration = true
+				break
+			if physt - physt0 > 20000:
+				break
+		if bEndIteration:
+			seebonequatscentres(true)
+			setboneposefromunits()
+			if Pjpickedbone == -1:
+				bonejointsequence = null
+
 
 var Ddd = 0
 func _input(event):
@@ -380,9 +404,17 @@ func _input(event):
 		if event.pressed:
 			if event.keycode == KEY_P:
 				if Ddd < 3:
-					get_node("bonestick7").transform.origin.z += 0.01
+					get_node("bonestick7").transform.origin.z += 0.1
 				else:
 					get_node("bonestick7").transform.origin.z += -0.01
 				Ddd += 1
 				minenergymove([7])
 				
+			if event.keycode == KEY_O:
+				var bonetomove = get_node("bonestick7")
+				onbonestickpickedup(bonetomove)
+				for i in range(10):
+					bonetomove.transform.origin.z += 0.01
+					await get_tree().create_timer(0.1).timeout
+				onbonestickdropped(bonetomove)
+
