@@ -48,8 +48,8 @@ var bonestickscene = load("res://manualposemaker/vpickablebonestick.tscn")
 # we iterate on settings of these searching for the minimum, 
 # with a further lpropbonequats value to do the epsilons in different directions
 # and then do the backtracking line search samples in the direction of the gradient
-var propbonequats = [ ]
-var propbonecentres = [ ]
+#var propbonequats = [ ]
+#var propbonecentres = [ ]
 
 
 # Corresponds to each bone, holds the vectors to parent and child joints from its inerrtial centre 
@@ -89,24 +89,7 @@ class BoneJointEl:
 		var jointpos = prevcentre + prevquat*prevbonejointvector
 		return jointpos - quat*incomingbonejointvector
 	
-var bonejointsequence = [ ]  # [ [ boneunitindexj, nextjointindex ], ... ]
 var Dbonejointsequence = [ ]  # The calculating sequence of Joint elements
-
-# swap this out for calcbonecentresfromquats now it's validated
-# then make one that efficiently adds the epsilon steps
-# then the main iteration steps.
-# try running the iteration live in use (while holding and dragging)
-# work on the two point drag (with reduced degrees of freedom)
-# pin head to head rod.  
-# make it something we wear
-func calcbonecentresfromquats(lpropbonequats):
-	var lpropbonecentres = [ ]
-	for j in range(len(boneunits)):
-		lpropbonecentres.push_back(boneunits[j].bonecentre0)
-	for i in range(len(Dbonejointsequence)):
-		var bje = Dbonejointsequence[i]
-		lpropbonecentres[bje.boneunitindex] = bje.derivebointjointcentre(lpropbonequats[bje.prevboneunitindex], lpropbonecentres[bje.prevboneunitindex], lpropbonequats[bje.boneunitindex])
-	return lpropbonecentres
 
 
 func calcbonecentresfromquatsE():
@@ -236,7 +219,6 @@ func _ready():
 			boneunitjointspos.push_back(bonejointj.origin)
 			sumboneunitjointpos += bonejointj.origin
 		bu.bonecentre0 = sumboneunitjointpos/len(bu.nextboneunitjoints)
-		var sumbonelengths = 0.0
 		for i in range(len(bu.nextboneunitjoints)):
 			var jointvectorabs = boneunitjointspos[i] - bu.bonecentre0
 			bu.nextboneunitjoints[i]["jointvector"] = bu.bonequat0.inverse()*jointvectorabs
@@ -274,14 +256,6 @@ func calcboneenergy(lpropbonecentres):
 
 	return E
 
-func seebonequatscentres(bapply):
-	for j in range(len(boneunits)):
-		var bu = boneunits[j]
-		if bu.bonestick != null:
-			bu.bonestick.transform = Transform3D(propbonequats[j], propbonecentres[j])
-		if bapply:
-			bu.bonequat0 = propbonequats[j]
-			bu.bonecentre0 = propbonecentres[j]
 
 func Dseebonequatscentres(bapply):
 	for i in range(len(Dbonejointsequence)):
@@ -294,18 +268,8 @@ func Dseebonequatscentres(bapply):
 			bu.bonecentre0 = bje.propbonecentre
 
 
-func quatfromvec(v):
-	var vlensq = v.length_squared()
-	return Quaternion(v.x, v.y, v.z, sqrt(1.0 - vlensq))
 
-func applyepsErg(j, v, eps, E0):
-	var llpropbonequats = propbonequats.duplicate()
-	llpropbonequats[j] = propbonequats[j]*quatfromvec(v*eps)
-	var llpropbonecentres = calcbonecentresfromquats(llpropbonequats)
-	var Ed = calcboneenergy(llpropbonecentres)
-	return (Ed - E0)/eps
-
-func calcnumericalgradient(E0, eps):
+func calcnumericalgradient(eps):
 	var qeps = sqrt(1.0 - eps*eps)
 	var sumgradEsq = 0.0
 	for k in range(len(Dbonejointsequence)):
@@ -316,26 +280,6 @@ func calcnumericalgradient(E0, eps):
 		Dbonejointsequence[k].gradE = gradE
 		sumgradEsq += gradE.length_squared()
 	return sumgradEsq
-
-func numericalgradient(E0, eps):
-	var gradv = [ ]
-	for j in range(len(boneunits)):
-		if not Dpickedbones.has(j):
-			var gx = applyepsErg(j, Vector3(1,0,0), eps, E0)
-			var gy = applyepsErg(j, Vector3(0,1,0), eps, E0)
-			var gz = applyepsErg(j, Vector3(0,0,1), eps, E0)
-			gradv.push_back(Vector3(gx, gy, gz))
-		else:
-			gradv.push_back(Vector3(0,0,0))
-	return gradv
-
-
-func applygvdel(gv, delta):
-	var llpropbonequats = [ ]
-	for j in range(len(boneunits)):
-		var q = quatfromvec(gv[j]*delta)
-		llpropbonequats.push_back(propbonequats[j]*q)
-	return llpropbonequats
 
 
 func derivejointsequence(jstart):
@@ -388,35 +332,10 @@ func minenergymove(pickedbones):
 	var jmoved = pickedbones[0]
 
 
-	propbonequats = [ ]
-	propbonecentres = [ ]
-	for j in range(len(boneunits)):
-		propbonequats.push_back(boneunits[j].bonequat0)
-		propbonecentres.push_back(boneunits[j].bonecentre0)
-
 	boneunits[jmoved].bonequat0 = boneunits[jmoved].bonestick.transform.basis.get_rotation_quaternion()
 	boneunits[jmoved].bonecentre0 = boneunits[jmoved].bonestick.transform.origin
 	Dbonejointsequence = derivejointsequence(jmoved)  # replaces the below
-	#for i in range(len(Dbonejointsequence)):
-	#	var bje = Dbonejointsequence[i]
-	#	print(";; ", bje.propbonequat, boneunits[bje.boneunitindex].bonequat0)
 
-
-	propbonequats[jmoved] = boneunits[jmoved].bonequat0
-	propbonecentres[jmoved] = boneunits[jmoved].bonecentre0
-	
-	var boneunitsvisited = [ jmoved ]
-	bonejointsequence = [ ]
-	var boneunitsvisitedProcessed = 0
-	while boneunitsvisitedProcessed < len(boneunitsvisited):
-		var bu = boneunits[boneunitsvisited[boneunitsvisitedProcessed]]
-		for i in range(len(bu.nextboneunitjoints)):
-			if bu.nextboneunitjoints[i].has("nextboneunit"):
-				var ni = bu.nextboneunitjoints[i]["nextboneunit"]
-				if not boneunitsvisited.has(ni):
-					bonejointsequence.push_back([bu.boneindex, i])
-					boneunitsvisited.push_back(ni)
-		boneunitsvisitedProcessed += 1
 		
 	for i in range(10):
 		makegradstep()
@@ -427,34 +346,20 @@ func minenergymove(pickedbones):
 
 
 func makegradstep():
-	#propbonecentres = calcbonecentresfromquats(propbonequats)
-	#var E0 = calcboneenergy(propbonecentres)
 	var E0 = calcbonecentresfromquatsE()
-	#var gradv = numericalgradient(E0, 0.0001)
-	var sumgradEsq = calcnumericalgradient(E0, 0.0001)
-	#var m = 0.0
-	#for i in range(len(gradv)):
-	#	m += gradv[i].length_squared()
-	#print("Energy0 ", E0, "  ", m, " _ ", m-sumgradEsq)
+	var sumgradEsq = calcnumericalgradient(0.0001)
+
 	var c = 0.5
 	var tau = 0.5
 	var delta = 0.2
 	
 	for ii in range(10):
-		#var lpropbonequats = applygvdel(gradv, -delta)
-		#var lpropbonecentres = calcbonecentresfromquats(lpropbonequats)
-		#var Ed = calcboneenergy(lpropbonecentres)
 		var DEd = calcEgraddelta(-delta)
-		#print("EEd  ", DEd, " ", delta)
 		if DEd < E0 - delta*c*sumgradEsq:
 			for i in range(len(Dbonejointsequence)):
 				var bje = Dbonejointsequence[i]
 				bje.propbonequat = bje.overridepropbonequat
 				bje.propbonecentre = bje.overridepropbonecentre
-			
-			#propbonequats = lpropbonequats
-			#propbonecentres = lpropbonecentres
-			#print(DEd, " ", delta)
 			break
 		delta = delta*tau
 
