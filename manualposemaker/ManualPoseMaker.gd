@@ -3,6 +3,19 @@ extends Node3D
 @onready var skel = get_node("../redoran3/MonsterArmature/Skeleton3D")
 var bonestickscene = load("res://manualposemaker/vpickablebonestick.tscn")
 
+# Now ready to delete all the old code, 
+# then timeit to see if it does it fast enough
+
+# return to VR version, and use the trigger being held 
+# to repeatedly fire off an animation on the end
+
+# Then ready to extend to two hand holding.
+# Move the image back
+
+# Ability to fabricate connections to these bones on the fly 
+# and connect to your head or hands
+
+
 # Two handed holding next
 # bonejointsequence should be the order of the boneunits that are pulling from
 # the previous unit values (the fixed ones)
@@ -407,7 +420,8 @@ func minenergymove(pickedbones):
 		
 	for i in range(10):
 		makegradstep()
-		await get_tree().create_timer(0.1).timeout
+		#Dseebonequatscentres(false)
+		#await get_tree().create_timer(0.1).timeout
 	Dseebonequatscentres(true)
 	setboneposefromunits()
 
@@ -431,7 +445,7 @@ func makegradstep():
 		#var lpropbonecentres = calcbonecentresfromquats(lpropbonequats)
 		#var Ed = calcboneenergy(lpropbonecentres)
 		var DEd = calcEgraddelta(-delta)
-		print("EEd  ", DEd, " ", delta)
+		#print("EEd  ", DEd, " ", delta)
 		if DEd < E0 - delta*c*sumgradEsq:
 			for i in range(len(Dbonejointsequence)):
 				var bje = Dbonejointsequence[i]
@@ -440,10 +454,10 @@ func makegradstep():
 			
 			#propbonequats = lpropbonequats
 			#propbonecentres = lpropbonecentres
-			print(DEd, " ", delta)
+			#print(DEd, " ", delta)
 			break
 		delta = delta*tau
-	Dseebonequatscentres(false)
+
 
 var pickedbones = [ ]
 var allpickedbones = [ ]
@@ -460,8 +474,7 @@ func onbonestickdropped(b):
 	pickedbones.erase(jdropped)
 	if len(pickedbones) == 0:
 		minenergymove(allpickedbones)
-		
-	allpickedbones = [ ]
+		allpickedbones = [ ]
 	
 var Ddd = 0
 func _input(event):
