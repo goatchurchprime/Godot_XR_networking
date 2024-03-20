@@ -92,7 +92,7 @@ size = Vector2(3, 2)
 [sub_resource type="ViewportTexture" id="ViewportTexture_wfxi7"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0kafg"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i3cte"]
 transparency = 1
 cull_mode = 2
 albedo_texture = SubResource("ViewportTexture_wfxi7")
@@ -243,7 +243,7 @@ bones/29/scale = Vector3(1, 1, 1)
 active = false
 
 [node name="ManualPoseMaker" type="Node3D" parent="."]
-transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 3.2, 0, -2.3)
+transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 3.88939, 0, -2.42154)
 script = ExtResource("3_m26xv")
 
 [node name="XROrigin3D" type="XROrigin3D" parent="."]
@@ -382,7 +382,7 @@ size = Vector2i(650, 400)
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource("QuadMesh_wuwme")
-surface_material_override/0 = SubResource("StandardMaterial3D_0kafg")
+surface_material_override/0 = SubResource("StandardMaterial3D_i3cte")
 
 [node name="StaticBody3D" parent="ViewportNetworkGateway" index="2"]
 viewport_size = Vector2(650, 400)
