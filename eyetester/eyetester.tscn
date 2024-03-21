@@ -1,0 +1,101 @@
+[gd_scene load_steps=14 format=3 uid="uid://bg2pdkd8iq7da"]
+
+[ext_resource type="Script" path="res://eyetester/Eyetester.gd" id="1_qlltp"]
+[ext_resource type="Shader" uid="uid://chfbtccf0myk7" path="res://eyetester/eyefocus.tres" id="2_he1xd"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_6jvd3"]
+size = Vector2(0.1, 0.1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jbq2b"]
+render_priority = 0
+shader = ExtResource("2_he1xd")
+shader_parameter/albedo = Color(0.2, 0.666667, 1, 1)
+shader_parameter/outerholerad = 0.02
+shader_parameter/holerad = 0.01
+shader_parameter/blockleft = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_rwcdw"]
+size = Vector2(0.007, 0.007)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_krdx6"]
+albedo_color = Color(1, 1, 0, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_rw1l8"]
+size = Vector2(0.007, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uomgs"]
+albedo_color = Color(0.0213597, 0.673151, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g7832"]
+albedo_color = Color(0.68118, 0.193916, 0.131357, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_vognw"]
+size = Vector2(0.007, 0.007)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6e2lt"]
+albedo_color = Color(0.209729, 0.464904, 0.319287, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_ht721"]
+size = Vector2(0.007, 0.007)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j0oyy"]
+albedo_color = Color(0.6747, 0.241636, 0.148533, 1)
+
+[node name="Eyetester" type="Node3D"]
+script = ExtResource("1_qlltp")
+
+[node name="FocusPoint" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.15279)
+
+[node name="FocusMesh" type="MeshInstance3D" parent="FocusPoint"]
+cast_shadow = 0
+mesh = SubResource("QuadMesh_6jvd3")
+surface_material_override/0 = SubResource("ShaderMaterial_jbq2b")
+
+[node name="ProbePoint" type="Node3D" parent="."]
+
+[node name="FocusMesh" type="MeshInstance3D" parent="ProbePoint"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.14603)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_rwcdw")
+surface_material_override/0 = SubResource("StandardMaterial3D_krdx6")
+
+[node name="ProbeLine" type="Node3D" parent="."]
+
+[node name="FocusMesh" type="MeshInstance3D" parent="ProbeLine"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.14722)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_rw1l8")
+surface_material_override/0 = SubResource("StandardMaterial3D_krdx6")
+
+[node name="MarkerLine" type="Node3D" parent="."]
+
+[node name="FocusMesh" type="MeshInstance3D" parent="MarkerLine"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.14722)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_rw1l8")
+surface_material_override/0 = SubResource("StandardMaterial3D_uomgs")
+
+[node name="BlindMarkerLine" type="Node3D" parent="."]
+
+[node name="FocusMesh" type="MeshInstance3D" parent="BlindMarkerLine"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.14722)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_rw1l8")
+surface_material_override/0 = SubResource("StandardMaterial3D_g7832")
+
+[node name="MarkerPoint" type="Node3D" parent="."]
+
+[node name="MarkerMesh" type="MeshInstance3D" parent="MarkerPoint"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.14603)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_vognw")
+surface_material_override/0 = SubResource("StandardMaterial3D_6e2lt")
+
+[node name="BlindMarkerPoint" type="Node3D" parent="."]
+
+[node name="MarkerMesh" type="MeshInstance3D" parent="BlindMarkerPoint"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.14603)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_ht721")
+surface_material_override/0 = SubResource("StandardMaterial3D_j0oyy")
