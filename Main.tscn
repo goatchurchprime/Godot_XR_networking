@@ -93,7 +93,7 @@ size = Vector2(3, 2)
 [sub_resource type="ViewportTexture" id="ViewportTexture_rg01y"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_01jp3"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_adejh"]
 transparency = 1
 cull_mode = 2
 albedo_texture = SubResource("ViewportTexture_rg01y")
@@ -257,6 +257,7 @@ environment = SubResource("Environment_spl7d")
 current = true
 
 [node name="Eyetester" parent="XROrigin3D/XRCamera3D" instance=ExtResource("5_gshv6")]
+visible = false
 
 [node name="LeftHandController" type="XRController3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1, -0.5)
@@ -386,7 +387,7 @@ size = Vector2i(650, 400)
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource("QuadMesh_wuwme")
-surface_material_override/0 = SubResource("StandardMaterial3D_01jp3")
+surface_material_override/0 = SubResource("StandardMaterial3D_adejh")
 
 [node name="StaticBody3D" parent="ViewportNetworkGateway" index="2"]
 viewport_size = Vector2(650, 400)
