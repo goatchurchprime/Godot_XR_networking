@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=3 uid="uid://bbs6y7pyb5fh8"]
+
+[ext_resource type="Script" path="res://contextui/contextmenu.gd" id="1_bweyg"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_u11d0"]
+resource_local_to_scene = true
+size = Vector2(0.1, 0.1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xwuge"]
+size = Vector3(0.1, 0.1, 0.1)
+
+[node name="ContextMenuItem" type="StaticBody3D"]
+collision_layer = 1048576
+collision_mask = 0
+script = ExtResource("1_bweyg")
+
+[node name="Label3D" type="Label3D" parent="."]
+visible = false
+alpha_scissor_threshold = 0.282
+text = "HI THERE"
+font_size = 16
+outline_size = 6
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Label3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.02)
+mesh = SubResource("QuadMesh_u11d0")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_xwuge")
+disabled = true
