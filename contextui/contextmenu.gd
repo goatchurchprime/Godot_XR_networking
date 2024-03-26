@@ -7,7 +7,7 @@ func setnamepos(text, clock, rad):
 	$Label3D.visible = false
 	$CollisionShape3D.disabled = false
 	var ang = deg_to_rad(clock*30)
-	transform.origin.x = sin(ang)*rad
+	transform.origin.x = sin(ang)*rad if (clock % 6) != 0 else 0.0
 	transform.origin.y = cos(ang)*rad
 
 func setbackgroundcollision():

@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://cdfxr6ka7p4um"]
+
+[ext_resource type="PackedScene" uid="uid://c8l60rnugru40" path="res://addons/godot-xr-tools/objects/pickable.tscn" id="1_ybwb2"]
+[ext_resource type="Script" path="res://contextui/pickablegeon.gd" id="2_a7i5t"]
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_oqlxq"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_47lgu"]
+top_radius = 0.1
+bottom_radius = 0.1
+height = 0.5
+
+[node name="GeonObject" instance=ExtResource("1_ybwb2")]
+collision_layer = 1048584
+collision_mask = 196608
+freeze = true
+script = ExtResource("2_a7i5t")
+
+[node name="CollisionShape3D" parent="." index="0"]
+shape = SubResource("ConvexPolygonShape3D_oqlxq")
+
+[node name="CSGMesh" type="CSGMesh3D" parent="." index="1"]
+mesh = SubResource("CylinderMesh_47lgu")

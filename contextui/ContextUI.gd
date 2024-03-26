@@ -3,14 +3,17 @@ extends Node3D
 # Hold E and 2 down to simulate the context sensitive menu
 
 @onready var FunctionPointer = get_node("../FunctionPointer")
+@onready var MainNode = XRHelpers.get_xr_origin(self).get_parent()
+
 var selectedsignmaterial = load("res://contextui/selectedsign.tres")
 var unselectedsignmaterial = load("res://contextui/unselectedsign.tres")
 var contextbutton = "ax_button"
 var actionbutton = "trigger_click"
 var contextmenuclass = load("res://contextui/contextmenu.tscn")
-
+var geonobjectclass = load("res://contextui/pickablegeon.tscn")
 
 var currentactivecontextmenuitem = -1
+var spawnlocation = Vector3()
 
 var contextdiscdistance = 0.8
 var contextdiscradius = 0.3
@@ -20,18 +23,28 @@ var cmitexts = [ ]
 
 # These should be in the target stuff
 func makecontextmenufor(target):
-	print("contextmenutarget: ", target.name if target else "null")
-	return [ "SIX6", "three3", "seven7", "eight", "do"]
+	if is_instance_valid(target) != null and target.has_method("contextmenucommands"):
+		return target.contextmenucommands()
+	return [ "new geon"]
+
+var contextclocksequence = [6, 8, 4, 9, 3, 10, 2, 12]
 
 func contextmenuitemselected(target, cmitext):
-	print(target, cmitext)
-	
-	
+	if target != null and target.has_method("executecontextmenucommand"):
+		target.executecontextmenucommand(cmitext)
+	else:
+		if cmitext == "new geon":
+			var geonobject = geonobjectclass.instantiate()
+			geonobject.transform.origin = spawnlocation
+			print(geonobject.transform.origin)
+			MainNode.add_child(geonobject)
+			
 func controller_button_pressed(name, controller):
 	if controller == FunctionPointer._active_controller:
 		if name == contextbutton:
 			if not visible:
 				makecontextUI()
+				spawnlocation = FunctionPointer.get_node("Laser").global_transform.origin
 
 func controller_button_released(name, controller):
 	if visible:
@@ -51,7 +64,7 @@ func makecontextUI():
 	for i in range(len(cmitexts)):
 		var contextmenuitem = contextmenuclass.instantiate()
 		contextmenuitem.connect("pointer_event", _on_pointer_event.bind(contextmenuitem, i))
-		contextmenuitem.setnamepos(cmitexts[i], i, contextdiscradius)
+		contextmenuitem.setnamepos(cmitexts[i], contextclocksequence[i], contextdiscradius)
 		contextmenuitem.setunselected(unselectedsignmaterial)
 		add_child(contextmenuitem)
 	await get_tree().process_frame # necessary to set the text dimensions
@@ -63,8 +76,8 @@ func releasecontextUI():
 	visible = false
 	if currentactivecontextmenuitem != -1:
 		print("currentactivecontextmenuitem:: ", currentactivecontextmenuitem)
-		currentactivecontextmenuitem = -1
 		call_deferred("contextmenuitemselected", contextmenutarget, cmitexts[currentactivecontextmenuitem])
+		currentactivecontextmenuitem = -1
 	for contextmenuitem in get_children():
 		contextmenuitem.queue_free()
 	contextmenutarget = FunctionPointer.target
