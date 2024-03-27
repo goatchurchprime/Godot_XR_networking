@@ -76,7 +76,8 @@ func _on_pointer_event(e : XRToolsPointerEvent, contextmenuitem, i):
 	if e.event_type == XRToolsPointerEvent.Type.ENTERED:
 		contextmenuitem.setselected(selectedsignmaterial)
 		currentactivecontextmenuitem = i
-		
+		FunctionPointer._active_controller.trigger_haptic_pulse("bump", 30, 1, 0.1, 0)
+
 	if e.event_type == XRToolsPointerEvent.Type.EXITED:
 		contextmenuitem.setunselected(unselectedsignmaterial)
 		currentactivecontextmenuitem = -1

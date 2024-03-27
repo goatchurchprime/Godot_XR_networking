@@ -13,7 +13,7 @@ func setnamepos(text, clock, rad):
 func setbackgroundcollision():
 	var t = $Label3D.get_aabb()
 	$Label3D/MeshInstance3D.mesh.size = Vector2(t.size.x, t.size.y)
-	$CollisionShape3D.shape.size = Vector3(t.size.x, t.size.y, 0.1)
+	$CollisionShape3D.shape.size = Vector3(t.size.x, t.size.y, $CollisionShape3D.shape.size.z)
 	transform.origin.x += (t.size.x-t.size.y)*0.5*sign(transform.origin.x)
 	$Label3D.visible = true
 	$CollisionShape3D.disabled = false

@@ -7,7 +7,6 @@
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6uomk"]
 resource_local_to_scene = true
-roughness = 0.5
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_47lgu"]
 resource_local_to_scene = true

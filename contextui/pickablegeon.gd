@@ -12,6 +12,9 @@ var rodcolour = Color.BEIGE
 const rodcolourcyle = [ Color.BEIGE, Color.DARK_GOLDENROD, Color.DARK_TURQUOISE, Color.LIME_GREEN, 
 						Color.BLACK, Color.PLUM ]
 
+var lockedobjectnext = self
+var lockedtransformnext = Transform3D()
+
 func setupcsgrod():
 	$CSGScaler/CSGRod.mesh.height = rodlength
 	$CSGScaler/CSGRod.mesh.top_radius = rodradtop
@@ -64,17 +67,11 @@ func contextmenucommands(pt):
 				"thinner"+wext, "wider"+wext, 
 				"squash", "bulge",
 				"whole" if rodhalved else "halve", 
-				"duplicate", 
-				"new geon",
-				"colour cycle"
 			  ]
 	return res
 	
 func executecontextmenucommand(cmc):
 	print(name, "-- contextmenucommand ", cmc)
-	if cmc == "delete":
-		queue_free()
-		return
 	if cmc == "longer":
 		rodlength *= 1.5
 	if cmc == "shorter":
