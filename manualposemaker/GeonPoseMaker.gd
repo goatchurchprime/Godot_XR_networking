@@ -1,6 +1,6 @@
 extends Node3D
 
-var geonobjectclass = load("res://contextui/pickablegeon.tscn")
+var geonobjectclass = load("res://manualposemaker/pickablegeon.tscn")
 
 var selectedlocktarget = null
 
@@ -10,14 +10,16 @@ func makecontextmenufor(target, pt):
 		return [ ]
 	if is_instance_valid(target) and target.has_method("contextmenucommands"):
 		var res = target.contextmenucommands(pt)
-		res.append_array(["duplicate", "new geon", "colour cycle"])
 		if is_instance_valid(selectedlocktarget):
 			if selectedlocktarget == target:
 				if target.lockedobjectnext != target:
 					res.append("delock self")
 			else:
 				res.append("lock to")
+				res.append("join to")
+				res.append("hinge to")
 		else:
+			res.append_array(["duplicate", "new geon", "colour cycle"])
 			res.append("select lock target")
 		return res
 	return [ "new geon" ]

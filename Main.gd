@@ -142,10 +142,8 @@ func _physics_process(delta):
 		if $SportBall.transform.origin.y < -3:
 			$SportBall.transform.origin = Vector3(0, 2, -3)
 
- 
 func _process(delta):
 	pass
-
 
 
 #** Remove the debug printing messages

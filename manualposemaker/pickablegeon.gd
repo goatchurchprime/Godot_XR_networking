@@ -15,6 +15,9 @@ const rodcolourcyle = [ Color.BEIGE, Color.DARK_GOLDENROD, Color.DARK_TURQUOISE,
 var lockedobjectnext = self
 var lockedtransformnext = Transform3D()
 
+var jointobjecttop = null
+var jointobjectbottom = null
+
 func setupcsgrod():
 	$CSGScaler/CSGRod.mesh.height = rodlength
 	$CSGScaler/CSGRod.mesh.top_radius = rodradtop
