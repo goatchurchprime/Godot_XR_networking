@@ -72,6 +72,33 @@ func updateheldremotetransforms(bcreateorclear):
 			assert (Dcount >= 0)
 			gn = gn.lockedobjectnext
 
+func removeremotetransforms(bcreateorclear):
+	if not bcreateorclear:
+		for gn in heldgeons:
+			var gnrts = gn.get_node_or_null("RemoteTransforms")
+			if is_instance_valid(gnrts):
+				gn.remove_child(gnrts)
+				gnrts.queue_free()
+		return
+		
+	for gn0 in heldgeons:
+		var gnrts = Node3D.new()
+		gnrts.set_name("RemoteTransforms")
+		gn0.add_child(gnrts)
+
+		var gn = gn0
+		var tr = Transform3D()
+		var Dcount = get_child_count() + 10
+		while not heldgeons.has(gn.lockedobjectnext):
+			var gnrt = RemoteTransform3D.new()
+			gnrts.add_child(gnrt)
+			tr = gn.lockedtransformnext*tr
+			gnrt.transform = tr
+			gnrt.remote_path = gnrt.get_path_to(gn.lockedobjectnext)
+			Dcount -= 1
+			assert (Dcount >= 0)
+			gn = gn.lockedobjectnext
+
 
 func pickupgeon(pickable, geonobject):
 	updateheldremotetransforms(false)
