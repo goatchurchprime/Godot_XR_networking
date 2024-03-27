@@ -3,42 +3,25 @@ extends Node3D
 # Hold E and 2 down to simulate the context sensitive menu
 
 @onready var FunctionPointer = get_node("../FunctionPointer")
-@onready var MainNode = XRHelpers.get_xr_origin(self).get_parent()
+@onready var ContextOperatingNode = XRHelpers.get_xr_origin(self).get_node("../GeonPoseMaker")
 
 var selectedsignmaterial = load("res://contextui/selectedsign.tres")
 var unselectedsignmaterial = load("res://contextui/unselectedsign.tres")
 var contextbutton = "ax_button"
 var actionbutton = "trigger_click"
 var contextmenuclass = load("res://contextui/contextmenu.tscn")
-var geonobjectclass = load("res://contextui/pickablegeon.tscn")
 
 var currentactivecontextmenuitem = -1
 var spawnlocation = Vector3()
 
-var contextdiscdistance = 0.8
-var contextdiscradius = 0.3
+var contextdiscdistance = 0.4
+var contextdiscradius = 0.15
 
 var contextmenutarget = null
 var cmitexts = [ ]
 
-# These should be in the target stuff
-func makecontextmenufor(target):
-	if is_instance_valid(target) != null and target.has_method("contextmenucommands"):
-		return target.contextmenucommands()
-	return [ "new geon"]
+var contextclocksequence = [6, 8, 4, 9, 3, 10, 2, 12, 1, 11, 5, 7]
 
-var contextclocksequence = [6, 8, 4, 9, 3, 10, 2, 12]
-
-func contextmenuitemselected(target, cmitext):
-	if target != null and target.has_method("executecontextmenucommand"):
-		target.executecontextmenucommand(cmitext)
-	else:
-		if cmitext == "new geon":
-			var geonobject = geonobjectclass.instantiate()
-			geonobject.transform.origin = spawnlocation
-			print(geonobject.transform.origin)
-			MainNode.add_child(geonobject)
-			
 func controller_button_pressed(name, controller):
 	if controller == FunctionPointer._active_controller:
 		if name == contextbutton:
@@ -55,11 +38,16 @@ func controller_button_released(name, controller):
 
 func makecontextUI():
 	contextmenutarget = FunctionPointer.last_target
-	cmitexts = makecontextmenufor(contextmenutarget)
+	cmitexts = ContextOperatingNode.makecontextmenufor(contextmenutarget, FunctionPointer.last_collided_at)
 
 	var b = FunctionPointer.transform.basis
 	var cp = b.y*FunctionPointer.y_offset - b.z*contextdiscdistance
-	transform = Transform3D(b, FunctionPointer.transform.origin + cp*FunctionPointer._world_scale)
+	var cpos = FunctionPointer.transform.origin + cp*FunctionPointer._world_scale
+	var pgt = get_parent().global_transform
+	look_at_from_position(pgt*cpos, pgt*(cpos - b.z), Vector3(0,1,0))
+	#print(transform)
+	#transform = Transform3D(b, cpos)
+	#print(transform)
 	
 	for i in range(len(cmitexts)):
 		var contextmenuitem = contextmenuclass.instantiate()
@@ -76,7 +64,7 @@ func releasecontextUI():
 	visible = false
 	if currentactivecontextmenuitem != -1:
 		print("currentactivecontextmenuitem:: ", currentactivecontextmenuitem)
-		call_deferred("contextmenuitemselected", contextmenutarget, cmitexts[currentactivecontextmenuitem])
+		ContextOperatingNode.call_deferred("contextmenuitemselected", contextmenutarget, cmitexts[currentactivecontextmenuitem], spawnlocation)
 		currentactivecontextmenuitem = -1
 	for contextmenuitem in get_children():
 		contextmenuitem.queue_free()
