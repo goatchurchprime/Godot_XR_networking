@@ -1,9 +1,10 @@
-[gd_scene load_steps=65 format=3 uid="uid://ckhwmlkgnklol"]
+[gd_scene load_steps=67 format=3 uid="uid://ckhwmlkgnklol"]
 
 [ext_resource type="Script" path="res://Main.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://obbgumvvb3yw" path="res://avatars/monster/mesh/redoran3.glb" id="2_6hbic"]
 [ext_resource type="Script" path="res://manualposemaker/GeonPoseMaker.gd" id="2_lkn5y"]
 [ext_resource type="PackedScene" uid="uid://clc5dre31iskm" path="res://addons/godot-xr-tools/xr/start_xr.tscn" id="2_y037t"]
+[ext_resource type="Script" path="res://manualposemaker/PoseCalculator.gd" id="3_ephg7"]
 [ext_resource type="Script" path="res://manualposemaker/ManualPoseMaker.gd" id="3_m26xv"]
 [ext_resource type="PackedScene" uid="uid://diyu06cw06syv" path="res://addons/godot-xr-tools/player/player_body.tscn" id="4"]
 [ext_resource type="PackedScene" uid="uid://bxm1ply47vaan" path="res://addons/godot-xr-tools/functions/movement_climb.tscn" id="4_5iym2"]
@@ -30,6 +31,8 @@
 [ext_resource type="Script" path="res://contextui/ContextUI.gd" id="30_2r0rg"]
 [ext_resource type="PackedScene" uid="uid://dgdb1texynduw" path="res://addons/godot-xr-tools/objects/virtual_keyboard.tscn" id="51_rjdns"]
 
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_wykar"]
+
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_58518"]
 sky_curve = 0.0512265
 ground_bottom_color = Color(0.278431, 0.12549, 0.0823529, 1)
@@ -49,34 +52,34 @@ height = 0.06
 radial_segments = 12
 rings = 0
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_v4yf8"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_rr4kw"]
 animation = &"Grip"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_62prt"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_mh2gh"]
 animation = &"Grip"
 
-[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_rdwuy"]
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_iv0rm"]
 filter_enabled = true
 filters = ["Armature/Skeleton3D:Little_Distal_R", "Armature/Skeleton3D:Little_Intermediate_R", "Armature/Skeleton3D:Little_Metacarpal_R", "Armature/Skeleton3D:Little_Proximal_R", "Armature/Skeleton3D:Middle_Distal_R", "Armature/Skeleton3D:Middle_Intermediate_R", "Armature/Skeleton3D:Middle_Metacarpal_R", "Armature/Skeleton3D:Middle_Proximal_R", "Armature/Skeleton3D:Ring_Distal_R", "Armature/Skeleton3D:Ring_Intermediate_R", "Armature/Skeleton3D:Ring_Metacarpal_R", "Armature/Skeleton3D:Ring_Proximal_R", "Armature/Skeleton3D:Thumb_Distal_R", "Armature/Skeleton3D:Thumb_Metacarpal_R", "Armature/Skeleton3D:Thumb_Proximal_R", "Armature/Skeleton:Little_Distal_R", "Armature/Skeleton:Little_Intermediate_R", "Armature/Skeleton:Little_Proximal_R", "Armature/Skeleton:Middle_Distal_R", "Armature/Skeleton:Middle_Intermediate_R", "Armature/Skeleton:Middle_Proximal_R", "Armature/Skeleton:Ring_Distal_R", "Armature/Skeleton:Ring_Intermediate_R", "Armature/Skeleton:Ring_Proximal_R", "Armature/Skeleton:Thumb_Distal_R", "Armature/Skeleton:Thumb_Proximal_R"]
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ayrnj"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_43ba3"]
 animation = &"Grip 5"
 
-[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_6wvs5"]
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_o35xb"]
 filter_enabled = true
 filters = ["Armature/Skeleton3D:Index_Distal_R", "Armature/Skeleton3D:Index_Intermediate_R", "Armature/Skeleton3D:Index_Metacarpal_R", "Armature/Skeleton3D:Index_Proximal_R", "Armature/Skeleton:Index_Distal_R", "Armature/Skeleton:Index_Intermediate_R", "Armature/Skeleton:Index_Proximal_R"]
 
-[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_b8epp"]
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_cm0ty"]
 graph_offset = Vector2(-552.664, 107.301)
-nodes/ClosedHand1/node = SubResource("AnimationNodeAnimation_v4yf8")
+nodes/ClosedHand1/node = SubResource("AnimationNodeAnimation_rr4kw")
 nodes/ClosedHand1/position = Vector2(-600, 300)
-nodes/ClosedHand2/node = SubResource("AnimationNodeAnimation_62prt")
+nodes/ClosedHand2/node = SubResource("AnimationNodeAnimation_mh2gh")
 nodes/ClosedHand2/position = Vector2(-360, 300)
-nodes/Grip/node = SubResource("AnimationNodeBlend2_rdwuy")
+nodes/Grip/node = SubResource("AnimationNodeBlend2_iv0rm")
 nodes/Grip/position = Vector2(0, 40)
-nodes/OpenHand/node = SubResource("AnimationNodeAnimation_ayrnj")
+nodes/OpenHand/node = SubResource("AnimationNodeAnimation_43ba3")
 nodes/OpenHand/position = Vector2(-600, 100)
-nodes/Trigger/node = SubResource("AnimationNodeBlend2_6wvs5")
+nodes/Trigger/node = SubResource("AnimationNodeBlend2_o35xb")
 nodes/Trigger/position = Vector2(-360, 40)
 node_connections = [&"Grip", 0, &"Trigger", &"Grip", 1, &"ClosedHand2", &"Trigger", 0, &"OpenHand", &"Trigger", 1, &"ClosedHand1", &"output", 0, &"Grip"]
 
@@ -90,13 +93,13 @@ subdivide_depth = 20
 resource_local_to_scene = true
 size = Vector2(3, 2)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_h2dql"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_np1sd"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0inho"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tsiyt"]
 transparency = 1
 cull_mode = 2
-albedo_texture = SubResource("ViewportTexture_h2dql")
+albedo_texture = SubResource("ViewportTexture_np1sd")
 texture_filter = 1
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ttrwc"]
@@ -184,6 +187,11 @@ QUESTstartupprotocol = "none"
 [node name="GeonPoseMaker" type="Node3D" parent="."]
 script = ExtResource("2_lkn5y")
 
+[node name="PoseCalculator" type="Node3D" parent="GeonPoseMaker"]
+script = ExtResource("3_ephg7")
+
+[node name="GeonObjects" type="Node3D" parent="GeonPoseMaker"]
+
 [node name="redoran3" parent="." instance=ExtResource("2_6hbic")]
 transform = Transform3D(0.101989, 0, -0.109992, 0, 0.15, 0, 0.109992, 0, 0.101989, 2.436, 1.2, -2.301)
 metadata/_edit_lock_ = true
@@ -233,6 +241,14 @@ bones/28/rotation = Quaternion(0.888033, 0.0315337, 0.0200545, -0.458258)
 bones/28/scale = Vector3(1, 1, 1)
 bones/29/rotation = Quaternion(0.000133956, -9.01909e-08, -0.043297, 0.999062)
 bones/29/scale = Vector3(1, 1, 1)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="redoran3/MonsterArmature/Skeleton3D" index="1"]
+transform = Transform3D(4.53285, 0, 4.88853, 0, 6.66667, 0, -4.88853, 0, 4.53285, 0, 0, 0)
+collision_layer = 1048576
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="redoran3/MonsterArmature/Skeleton3D/StaticBody3D"]
+shape = SubResource("CapsuleShape3D_wykar")
 
 [node name="AnimationPlayer" parent="redoran3" index="1"]
 active = false
@@ -349,7 +365,7 @@ bone_idx = 9
 [node name="Poke" parent="XROrigin3D/RightHandController/RightHand/Hand_low_R/Armature/Skeleton3D/BoneAttachment3D" instance=ExtResource("7_xiqf5")]
 
 [node name="AnimationTree" parent="XROrigin3D/RightHandController/RightHand" index="1"]
-tree_root = SubResource("AnimationNodeBlendTree_b8epp")
+tree_root = SubResource("AnimationNodeBlendTree_cm0ty")
 
 [node name="AutoHandtracker" parent="XROrigin3D/RightHandController/RightHand" instance=ExtResource("6_4vxvi")]
 visible = false
@@ -394,7 +410,7 @@ selected = 3
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource("QuadMesh_wuwme")
-surface_material_override/0 = SubResource("StandardMaterial3D_0inho")
+surface_material_override/0 = SubResource("StandardMaterial3D_tsiyt")
 
 [node name="StaticBody3D" parent="ViewportNetworkGateway" index="2"]
 viewport_size = Vector2(650, 400)

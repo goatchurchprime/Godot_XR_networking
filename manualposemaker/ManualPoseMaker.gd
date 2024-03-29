@@ -226,7 +226,7 @@ func forcenbonequat0ashinges():
 		bje.propbonecentre = bje.derivebointjointcentre(prevquat, prevcentre, bje.propbonequat)
 
 
-func createboneunitsfromskeleton():	
+func createboneunitsfromskeleton():
 	var regex = RegEx.new()
 	#regex.compile("(foot|leg|hand) \\.[LR]$")
 	regex.compile("(foot|leg|fingers) \\.[LR]$")   # The hand has a twist between the bones
