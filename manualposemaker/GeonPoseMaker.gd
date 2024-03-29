@@ -80,8 +80,7 @@ func makejointskeleton(skel : Skeleton3D, ptloc):
 	var trj = Transform3D(Basis(), ptloc - skel.global_position)
 	var boneunits = [ ]
 	for j in range(skel.get_bone_count()):
-		var geonobject = newgeonobjectat(Vector3())
-		var bu = { "j":j, "geonobject":geonobject, "nextboneunitjoints":[ ] }
+		var bu = { "j":j, "nextboneunitjoints":[ ] }
 		var jparent = skel.get_bone_parent(j)
 		if jparent != -1:
 			bu.nextboneunitjoints.append({ "nextboneunit":jparent, "nextboneunitjoint":skel.get_bone_children(jparent).find(j)+1 })
@@ -126,6 +125,23 @@ func makejointskeleton(skel : Skeleton3D, ptloc):
 				bu.hingetoparentaxis = Vector3(1,0,0)
 		else:
 			bu.hingetoparentaxis = null
+
+
+	for j in range(len(boneunits)):
+		var bu = boneunits[j]
+		if bu.bonemass != 0.0:
+			var geonobject = newgeonobjectat()
+			print("new geon at ", geonobject.transform.origin)
+			geonobject.transform = trj*Transform3D(bu.bonequat0, bu.bonecentre0)
+			bu.geonobject = geonobject
+			var vpb = bu.nextboneunitjoints[1]["jointvector"] - bu.nextboneunitjoints[0]["jointvector"]
+			var vpblen = vpb.length()
+			geonobject.rodlength = vpblen
+			geonobject.rodradtop = 0.05
+			geonobject.rodradbottom = 0.04
+			geonobject.rodcolour = Color.CADET_BLUE
+			$GeonObjects.add_child(geonobject)  # this calls ready which calls setupcsgrod
+
 	pass
 	
 func removeremotetransforms(bcreateorclear):
@@ -170,9 +186,10 @@ func dropgeon(pickable, geonobject):
 	removeremotetransforms(true)
 	
 
-func newgeonobjectat(pt):
+func newgeonobjectat(pt=null):
 	var geonobject = geonobjectclass.instantiate()
-	geonobject.transform.origin = pt
+	if pt != null:
+		geonobject.transform.origin = pt
 	geonobject.connect("picked_up", pickupgeon.bind(geonobject))
 	geonobject.connect("dropped", dropgeon.bind(geonobject))
 	return geonobject
