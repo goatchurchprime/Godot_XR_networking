@@ -42,6 +42,19 @@ func lockobjectstogether(gn1, gn2):
 	gn0.lockedobjectnext = gn3
 	gn2.lockedtransformnext = gn2.transform.inverse()*gn1.transform
 	gn0.lockedtransformnext = gn0.transform.inverse()*gn3.transform
+	assert (Dchecklocktransformcycle(gn1))
+	
+func Dchecklocktransformcycle(gn0):
+	var Dgn = gn0
+	var Dtr = Dgn.lockedtransformnext
+	var Dgnlist = [ Dgn ]
+	while Dgn.lockedobjectnext != gn0:
+		Dgn = Dgn.lockedobjectnext
+		Dtr = Dtr*Dgn.lockedtransformnext
+		Dgnlist.append(Dgn)
+	assert (Dtr.is_equal_approx(Transform3D()))
+	return true
+	
 	
 func delockobject(gn1):
 	var gn0 = gn1
@@ -78,12 +91,17 @@ func updateheldremotetransforms(bcreateorclear):
 
 func makejointskeleton(skel : Skeleton3D, ptloc):
 	var trj = Transform3D(Basis(), ptloc - skel.global_position)
+	var skeltransform = skel.global_transform
+	print(skeltransform.basis.get_scale())
+	#skeltransform = Transform3D()
 	var boneunits = [ ]
 	for j in range(skel.get_bone_count()):
 		var bu = { "j":j, "nextboneunitjoints":[ ] }
 		var jparent = skel.get_bone_parent(j)
 		if jparent != -1:
 			bu.nextboneunitjoints.append({ "nextboneunit":jparent, "nextboneunitjoint":skel.get_bone_children(jparent).find(j)+1 })
+		else:
+			bu.nextboneunitjoints.append({  })
 		var buc = skel.get_bone_children(j)
 		for k in range(len(buc)):
 			bu.nextboneunitjoints.append({ "nextboneunit":buc[k], "nextboneunitjoint":0 })
@@ -91,14 +109,14 @@ func makejointskeleton(skel : Skeleton3D, ptloc):
 		
 	for j in range(len(boneunits)):
 		var bu = boneunits[j]
-		var bonejoint0 = skel.global_transform*skel.get_bone_global_pose(j)
+		var bonejoint0 = skeltransform*skel.get_bone_global_pose(j)
 		bu.bonequat0 = bonejoint0.basis.get_rotation_quaternion()
 		var boneunitjointspos = [ bonejoint0.origin ]
 		var sumboneunitjointpos = bonejoint0.origin
 		for i in range(1, len(bu.nextboneunitjoints)):
 			var jchild = bu.nextboneunitjoints[i]["nextboneunit"]
 			var bonejointj = bonejoint0*skel.get_bone_pose(jchild)
-			assert (bonejointj.is_equal_approx(skel.global_transform*skel.get_bone_global_pose(jchild)))
+			assert (bonejointj.is_equal_approx(skeltransform*skel.get_bone_global_pose(jchild)))
 			boneunitjointspos.push_back(bonejointj.origin)
 			sumboneunitjointpos += bonejointj.origin
 		bu.bonecentre0 = sumboneunitjointpos/len(bu.nextboneunitjoints)
@@ -129,30 +147,54 @@ func makejointskeleton(skel : Skeleton3D, ptloc):
 
 	for j in range(len(boneunits)):
 		var bu = boneunits[j]
-		if bu.bonemass != 0.0:
+		if bu.bonemass == 0.0:
+			continue
+		var butr = Transform3D(bu.bonequat0, bu.bonecentre0)
+		var prevgeonobject = null
+		for i in range(1, len(bu.nextboneunitjoints)):
 			var geonobject = newgeonobjectat()
-			print("new geon at ", geonobject.transform.origin)
-			geonobject.transform = trj*Transform3D(bu.bonequat0, bu.bonecentre0)
-			bu.geonobject = geonobject
-			var vpb = bu.nextboneunitjoints[1]["jointvector"] - bu.nextboneunitjoints[0]["jointvector"]
+			var vj0 = bu.nextboneunitjoints[0]["jointvector"]
+			var vji = bu.nextboneunitjoints[i]["jointvector"]
+			var vpbcen = (vji + vj0)/2
+			var vpb = vji - vj0
 			var vpblen = vpb.length()
+			var vjbasis = Basis()
+			if vpb.x != 0 or vpb.z != 0:
+				var axis = Vector3(0,1,0).cross(vpb).normalized()
+				var angle_rads = acos(vpb.y/vpblen)
+				vjbasis = Basis(axis, angle_rads)
+			else:
+				pass # print(vpbcen)
+			geonobject.transform = trj*butr*Transform3D(vjbasis, vpbcen)
 			geonobject.rodlength = vpblen
-			geonobject.rodradtop = 0.05
-			geonobject.rodradbottom = 0.04
-			geonobject.rodcolour = Color.CADET_BLUE
+			geonobject.rodradtop = 0.025
+			geonobject.rodradbottom = 0.02
+			geonobject.rodcolour = Color.GOLD if i == 1 else Color.GOLDENROD
 			$GeonObjects.add_child(geonobject)  # this calls ready which calls setupcsgrod
+			if prevgeonobject != null:
+				lockobjectstogether(prevgeonobject, geonobject)
+			prevgeonobject = geonobject
 
-	pass
+
+static func rotationtoalignScaled(a, b):
+	var axis = a.cross(b).normalized()
+	var sca = b.length()/a.length()
+	if (axis.length_squared() != 0):
+		var dot = a.dot(b)/(a.length()*b.length())
+		dot = clamp(dot, -1.0, 1.0)
+		var angle_rads = acos(dot)
+		return Basis(axis, angle_rads).scaled(Vector3(sca,sca,sca))
 	
-func removeremotetransforms(bcreateorclear):
-	if not bcreateorclear:
-		for gn in heldgeons:
-			var gnrts = gn.get_node_or_null("RemoteTransforms")
-			if is_instance_valid(gnrts):
-				gn.remove_child(gnrts)
-				gnrts.queue_free()
-		return
+	
+	
+func removeremotetransforms():
+	for gn in heldgeons:
+		var gnrts = gn.get_node_or_null("RemoteTransforms")
+		if is_instance_valid(gnrts):
+			gn.remove_child(gnrts)
+			gnrts.queue_free()
 		
+func createremotetransforms():
 	for gn0 in heldgeons:
 		var gnrts = Node3D.new()
 		gnrts.set_name("RemoteTransforms")
@@ -164,7 +206,7 @@ func removeremotetransforms(bcreateorclear):
 		while not heldgeons.has(gn.lockedobjectnext):
 			var gnrt = RemoteTransform3D.new()
 			gnrts.add_child(gnrt)
-			tr = gn.lockedtransformnext*tr
+			tr = tr*gn.lockedtransformnext
 			gnrt.transform = tr
 			gnrt.remote_path = gnrt.get_path_to(gn.lockedobjectnext)
 			Dcount -= 1
@@ -173,17 +215,17 @@ func removeremotetransforms(bcreateorclear):
 
 
 func pickupgeon(pickable, geonobject):
-	removeremotetransforms(false)
+	removeremotetransforms()
 	heldgeons.append(geonobject)
 	print("now holding ", heldgeons)
-	removeremotetransforms(true)
+	createremotetransforms()
 	$PoseCalculator.createsolidgeonunits($GeonObjects.get_children(), geonobject)
 
 func dropgeon(pickable, geonobject):
-	removeremotetransforms(false)
+	removeremotetransforms()
 	heldgeons.erase(geonobject)
 	print("now holding ", heldgeons)
-	removeremotetransforms(true)
+	createremotetransforms()
 	
 
 func newgeonobjectat(pt=null):

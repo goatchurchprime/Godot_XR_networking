@@ -33,8 +33,7 @@ func setupcsgrod():
 	$CSGScaler.material_override.albedo_color = rodcolour
 	await get_tree().create_timer(0.5).timeout   # it takes a bit of time for the CSG to complete.  Maybe there should be a signal when it does
 	var gm = $CSGScaler.get_meshes()
-	if gm:  
-		print("CSGSCALER ", gm[0])
+	#if gm: print("CSGSCALER ", gm[0])
 	var gmm = gm[1] if gm else $CSGScaler/CSGRod.mesh
 	$CollisionShape3D.shape = gmm.create_convex_shape()
 	$MeshOutline.mesh = gmm.create_outline(0.02)
