@@ -177,7 +177,10 @@ func makejointskeleton(skel : Skeleton3D, ptloc):
 					geonobject.jointobjecttop = nextgeonobject
 				geonobject.setjointmarkers()
 
-
+	$PoseCalculator.makegeongroups($GeonObjects.get_children())
+	$PoseCalculator.Dcheckbonejoints()
+	#await get_tree().create_timer(1.0).timeout
+	#$PoseCalculator.Dsetfrombonequat0()
 	
 func removeremotetransforms():
 	for gn in heldgeons:
@@ -208,27 +211,39 @@ func createremotetransforms():
 
 func pickupgeon(pickable, geonobject):
 	removeremotetransforms()
+	if len(heldgeons) == 0:
+		$PoseCalculator.createsolidgeonunits($GeonObjects.get_children(), geonobject)
+		$PoseCalculator.Dcheckbonejoints()
+		$PoseCalculator.derivejointsequence(geonobject)
+		$PoseCalculator.Dcheckbonejoints()
+		#$PoseCalculator.Dsetfrombonequat0()
 	heldgeons.append(geonobject)
 	print("now holding ", heldgeons)
 	createremotetransforms()
 
 
-
 func dropgeon(pickable, geonobject):
 	removeremotetransforms()
 
+	$PoseCalculator.copybacksolidedgeunit0(geonobject)
 	heldgeons.erase(geonobject)
 	print("now holding ", heldgeons)
 	createremotetransforms()
 
 	if len(heldgeons) == 0:
-		$PoseCalculator.createsolidgeonunits($GeonObjects.get_children(), geonobject)
-		$PoseCalculator.derivejointsequence(geonobject)
 		for i in range(10):
 			$PoseCalculator.sgmakegradstep(i)
 			$PoseCalculator.sgseebonequatscentres(false)
+			$PoseCalculator.Dcheckbonejoints()
 			await get_tree().create_timer(0.1).timeout
 		$PoseCalculator.sgseebonequatscentres(true)
+
+		#$PoseCalculator.Dsetfrombonequat0()
+
+		#$PoseCalculator.createsolidgeonunits($GeonObjects.get_children(), geonobject)
+		#$PoseCalculator.bonejointsequence = [ ]
+		#$PoseCalculator.Dcheckbonejoints()
+
 		$PoseCalculator.sgsetboneposefromunits()
 
 	
