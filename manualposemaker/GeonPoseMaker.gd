@@ -211,13 +211,26 @@ func pickupgeon(pickable, geonobject):
 	heldgeons.append(geonobject)
 	print("now holding ", heldgeons)
 	createremotetransforms()
-	$PoseCalculator.createsolidgeonunits($GeonObjects.get_children(), geonobject)
+
+
 
 func dropgeon(pickable, geonobject):
 	removeremotetransforms()
+
 	heldgeons.erase(geonobject)
 	print("now holding ", heldgeons)
 	createremotetransforms()
+
+	if len(heldgeons) == 0:
+		$PoseCalculator.createsolidgeonunits($GeonObjects.get_children(), geonobject)
+		$PoseCalculator.derivejointsequence(geonobject)
+		for i in range(10):
+			$PoseCalculator.sgmakegradstep(i)
+			$PoseCalculator.sgseebonequatscentres(false)
+			await get_tree().create_timer(0.1).timeout
+		$PoseCalculator.sgseebonequatscentres(true)
+		$PoseCalculator.sgsetboneposefromunits()
+
 	
 func newgeonobjectat(pt=null):
 	var geonobject = geonobjectclass.instantiate()
@@ -229,7 +242,7 @@ func newgeonobjectat(pt=null):
 
 func contextmenuitemselected(target, cmitext, spawnlocation):
 	if heldgeons:
-		print("contet menu disabled when holding geons")
+		print("context menu disabled when holding geons")
 		pass
 	elif cmitext == "new geon":
 		var geonobject = newgeonobjectat(spawnlocation)

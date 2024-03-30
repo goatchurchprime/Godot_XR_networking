@@ -3,87 +3,317 @@ extends Node3D
 # Corresponds to each bone, holds the vectors to parent and child joints from its inerrtial centre 
 class SolidGeonGroups:
 	var geonunits = [ ]
-	var geonmass : float
-	var nextboneunitjoints = [ ] # [ { jointvector, nextboneunit, nextboneunitjoint } ]  (0th joint is to the parent)
-	var hingetoparentaxis = null 
-	
+
 	var bonequat0 : Quaternion
 	var bonecentre0 : Vector3
+	var geonunitsremotetransforms = [ ]
 
+	var geonmass : float
+	var nextboneunitbyjoints = [ ]
+	
+	# [ { jointvector, nextboneunit, nextboneunitjoint } ]
+	# should be nextsolidgeongroup, nextsolidgeongroupjoint, but for historical reasons
+	var nextboneunitjoints = [ ]
+	var hingetoparentaxis = null 
+	
+	func setgeonunits(lgeonunits):
+		geonunits = lgeonunits
+		geonmass = 0.0
+		var boneunitjointspos = [  ]
+		var sumboneunitjointpos = Vector3()
+		for gn in geonunits:
+			# the gn.transform should come from the remote linkstransforms to keep it rigid
+			if gn.jointobjectbottom != null:
+				assert (gn.jointobjectbottom.jointobjecttop == gn or gn.jointobjectbottom.jointobjectbottom == gn)
+				nextboneunitbyjoints.append(gn.jointobjectbottom)
+				boneunitjointspos.append(gn.transform*Vector3(0,-gn.rodlength/2,0))
+				sumboneunitjointpos += boneunitjointspos[-1]
+			if gn.jointobjecttop != null:
+				assert (gn.jointobjecttop.jointobjecttop == gn or gn.jointobjecttop.jointobjectbottom == gn)
+				nextboneunitbyjoints.append(gn.jointobjecttop)
+				boneunitjointspos.append(gn.transform*Vector3(0,gn.rodlength/2,0))
+				sumboneunitjointpos += boneunitjointspos[-1]
+			geonmass += gn.rodlength + gn.rodradtop + gn.rodradbottom
+
+		bonequat0 = geonunits[0].transform.basis.get_rotation_quaternion()
+		bonecentre0 = sumboneunitjointpos/len(nextboneunitbyjoints)
+		for i in range(len(nextboneunitbyjoints)):
+			var jointvectorabs = boneunitjointspos[i] - bonecentre0
+			nextboneunitjoints.append({ "jointvector":bonequat0.inverse()*jointvectorabs })
+
+# the generated interlink of groups of geons and their joints
 var solidgeonunits = [ ]
+var geonstogroups = { }
 
 func makegeongroups(geonobjects):
 	solidgeonunits = [ ]
-	var scannedgns = [ ]
+	geonstogroups = { }
 	for gn0 in geonobjects:
-		if not scannedgns.has(gn0):
+		if not geonstogroups.has(gn0):
 			var geonunits = [ gn0 ]
 			var gn = gn0
+			var sgg = SolidGeonGroups.new()
+			geonstogroups[gn0] = sgg
 			while gn.lockedobjectnext != gn0:
 				gn = gn.lockedobjectnext
 				geonunits.append(gn)
-				scannedgns.append(gn)
-			var sgg = SolidGeonGroups.new()
-			sgg.geonunits = geonunits
+				geonstogroups[gn] = sgg
+			sgg.setgeonunits(geonunits)
 			solidgeonunits.append(sgg)
+
+	# create the link backs between the sggs from the boneunit linkbacks
+	for sgg in solidgeonunits:
+		print(":: ", sgg.geonunits)
+		for i in range(len(sgg.nextboneunitbyjoints)):
+			var sggbuj = sgg.nextboneunitbyjoints[i]
+			var sggj = geonstogroups[sggbuj]
+			sgg.nextboneunitjoints[i]["nextboneunit"] = solidgeonunits.find(sggj)
+			print(" i ", i, " ", sggbuj, " ", sggj.geonunits)
+			assert (sgg.nextboneunitjoints[i]["nextboneunit"] >= 0)
+
+			var backjointindex = -1
+			for gn in sgg.geonunits:
+				var lbackjointindex = sggj.nextboneunitbyjoints.find(gn)
+				if lbackjointindex != -1:
+					assert (backjointindex == -1)
+					backjointindex = lbackjointindex
+			assert (backjointindex != -1)
+			sgg.nextboneunitjoints[i]["nextboneunitjoint"] = backjointindex
+	pass
+	
 
 func createsolidgeonunits(geonobjects, geonheld):
 	var i = geonobjects.find(geonheld)
 	assert (i >= 0)
 	geonobjects[i] = geonobjects[0]
 	geonobjects[0] = geonheld
-	makegeongroups(geonobjects)
 	
-"""
-func createsolidgeonunits():
-	var regex = RegEx.new()
-	#regex.compile("(foot|leg|hand) \\.[LR]$")
-	regex.compile("(foot|leg|fingers) \\.[LR]$")   # The hand has a twist between the bones
+	makegeongroups(geonobjects)  # this could be cached if the joints don't change
 
-	for j in range(skel.get_bone_count()):
-		var bu = BoneUnit.new()
-		bu.boneindex = j
-		var jparent = skel.get_bone_parent(j)
-		if jparent != -1:
-			bu.nextboneunitjoints = [ { "nextboneunit":jparent, "nextboneunitjoint":skel.get_bone_children(jparent).find(j)+1 }]
-		else:
-			bu.nextboneunitjoints = [ { } ]
-		var buc = skel.get_bone_children(j)
-		for k in range(len(buc)):
-			bu.nextboneunitjoints.push_back({ "nextboneunit":buc[k], "nextboneunitjoint":0 })
-		boneunits.push_back(bu)
-		
-	for j in range(len(boneunits)):
-		var bu = boneunits[j]
-		var bonejoint0 = skel.global_transform*skel.get_bone_global_pose(bu.boneindex)
-		bu.bonequat0 = bonejoint0.basis.get_rotation_quaternion()
-		var boneunitjointspos = [ bonejoint0.origin ]
-		var sumboneunitjointpos = bonejoint0.origin
-		for i in range(1, len(bu.nextboneunitjoints)):
-			var jchild = boneunits[bu.nextboneunitjoints[i]["nextboneunit"]].boneindex
-			var bonejointj = bonejoint0*skel.get_bone_pose(jchild) 
-			assert (bonejointj.is_equal_approx(skel.global_transform*skel.get_bone_global_pose(jchild)))
-			boneunitjointspos.push_back(bonejointj.origin)
-			sumboneunitjointpos += bonejointj.origin
-		bu.bonecentre0 = sumboneunitjointpos/len(bu.nextboneunitjoints)
+
+# Corresponds to the sequence of joints map forward froom boneunit to boneunit 
+class SolidGeonJointEl:
+	var prevboneunitindex : int
+	var prevjointindex : int
+	var prevbonejointvector : Vector3
+	
+	var boneunitindex : int
+	var incomingjointindex : int
+	var incomingbonejointvector : Vector3
+
+	var propbonequat : Quaternion
+	var propbonecentre : Vector3
+	var prevbonejointel : int
+	var nextboneellist 
+
+	var overridepropbonecentre : Vector3
+	var overridepropbonequat : Quaternion
+	var gradE : Vector3
+
+	var isconstorientation : bool
+	var hingejointaxis = null
+
+	func derivebointjointcentre(prevquat, prevcentre, quat):
+		var jointpos = prevcentre + prevquat*prevbonejointvector
+		return jointpos - quat*incomingbonejointvector
+	
+var bonejointsequence = null
+var fixedboneslist = [ ]
+
+func derivejointsequence(geonheld):
+	var jstart = solidgeonunits.find(geonstogroups[geonheld])
+	assert (jstart >= 0)
+	bonejointsequence = [ ]
+	fixedboneslist = [ jstart ]
+
+	var boneunitsvisited = [ jstart ]
+	var boneunitsvisitedProcessed = 0
+	while boneunitsvisitedProcessed < len(boneunitsvisited):
+		var j = boneunitsvisited[boneunitsvisitedProcessed]
+		var bu = solidgeonunits[j]
 		for i in range(len(bu.nextboneunitjoints)):
-			var jointvectorabs = boneunitjointspos[i] - bu.bonecentre0
-			bu.nextboneunitjoints[i]["jointvector"] = bu.bonequat0.inverse()*jointvectorabs
-			bu.bonemass += jointvectorabs.length()
-		if len(bu.nextboneunitjoints) <= (2 if not bu.nextboneunitjoints[0].has("nextboneunit") else 1):
-			print("bonemass 0 on unit ", j)
-			bu.bonemass = 0.0
+			if not bu.nextboneunitjoints[i].has("nextboneunit"):
+				continue
+			var bnti = bu.nextboneunitjoints[i]
+			var nj = bnti["nextboneunit"]
+			if boneunitsvisited.has(nj):
+				continue
 
-	for j in range(len(boneunits)):
-		var bu = boneunits[j]
-		if regex.search(skel.get_bone_name(j)) != null:
-			var bup = boneunits[skel.get_bone_parent(j)]
-			var quat = bup.bonequat0.inverse() * bu.bonequat0
-			print(skel.get_bone_name(j), " ", quat)
-			if skel.get_bone_name(j).contains("hand") or skel.get_bone_name(j).contains("fingers"):
-				bu.hingetoparentaxis = Vector3(0,0,1)
-			else:
-				bu.hingetoparentaxis = Vector3(1,0,0)
+			var bje = SolidGeonJointEl.new()
+			bje.prevboneunitindex = j
+			bje.prevjointindex = i
+			bje.prevbonejointvector = bnti["jointvector"]
+
+			var bunext = solidgeonunits[nj]
+			bje.incomingjointindex = bu.nextboneunitjoints[i]["nextboneunitjoint"]
+			var bntinext = bunext.nextboneunitjoints[bje.incomingjointindex]
+			bje.boneunitindex = nj
+			bje.incomingbonejointvector = bntinext["jointvector"]
+			assert (bntinext["nextboneunit"] == j and bntinext["nextboneunitjoint"] == i)
+
+			# initialize at original position
+			bje.propbonequat = bunext.bonequat0
+			bje.propbonecentre = bunext.bonecentre0
+
+			# back joint pointers and forward dependence joints list
+			var backbonejointel = len(bonejointsequence) - 1
+			while backbonejointel >= 0:
+				if bonejointsequence[backbonejointel].boneunitindex == bje.prevboneunitindex:
+					break
+				backbonejointel -= 1
+			bje.prevbonejointel = backbonejointel
+			bje.nextboneellist = [ ]
+			var cbonejointel = len(bonejointsequence)
+			while backbonejointel >= 0:
+				bonejointsequence[backbonejointel].nextboneellist.push_back(cbonejointel)
+				backbonejointel = bonejointsequence[backbonejointel].prevbonejointel
+
+			bonejointsequence.push_back(bje)
+			boneunitsvisited.push_back(nj)
+
+		boneunitsvisitedProcessed += 1
+	assert (bonejointsequence[0].prevboneunitindex == jstart)
+
+func sgcalcbonecentresfromquatsE():
+	var Ergsum = 0.0
+	for i in range(len(bonejointsequence)):
+		var bje = bonejointsequence[i]
+		var prevcentre
+		var prevquat
+		if bje.prevbonejointel == -1:
+			var bu0 = solidgeonunits[bonejointsequence[0].prevboneunitindex]
+			prevcentre = bu0.bonecentre0
+			prevquat = bu0.bonequat0
 		else:
-			bu.hingetoparentaxis = null
-"""
+			prevcentre = bonejointsequence[bje.prevbonejointel].propbonecentre
+			prevquat = bonejointsequence[bje.prevbonejointel].propbonequat
+		var bu = solidgeonunits[bje.boneunitindex]
+		if bje.isconstorientation:
+			bje.propbonequat = bu.bonequat0
+
+		bje.propbonecentre = bje.derivebointjointcentre(prevquat, prevcentre, bje.propbonequat)
+		Ergsum += bu.geonmass*(bje.propbonecentre - bu.bonecentre0).length_squared()
+	return Ergsum
+
+
+func sgseebonequatscentres(bapply):
+	for i in range(len(bonejointsequence)):
+		var bje = bonejointsequence[i]
+		var bu = solidgeonunits[bje.boneunitindex]
+		#if bu.bonestick != null:
+		#	pass
+			#bu.bonestick.transform = Transform3D(bje.propbonequat, bje.propbonecentre)
+		if bapply:
+			bu.bonequat0 = bje.propbonequat
+			bu.bonecentre0 = bje.propbonecentre
+
+
+func calcEsinglequat(k, kaddpropbonequat):
+	var koverridepropbonequat = bonejointsequence[k].propbonequat*kaddpropbonequat
+	var bjeK = bonejointsequence[k]
+	var prevcentre
+	var prevquat
+	if bjeK.prevbonejointel == -1:
+		var bu0 = solidgeonunits[bjeK.prevboneunitindex]
+		prevcentre = bu0.bonecentre0
+		prevquat = bu0.bonequat0
+	else:
+		var bjeprev = bonejointsequence[bjeK.prevbonejointel]
+		prevcentre = bjeprev.propbonecentre
+		prevquat = bjeprev.propbonequat
+
+	# could use overridepropbonequat also to save on the second test against k
+	bjeK.overridepropbonecentre = bjeK.derivebointjointcentre(prevquat, prevcentre, koverridepropbonequat)
+	var buK = solidgeonunits[bjeK.boneunitindex]
+	var Ergsum = buK.geonmass*(bjeK.overridepropbonecentre - buK.bonecentre0).length_squared()
+	var Ergorg = buK.geonmass*(bjeK.propbonecentre - buK.bonecentre0).length_squared()
+	for i in bjeK.nextboneellist:
+		var bje = bonejointsequence[i]
+		assert (bje.prevbonejointel != -1)
+		var bjeprev = bonejointsequence[bje.prevbonejointel]
+		prevcentre = bjeprev.overridepropbonecentre
+		prevquat = koverridepropbonequat if bje.prevbonejointel == k else bjeprev.propbonequat 
+		bje.overridepropbonecentre = bje.derivebointjointcentre(prevquat, prevcentre, bje.propbonequat)
+		var bu = solidgeonunits[bje.boneunitindex]
+		Ergsum += bu.geonmass*(bje.overridepropbonecentre - bu.bonecentre0).length_squared()
+		Ergorg += bu.geonmass*(bje.propbonecentre - bu.bonecentre0).length_squared()
+	return Ergsum - Ergorg
+
+
+func sgcalcnumericalgradient(eps):
+	var qeps = sqrt(1.0 - eps*eps)
+	var sumgradEsq = 0.0
+	for k in range(len(bonejointsequence)):
+		var bjeK = bonejointsequence[k]
+		if bjeK.isconstorientation:
+			bonejointsequence[k].gradE = Vector3(0,0,0)
+		else:
+			var gx = calcEsinglequat(k, Quaternion(eps, 0, 0, qeps))
+			var gy = calcEsinglequat(k, Quaternion(0, eps, 0, qeps))
+			var gz = calcEsinglequat(k, Quaternion(0, 0, eps, qeps))
+			var gradE = Vector3(gx, gy, gz)/eps
+			bonejointsequence[k].gradE = gradE
+			sumgradEsq += gradE.length_squared()
+			
+	return sumgradEsq
+
+func calcEgraddelta(delta):
+	var Ergsum = 0.0
+	for i in range(len(bonejointsequence)):
+		var bje = bonejointsequence[i]
+
+		var prevcentre
+		var prevquat
+		if bje.prevbonejointel == -1:
+			var bu0 = solidgeonunits[bje.prevboneunitindex]
+			prevcentre = bu0.bonecentre0
+			prevquat = bu0.bonequat0
+		else:
+			prevcentre = bonejointsequence[bje.prevbonejointel].overridepropbonecentre
+			prevquat = bonejointsequence[bje.prevbonejointel].overridepropbonequat
+
+		var v = bje.gradE*delta
+
+		if bje.hingejointaxis == null:
+			var addpropbonequat = Quaternion(v.x, v.y, v.z, sqrt(1.0 - v.length_squared()))
+			bje.overridepropbonequat = bje.propbonequat*addpropbonequat
+		else:
+			var addpropbonequat = Quaternion(v.x, v.y, v.z, sqrt(1.0 - v.length_squared()))
+			bje.overridepropbonequat = bje.propbonequat*addpropbonequat
+
+		bje.overridepropbonecentre = bje.derivebointjointcentre(prevquat, prevcentre, bje.overridepropbonequat)
+		
+		var bu = solidgeonunits[bje.boneunitindex]
+		Ergsum += bu.geonmass*(bje.overridepropbonecentre - bu.bonecentre0).length_squared()
+	return Ergsum
+
+
+var DDEd = 0
+func sgmakegradstep(Ni):
+	var E0 = sgcalcbonecentresfromquatsE()
+	var sumgradEsq = sgcalcnumericalgradient(0.0001)
+
+	var c = 0.5
+	var tau = 0.5
+	var delta = 0.2
+	
+	if Ni == 10 or Ni == 100 or Ni == 1000 or Ni == 9000:
+		print(Ni, " ", E0, " g", sumgradEsq)
+	
+	for ii in range(10):
+		var DEd = calcEgraddelta(-delta)
+		#print(" ", ii, " ", delta, "  ", DEd, "  E0 ", E0)
+		DDEd = DEd
+		if DEd < E0 - delta*c*sumgradEsq:
+			for i in range(len(bonejointsequence)):
+				var bje = bonejointsequence[i]
+				bje.propbonequat = bje.overridepropbonequat
+				bje.propbonecentre = bje.overridepropbonecentre
+			return true
+		delta = delta*tau
+	#print("Bailing out at step ", Ni, " E0 ", E0)
+	return false
+
+
+func sgsetboneposefromunits():
+	pass
