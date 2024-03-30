@@ -12,9 +12,11 @@ var rodcolour = Color.BEIGE
 const rodcolourcyle = [ Color.BEIGE, Color.DARK_GOLDENROD, Color.DARK_TURQUOISE, Color.LIME_GREEN, 
 						Color.BLACK, Color.PLUM ]
 
+# linked list of objects in lock group
 var lockedobjectnext = self
-var lockedtransformnext = Transform3D()
+var lockedtransformnext = Transform3D()  # right multiply
 
+# joints are at the ends, defined by looking at the back links
 var jointobjecttop = null
 var jointobjectbottom = null
 
@@ -37,6 +39,14 @@ func setupcsgrod():
 	var gmm = gm[1] if gm else $CSGScaler/CSGRod.mesh
 	$CollisionShape3D.shape = gmm.create_convex_shape()
 	$MeshOutline.mesh = gmm.create_outline(0.02)
+	setjointmarkers()
+	
+func setjointmarkers():
+	$JointTopMarker.position = Vector3(0,rodlength/2,0)
+	$JointTopMarker.visible = (jointobjecttop != null)
+	$JointBottomMarker.position = Vector3(0,-rodlength/2,0)
+	$JointBottomMarker.visible = (jointobjectbottom != null)
+
 	
 func on_pointer_event(e : XRToolsPointerEvent) -> void:
 	if e.event_type == XRToolsPointerEvent.Type.ENTERED:

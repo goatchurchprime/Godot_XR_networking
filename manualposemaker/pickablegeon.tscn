@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cdfxr6ka7p4um"]
+[gd_scene load_steps=12 format=3 uid="uid://cdfxr6ka7p4um"]
 
 [ext_resource type="PackedScene" uid="uid://c8l60rnugru40" path="res://addons/godot-xr-tools/objects/pickable.tscn" id="1_4lkak"]
 [ext_resource type="Script" path="res://manualposemaker/pickablegeon.gd" id="2_f3pjp"]
@@ -21,6 +21,20 @@ shading_mode = 0
 albedo_color = Color(1, 1, 0.0784314, 0.486275)
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_cuxrr"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_t7ep3"]
+size = Vector3(0.015, 0.007, 0.007)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_khbsa"]
+no_depth_test = true
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_s2nn2"]
+size = Vector3(0.007, 0.007, 0.015)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gqhcn"]
+no_depth_test = true
+albedo_color = Color(0.803828, 0.186501, 1, 1)
 
 [node name="GeonObject" instance=ExtResource("1_4lkak")]
 collision_layer = 1048584
@@ -56,3 +70,13 @@ visible = false
 material_override = SubResource("StandardMaterial3D_8dvlb")
 cast_shadow = 0
 mesh = SubResource("ArrayMesh_cuxrr")
+
+[node name="JointTopMarker" type="MeshInstance3D" parent="." index="3"]
+visible = false
+mesh = SubResource("BoxMesh_t7ep3")
+surface_material_override/0 = SubResource("StandardMaterial3D_khbsa")
+
+[node name="JointBottomMarker" type="MeshInstance3D" parent="." index="4"]
+visible = false
+mesh = SubResource("BoxMesh_s2nn2")
+surface_material_override/0 = SubResource("StandardMaterial3D_gqhcn")

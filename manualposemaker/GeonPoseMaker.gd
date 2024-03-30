@@ -66,34 +66,14 @@ func delockobject(gn1):
 		gn1.lockedobjectnext = gn1
 		gn1.lockedtransformnext = Transform3D()
 	
-
 var heldgeons = [ ]
 
-func updateheldremotetransforms(bcreateorclear):
-	for gn0 in heldgeons:
-		var gn = gn0
-		var Dcount = get_child_count() + 5
-		while not heldgeons.has(gn.lockedobjectnext):
-			if bcreateorclear:
-				var gnrt = RemoteTransform3D.new()
-				gnrt.set_name("HeldRemoteTransform")
-				gn.add_child(gnrt)
-				gnrt.transform = gn.lockedtransformnext
-				gnrt.remote_path = gnrt.get_path_to(gn.lockedobjectnext)
-			else:
-				var gnrt = gn.get_node("HeldRemoteTransform")
-				gnrt.remote_path = NodePath()
-				gn.remove_child(gnrt)
-				gnrt.queue_free()
-			Dcount -= 1
-			assert (Dcount >= 0)
-			gn = gn.lockedobjectnext
 
 func makejointskeleton(skel : Skeleton3D, ptloc):
 	var trj = Transform3D(Basis(), ptloc - skel.global_position)
 	var skeltransform = skel.global_transform
-	print(skeltransform.basis.get_scale())
-	#skeltransform = Transform3D()
+
+	# generate the boneunits
 	var boneunits = [ ]
 	for j in range(skel.get_bone_count()):
 		var bu = { "j":j, "nextboneunitjoints":[ ] }
@@ -107,6 +87,7 @@ func makejointskeleton(skel : Skeleton3D, ptloc):
 			bu.nextboneunitjoints.append({ "nextboneunit":buc[k], "nextboneunitjoint":0 })
 		boneunits.push_back(bu)
 		
+	# generate the links between the boneunits
 	for j in range(len(boneunits)):
 		var bu = boneunits[j]
 		var bonejoint0 = skeltransform*skel.get_bone_global_pose(j)
@@ -129,6 +110,7 @@ func makejointskeleton(skel : Skeleton3D, ptloc):
 			print("bonemass 0 on unit ", j)
 			bu.bonemass = 0.0
 
+	# record the boneunits that have hinges
 	var regex = RegEx.new()
 	regex.compile("(foot|leg|fingers) \\.[LR]$")   # The hand has a twist between the bones
 	for j in range(len(boneunits)):
@@ -144,15 +126,16 @@ func makejointskeleton(skel : Skeleton3D, ptloc):
 		else:
 			bu.hingetoparentaxis = null
 
-
+	# create the geon objects for each boneunit
 	for j in range(len(boneunits)):
 		var bu = boneunits[j]
 		if bu.bonemass == 0.0:
 			continue
+		var gname = skel.get_bone_name(j)
 		var butr = Transform3D(bu.bonequat0, bu.bonecentre0)
-		var prevgeonobject = null
 		for i in range(1, len(bu.nextboneunitjoints)):
 			var geonobject = newgeonobjectat()
+			geonobject.set_name(gname + (("_j%d" % i) if i > 1 else ""))
 			var vj0 = bu.nextboneunitjoints[0]["jointvector"]
 			var vji = bu.nextboneunitjoints[i]["jointvector"]
 			var vpbcen = (vji + vj0)/2
@@ -171,21 +154,30 @@ func makejointskeleton(skel : Skeleton3D, ptloc):
 			geonobject.rodradbottom = 0.02
 			geonobject.rodcolour = Color.GOLD if i == 1 else Color.GOLDENROD
 			$GeonObjects.add_child(geonobject)  # this calls ready which calls setupcsgrod
-			if prevgeonobject != null:
-				lockobjectstogether(prevgeonobject, geonobject)
-			prevgeonobject = geonobject
+			bu.nextboneunitjoints[i].geonobject = geonobject
+			if i >= 2:
+				lockobjectstogether(bu.nextboneunitjoints[i-1].geonobject, geonobject)
+	
+	# generate the joints between each of the bone units
+	for j in range(len(boneunits)):
+		var bu = boneunits[j]
+		if bu.bonemass == 0.0:
+			continue
+		for i in range(0, len(bu.nextboneunitjoints)):
+			if bu.nextboneunitjoints[i].has("nextboneunit"):
+				var nextbu = boneunits[bu.nextboneunitjoints[i]["nextboneunit"]]
+				if nextbu.bonemass == 0.0:
+					continue
+				var ni = bu.nextboneunitjoints[i]["nextboneunitjoint"]
+				var nextgeonobject = nextbu.nextboneunitjoints[1 if ni == 0 else ni].geonobject
+				var geonobject = bu.nextboneunitjoints[1 if i == 0 else i].geonobject
+				if i == 0:
+					geonobject.jointobjectbottom = nextgeonobject
+				else:
+					geonobject.jointobjecttop = nextgeonobject
+				geonobject.setjointmarkers()
 
 
-static func rotationtoalignScaled(a, b):
-	var axis = a.cross(b).normalized()
-	var sca = b.length()/a.length()
-	if (axis.length_squared() != 0):
-		var dot = a.dot(b)/(a.length()*b.length())
-		dot = clamp(dot, -1.0, 1.0)
-		var angle_rads = acos(dot)
-		return Basis(axis, angle_rads).scaled(Vector3(sca,sca,sca))
-	
-	
 	
 func removeremotetransforms():
 	for gn in heldgeons:
@@ -227,7 +219,6 @@ func dropgeon(pickable, geonobject):
 	print("now holding ", heldgeons)
 	createremotetransforms()
 	
-
 func newgeonobjectat(pt=null):
 	var geonobject = geonobjectclass.instantiate()
 	if pt != null:

@@ -38,6 +38,7 @@ func controller_button_released(name, controller):
 
 func makecontextUI():
 	contextmenutarget = FunctionPointer.last_target
+	print("ContextmenuUI for ", contextmenutarget.get_name() if contextmenutarget else "")
 	cmitexts = ContextOperatingNode.makecontextmenufor(contextmenutarget, FunctionPointer.last_collided_at)
 
 	var b = FunctionPointer.transform.basis
