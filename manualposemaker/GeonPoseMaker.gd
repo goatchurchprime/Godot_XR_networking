@@ -22,15 +22,17 @@ func makecontextmenufor(target, pt):
 					res.append("delock self")
 			else:
 				res.append("lock to")
-				res.append("join to")
-				res.append("hinge to")
+				var jointcomm = selectedlocktarget.checkjointapproaches(target)
+				if jointcomm:
+					res.append(jointcomm)
+					#res.append("hinge to")
 		else:
 			res.append_array(["duplicate", "new geon", "colour cycle"])
 			res.append("select lock target")
 		return res
 	var res = [ "new geon" ]
 	if is_instance_valid(target) and is_instance_of(target.get_parent(), Skeleton3D):
-		res.append("joint skeleton")
+		res.append("geon skeleton")
 	return res
 
 #var lockedobjectnext = self
@@ -49,7 +51,7 @@ func lockobjectstogether(gn1, gn2):
 	gn2.lockedtransformnext = gn2.transform.inverse()*gn1.transform
 	gn0.lockedtransformnext = gn0.transform.inverse()*gn3.transform
 	assert (Dchecklocktransformcycle(gn1))
-	
+		
 func Dchecklocktransformcycle(gn0):
 	var Dgn = gn0
 	var Dtr = Dgn.lockedtransformnext
@@ -61,7 +63,6 @@ func Dchecklocktransformcycle(gn0):
 	assert (Dtr.is_equal_approx(Transform3D()))
 	return true
 	
-	
 func delockobject(gn1):
 	var gn0 = gn1
 	while gn0.lockedobjectnext != gn1:
@@ -71,6 +72,22 @@ func delockobject(gn1):
 		gn0.lockedtransformnext = gn0.lockedtransformnext*gn1.lockedtransformnext
 		gn1.lockedobjectnext = gn1
 		gn1.lockedtransformnext = Transform3D()
+
+func changejoint(jointcommand, gn1, gn2):
+	var c1 = jointcommand[-2]
+	var c2 = jointcommand[-1]
+	if jointcommand.begins_with("disjoin"):
+		if gn1.getjointobject(c1 == "T") == gn2 and gn2.getjointobject(c2 == "T") == gn1:
+			gn1.setjointobject(c1 == "T", null)
+			gn2.setjointobject(c2 == "T", null)
+		else:
+			print("did not disjoin ", jointcommand)
+	else:
+		if gn1.getjointobject(c1 == "T") == null and gn2.getjointobject(c2 == "T") == null:
+			gn1.setjointobject(c1 == "T", gn2)
+			gn2.setjointobject(c2 == "T", gn1)
+		else:
+			print("did not join ", jointcommand)
 	
 var heldgeons = [ ]
 
@@ -331,16 +348,21 @@ func contextmenuitemselected(target, cmitext, spawnlocation):
 		if is_instance_valid(target) and target.has_method("executecontextmenucommand"):
 			if is_instance_valid(selectedlocktarget) and selectedlocktarget.has_method("executecontextmenucommand"):
 				lockobjectstogether(selectedlocktarget, target)
+	elif cmitext.begins_with("disjoin") or cmitext.begins_with("join"):
+		if is_instance_valid(target) and target.has_method("executecontextmenucommand"):
+			if is_instance_valid(selectedlocktarget) and selectedlocktarget.has_method("executecontextmenucommand"):
+				changejoint(cmitext, selectedlocktarget, target)
+
 	elif cmitext == "delock self":
 		if is_instance_valid(selectedlocktarget) and selectedlocktarget.has_method("executecontextmenucommand"):
 			delockobject(selectedlocktarget)
 
-	elif is_instance_valid(target) and target.has_method("executecontextmenucommand"):
-		target.executecontextmenucommand(cmitext)
-
-	elif cmitext == "joint skeleton":
+	elif cmitext == "geon skeleton":
 		if is_instance_valid(target) and is_instance_of(target.get_parent(), Skeleton3D):
 			makejointskeleton(target.get_parent(), spawnlocation)
 		
+	elif is_instance_valid(target) and target.has_method("executecontextmenucommand"):
+		target.executecontextmenucommand(cmitext)
+
 	if cmitext != "select lock target":
 		selectedlocktarget = null

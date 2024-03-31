@@ -10,6 +10,7 @@ var blindmarkerline = null
 var tbuttondown = Time.get_ticks_msec()
 var controllertransformdown = null
 var probelinetransformdown = null
+var ignorefirsttime = true
 func buttonpressed(name):  # primary_touch or primary_click
 	print("--- Controller button pressed ", name)
 	if name == "primary_click":
@@ -46,7 +47,10 @@ func buttonreleased(name):
 	if name == "primary_click":
 		var tbuttonduration = Time.get_ticks_msec() - tbuttondown
 		if tbuttonduration > 2000:
-			visible = not visible
+			if not ignorefirsttime:
+				visible = not visible
+			else:
+				ignorefirsttime = false
 		elif tbuttonduration > 500:
 			var s = $FocusPoint/FocusMesh.get_surface_override_material(0)
 			s.set_shader_parameter("blockleft", not s.get_shader_parameter("blockleft"))

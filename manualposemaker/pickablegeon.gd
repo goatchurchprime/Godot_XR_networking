@@ -22,6 +22,16 @@ var jointobjectbottom = null
 
 var skelbone = null
 
+func setjointobject(btop, Njointobject):
+	if btop:
+		jointobjecttop = Njointobject
+	else:
+		jointobjectbottom = Njointobject
+
+func getjointobject(btop):
+	return jointobjecttop if btop else jointobjectbottom
+		
+
 func setupcsgrod():
 	$CSGScaler/CSGRod.mesh.height = rodlength
 	$CSGScaler/CSGRod.mesh.top_radius = rodradtop
@@ -49,6 +59,28 @@ func setjointmarkers():
 	$JointBottomMarker.position = Vector3(0,-rodlength/2,0)
 	$JointBottomMarker.visible = (jointobjectbottom != null)
 
+func checkjointapproaches(target):
+	var jointtoppos = transform*Vector3(0,rodlength/2,0)
+	var jointbotpos = transform*Vector3(0,-rodlength/2,0)
+	var tjointtoppos = target.transform*Vector3(0,target.rodlength/2,0)
+	var tjointbotpos = target.transform*Vector3(0,-target.rodlength/2,0)
+	var dtoptop = (jointtoppos - tjointtoppos).length() - (rodradtop + target.rodradtop)
+	var dtopbot = (jointtoppos - tjointbotpos).length() - (rodradtop + target.rodradbottom)
+	var dbottop = (jointbotpos - tjointtoppos).length() - (rodradbottom + target.rodradtop)
+	var dbotbot = (jointbotpos - tjointbotpos).length() - (rodradbottom + target.rodradbottom)
+	var dtopmin = min(dtoptop, dtopbot)
+	var dbotmin = min(dbottop, dbotbot)
+	if min(dtopmin, dbotmin) <= 0:
+		var jointcode = ("TT" if dtoptop <= dtopbot else "TB") if dtopmin <= dbotmin else ("BT" if dbottop <= dbotbot else "BB")
+		var jointobject0 = getjointobject(jointcode[0] == "T")
+		var jointobject1 = target.getjointobject(jointcode[1] == "T")
+		
+		if (jointobject0 == null) and (jointobject1 == null):
+			return "join"+jointcode
+		if (jointobject0 != null) and (jointobject1 != null):
+			return "disjoin"+jointcode
+	return ""
+	
 	
 func on_pointer_event(e : XRToolsPointerEvent) -> void:
 	if e.event_type == XRToolsPointerEvent.Type.ENTERED:
