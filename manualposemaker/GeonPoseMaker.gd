@@ -4,6 +4,12 @@ var geonobjectclass = load("res://manualposemaker/pickablegeon.tscn")
 
 var selectedlocktarget = null
 
+# next begin to put the pose calculator into a physics loop with 
+# control on the timing.  Or put it into a thread that we poll for updates
+
+# then pinning nodes (for feet) and lifting them like crutches
+									
+
 func makecontextmenufor(target, pt):
 	if heldgeons:
 		print("no context menu when holding")
@@ -68,9 +74,9 @@ func delockobject(gn1):
 	
 var heldgeons = [ ]
 
-
 func makejointskeleton(skel : Skeleton3D, ptloc):
-	var trj = Transform3D(Basis(), ptloc - skel.global_position)
+	#var trj = Transform3D(Basis(), ptloc - skel.global_position)
+	var trj = Transform3D(Basis(), ptloc)*Transform3D(Basis(Vector3(0,1,0), deg_to_rad(180)), Vector3(0,0,0))*Transform3D(Basis(), -skel.global_position)
 	var skeltransform = skel.global_transform
 
 	# generate the boneunits
@@ -163,7 +169,7 @@ func makejointskeleton(skel : Skeleton3D, ptloc):
 				geonobject.skelbone = { "skel":skel, "j":j, "buskeltrans":skeltransform*skel.get_bone_global_pose(j)*geonobject.transform.inverse() }
 				geonobject.skelbone["conjskelleft"] = trj.inverse()
 				geonobject.skelbone["conjskelright"] = Transform3D(vjbasis, vpbcen).inverse()*Transform3D(Basis(), vj0)
-				print(geonobject.skelbone["conjskelright"], geonobject.rodlength/2, " ", geonobject.name)
+				#print(geonobject.skelbone["conjskelright"], geonobject.rodlength/2, " ", geonobject.name)
 				assert (geonobject.skelbone["conjskelright"].origin.is_equal_approx(Vector3(0,-geonobject.rodlength/2,0)))
 				# validation of the reversing calculation
 				var Djparent = skel.get_bone_parent(j)
@@ -200,6 +206,9 @@ func makejointskeleton(skel : Skeleton3D, ptloc):
 	#$PoseCalculator.Dsetfrombonequat0()
 	setboneposefromunits(true)
 			
+# This assumes that the bonepositions are set in order
+# so that the previous bone global pose can be used
+# Should upgrade this to handle the root properly and the conjskelleft value being carried across
 func setboneposefromunits(Dverify=false):
 	var geonobjects = $GeonObjects.get_children()
 	for gn in geonobjects:

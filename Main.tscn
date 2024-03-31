@@ -96,7 +96,7 @@ size = Vector2(3, 2)
 [sub_resource type="ViewportTexture" id="ViewportTexture_sfqyp"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_t4k4e"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_scd5k"]
 transparency = 1
 cull_mode = 2
 albedo_texture = SubResource("ViewportTexture_sfqyp")
@@ -194,7 +194,6 @@ script = ExtResource("3_ephg7")
 
 [node name="redoran3" parent="." instance=ExtResource("2_6hbic")]
 transform = Transform3D(0.101989, 0, -0.109992, 0, 0.15, 0, 0.109992, 0, 0.101989, 2.436, 1.2, -2.301)
-metadata/_edit_lock_ = true
 
 [node name="Skeleton3D" parent="redoran3/MonsterArmature" index="0"]
 transform = Transform3D(0.998681, 0, -0.0513424, 0, 1, 0, 0.0513424, 0, 0.998681, 0, 0, 0)
@@ -414,7 +413,7 @@ bus = &"Master"
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource("QuadMesh_wuwme")
-surface_material_override/0 = SubResource("StandardMaterial3D_t4k4e")
+surface_material_override/0 = SubResource("StandardMaterial3D_scd5k")
 
 [node name="StaticBody3D" parent="ViewportNetworkGateway" index="2"]
 viewport_size = Vector2(650, 400)
