@@ -20,6 +20,8 @@ var lockedtransformnext = Transform3D()  # right multiply
 var jointobjecttop = null
 var jointobjectbottom = null
 
+var skelbone = null
+
 func setupcsgrod():
 	$CSGScaler/CSGRod.mesh.height = rodlength
 	$CSGScaler/CSGRod.mesh.top_radius = rodradtop

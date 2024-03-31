@@ -365,5 +365,3 @@ func sgmakegradstep(Ni):
 	return false
 
 
-func sgsetboneposefromunits():
-	pass

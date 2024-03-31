@@ -133,6 +133,7 @@ func makejointskeleton(skel : Skeleton3D, ptloc):
 			continue
 		var gname = skel.get_bone_name(j)
 		var butr = Transform3D(bu.bonequat0, bu.bonecentre0)
+		
 		for i in range(1, len(bu.nextboneunitjoints)):
 			var geonobject = newgeonobjectat()
 			geonobject.set_name(gname + (("_j%d" % i) if i > 1 else ""))
@@ -142,9 +143,10 @@ func makejointskeleton(skel : Skeleton3D, ptloc):
 			var vpb = vji - vj0
 			var vpblen = vpb.length()
 			var vjbasis = Basis()
-			if vpb.x != 0 or vpb.z != 0:
+			if not is_zero_approx(vpb.x) or not is_zero_approx(vpb.z):
 				var axis = Vector3(0,1,0).cross(vpb).normalized()
 				var angle_rads = acos(vpb.y/vpblen)
+				#print("angle_rads ", angle_rads, vpb, i, [vpb.x, vpb.z])
 				vjbasis = Basis(axis, angle_rads)
 			else:
 				pass # print(vpbcen)
@@ -157,6 +159,21 @@ func makejointskeleton(skel : Skeleton3D, ptloc):
 			bu.nextboneunitjoints[i].geonobject = geonobject
 			if i >= 2:
 				lockobjectstogether(bu.nextboneunitjoints[i-1].geonobject, geonobject)
+			else:
+				geonobject.skelbone = { "skel":skel, "j":j, "buskeltrans":skeltransform*skel.get_bone_global_pose(j)*geonobject.transform.inverse() }
+				geonobject.skelbone["conjskelleft"] = trj.inverse()
+				geonobject.skelbone["conjskelright"] = Transform3D(vjbasis, vpbcen).inverse()*Transform3D(Basis(), vj0)
+				print(geonobject.skelbone["conjskelright"], geonobject.rodlength/2, " ", geonobject.name)
+				assert (geonobject.skelbone["conjskelright"].origin.is_equal_approx(Vector3(0,-geonobject.rodlength/2,0)))
+				# validation of the reversing calculation
+				var Djparent = skel.get_bone_parent(j)
+				var Dbonejoint0parent = skeltransform*(skel.get_bone_global_pose(Djparent) if Djparent != -1 else Transform3D())
+				var Dbutr = trj.inverse()*geonobject.transform*Transform3D(vjbasis, vpbcen).inverse()
+				var Dbonejoint0 = Dbutr*Transform3D(Basis(), vj0)
+				Dbonejoint0 = geonobject.skelbone["conjskelleft"] * geonobject.transform * geonobject.skelbone["conjskelright"]
+				var Dbonejoint0rel = Dbonejoint0parent.affine_inverse()*Dbonejoint0
+				assert (Dbonejoint0rel.origin.is_equal_approx(skel.get_bone_pose_position(j)))
+				assert (Dbonejoint0rel.basis.get_rotation_quaternion().is_equal_approx(skel.get_bone_pose_rotation(j)))
 	
 	# generate the joints between each of the bone units
 	for j in range(len(boneunits)):
@@ -181,6 +198,30 @@ func makejointskeleton(skel : Skeleton3D, ptloc):
 	$PoseCalculator.Dcheckbonejoints()
 	#await get_tree().create_timer(1.0).timeout
 	#$PoseCalculator.Dsetfrombonequat0()
+	setboneposefromunits(true)
+			
+func setboneposefromunits(Dverify=false):
+	var geonobjects = $GeonObjects.get_children()
+	for gn in geonobjects:
+		if gn.skelbone == null:
+			continue
+		var skel = gn.skelbone.skel
+		var j = gn.skelbone.j
+		var sca = skel.global_transform.basis.get_scale()
+		var jtrans = Transform3D(gn.transform.basis, gn.transform.origin + gn.transform.basis.y*(-gn.rodlength/2))
+
+		var jparent = skel.get_bone_parent(j)
+		var bonejoint0parent = skel.global_transform*(skel.get_bone_global_pose(jparent) if jparent != -1 else Transform3D())
+		var conjskelright = Transform3D(gn.skelbone["conjskelright"].basis, Vector3(0,-gn.rodlength/2,0))
+		var bonejoint0 = gn.skelbone["conjskelleft"] * gn.transform * conjskelright
+		var bonejoint0rel = bonejoint0parent.affine_inverse()*bonejoint0
+		if Dverify:
+			assert (bonejoint0rel.origin.is_equal_approx(skel.get_bone_pose_position(j)))
+			assert (bonejoint0rel.basis.get_rotation_quaternion().is_equal_approx(skel.get_bone_pose_rotation(j)))
+
+		skel.set_bone_pose_position(j, bonejoint0rel.origin)
+		skel.set_bone_pose_rotation(j, bonejoint0rel.basis.get_rotation_quaternion())
+
 	
 func removeremotetransforms():
 	for gn in heldgeons:
@@ -222,6 +263,7 @@ func pickupgeon(pickable, geonobject):
 	createremotetransforms()
 
 
+
 func dropgeon(pickable, geonobject):
 	removeremotetransforms()
 
@@ -244,7 +286,7 @@ func dropgeon(pickable, geonobject):
 		#$PoseCalculator.bonejointsequence = [ ]
 		#$PoseCalculator.Dcheckbonejoints()
 
-		$PoseCalculator.sgsetboneposefromunits()
+		setboneposefromunits()
 
 	
 func newgeonobjectat(pt=null):
