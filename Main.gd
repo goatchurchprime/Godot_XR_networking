@@ -108,9 +108,7 @@ func vr_left_button_pressed(button: String):
 		print("Publishing Right hand XR transforms to mqtt hand/pos")
 		#$ViewportNetworkGateway/Viewport/NetworkGateway/MQTTsignalling/MQTT.publish("hand/pos", var_to_str($XROrigin3D/OpenXRallhandsdata.joint_transforms_R))
 
-			
-	
-			
+
 func _input(event):
 	if event is InputEventKey and not event.echo:
 		if event.keycode == KEY_M and event.pressed:

@@ -369,3 +369,14 @@ func sgmakegradstep(Ni):
 	return false
 
 
+func setisconstorientation(constrainedbones):
+	var constrainedsgindexes = [ ]
+	for j in range(1, len(constrainedbones)):
+		var sggj = geonstogroups[constrainedbones[j]]
+		constrainedsgindexes.append(solidgeonunits.find(sggj))
+	for i in range(len(bonejointsequence)):
+		var bje = bonejointsequence[i]
+		assert (bonejointsequence[0].prevboneunitindex != bje.boneunitindex)
+		bje.isconstorientation = constrainedsgindexes.has(bje.boneunitindex)
+
+

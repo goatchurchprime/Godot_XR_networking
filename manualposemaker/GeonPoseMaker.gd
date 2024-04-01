@@ -26,6 +26,7 @@ func makecontextmenufor(target, pt):
 				if jointcomm:
 					res.append(jointcomm)
 					#res.append("hinge to")
+			res.append("solve continuous" if Danimateupdateondrop else "solve ondrop")
 		else:
 			res.append_array(["duplicate", "new geon", "colour cycle"])
 			res.append("select lock target")
@@ -280,6 +281,7 @@ func createremotetransforms():
 			assert (Dcount >= 0)
 			gn = gn.lockedobjectnext
 
+var Danimateupdateondrop = false
 
 func pickupgeon(pickable, geonobject):
 	removeremotetransforms()
@@ -291,9 +293,9 @@ func pickupgeon(pickable, geonobject):
 	heldgeons.append(geonobject)
 	if $PoseCalculator.derivejointsequenceIfNecessary(heldgeons[0]):
 		bonejointgradsteps = 0
+	$PoseCalculator.setisconstorientation(heldgeons)
 	print("now holding ", heldgeons)
 	createremotetransforms()
-
 
 func dropgeon(pickable, geonobject):
 	removeremotetransforms()
@@ -303,25 +305,28 @@ func dropgeon(pickable, geonobject):
 	createremotetransforms()
 
 	if len(heldgeons) == 0:
-		pass
-		#for i in range(10):
-		#	$PoseCalculator.sgmakegradstep(i)
-		#	$PoseCalculator.sgseebonequatscentres(false)
-		#	$PoseCalculator.Dcheckbonejoints()
-		#	await get_tree().create_timer(0.1).timeout
-		#$PoseCalculator.sgseebonequatscentres(true)
-		#$PoseCalculator.Dsetfrombonequat0()
-		#$PoseCalculator.makegeongroups($GeonObjects.get_children())
-		#$PoseCalculator.bonejointsequence = [ ]
-		#$PoseCalculator.Dcheckbonejoints()
-		#setboneposefromunits()
+		if Danimateupdateondrop:
+			for i in range(10):
+				$PoseCalculator.sgmakegradstep(i)
+				$PoseCalculator.sgseebonequatscentres(false)
+				$PoseCalculator.Dcheckbonejoints()
+				await get_tree().create_timer(0.1).timeout
+			$PoseCalculator.sgseebonequatscentres(true)
+			#$PoseCalculator.Dsetfrombonequat0()
+			#$PoseCalculator.makegeongroups($GeonObjects.get_children())
+			#$PoseCalculator.bonejointsequence = [ ]
+			#$PoseCalculator.Dcheckbonejoints()
+			setboneposefromunits()
 	else:
 		if $PoseCalculator.derivejointsequenceIfNecessary(heldgeons[0]):
 			bonejointgradsteps = 0
-
+		$PoseCalculator.setisconstorientation(heldgeons)
+	
 var bonejointseqstartticks = 0
 var bonejointgradsteps = 0
 func _physics_process(delta):
+	if Danimateupdateondrop:
+		return
 	if len(heldgeons) == 0 and bonejointgradsteps == 0:
 		return
 	var physt0 = Time.get_ticks_usec()
@@ -352,7 +357,6 @@ func _physics_process(delta):
 		bonejointseqstartticks = Time.get_ticks_usec()
 		bonejointgradsteps = 0
 
-	
 func newgeonobjectat(pt=null):
 	var geonobject = geonobjectclass.instantiate()
 	if pt != null:
@@ -400,8 +404,15 @@ func contextmenuitemselected(target, cmitext, spawnlocation):
 		if is_instance_valid(target) and is_instance_of(target.get_parent(), Skeleton3D):
 			makejointskeleton(target.get_parent(), spawnlocation)
 		
+	elif cmitext == "solve continuous":
+		Danimateupdateondrop = false
+	elif cmitext == "solve ondrop":
+		Danimateupdateondrop = true
+
 	elif is_instance_valid(target) and target.has_method("executecontextmenucommand"):
 		target.executecontextmenucommand(cmitext)
+		if cmitext == "shorter" or cmitext == "longer":
+			$PoseCalculator.invalidategeonunits()
 
 	if cmitext != "select lock target":
 		selectedlocktarget = null
