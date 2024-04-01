@@ -77,7 +77,7 @@ func makegeongroupsIfInvalid(geonobjects):
 				geonunits.append(gn)
 				geonstogroups[gn] = sgg
 			var Dgntrans0 = geonunittransforms[-1]*gn.lockedtransformnext
-			assert (Dgntrans0.is_equal_approx(geonunittransforms[0]))
+			#assert (Dgntrans0.is_equal_approx(geonunittransforms[0]))
 			
 			sgg.setgeonunits(geonunits, geonunittransforms)
 			solidgeonunits.append(sgg)

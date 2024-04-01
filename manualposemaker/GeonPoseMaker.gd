@@ -4,6 +4,8 @@ var geonobjectclass = load("res://manualposemaker/pickablegeon.tscn")
 
 var selectedlocktarget = null
 
+@onready var xr_camera : XRCamera3D = XRHelpers.get_xr_camera(get_node("../XROrigin3D"))
+
 # next begin to put the pose calculator into a physics loop with 
 # control on the timing.  Or put it into a thread that we poll for updates
 
@@ -11,7 +13,7 @@ var selectedlocktarget = null
 									
 
 func makecontextmenufor(target, pt):
-	if heldgeons:
+	if len(heldgeons) > (1 if headlockedgeon != null else 0):
 		print("no context menu when holding")
 		return [ ]
 	if is_instance_valid(target) and target.has_method("contextmenucommands"):
@@ -104,8 +106,14 @@ func changejoint(jointcommand, gn1, gn2):
 
 var heldgeons = [ ]
 var headlockedgeon = null
-var headlockremotetransform = null
+var headloccambasis = null
+var headlocorgcampos = null
 
+func _process(delta):
+	if headlockedgeon != null:
+		headlockedgeon.transform.basis = xr_camera.transform.basis * headloccambasis
+		headlockedgeon.transform.origin = xr_camera.global_transform.origin + headlocorgcampos
+		
 func resetskeletonpose(skel : Skeleton3D, btoposerest):
 	#btoposerest = false
 	var bvalidate = false
@@ -422,7 +430,7 @@ func newgeonobjectat(pt=null):
 	return geonobject
 
 func contextmenuitemselected(target, cmitext, spawnlocation):
-	if heldgeons:
+	if len(heldgeons) > (1 if headlockedgeon != null else 0):
 		print("context menu disabled when holding geons")
 		pass
 	elif cmitext == "new geon":
@@ -474,15 +482,15 @@ func contextmenuitemselected(target, cmitext, spawnlocation):
 		if headlockedgeon != null:
 			dropgeon(null, headlockedgeon)
 			headlockedgeon = null
-			headlockremotetransform = null
-		if cmitext == "grab head" and headlockedgeon != null:
-			pickupgeon(null, headlockedgeon)
+			headloccambasis = null
+			headlocorgcampos = null
 
-#			func pickupgeon(pickable, geonobject):
-#		var headlockremotetransform = null
-
-
-		
+		if cmitext == "grab head":
+			if is_instance_valid(target) and target.has_method("executecontextmenucommand"):
+				headlockedgeon = target
+				pickupgeon(null, headlockedgeon)
+				headloccambasis = xr_camera.transform.basis.inverse()*headlockedgeon.transform.basis
+				headlocorgcampos = headlockedgeon.transform.origin - xr_camera.global_transform.origin
 
 	elif is_instance_valid(target) and target.has_method("executecontextmenucommand"):
 		target.executecontextmenucommand(cmitext)

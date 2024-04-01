@@ -68,6 +68,7 @@ func releasecontextUI():
 		ContextOperatingNode.call_deferred("contextmenuitemselected", contextmenutarget, cmitexts[currentactivecontextmenuitem], spawnlocation)
 		currentactivecontextmenuitem = -1
 	for contextmenuitem in get_children():
+		remove_child(contextmenuitem)
 		contextmenuitem.queue_free()
 	contextmenutarget = FunctionPointer.target
 	cmitexts = [ ]
