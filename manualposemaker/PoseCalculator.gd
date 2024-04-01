@@ -52,7 +52,13 @@ class SolidGeonGroups:
 var solidgeonunits = [ ]
 var geonstogroups = { }
 
-func makegeongroups(geonobjects):
+func invalidategeonunits():
+	solidgeonunits = [ ]
+	geonstogroups = { }
+
+func makegeongroupsIfInvalid(geonobjects):
+	if solidgeonunits and len(solidgeonunits) == len(geonstogroups):
+		return
 	solidgeonunits = [ ]
 	geonstogroups = { }
 	for gn0 in geonobjects:
@@ -91,15 +97,6 @@ func makegeongroups(geonobjects):
 			sgg.nextboneunitjoints[i]["nextboneunitjoint"] = backjointindex
 	pass
 	
-
-func createsolidgeonunits(geonobjects, geonheld):
-	if geonheld:
-		var i = geonobjects.find(geonheld)
-		assert (i >= 0)
-		geonobjects[i] = geonobjects[0]
-		geonobjects[0] = geonheld
-	makegeongroups(geonobjects)  # this could be cached if the joints don't change
-
 
 # Corresponds to the sequence of joints map forward froom boneunit to boneunit 
 class SolidGeonJointEl:

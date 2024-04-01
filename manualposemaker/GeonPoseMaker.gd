@@ -51,7 +51,9 @@ func lockobjectstogether(gn1, gn2):
 	gn2.lockedtransformnext = gn2.transform.inverse()*gn1.transform
 	gn0.lockedtransformnext = gn0.transform.inverse()*gn3.transform
 	assert (Dchecklocktransformcycle(gn1))
-		
+	$PoseCalculator.invalidategeonunits()
+
+
 func Dchecklocktransformcycle(gn0):
 	var Dgn = gn0
 	var Dtr = Dgn.lockedtransformnext
@@ -72,6 +74,7 @@ func delockobject(gn1):
 		gn0.lockedtransformnext = gn0.lockedtransformnext*gn1.lockedtransformnext
 		gn1.lockedobjectnext = gn1
 		gn1.lockedtransformnext = Transform3D()
+		$PoseCalculator.invalidategeonunits()
 
 func changejoint(jointcommand, gn1, gn2):
 	var c1 = jointcommand[-2]
@@ -80,12 +83,14 @@ func changejoint(jointcommand, gn1, gn2):
 		if gn1.getjointobject(c1 == "T") == gn2 and gn2.getjointobject(c2 == "T") == gn1:
 			gn1.setjointobject(c1 == "T", null)
 			gn2.setjointobject(c2 == "T", null)
+			$PoseCalculator.invalidategeonunits()
 		else:
 			print("did not disjoin ", jointcommand)
 	else:
 		if gn1.getjointobject(c1 == "T") == null and gn2.getjointobject(c2 == "T") == null:
 			gn1.setjointobject(c1 == "T", gn2)
 			gn2.setjointobject(c2 == "T", gn1)
+			$PoseCalculator.invalidategeonunits()
 		else:
 			print("did not join ", jointcommand)
 	
@@ -217,11 +222,12 @@ func makejointskeleton(skel : Skeleton3D, ptloc):
 					geonobject.jointobjecttop = nextgeonobject
 				geonobject.setjointmarkers()
 
-	$PoseCalculator.makegeongroups($GeonObjects.get_children())
-	$PoseCalculator.Dcheckbonejoints()
+	$PoseCalculator.invalidategeonunits()
+	#$PoseCalculator.makegeongroups($GeonObjects.get_children())
+	#$PoseCalculator.Dcheckbonejoints()
 	#await get_tree().create_timer(1.0).timeout
 	#$PoseCalculator.Dsetfrombonequat0()
-	setboneposefromunits(true)
+	#setboneposefromunits(true)
 			
 # This assumes that the bonepositions are set in order
 # so that the previous bone global pose can be used
@@ -244,7 +250,6 @@ func setboneposefromunits(Dverify=false):
 		if Dverify:
 			assert (bonejoint0rel.origin.is_equal_approx(skel.get_bone_pose_position(j)))
 			assert (bonejoint0rel.basis.get_rotation_quaternion().is_equal_approx(skel.get_bone_pose_rotation(j)))
-
 		skel.set_bone_pose_position(j, bonejoint0rel.origin)
 		skel.set_bone_pose_rotation(j, bonejoint0rel.basis.get_rotation_quaternion())
 
@@ -279,7 +284,7 @@ func createremotetransforms():
 func pickupgeon(pickable, geonobject):
 	removeremotetransforms()
 	if len(heldgeons) == 0:
-		$PoseCalculator.createsolidgeonunits($GeonObjects.get_children(), geonobject)
+		$PoseCalculator.makegeongroupsIfInvalid($GeonObjects.get_children())
 		$PoseCalculator.Dcheckbonejoints()
 		$PoseCalculator.derivejointsequence(geonobject)
 		$PoseCalculator.Dcheckbonejoints()
@@ -307,11 +312,9 @@ func dropgeon(pickable, geonobject):
 		$PoseCalculator.sgseebonequatscentres(true)
 
 		#$PoseCalculator.Dsetfrombonequat0()
-
-		#$PoseCalculator.createsolidgeonunits($GeonObjects.get_children(), geonobject)
+		#$PoseCalculator.makegeongroups($GeonObjects.get_children())
 		#$PoseCalculator.bonejointsequence = [ ]
 		#$PoseCalculator.Dcheckbonejoints()
-
 		setboneposefromunits()
 
 	
@@ -341,6 +344,7 @@ func contextmenuitemselected(target, cmitext, spawnlocation):
 				delockobject(target)
 			$GeonObjects.remove_child(target)
 			target.queue_free()
+			$PoseCalculator.invalidategeonunits()
 	elif cmitext == "select lock target":
 		if is_instance_valid(target) and target.has_method("executecontextmenucommand"):
 			selectedlocktarget = target
