@@ -185,7 +185,7 @@ func derivejointsequenceIfNecessary(geonheld):
 			boneunitsvisited.push_back(nj)
 
 		boneunitsvisitedProcessed += 1
-	assert (bonejointsequence[0].prevboneunitindex == jstart)
+	assert (len(bonejointsequence) == 0 or bonejointsequence[0].prevboneunitindex == jstart)
 	return true
 
 func sgcalcbonecentresfromquatsE():

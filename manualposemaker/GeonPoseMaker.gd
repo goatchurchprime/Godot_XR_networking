@@ -20,6 +20,10 @@ func makecontextmenufor(target, pt):
 			if selectedlocktarget == target:
 				if target.lockedobjectnext != target:
 					res.append("delock self")
+				if headlockedgeon == target:
+					res.append("degrab head")
+				else:
+					res.append("grab head")
 			else:
 				res.append("lock to")
 				var jointcomm = selectedlocktarget.checkjointapproaches(target)
@@ -97,9 +101,11 @@ func changejoint(jointcommand, gn1, gn2):
 		else:
 			print("did not join ", jointcommand)
 	
-var heldgeons = [ ]
 
-# this isn't quite working with locked components
+var heldgeons = [ ]
+var headlockedgeon = null
+var headlockremotetransform = null
+
 func resetskeletonpose(skel : Skeleton3D, btoposerest):
 	#btoposerest = false
 	var bvalidate = false
@@ -145,9 +151,6 @@ func resetskeletonpose(skel : Skeleton3D, btoposerest):
 				break
 		if gn.skelbone != null and skel == gn.skelbone.skel:
 			gnl.transform = gn.transform*tr.inverse()
-
-		
-			
 	$PoseCalculator.invalidategeonunits()
 	
 func makejointskeleton(skel : Skeleton3D, ptloc):
@@ -426,10 +429,12 @@ func contextmenuitemselected(target, cmitext, spawnlocation):
 		var geonobject = newgeonobjectat(spawnlocation)
 		print("new geon at ", geonobject.transform.origin)
 		$GeonObjects.add_child(geonobject)
+		$PoseCalculator.invalidategeonunits()
 	elif cmitext == "duplicate" and is_instance_valid(target) and target.has_method("duplicatefrom"):
 		var geonobject = newgeonobjectat(spawnlocation)
 		geonobject.duplicatefrom(target)
 		$GeonObjects.add_child(geonobject)
+		$PoseCalculator.invalidategeonunits()
 	elif cmitext == "delete":
 		if is_instance_valid(target) and target.has_method("executecontextmenucommand"):
 			if target.lockedobjectnext != target:
@@ -464,6 +469,20 @@ func contextmenuitemselected(target, cmitext, spawnlocation):
 		Danimateupdateondrop = false
 	elif cmitext == "solve ondrop":
 		Danimateupdateondrop = true
+
+	elif cmitext == "grab head" or cmitext == "degrab head":
+		if headlockedgeon != null:
+			dropgeon(null, headlockedgeon)
+			headlockedgeon = null
+			headlockremotetransform = null
+		if cmitext == "grab head" and headlockedgeon != null:
+			pickupgeon(null, headlockedgeon)
+
+#			func pickupgeon(pickable, geonobject):
+#		var headlockremotetransform = null
+
+
+		
 
 	elif is_instance_valid(target) and target.has_method("executecontextmenucommand"):
 		target.executecontextmenucommand(cmitext)
