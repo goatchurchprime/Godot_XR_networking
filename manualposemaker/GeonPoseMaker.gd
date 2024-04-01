@@ -285,37 +285,72 @@ func pickupgeon(pickable, geonobject):
 	removeremotetransforms()
 	if len(heldgeons) == 0:
 		$PoseCalculator.makegeongroupsIfInvalid($GeonObjects.get_children())
-		$PoseCalculator.Dcheckbonejoints()
-		$PoseCalculator.derivejointsequence(geonobject)
-		$PoseCalculator.Dcheckbonejoints()
+		#$PoseCalculator.Dcheckbonejoints()
+		#$PoseCalculator.Dcheckbonejoints()
 		#$PoseCalculator.Dsetfrombonequat0()
 	heldgeons.append(geonobject)
+	if $PoseCalculator.derivejointsequenceIfNecessary(heldgeons[0]):
+		bonejointgradsteps = 0
 	print("now holding ", heldgeons)
 	createremotetransforms()
 
 
-
 func dropgeon(pickable, geonobject):
 	removeremotetransforms()
-
 	$PoseCalculator.copybacksolidedgeunit0(geonobject)
 	heldgeons.erase(geonobject)
 	print("now holding ", heldgeons)
 	createremotetransforms()
 
 	if len(heldgeons) == 0:
-		for i in range(10):
-			$PoseCalculator.sgmakegradstep(i)
-			$PoseCalculator.sgseebonequatscentres(false)
-			$PoseCalculator.Dcheckbonejoints()
-			await get_tree().create_timer(0.1).timeout
-		$PoseCalculator.sgseebonequatscentres(true)
-
+		pass
+		#for i in range(10):
+		#	$PoseCalculator.sgmakegradstep(i)
+		#	$PoseCalculator.sgseebonequatscentres(false)
+		#	$PoseCalculator.Dcheckbonejoints()
+		#	await get_tree().create_timer(0.1).timeout
+		#$PoseCalculator.sgseebonequatscentres(true)
 		#$PoseCalculator.Dsetfrombonequat0()
 		#$PoseCalculator.makegeongroups($GeonObjects.get_children())
 		#$PoseCalculator.bonejointsequence = [ ]
 		#$PoseCalculator.Dcheckbonejoints()
+		#setboneposefromunits()
+	else:
+		if $PoseCalculator.derivejointsequenceIfNecessary(heldgeons[0]):
+			bonejointgradsteps = 0
+
+var bonejointseqstartticks = 0
+var bonejointgradsteps = 0
+func _physics_process(delta):
+	if len(heldgeons) == 0 and bonejointgradsteps == 0:
+		return
+	var physt0 = Time.get_ticks_usec()
+	if bonejointgradsteps == 0:
+		bonejointseqstartticks = physt0
+		for geonobject in heldgeons:
+			$PoseCalculator.copybacksolidedgeunit0(geonobject)
+	for Ci in range(10):
+		var bstepped = $PoseCalculator.sgmakegradstep(Ci)
+		#print(" make gradstep ", bonejointgradsteps, " ", bstepped)
+		bonejointgradsteps += 1
+		if not bstepped:
+			bonejointgradsteps = -1
+			break
+		if bonejointgradsteps >= 15:
+			bonejointgradsteps = -1
+			break
+		var physt = Time.get_ticks_usec()
+		if physt - bonejointseqstartticks > 200000:
+			bonejointgradsteps = -1
+			break
+		if physt - physt0 > 8000:
+			break
+	if bonejointgradsteps == -1:
+		#print(" setbonepose from units")
+		$PoseCalculator.sgseebonequatscentres(true)
 		setboneposefromunits()
+		bonejointseqstartticks = Time.get_ticks_usec()
+		bonejointgradsteps = 0
 
 	
 func newgeonobjectat(pt=null):

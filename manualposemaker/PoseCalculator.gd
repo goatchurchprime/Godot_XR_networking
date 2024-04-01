@@ -55,6 +55,9 @@ var geonstogroups = { }
 func invalidategeonunits():
 	solidgeonunits = [ ]
 	geonstogroups = { }
+	bonejointsequence = [ ]
+	fixedboneslist = [ ]
+	bonejointseqjstart = -1
 
 func makegeongroupsIfInvalid(geonobjects):
 	if solidgeonunits and len(solidgeonunits) == len(geonstogroups):
@@ -125,11 +128,14 @@ class SolidGeonJointEl:
 		return jointpos - quat*incomingbonejointvector
 	
 var bonejointsequence = [ ]
+var bonejointseqjstart = -1
 var fixedboneslist = [ ]
 
-func derivejointsequence(geonheld):
+func derivejointsequenceIfNecessary(geonheld):
 	var jstart = solidgeonunits.find(geonstogroups[geonheld])
 	assert (jstart >= 0)
+	if len(bonejointsequence) != 0 and bonejointseqjstart == jstart:
+		return false
 	bonejointsequence = [ ]
 	fixedboneslist = [ jstart ]
 
@@ -180,6 +186,7 @@ func derivejointsequence(geonheld):
 
 		boneunitsvisitedProcessed += 1
 	assert (bonejointsequence[0].prevboneunitindex == jstart)
+	return true
 
 func sgcalcbonecentresfromquatsE():
 	var Ergsum = 0.0
@@ -252,7 +259,7 @@ func copybacksolidedgeunit0(geonobject):
 	var butr = bu.geonunits[j].transform*bu.geonunitsremotetransforms[j].inverse()
 	bu.bonequat0 = butr.basis.get_rotation_quaternion()
 	bu.bonecentre0 = butr.origin
-	
+
 	
 	
 func calcEsinglequat(k, kaddpropbonequat):
