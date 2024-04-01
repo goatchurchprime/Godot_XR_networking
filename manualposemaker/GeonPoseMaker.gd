@@ -27,6 +27,7 @@ func makecontextmenufor(target, pt):
 					res.append(jointcomm)
 					#res.append("hinge to")
 			res.append("solve continuous" if Danimateupdateondrop else "solve ondrop")
+			res.append("reset pose")
 		else:
 			res.append_array(["duplicate", "new geon", "colour cycle"])
 			res.append("select lock target")
@@ -34,6 +35,7 @@ func makecontextmenufor(target, pt):
 	var res = [ "new geon" ]
 	if is_instance_valid(target) and is_instance_of(target.get_parent(), Skeleton3D):
 		res.append("geon skeleton")
+		res.append("reset pose")
 	return res
 
 #var lockedobjectnext = self
@@ -97,6 +99,57 @@ func changejoint(jointcommand, gn1, gn2):
 	
 var heldgeons = [ ]
 
+# this isn't quite working with locked components
+func resetskeletonpose(skel : Skeleton3D, btoposerest):
+	#btoposerest = false
+	var bvalidate = false
+	if btoposerest:
+		for j in range(skel.get_bone_count()):
+			var rtr = skel.get_bone_rest(j)
+			skel.set_bone_pose_rotation(j, rtr.basis.get_rotation_quaternion())
+			skel.set_bone_pose_position(j, rtr.origin)
+	var geonobjects = $GeonObjects.get_children()
+	var lockedgeons = [ ]
+	for gn in geonobjects:
+		if gn.skelbone == null:
+			lockedgeons.append(gn)
+			continue
+		if skel != gn.skelbone.skel:
+			continue
+		var j = gn.skelbone.j
+		var Djparent = skel.get_bone_parent(j)
+		var skeltransform = skel.global_transform
+		#		geonobject.skelbone["conjskelleft"] = trj.inverse()
+		var Dbonejoint0parent = skeltransform*(skel.get_bone_global_pose(Djparent) if Djparent != -1 else Transform3D())
+		var Dbonejoint0 = gn.skelbone["conjskelleft"] * gn.transform * gn.skelbone["conjskelright"]
+		var Dbonejoint0rel = Dbonejoint0parent.affine_inverse()*Dbonejoint0
+		
+		var sca = skeltransform.basis.get_scale()
+		var Dsbonejoint0rel = Transform3D(Basis(skel.get_bone_pose_rotation(j)).scaled(Vector3(1/sca.x, 1/sca.y, 1/sca.z)), skel.get_bone_pose_position(j))
+		if bvalidate:
+			assert (Dsbonejoint0rel.is_equal_approx(Dbonejoint0rel))
+			assert (Dbonejoint0rel.origin.is_equal_approx(skel.get_bone_pose_position(j)))
+			assert (Dbonejoint0rel.basis.get_rotation_quaternion().is_equal_approx(skel.get_bone_pose_rotation(j)))
+		else:
+			var Dsbonejoint0 = Dbonejoint0parent*Dsbonejoint0rel
+			var gntransform = gn.skelbone["conjskelleft"].affine_inverse()*Dsbonejoint0*gn.skelbone["conjskelright"].inverse()
+			gn.transform = gntransform.orthonormalized()
+
+	for gnl in lockedgeons:
+		var tr = Transform3D()
+		var gn = gnl
+		while gn.skelbone == null:
+			tr = tr*gn.lockedtransformnext
+			gn = gn.lockedobjectnext
+			if gn == gnl:
+				break
+		if gn.skelbone != null and skel == gn.skelbone.skel:
+			gnl.transform = gn.transform*tr.inverse()
+
+		
+			
+	$PoseCalculator.invalidategeonunits()
+	
 func makejointskeleton(skel : Skeleton3D, ptloc):
 	#var trj = Transform3D(Basis(), ptloc - skel.global_position)
 	var trj = Transform3D(Basis(), ptloc)*Transform3D(Basis(Vector3(0,1,0), deg_to_rad(180)), Vector3(0,0,0))*Transform3D(Basis(), -skel.global_position)
@@ -189,7 +242,7 @@ func makejointskeleton(skel : Skeleton3D, ptloc):
 			if i >= 2:
 				lockobjectstogether(bu.nextboneunitjoints[i-1].geonobject, geonobject)
 			else:
-				geonobject.skelbone = { "skel":skel, "j":j, "buskeltrans":skeltransform*skel.get_bone_global_pose(j)*geonobject.transform.inverse() }
+				geonobject.skelbone = { "skel":skel, "j":j }
 				geonobject.skelbone["conjskelleft"] = trj.inverse()
 				geonobject.skelbone["conjskelright"] = Transform3D(vjbasis, vpbcen).inverse()*Transform3D(Basis(), vj0)
 				#print(geonobject.skelbone["conjskelright"], geonobject.rodlength/2, " ", geonobject.name)
@@ -403,6 +456,9 @@ func contextmenuitemselected(target, cmitext, spawnlocation):
 	elif cmitext == "geon skeleton":
 		if is_instance_valid(target) and is_instance_of(target.get_parent(), Skeleton3D):
 			makejointskeleton(target.get_parent(), spawnlocation)
+	elif cmitext == "reset pose":
+		if is_instance_valid(target) and is_instance_of(target.get_parent(), Skeleton3D):
+			resetskeletonpose(target.get_parent(), true)
 		
 	elif cmitext == "solve continuous":
 		Danimateupdateondrop = false
