@@ -23,14 +23,14 @@ albedo_color = Color(1, 1, 0.0784314, 0.486275)
 [sub_resource type="ArrayMesh" id="ArrayMesh_cuxrr"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_t7ep3"]
-size = Vector3(0.015, 0.007, 0.007)
+size = Vector3(0.007, 0.007, 0.007)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_khbsa"]
 no_depth_test = true
 albedo_color = Color(1, 0, 0, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_s2nn2"]
-size = Vector3(0.007, 0.007, 0.015)
+size = Vector3(0.007, 0.007, 0.007)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gqhcn"]
 no_depth_test = true
@@ -72,11 +72,13 @@ cast_shadow = 0
 mesh = SubResource("ArrayMesh_cuxrr")
 
 [node name="JointTopMarker" type="MeshInstance3D" parent="." index="3"]
+transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 visible = false
 mesh = SubResource("BoxMesh_t7ep3")
 surface_material_override/0 = SubResource("StandardMaterial3D_khbsa")
 
 [node name="JointBottomMarker" type="MeshInstance3D" parent="." index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0)
 visible = false
 mesh = SubResource("BoxMesh_s2nn2")
 surface_material_override/0 = SubResource("StandardMaterial3D_gqhcn")

@@ -1,20 +1,21 @@
 extends Node3D
 
 # Corresponds to each bone, holds the vectors to parent and child joints from its inerrtial centre 
+# The words boneunit and geonunit are mixed up and wrong way round due to porting of code
 class SolidGeonGroups:
-	var geonunits = [ ]
-
+	# this is the centre of mass and rotation of the geonunit
 	var bonequat0 : Quaternion
 	var bonecentre0 : Vector3
-	var geonunitsremotetransforms = [ ]
-
 	var geonmass : float
 	var nextboneunitbyjoints = [ ]
-	
-	# [ { jointvector, nextboneunit, nextboneunitjoint } ]
+
+	# these are the boneunits (wrong var name) and array of transforms to them from the geongroup centre
+	var geonunits = [ ]
+	var geonunitsremotetransforms = [ ]
+
+	# [ { jointvector, nextboneunit, nextboneunitjoint, hingevector? } ]
 	# should be nextsolidgeongroup, nextsolidgeongroupjoint, but for historical reasons
 	var nextboneunitjoints = [ ]
-	var hingetoparentaxis = null 
 	
 	func setgeonunits(lgeonunits, lgeonunittransforms):
 		geonunits = lgeonunits

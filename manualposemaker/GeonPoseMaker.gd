@@ -17,7 +17,7 @@ func makecontextmenufor(target, pt):
 		print("no context menu when holding")
 		return [ ]
 	if is_instance_valid(target) and target.has_method("contextmenucommands"):
-		var res = target.contextmenucommands(pt)
+		var res = [ ]
 		if is_instance_valid(selectedlocktarget):
 			if selectedlocktarget == target:
 				if target.lockedobjectnext != target:
@@ -28,13 +28,11 @@ func makecontextmenufor(target, pt):
 					res.append("grab head")
 			else:
 				res.append("lock to")
-				var jointcomm = selectedlocktarget.checkjointapproaches(target)
-				if jointcomm:
-					res.append(jointcomm)
-					#res.append("hinge to")
+				res.append_array(selectedlocktarget.checkjointapproaches(target))
 			res.append("solve continuous" if Danimateupdateondrop else "solve ondrop")
 			res.append("reset pose")
 		else:
+			res.append_array(target.contextmenucommands(pt))
 			res.append_array(["duplicate", "new geon", "colour cycle"])
 			res.append("select lock target")
 		return res
@@ -88,21 +86,29 @@ func delockobject(gn1):
 func changejoint(jointcommand, gn1, gn2):
 	var c1 = jointcommand[-2]
 	var c2 = jointcommand[-1]
-	if jointcommand.begins_with("disjoin"):
-		if gn1.getjointobject(c1 == "T") == gn2 and gn2.getjointobject(c2 == "T") == gn1:
-			gn1.setjointobject(c1 == "T", null)
-			gn2.setjointobject(c2 == "T", null)
-			$PoseCalculator.invalidategeonunits()
-		else:
-			print("did not disjoin ", jointcommand)
-	else:
+	if jointcommand.begins_with("join"):
 		if gn1.getjointobject(c1 == "T") == null and gn2.getjointobject(c2 == "T") == null:
 			gn1.setjointobject(c1 == "T", gn2)
 			gn2.setjointobject(c2 == "T", gn1)
 			$PoseCalculator.invalidategeonunits()
+	elif gn1.getjointobject(c1 == "T") == gn2 and gn2.getjointobject(c2 == "T") == gn1:
+		if jointcommand.begins_with("disjoin"):
+			gn1.setjointobject(c1 == "T", null)
+			gn2.setjointobject(c2 == "T", null)
+		elif jointcommand.begins_with("hinge"):
+			var hingeaxis = (gn1.basis.y.cross(gn2.basis.y)).normalized()
+			gn1.setjointhingevector(c1 == "T", gn1.basis.inverse()*hingeaxis)
+			gn2.setjointhingevector(c2 == "T", gn2.basis.inverse()*hingeaxis)
+		elif jointcommand.begins_with("dehinge"):
+			gn1.setjointhingevector(c1 == "T", null)
+			gn2.setjointhingevector(c2 == "T", null)
 		else:
-			print("did not join ", jointcommand)
-	
+			print("unknown command ", jointcommand)	
+	else:
+		print("did not apply ", jointcommand)
+	gn1.setjointmarkers()
+	gn2.setjointmarkers()
+	$PoseCalculator.invalidategeonunits()
 
 var heldgeons = [ ]
 var headlockedgeon = null
@@ -345,7 +351,7 @@ func createremotetransforms():
 			assert (Dcount >= 0)
 			gn = gn.lockedobjectnext
 
-var Danimateupdateondrop = false
+var Danimateupdateondrop = true # false
 
 func pickupgeon(pickable, geonobject):
 	removeremotetransforms()
@@ -457,7 +463,7 @@ func contextmenuitemselected(target, cmitext, spawnlocation):
 		if is_instance_valid(target) and target.has_method("executecontextmenucommand"):
 			if is_instance_valid(selectedlocktarget) and selectedlocktarget.has_method("executecontextmenucommand"):
 				lockobjectstogether(selectedlocktarget, target)
-	elif cmitext.begins_with("disjoin") or cmitext.begins_with("join"):
+	elif cmitext.begins_with("disjoin") or cmitext.begins_with("join") or cmitext.begins_with("hinge") or cmitext.begins_with("dehinge"):
 		if is_instance_valid(target) and target.has_method("executecontextmenucommand"):
 			if is_instance_valid(selectedlocktarget) and selectedlocktarget.has_method("executecontextmenucommand"):
 				changejoint(cmitext, selectedlocktarget, target)
