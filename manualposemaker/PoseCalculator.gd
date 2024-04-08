@@ -13,7 +13,7 @@ class SolidGeonGroups:
 	var geonunits = [ ]
 	var geonunitsremotetransforms = [ ]
 
-	# [ { jointvector, nextboneunit, nextboneunitjoint, hingevector? } ]
+	# [ { jointvector, nextboneunit, nextboneunitjoint, (hingevector) } ]
 	# should be nextsolidgeongroup, nextsolidgeongroupjoint, but for historical reasons
 	var nextboneunitjoints = [ ]
 	
@@ -22,6 +22,7 @@ class SolidGeonGroups:
 		assert (len(geonunits) == len(lgeonunittransforms))
 		geonmass = 0.0
 		var boneunitjointspos = [  ]
+		var boneunithingeaxis = [  ]
 		var sumboneunitjointpos = Vector3()
 		for gn in geonunits:
 			# the gn.transform should come from the remote linkstransforms to keep it rigid
@@ -29,19 +30,23 @@ class SolidGeonGroups:
 				assert (gn.jointobjectbottom.jointobjecttop == gn or gn.jointobjectbottom.jointobjectbottom == gn)
 				nextboneunitbyjoints.append(gn.jointobjectbottom)
 				boneunitjointspos.append(gn.transform*Vector3(0,-gn.rodlength/2,0))
+				boneunithingeaxis.append(gn.transform.basis*gn.jointhingevectorbottom if gn.jointhingevectorbottom != null else null)
 				sumboneunitjointpos += boneunitjointspos[-1]
 			if gn.jointobjecttop != null:
 				assert (gn.jointobjecttop.jointobjecttop == gn or gn.jointobjecttop.jointobjectbottom == gn)
 				nextboneunitbyjoints.append(gn.jointobjecttop)
 				boneunitjointspos.append(gn.transform*Vector3(0,gn.rodlength/2,0))
+				boneunithingeaxis.append(gn.transform.basis*gn.jointhingevectortop if gn.jointhingevectortop != null else null)
 				sumboneunitjointpos += boneunitjointspos[-1]
 			geonmass += gn.rodlength + gn.rodradtop + gn.rodradbottom
 
+		assert (len(boneunithingeaxis) == len(boneunitjointspos))
 		bonequat0 = geonunits[0].transform.basis.get_rotation_quaternion()
 		bonecentre0 = sumboneunitjointpos/len(nextboneunitbyjoints)
+		var bonequat0inverse = bonequat0.inverse()
 		for i in range(len(nextboneunitbyjoints)):
 			var jointvectorabs = boneunitjointspos[i] - bonecentre0
-			nextboneunitjoints.append({ "jointvector":bonequat0.inverse()*jointvectorabs })
+			nextboneunitjoints.append({ "jointvector":bonequat0inverse*jointvectorabs, "hingeaxis":bonequat0inverse*boneunithingeaxis[i] if boneunithingeaxis[i] != null else null })
 
 		geonunitsremotetransforms = [ ]
 		var butr = Transform3D(bonequat0, bonecentre0).inverse()*geonunits[0].transform
@@ -107,10 +112,12 @@ class SolidGeonJointEl:
 	var prevboneunitindex : int
 	var prevjointindex : int
 	var prevbonejointvector : Vector3
+	var prevbonehingeaxis
 	
 	var boneunitindex : int
 	var incomingjointindex : int
 	var incomingbonejointvector : Vector3
+	var incominghingeaxis
 
 	var propbonequat : Quaternion
 	var propbonecentre : Vector3
@@ -157,12 +164,16 @@ func derivejointsequenceIfNecessary(geonheld):
 			bje.prevboneunitindex = j
 			bje.prevjointindex = i
 			bje.prevbonejointvector = bnti["jointvector"]
+			bje.prevbonehingeaxis = bnti["hingeaxis"]
 
 			var bunext = solidgeonunits[nj]
 			bje.incomingjointindex = bu.nextboneunitjoints[i]["nextboneunitjoint"]
 			var bntinext = bunext.nextboneunitjoints[bje.incomingjointindex]
 			bje.boneunitindex = nj
 			bje.incomingbonejointvector = bntinext["jointvector"]
+			bje.incominghingeaxis = bntinext["hingeaxis"]
+			assert ((bje.prevbonehingeaxis == null) == (bje.incominghingeaxis == null))
+			
 			assert (bntinext["nextboneunit"] == j and bntinext["nextboneunitjoint"] == i)
 
 			# initialize at original position
@@ -234,6 +245,13 @@ func Dcheckbonejoints():
 			var jointposN = sggtrs[nj]*bujoj["jointvector"]
 			if not jointpos.is_equal_approx(jointposN):
 				print("jointpos not equal ", jointpos - jointposN)
+
+			if bunj["hingeaxis"] != null:
+				var hingeaxis = sggtrs[j].basis*bunj["hingeaxis"]
+				var hingeaxisN = sggtrs[nj].basis*bujoj["hingeaxis"]
+				if not hingeaxis.is_equal_approx(hingeaxisN):
+					print("hingeaxis not equal ", hingeaxis, hingeaxisN)
+
 	return true
 	
 func Dsetfrombonequat0():
@@ -261,8 +279,6 @@ func copybacksolidedgeunit0(geonobject):
 	bu.bonequat0 = butr.basis.get_rotation_quaternion()
 	bu.bonecentre0 = butr.origin
 
-	
-	
 func calcEsinglequat(k, kaddpropbonequat):
 	var koverridepropbonequat = bonejointsequence[k].propbonequat*kaddpropbonequat
 	var bjeK = bonejointsequence[k]

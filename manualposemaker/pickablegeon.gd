@@ -82,7 +82,7 @@ func setjointmarkers():
 	$JointTopMarker.visible = (jointobjecttop != null)
 	if jointhingevectortop != null:
 		$JointTopMarker.rotation = rotationtoalign(Vector3(0,1,0), jointhingevectortop).get_euler()
-		$JointTopMarker.scale = Vector3(1,3,1) if get_name() < jointobjecttop.get_name() else Vector3(2,0.5,2)
+		$JointTopMarker.scale = Vector3(1,5,1) if get_name() < jointobjecttop.get_name() else Vector3(3,0.5,3)
 	else:
 		$JointTopMarker.rotation = Vector3(0,0,0)
 		$JointTopMarker.scale = Vector3(2,1,1)
@@ -91,7 +91,7 @@ func setjointmarkers():
 	$JointBottomMarker.visible = (jointobjectbottom != null)
 	if jointhingevectorbottom != null:
 		$JointBottomMarker.rotation = rotationtoalign(Vector3(0,1,0), jointhingevectorbottom).get_euler()
-		$JointBottomMarker.scale = Vector3(1,3,1) if get_name() < jointobjectbottom.get_name() else Vector3(2,0.5,2)
+		$JointBottomMarker.scale = Vector3(1,5,1) if get_name() < jointobjectbottom.get_name() else Vector3(3,0.5,3)
 	else:
 		$JointBottomMarker.rotation = Vector3(0,0,0)
 		$JointBottomMarker.scale = Vector3(1,1,2)

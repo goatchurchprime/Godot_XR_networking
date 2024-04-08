@@ -117,10 +117,10 @@ func _input(event):
 			vr_left_button_pressed("by_button")
 		if event.keycode == KEY_G and event.pressed:
 			NetworkGateway.get_node("DoppelgangerPanel/hbox/VBox_enable/DoppelgangerEnable").button_pressed = not NetworkGateway.get_node("DoppelgangerPanel/hbox/VBox_enable/DoppelgangerEnable").button_pressed
-		if (event.keycode == KEY_2):
-			NetworkGateway.selectandtrigger_networkoption(NetworkGateway.NETWORK_OPTIONS.LOCAL_NETWORK)
-		if (event.keycode == KEY_3):
-			NetworkGateway.selectandtrigger_networkoption(NetworkGateway.NETWORK_OPTIONS.AS_SERVER)
+		#if (event.keycode == KEY_2):
+		#	NetworkGateway.selectandtrigger_networkoption(NetworkGateway.NETWORK_OPTIONS.LOCAL_NETWORK)
+		#if (event.keycode == KEY_3):
+		#	NetworkGateway.selectandtrigger_networkoption(NetworkGateway.NETWORK_OPTIONS.AS_SERVER)
 
 		if (event.keycode == KEY_4) and event.pressed:
 			NetworkGateway.get_node("PlayerConnections").LocalPlayer.projectedhands = not NetworkGateway.get_node("PlayerConnections").LocalPlayer.projectedhands
