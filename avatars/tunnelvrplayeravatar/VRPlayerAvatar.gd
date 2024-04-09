@@ -16,6 +16,7 @@ const TRACKING_CONFIDENCE_NONE = 0
 var shrinkavatartransform = Transform3D()
 
 var projectedhands = false
+var visibletootherplayers = true
 
 func _ready():
 	pass
@@ -98,7 +99,7 @@ func PF_avatartoframedata():
 				NCONSTANTS2.CFI_VRORIGIN_ROTATION: transform.basis.get_rotation_quaternion(), 
 				NCONSTANTS2.CFI_VRHEAD_POSITION: $HeadCam.transform.origin, 
 				NCONSTANTS2.CFI_VRHEAD_ROTATION: $HeadCam.transform.basis.get_rotation_quaternion(), 
-				NCONSTANTS.CFI_VISIBLE: visible 
+				NCONSTANTS.CFI_VISIBLE: visibletootherplayers 
 			 }
 	if $hand_l.visible:
 		fd[NCONSTANTS2.CFI_VRHANDCONTROLLERLEFT_FADE] = -1.0

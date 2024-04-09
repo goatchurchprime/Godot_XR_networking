@@ -17,7 +17,7 @@ void vertex() {
 		VERTEX.y *= 20.0;
 		VERTEX.z += 0.4;
 	}
-	VERTEX = VERTEX + EYE_OFFSET; 
+	VERTEX = VERTEX + EYE_OFFSET;
     VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 }
 
@@ -27,7 +27,7 @@ void fragment() {
 	//if (rsq <= holerad*holerad)
 	//	discard;
 	if (blockedside)
-		ALBEDO = vec3(0.01,0.01,0.01); 
+		ALBEDO = vec3(0.01,0.01,0.01);
 	else {
 		if (rsq <= holerad*holerad)
 			discard;
