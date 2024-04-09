@@ -139,7 +139,7 @@ class SolidGeonJointEl:
 			dot = clamp(dot, -1.0, 1.0)
 			var angle_rads = acos(dot)
 			return Quaternion(axis, angle_rads)
-		return Basis()
+		return Quaternion()
 
 
 	func forceonhingeifnecessary(prevquat, quat):
@@ -349,6 +349,17 @@ func sgcalcnumericalgradient(eps):
 			var gy = calcEsinglequat(k, Quaternion(0, eps, 0, qeps))
 			var gz = calcEsinglequat(k, Quaternion(0, 0, eps, qeps))
 			var gradE = Vector3(gx, gy, gz)/eps
+
+
+# this is where we should calculate the effective axis of rotation that our hinge could rotate about
+# do skipping more hinges to reduce this calc to one joint
+# to save doing it in the three axes independently
+#			if bjeK.incomingbonehingeaxis != null:
+#				var prevquatK = solidgeonunits[bjeK.prevboneunitindex].bonequat0 if bjeK.prevbonejointel == -1 else bonejointsequence[bjeK.prevbonejointel].propbonequat
+#				var h = prevquatK*bjeK.prevbonehingeaxis
+#				var gh = calcEsinglequat(k, Quaternion(h.x*eps, h.y*eps, h.z*eps, qeps))
+#				print("HH", h*(gh/eps), gradE)
+
 			bonejointsequence[k].gradE = gradE
 			sumgradEsq += gradE.length_squared()
 		# this is where the hinge stuff goes

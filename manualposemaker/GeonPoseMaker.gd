@@ -378,7 +378,7 @@ func createremotetransforms():
 			assert (Dcount >= 0)
 			gn = gn.lockedobjectnext
 
-var Danimateupdateondrop = true # false
+var Danimateupdateondrop = false
 
 func pickupgeon(pickable, geonobject):
 	removeremotetransforms()
