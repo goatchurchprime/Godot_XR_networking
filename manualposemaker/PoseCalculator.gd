@@ -325,7 +325,8 @@ func sgcalcnumericalgradient(eps):
 			var gradE = Vector3(gx, gy, gz)/eps
 			bonejointsequence[k].gradE = gradE
 			sumgradEsq += gradE.length_squared()
-			
+		# this is where the hinge stuff goes
+		
 	return sumgradEsq
 
 func calcEgraddelta(delta):

@@ -259,7 +259,7 @@ func makejointskeleton(skel : Skeleton3D, ptloc):
 			if i >= 2:
 				lockobjectstogether(bu.nextboneunitjoints[i-1].geonobject, geonobject)
 			else:
-				geonobject.skelbone = { "skel":skel, "j":j }
+				geonobject.skelbone = { "skel":skel, "j":j, "bonename":skel.get_bone_name(j) }
 				geonobject.skelbone["conjskelleft"] = trj.inverse()
 				geonobject.skelbone["conjskelright"] = Transform3D(vjbasis, vpbcen).inverse()*Transform3D(Basis(), vj0)
 				#print(geonobject.skelbone["conjskelright"], geonobject.rodlength/2, " ", geonobject.name)
@@ -299,7 +299,33 @@ func makejointskeleton(skel : Skeleton3D, ptloc):
 	#await get_tree().create_timer(1.0).timeout
 	#$PoseCalculator.Dsetfrombonequat0()
 	#setboneposefromunits(true)
-			
+
+#setjointparentstohingesbyregex("(foot|leg|fingers) \\.[LR]$")
+func setjointparentstohingesbyregex(regexmatch):
+	print("setting to hinges ", regexmatch)
+	var regex = RegEx.new()
+	regex.compile(regexmatch)
+	var geonobjects = $GeonObjects.get_children()
+	for gn in geonobjects:
+		if gn.skelbone == null:
+			continue
+		if regex.search(gn.skelbone.bonename) == null:
+			continue
+		var skel = gn.skelbone.skel
+		var j = gn.skelbone.j
+		var jparent = skel.get_bone_parent(j)
+		assert (gn.jointobjectbottom != null)
+		var gnparent = gn.jointobjectbottom
+		if gnparent.skelbone == null:
+			print("do later")
+			continue
+		print(" Hingifying bone ", gn.skelbone.bonename, " to ", gnparent.skelbone.bonename)
+		assert (gnparent.jointobjecttop == gn)
+			#need to find how to match up these.  and then apply all the hinges properly
+			# then start the simulation on hinges
+		changejoint("hingeTB", gnparent, gn)
+
+
 # This assumes that the bonepositions are set in order
 # so that the previous bone global pose can be used
 # Should upgrade this to handle the root properly and the conjskelleft value being carried across
@@ -475,6 +501,8 @@ func contextmenuitemselected(target, cmitext, spawnlocation):
 	elif cmitext == "geon skeleton":
 		if is_instance_valid(target) and is_instance_of(target.get_parent(), Skeleton3D):
 			makejointskeleton(target.get_parent(), spawnlocation)
+			setjointparentstohingesbyregex("(foot|leg|fingers) \\.[LR]$")
+
 	elif cmitext == "reset pose":
 		if is_instance_valid(target) and is_instance_of(target.get_parent(), Skeleton3D):
 			resetskeletonpose(target.get_parent(), true)
