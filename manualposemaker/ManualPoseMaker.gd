@@ -61,6 +61,7 @@ class BoneJointEl:
 	var prevboneunitindex : int
 	var prevjointindex : int
 	var prevbonejointvector : Vector3
+
 	
 	var boneunitindex : int
 	var incomingjointindex : int

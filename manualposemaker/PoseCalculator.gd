@@ -107,6 +107,7 @@ func makegeongroupsIfInvalid(geonobjects):
 	pass
 	
 
+
 # Corresponds to the sequence of joints map forward froom boneunit to boneunit 
 class SolidGeonJointEl:
 	var prevboneunitindex : int
@@ -117,7 +118,7 @@ class SolidGeonJointEl:
 	var boneunitindex : int
 	var incomingjointindex : int
 	var incomingbonejointvector : Vector3
-	var incominghingeaxis
+	var incomingbonehingeaxis
 
 	var propbonequat : Quaternion
 	var propbonecentre : Vector3
@@ -129,11 +130,33 @@ class SolidGeonJointEl:
 	var gradE : Vector3
 
 	var isconstorientation : bool
-	var hingejointaxis = null
+
+
+	static func Qrotationtoalign(a, b):
+		var axis = a.cross(b).normalized()
+		if (axis.length_squared() != 0):
+			var dot = a.dot(b)/(a.length()*b.length())
+			dot = clamp(dot, -1.0, 1.0)
+			var angle_rads = acos(dot)
+			return Quaternion(axis, angle_rads)
+		return Basis()
+
+
+	func forceonhingeifnecessary(prevquat, quat):
+		if incomingbonehingeaxis == null:
+			return quat
+		var prevbonehingeaxis = prevquat*prevbonehingeaxis
+		var incominghingeaxis = quat*incomingbonehingeaxis 
+		var qrot = Qrotationtoalign(incominghingeaxis, prevbonehingeaxis)
+		var qres = qrot*quat
+		#var qincominghingeaxis = qres*incomingbonehingeaxis 
+		#print(prevbonehingeaxis - qincominghingeaxis)
+		return qres
 
 	func derivebointjointcentre(prevquat, prevcentre, quat):
 		var jointpos = prevcentre + prevquat*prevbonejointvector
 		return jointpos - quat*incomingbonejointvector
+
 	
 var bonejointsequence = [ ]
 var bonejointseqjstart = -1
@@ -171,8 +194,8 @@ func derivejointsequenceIfNecessary(geonheld):
 			var bntinext = bunext.nextboneunitjoints[bje.incomingjointindex]
 			bje.boneunitindex = nj
 			bje.incomingbonejointvector = bntinext["jointvector"]
-			bje.incominghingeaxis = bntinext["hingeaxis"]
-			assert ((bje.prevbonehingeaxis == null) == (bje.incominghingeaxis == null))
+			bje.incomingbonehingeaxis = bntinext["hingeaxis"]
+			assert ((bje.prevbonehingeaxis == null) == (bje.incomingbonehingeaxis == null))
 			
 			assert (bntinext["nextboneunit"] == j and bntinext["nextboneunitjoint"] == i)
 
@@ -217,6 +240,7 @@ func sgcalcbonecentresfromquatsE():
 		if bje.isconstorientation:
 			bje.propbonequat = bu.bonequat0
 
+		bje.propbonequat = bje.forceonhingeifnecessary(prevquat, bje.propbonequat)  # should do nothing
 		bje.propbonecentre = bje.derivebointjointcentre(prevquat, prevcentre, bje.propbonequat)
 		Ergsum += bu.geonmass*(bje.propbonecentre - bu.bonecentre0).length_squared()
 	return Ergsum
@@ -249,7 +273,7 @@ func Dcheckbonejoints():
 			if bunj["hingeaxis"] != null:
 				var hingeaxis = sggtrs[j].basis*bunj["hingeaxis"]
 				var hingeaxisN = sggtrs[nj].basis*bujoj["hingeaxis"]
-				if not hingeaxis.is_equal_approx(hingeaxisN):
+				if (hingeaxis - hingeaxisN).length() > 0.01:
 					print("hingeaxis not equal ", hingeaxis, hingeaxisN)
 
 	return true
@@ -280,21 +304,20 @@ func copybacksolidedgeunit0(geonobject):
 	bu.bonecentre0 = butr.origin
 
 func calcEsinglequat(k, kaddpropbonequat):
-	var koverridepropbonequat = bonejointsequence[k].propbonequat*kaddpropbonequat
 	var bjeK = bonejointsequence[k]
-	var prevcentre
-	var prevquat
+	var prevcentreK
+	var prevquatK
 	if bjeK.prevbonejointel == -1:
 		var bu0 = solidgeonunits[bjeK.prevboneunitindex]
-		prevcentre = bu0.bonecentre0
-		prevquat = bu0.bonequat0
+		prevcentreK = bu0.bonecentre0
+		prevquatK = bu0.bonequat0
 	else:
 		var bjeprev = bonejointsequence[bjeK.prevbonejointel]
-		prevcentre = bjeprev.propbonecentre
-		prevquat = bjeprev.propbonequat
-
-	# could use overridepropbonequat also to save on the second test against k
-	bjeK.overridepropbonecentre = bjeK.derivebointjointcentre(prevquat, prevcentre, koverridepropbonequat)
+		prevcentreK = bjeprev.propbonecentre
+		prevquatK = bjeprev.propbonequat
+	bjeK.overridepropbonequat = bjeK.forceonhingeifnecessary(prevquatK, bonejointsequence[k].propbonequat*kaddpropbonequat)
+	bjeK.overridepropbonecentre = bjeK.derivebointjointcentre(prevquatK, prevcentreK, bjeK.overridepropbonequat)
+	
 	var buK = solidgeonunits[bjeK.boneunitindex]
 	var Ergsum = buK.geonmass*(bjeK.overridepropbonecentre - buK.bonecentre0).length_squared()
 	var Ergorg = buK.geonmass*(bjeK.propbonecentre - buK.bonecentre0).length_squared()
@@ -302,9 +325,8 @@ func calcEsinglequat(k, kaddpropbonequat):
 		var bje = bonejointsequence[i]
 		assert (bje.prevbonejointel != -1)
 		var bjeprev = bonejointsequence[bje.prevbonejointel]
-		prevcentre = bjeprev.overridepropbonecentre
-		prevquat = koverridepropbonequat if bje.prevbonejointel == k else bjeprev.propbonequat 
-		bje.overridepropbonecentre = bje.derivebointjointcentre(prevquat, prevcentre, bje.propbonequat)
+		bje.overridepropbonequat = bje.forceonhingeifnecessary(bjeprev.overridepropbonequat, bje.propbonequat)
+		bje.overridepropbonecentre = bje.derivebointjointcentre(bjeprev.overridepropbonequat, bjeprev.overridepropbonecentre, bje.propbonequat)
 		var bu = solidgeonunits[bje.boneunitindex]
 		Ergsum += bu.geonmass*(bje.overridepropbonecentre - bu.bonecentre0).length_squared()
 		Ergorg += bu.geonmass*(bje.propbonecentre - bu.bonecentre0).length_squared()
@@ -318,6 +340,10 @@ func sgcalcnumericalgradient(eps):
 		var bjeK = bonejointsequence[k]
 		if bjeK.isconstorientation:
 			bonejointsequence[k].gradE = Vector3(0,0,0)
+		#elif bjeK.incomingbonehingeaxis != null:
+		#	bonejointsequence[k].gradE = Vector3(0,0,0)
+		#	bje.prevbonehingeaxis = bnti["hingeaxis"]
+
 		else:
 			var gx = calcEsinglequat(k, Quaternion(eps, 0, 0, qeps))
 			var gy = calcEsinglequat(k, Quaternion(0, eps, 0, qeps))
@@ -346,13 +372,8 @@ func calcEgraddelta(delta):
 
 		var v = bje.gradE*delta
 
-		if bje.hingejointaxis == null:
-			var addpropbonequat = Quaternion(v.x, v.y, v.z, sqrt(1.0 - v.length_squared()))
-			bje.overridepropbonequat = bje.propbonequat*addpropbonequat
-		else:
-			var addpropbonequat = Quaternion(v.x, v.y, v.z, sqrt(1.0 - v.length_squared()))
-			bje.overridepropbonequat = bje.propbonequat*addpropbonequat
-
+		var addpropbonequat = Quaternion(v.x, v.y, v.z, sqrt(1.0 - v.length_squared()))
+		bje.overridepropbonequat = bje.forceonhingeifnecessary(prevquat, bje.propbonequat*addpropbonequat)
 		bje.overridepropbonecentre = bje.derivebointjointcentre(prevquat, prevcentre, bje.overridepropbonequat)
 		
 		var bu = solidgeonunits[bje.boneunitindex]

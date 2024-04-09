@@ -324,7 +324,8 @@ func setjointparentstohingesbyregex(regexmatch):
 			#need to find how to match up these.  and then apply all the hinges properly
 			# then start the simulation on hinges
 		changejoint("hingeTB", gnparent, gn)
-
+		#print("SKIPPING MORE HINGES")
+		#break
 
 # This assumes that the bonepositions are set in order
 # so that the previous bone global pose can be used
@@ -502,7 +503,8 @@ func contextmenuitemselected(target, cmitext, spawnlocation):
 		if is_instance_valid(target) and is_instance_of(target.get_parent(), Skeleton3D):
 			makejointskeleton(target.get_parent(), spawnlocation)
 			setjointparentstohingesbyregex("(foot|leg|fingers) \\.[LR]$")
-
+			setjointparentstohingesbyregex("jaw$")
+			
 	elif cmitext == "reset pose":
 		if is_instance_valid(target) and is_instance_of(target.get_parent(), Skeleton3D):
 			resetskeletonpose(target.get_parent(), true)

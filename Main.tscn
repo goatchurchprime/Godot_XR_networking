@@ -1,4 +1,4 @@
-[gd_scene load_steps=103 format=3 uid="uid://ckhwmlkgnklol"]
+[gd_scene load_steps=102 format=3 uid="uid://ckhwmlkgnklol"]
 
 [ext_resource type="Script" path="res://Main.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://obbgumvvb3yw" path="res://avatars/monster/mesh/redoran3.glb" id="2_6hbic"]
@@ -65,8 +65,6 @@
 [ext_resource type="Animation" uid="uid://d2ukhr3n2r1u8" path="res://addons/godot-xr-tools/hands/animations/right/Thumb.res" id="50_p8uw2"]
 [ext_resource type="PackedScene" uid="uid://dgdb1texynduw" path="res://addons/godot-xr-tools/objects/virtual_keyboard.tscn" id="51_rjdns"]
 
-[sub_resource type="AudioStreamMicrophone" id="AudioStreamMicrophone_0n75h"]
-
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_wykar"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_58518"]
@@ -127,34 +125,34 @@ _data = {
 "Thumb": ExtResource("50_p8uw2")
 }
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ufiev"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_awrhc"]
 animation = &"Grip"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_h2kq8"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_xe16l"]
 animation = &"Grip"
 
-[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_ptqdw"]
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_v33xa"]
 filter_enabled = true
 filters = ["Armature/Skeleton3D:Little_Distal_R", "Armature/Skeleton3D:Little_Intermediate_R", "Armature/Skeleton3D:Little_Metacarpal_R", "Armature/Skeleton3D:Little_Proximal_R", "Armature/Skeleton3D:Middle_Distal_R", "Armature/Skeleton3D:Middle_Intermediate_R", "Armature/Skeleton3D:Middle_Metacarpal_R", "Armature/Skeleton3D:Middle_Proximal_R", "Armature/Skeleton3D:Ring_Distal_R", "Armature/Skeleton3D:Ring_Intermediate_R", "Armature/Skeleton3D:Ring_Metacarpal_R", "Armature/Skeleton3D:Ring_Proximal_R", "Armature/Skeleton3D:Thumb_Distal_R", "Armature/Skeleton3D:Thumb_Metacarpal_R", "Armature/Skeleton3D:Thumb_Proximal_R", "Armature/Skeleton:Little_Distal_R", "Armature/Skeleton:Little_Intermediate_R", "Armature/Skeleton:Little_Proximal_R", "Armature/Skeleton:Middle_Distal_R", "Armature/Skeleton:Middle_Intermediate_R", "Armature/Skeleton:Middle_Proximal_R", "Armature/Skeleton:Ring_Distal_R", "Armature/Skeleton:Ring_Intermediate_R", "Armature/Skeleton:Ring_Proximal_R", "Armature/Skeleton:Thumb_Distal_R", "Armature/Skeleton:Thumb_Proximal_R"]
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_4kb3s"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_jfk8t"]
 animation = &"Grip 5"
 
-[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_5tsth"]
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_7r3jw"]
 filter_enabled = true
 filters = ["Armature/Skeleton3D:Index_Distal_R", "Armature/Skeleton3D:Index_Intermediate_R", "Armature/Skeleton3D:Index_Metacarpal_R", "Armature/Skeleton3D:Index_Proximal_R", "Armature/Skeleton:Index_Distal_R", "Armature/Skeleton:Index_Intermediate_R", "Armature/Skeleton:Index_Proximal_R"]
 
-[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_dhr81"]
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_l1lff"]
 graph_offset = Vector2(-552.664, 107.301)
-nodes/ClosedHand1/node = SubResource("AnimationNodeAnimation_ufiev")
+nodes/ClosedHand1/node = SubResource("AnimationNodeAnimation_awrhc")
 nodes/ClosedHand1/position = Vector2(-600, 300)
-nodes/ClosedHand2/node = SubResource("AnimationNodeAnimation_h2kq8")
+nodes/ClosedHand2/node = SubResource("AnimationNodeAnimation_xe16l")
 nodes/ClosedHand2/position = Vector2(-360, 300)
-nodes/Grip/node = SubResource("AnimationNodeBlend2_ptqdw")
+nodes/Grip/node = SubResource("AnimationNodeBlend2_v33xa")
 nodes/Grip/position = Vector2(0, 40)
-nodes/OpenHand/node = SubResource("AnimationNodeAnimation_4kb3s")
+nodes/OpenHand/node = SubResource("AnimationNodeAnimation_jfk8t")
 nodes/OpenHand/position = Vector2(-600, 100)
-nodes/Trigger/node = SubResource("AnimationNodeBlend2_5tsth")
+nodes/Trigger/node = SubResource("AnimationNodeBlend2_7r3jw")
 nodes/Trigger/position = Vector2(-360, 40)
 node_connections = [&"Grip", 0, &"Trigger", &"Grip", 1, &"ClosedHand2", &"Trigger", 0, &"OpenHand", &"Trigger", 1, &"ClosedHand1", &"output", 0, &"Grip"]
 
@@ -168,13 +166,13 @@ subdivide_depth = 20
 resource_local_to_scene = true
 size = Vector2(3, 2)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_ig2gb"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_ye5af"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w40sr"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_isfkl"]
 transparency = 1
 cull_mode = 2
-albedo_texture = SubResource("ViewportTexture_ig2gb")
+albedo_texture = SubResource("ViewportTexture_ye5af")
 texture_filter = 1
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ttrwc"]
@@ -258,11 +256,6 @@ size = Vector3(0.3, 0.3, 0.3)
 script = ExtResource("1")
 PCstartupprotocol = "none"
 QUESTstartupprotocol = "none"
-
-[node name="AudioStreamRecorder" type="AudioStreamPlayer" parent="."]
-stream = SubResource("AudioStreamMicrophone_0n75h")
-autoplay = true
-bus = &"Recorder"
 
 [node name="GeonPoseMaker" type="Node3D" parent="."]
 script = ExtResource("2_lkn5y")
@@ -442,7 +435,7 @@ bone_idx = 9
 libraries = {
 "": SubResource("AnimationLibrary_reqae")
 }
-tree_root = SubResource("AnimationNodeBlendTree_dhr81")
+tree_root = SubResource("AnimationNodeBlendTree_l1lff")
 
 [node name="AutoHandtracker" parent="XROrigin3D/RightHandController/RightHand" instance=ExtResource("6_4vxvi")]
 
@@ -484,9 +477,12 @@ size = Vector2i(650, 400)
 [node name="ProtocolOptions" parent="ViewportNetworkGateway/Viewport/NetworkGateway" index="0"]
 selected = 3
 
+[node name="AudioStreamRecorder" parent="ViewportNetworkGateway/Viewport/NetworkGateway/PlayerConnections/HBoxMain/VBoxContainer/RecordingFeature/MicRecord" index="0"]
+autoplay = true
+
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource("QuadMesh_wuwme")
-surface_material_override/0 = SubResource("StandardMaterial3D_w40sr")
+surface_material_override/0 = SubResource("StandardMaterial3D_isfkl")
 
 [node name="StaticBody3D" parent="ViewportNetworkGateway" index="2"]
 viewport_size = Vector2(650, 400)
