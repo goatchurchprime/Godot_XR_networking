@@ -327,6 +327,12 @@ func setjointparentstohingesbyregex(regexmatch):
 		#print("SKIPPING MORE HINGES")
 		#break
 
+func findbonenodefromname(bonecontrolname):
+	for gn in $GeonObjects.get_children():
+		if gn.skelbone != null and gn.skelbone["bonename"] == bonecontrolname:
+			return gn
+	return null
+	
 # This assumes that the bonepositions are set in order
 # so that the previous bone global pose can be used
 # Should upgrade this to handle the root properly and the conjskelleft value being carried across
@@ -502,7 +508,7 @@ func contextmenuitemselected(target, cmitext, spawnlocation):
 	elif cmitext == "geon skeleton":
 		if is_instance_valid(target) and is_instance_of(target.get_parent(), Skeleton3D):
 			makejointskeleton(target.get_parent(), spawnlocation)
-			setjointparentstohingesbyregex("(foot|leg|fingers) \\.[LR]$")
+			setjointparentstohingesbyregex("(foot|leg|fingers|forearm) \\.[LR]$")
 			setjointparentstohingesbyregex("jaw$")
 			
 	elif cmitext == "reset pose":
