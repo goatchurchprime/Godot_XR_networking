@@ -10,7 +10,7 @@ var selectedlocktarget = null
 # control on the timing.  Or put it into a thread that we poll for updates
 
 # then pinning nodes (for feet) and lifting them like crutches
-									
+
 
 func makecontextmenufor(target, pt):
 	if len(heldgeons) > (1 if headlockedgeon != null else 0):
@@ -324,8 +324,8 @@ func setjointparentstohingesbyregex(regexmatch):
 			#need to find how to match up these.  and then apply all the hinges properly
 			# then start the simulation on hinges
 		changejoint("hingeTB", gnparent, gn)
-		print("SKIPPING MORE HINGES")
-		break
+		#print("SKIPPING MORE HINGES")
+		#break
 
 func findbonenodefromname(bonecontrolname):
 	for gn in $GeonObjects.get_children():
@@ -521,7 +521,7 @@ func contextmenuitemselected(target, cmitext, spawnlocation):
 		if is_instance_valid(target) and is_instance_of(target.get_parent(), Skeleton3D):
 			makejointskeleton(target.get_parent(), spawnlocation)
 			setjointparentstohingesbyregex("(foot|leg|fingers) \\.[LR]$")
-			#setjointparentstohingesbyregex("jaw$")
+			setjointparentstohingesbyregex("jaw$")
 			
 	elif cmitext == "reset pose":
 		if is_instance_valid(target) and is_instance_of(target.get_parent(), Skeleton3D):

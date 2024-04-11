@@ -96,7 +96,7 @@ size = Vector2(3, 2)
 [sub_resource type="ViewportTexture" id="ViewportTexture_bifoh"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hgsf6"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bcd1i"]
 transparency = 1
 cull_mode = 2
 albedo_texture = SubResource("ViewportTexture_bifoh")
@@ -196,6 +196,7 @@ script = ExtResource("3_ephg7")
 
 [node name="PuppetControl" parent="GeonPoseMaker/PuppetControls" instance=ExtResource("22_b0atk")]
 transform = Transform3D(0.96939, 0.245527, 0, -0.211825, 0.836326, 0.505657, 0.124153, -0.490179, 0.862734, 0.239093, 1.48954, -1.18847)
+bonecontrolname = "head"
 
 [node name="redoran3" parent="." instance=ExtResource("2_6hbic")]
 transform = Transform3D(0.101989, 0, -0.109992, 0, 0.15, 0, 0.109992, 0, 0.101989, 2.436, 1.2, -2.301)
@@ -411,7 +412,7 @@ autoplay = true
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource("QuadMesh_wuwme")
-surface_material_override/0 = SubResource("StandardMaterial3D_hgsf6")
+surface_material_override/0 = SubResource("StandardMaterial3D_bcd1i")
 
 [node name="StaticBody3D" parent="ViewportNetworkGateway" index="2"]
 viewport_size = Vector2(650, 400)
