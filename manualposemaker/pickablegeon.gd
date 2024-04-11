@@ -24,8 +24,7 @@ var jointobjectbottom = null
 var jointhingevectortop = null
 var jointhingevectorbottom = null
 
-
-var skelbone = null
+var skelbone = null  # { "skel", "j", "bonename", "conjskelleft", "conjskelright" }
 
 func setjointobject(btop, Njointobject):
 	if btop:

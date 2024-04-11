@@ -324,8 +324,8 @@ func setjointparentstohingesbyregex(regexmatch):
 			#need to find how to match up these.  and then apply all the hinges properly
 			# then start the simulation on hinges
 		changejoint("hingeTB", gnparent, gn)
-		#print("SKIPPING MORE HINGES")
-		#break
+		print("SKIPPING MORE HINGES")
+		break
 
 func findbonenodefromname(bonecontrolname):
 	for gn in $GeonObjects.get_children():
@@ -384,9 +384,9 @@ func createremotetransforms():
 			assert (Dcount >= 0)
 			gn = gn.lockedobjectnext
 
-var Danimateupdateondrop = false
+var Danimateupdateondrop = false  # opposite of continuous
 
-func pickupgeon(pickable, geonobject):
+func pickupgeon(pickable, geonobject, geonobjectsecondary=null):
 	removeremotetransforms()
 	if len(heldgeons) == 0:
 		$PoseCalculator.makegeongroupsIfInvalid($GeonObjects.get_children())
@@ -394,15 +394,24 @@ func pickupgeon(pickable, geonobject):
 		#$PoseCalculator.Dcheckbonejoints()
 		#$PoseCalculator.Dsetfrombonequat0()
 	heldgeons.append(geonobject)
+	if geonobjectsecondary != null:
+		heldgeons.append(geonobjectsecondary)
+
 	if $PoseCalculator.derivejointsequenceIfNecessary(heldgeons[0]):
 		bonejointgradsteps = 0
 	$PoseCalculator.setisconstorientation(heldgeons)
 	print("now holding ", heldgeons)
 	createremotetransforms()
 
-func dropgeon(pickable, geonobject):
+func dropgeon(pickable, geonobject, geonobjectsecondary=null):
 	removeremotetransforms()
 	$PoseCalculator.copybacksolidedgeunit0(geonobject)
+
+	if geonobjectsecondary != null:
+		$PoseCalculator.copybacksolidedgeunit0(geonobjectsecondary)
+		heldgeons.erase(geonobjectsecondary)
+
+	assert (heldgeons.has(geonobject))
 	heldgeons.erase(geonobject)
 	print("now holding ", heldgeons)
 	createremotetransforms()
@@ -427,6 +436,9 @@ func dropgeon(pickable, geonobject):
 	
 var bonejointseqstartticks = 0
 var bonejointgradsteps = 0
+
+
+
 func _physics_process(delta):
 	if Danimateupdateondrop:
 		return
@@ -508,8 +520,8 @@ func contextmenuitemselected(target, cmitext, spawnlocation):
 	elif cmitext == "geon skeleton":
 		if is_instance_valid(target) and is_instance_of(target.get_parent(), Skeleton3D):
 			makejointskeleton(target.get_parent(), spawnlocation)
-			setjointparentstohingesbyregex("(foot|leg|fingers|forearm) \\.[LR]$")
-			setjointparentstohingesbyregex("jaw$")
+			setjointparentstohingesbyregex("(foot|leg|fingers) \\.[LR]$")
+			#setjointparentstohingesbyregex("jaw$")
 			
 	elif cmitext == "reset pose":
 		if is_instance_valid(target) and is_instance_of(target.get_parent(), Skeleton3D):

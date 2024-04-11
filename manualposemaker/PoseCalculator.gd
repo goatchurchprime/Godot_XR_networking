@@ -23,7 +23,6 @@ class SolidGeonGroups:
 		geonmass = 0.0
 		var boneunitjointspos = [  ]
 		var boneunithingeaxis = [  ]
-		var sumboneunitjointpos = Vector3()
 		for gn in geonunits:
 			# the gn.transform should come from the remote linkstransforms to keep it rigid
 			if gn.jointobjectbottom != null:
@@ -31,18 +30,24 @@ class SolidGeonGroups:
 				nextboneunitbyjoints.append(gn.jointobjectbottom)
 				boneunitjointspos.append(gn.transform*Vector3(0,-gn.rodlength/2,0))
 				boneunithingeaxis.append(gn.transform.basis*gn.jointhingevectorbottom if gn.jointhingevectorbottom != null else null)
-				sumboneunitjointpos += boneunitjointspos[-1]
 			if gn.jointobjecttop != null:
 				assert (gn.jointobjecttop.jointobjecttop == gn or gn.jointobjecttop.jointobjectbottom == gn)
 				nextboneunitbyjoints.append(gn.jointobjecttop)
 				boneunitjointspos.append(gn.transform*Vector3(0,gn.rodlength/2,0))
 				boneunithingeaxis.append(gn.transform.basis*gn.jointhingevectortop if gn.jointhingevectortop != null else null)
-				sumboneunitjointpos += boneunitjointspos[-1]
 			geonmass += gn.rodlength + gn.rodradtop + gn.rodradbottom
 
 		assert (len(boneunithingeaxis) == len(boneunitjointspos))
 		bonequat0 = geonunits[0].transform.basis.get_rotation_quaternion()
-		bonecentre0 = sumboneunitjointpos/len(nextboneunitbyjoints)
+		if len(nextboneunitbyjoints) >= 2:
+			var sumboneunitjointpos = Vector3()
+			for i in range(len(nextboneunitbyjoints)):
+				sumboneunitjointpos += boneunitjointspos[i]
+			bonecentre0 = sumboneunitjointpos/len(nextboneunitbyjoints)
+		else:
+			assert (len(geonunits) == 1)
+			bonecentre0 = geonunits[0].transform*Vector3(0,0,0)
+
 		var bonequat0inverse = bonequat0.inverse()
 		for i in range(len(nextboneunitbyjoints)):
 			var jointvectorabs = boneunitjointspos[i] - bonecentre0
@@ -116,6 +121,7 @@ class SolidGeonJointEl:
 	var prevbonehingeaxis
 	
 	var boneunitindex : int
+	var Dboneunitname
 	var incomingjointindex : int
 	var incomingbonejointvector : Vector3
 	var incomingbonehingeaxis
@@ -130,7 +136,9 @@ class SolidGeonJointEl:
 	var gradE : Vector3
 
 	var isconstorientation : bool
-
+	# we could also force a hinge-angle here, which will additionally
+	# set the orientation exactly relative to the previous edge 
+	# like it's locked into place anyway (by a relative transformation)
 
 	static func Qrotationtoalign(a, b):
 		var axis = a.cross(b).normalized()
@@ -149,6 +157,10 @@ class SolidGeonJointEl:
 		var incominghingeaxis = quat*incomingbonehingeaxis 
 		var qrot = Qrotationtoalign(incominghingeaxis, prevbonehingeaxis)
 		var qres = qrot*quat
+		
+		#var Dhingedotprod = (prevquat*prevbonejointvector).dot(quat*incomingbonejointvector)
+		#print("Dhingedotprod ", Dhingedotprod, "  ", Dboneunitname)
+		
 		#var qincominghingeaxis = qres*incomingbonehingeaxis 
 		#print(prevbonehingeaxis - qincominghingeaxis)
 		return qres
@@ -161,6 +173,8 @@ class SolidGeonJointEl:
 var bonejointsequence = [ ]
 var bonejointseqjstart = -1
 var fixedboneslist = [ ]
+
+
 
 func derivejointsequenceIfNecessary(geonheld):
 	var jstart = solidgeonunits.find(geonstogroups[geonheld])
@@ -193,6 +207,11 @@ func derivejointsequenceIfNecessary(geonheld):
 			bje.incomingjointindex = bu.nextboneunitjoints[i]["nextboneunitjoint"]
 			var bntinext = bunext.nextboneunitjoints[bje.incomingjointindex]
 			bje.boneunitindex = nj
+			
+			for Dgn in bunext.geonunits:
+				if Dgn.skelbone != null:
+					bje.Dboneunitname = Dgn.skelbone["bonename"]
+			
 			bje.incomingbonejointvector = bntinext["jointvector"]
 			bje.incomingbonehingeaxis = bntinext["hingeaxis"]
 			assert ((bje.prevbonehingeaxis == null) == (bje.incomingbonehingeaxis == null))
@@ -238,9 +257,9 @@ func sgcalcbonecentresfromquatsE():
 			prevquat = bonejointsequence[bje.prevbonejointel].propbonequat
 		var bu = solidgeonunits[bje.boneunitindex]
 		if bje.isconstorientation:
-			bje.propbonequat = bu.bonequat0
-
-		bje.propbonequat = bje.forceonhingeifnecessary(prevquat, bje.propbonequat)  # should do nothing
+			bje.propbonequat = bu.bonequat0  # assume that it's already satisfying the hinge restriction orientation
+		else:
+			bje.propbonequat = bje.forceonhingeifnecessary(prevquat, bje.propbonequat)  # should do nothing
 		bje.propbonecentre = bje.derivebointjointcentre(prevquat, prevcentre, bje.propbonequat)
 		Ergsum += bu.geonmass*(bje.propbonecentre - bu.bonecentre0).length_squared()
 	return Ergsum
@@ -290,7 +309,10 @@ func sgseebonequatscentres(bapply):
 		var bu = solidgeonunits[bje.boneunitindex]
 		var butr = Transform3D(bje.propbonequat, bje.propbonecentre)
 		for j in range(len(bu.geonunits)):
-			bu.geonunits[j].transform = butr*bu.geonunitsremotetransforms[j]
+			if bje.isconstorientation:
+				bu.geonunits[j].transform.origin = (butr*bu.geonunitsremotetransforms[j]).origin
+			else:
+				bu.geonunits[j].transform = butr*bu.geonunitsremotetransforms[j]
 		if bapply:
 			bu.bonequat0 = bje.propbonequat
 			bu.bonecentre0 = bje.propbonecentre
