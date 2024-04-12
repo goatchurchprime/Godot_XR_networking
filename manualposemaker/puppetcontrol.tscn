@@ -20,6 +20,8 @@ collision_mask = 196608
 freeze = true
 script = ExtResource("2_fq0i0")
 bonecontrolname = "hand .L"
+hinganglemin = 50.0
+hinganglemax = 190.0
 ranged_grab_method = 0
 
 [node name="CollisionShape3D" parent="." index="0"]
