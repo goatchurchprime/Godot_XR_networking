@@ -34,15 +34,18 @@ func _ready():
 
 var currentlyheld = false
 var controllerlocbasis = null
+var Dlocangy = 0
+var Dolocangy = 0
 var controllerbasisyrot = null
 var bonenodeorgpos = null
 var controllerlocorgpos = null
 
-
+var Dlocangyoffs = 0
 func _process(delta):
 	if currentlyheld:
 		bonenode.global_transform.basis = transform.basis * controllerlocbasis
-		bonenode.global_transform.origin = bonenodeorgpos + controllerbasisyrot*(transform.origin - controllerlocorgpos)
+		var Dcontrollerbasisyrot = Basis(Vector3(0,1,0), deg_to_rad(Dlocangy + Dlocangyoffs))
+		bonenode.global_transform.origin = bonenodeorgpos + Dcontrollerbasisyrot*(transform.origin - controllerlocorgpos)
 		
 		if bonenodenexthinge != null:
 			var Dswinghingebytime = true
@@ -103,11 +106,15 @@ func _on_picked_up(pickable):
 		controllerlocorgpos = transform.origin
 		bonenodeorgpos = bonenode.global_transform.origin
 
-		var xr_cameraz = get_node("../..").xr_camera.basis.z
+		var xr_cameraz = get_node("../..").xr_camera.global_transform.basis.z
 		var skelz = bonenode.skelbone["skel"].global_transform.basis.z
 		var locangy = Vector2(xr_cameraz.x, xr_cameraz.z).angle_to(Vector2(skelz.x, skelz.z))
-		print("locangy ", rad_to_deg(locangy))
-		controllerbasisyrot = Basis(Vector3(0,1,0), 0-locangy)
+
+
+		Dolocangy = rad_to_deg(locangy)
+		Dlocangy = Dolocangy
+		print("locangy ", rad_to_deg(locangy), " xr_cameraz ", Vector2(xr_cameraz.x, xr_cameraz.z), " skel ", Vector2(skelz.x, skelz.z))
+		controllerbasisyrot = Basis(Vector3(0,1,0), -locangy)
 
 
 		if bonenodenexthinge != null:
