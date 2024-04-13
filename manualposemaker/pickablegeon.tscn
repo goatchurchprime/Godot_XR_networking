@@ -40,6 +40,7 @@ albedo_color = Color(0.803828, 0.186501, 1, 1)
 collision_layer = 1048584
 collision_mask = 196608
 freeze = true
+freeze_mode = 0
 script = ExtResource("2_f3pjp")
 ranged_grab_method = 0
 

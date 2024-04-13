@@ -10,7 +10,7 @@ var selectedlocktarget = null
 # control on the timing.  Or put it into a thread that we poll for updates
 
 # then pinning nodes (for feet) and lifting them like crutches
-									
+
 
 func makecontextmenufor(target, pt):
 	if len(heldgeons) > (1 if headlockedgeon != null else 0):
@@ -327,6 +327,12 @@ func setjointparentstohingesbyregex(regexmatch):
 		#print("SKIPPING MORE HINGES")
 		#break
 
+func findbonenodefromname(bonecontrolname):
+	for gn in $GeonObjects.get_children():
+		if gn.skelbone != null and gn.skelbone["bonename"] == bonecontrolname:
+			return gn
+	return null
+	
 # This assumes that the bonepositions are set in order
 # so that the previous bone global pose can be used
 # Should upgrade this to handle the root properly and the conjskelleft value being carried across
@@ -378,9 +384,9 @@ func createremotetransforms():
 			assert (Dcount >= 0)
 			gn = gn.lockedobjectnext
 
-var Danimateupdateondrop = false
+var Danimateupdateondrop = false  # opposite of continuous
 
-func pickupgeon(pickable, geonobject):
+func pickupgeon(pickable, geonobject, geonobjectsecondary=null):
 	removeremotetransforms()
 	if len(heldgeons) == 0:
 		$PoseCalculator.makegeongroupsIfInvalid($GeonObjects.get_children())
@@ -388,15 +394,24 @@ func pickupgeon(pickable, geonobject):
 		#$PoseCalculator.Dcheckbonejoints()
 		#$PoseCalculator.Dsetfrombonequat0()
 	heldgeons.append(geonobject)
+	if geonobjectsecondary != null:
+		heldgeons.append(geonobjectsecondary)
+
 	if $PoseCalculator.derivejointsequenceIfNecessary(heldgeons[0]):
 		bonejointgradsteps = 0
 	$PoseCalculator.setisconstorientation(heldgeons)
 	print("now holding ", heldgeons)
 	createremotetransforms()
 
-func dropgeon(pickable, geonobject):
+func dropgeon(pickable, geonobject, geonobjectsecondary=null):
 	removeremotetransforms()
 	$PoseCalculator.copybacksolidedgeunit0(geonobject)
+
+	if geonobjectsecondary != null:
+		$PoseCalculator.copybacksolidedgeunit0(geonobjectsecondary)
+		heldgeons.erase(geonobjectsecondary)
+
+	assert (heldgeons.has(geonobject))
 	heldgeons.erase(geonobject)
 	print("now holding ", heldgeons)
 	createremotetransforms()
@@ -421,6 +436,9 @@ func dropgeon(pickable, geonobject):
 	
 var bonejointseqstartticks = 0
 var bonejointgradsteps = 0
+
+
+
 func _physics_process(delta):
 	if Danimateupdateondrop:
 		return
