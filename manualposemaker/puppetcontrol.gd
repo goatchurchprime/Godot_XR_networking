@@ -44,7 +44,7 @@ var Dlocangyoffs = 0
 func _process(delta):
 	if currentlyheld:
 		bonenode.global_transform.basis = transform.basis * controllerlocbasis
-		var Dcontrollerbasisyrot = Basis(Vector3(0,1,0), deg_to_rad(Dlocangy + Dlocangyoffs))
+		var Dcontrollerbasisyrot = Basis(Vector3(0,1,0), deg_to_rad(-Dlocangy + Dlocangyoffs))
 		bonenode.global_transform.origin = bonenodeorgpos + Dcontrollerbasisyrot*(transform.origin - controllerlocorgpos)
 		
 		if bonenodenexthinge != null:
@@ -110,10 +110,10 @@ func _on_picked_up(pickable):
 		var skelz = bonenode.skelbone["skel"].global_transform.basis.z
 		var locangy = Vector2(xr_cameraz.x, xr_cameraz.z).angle_to(Vector2(skelz.x, skelz.z))
 
-
 		Dolocangy = rad_to_deg(locangy)
 		Dlocangy = Dolocangy
 		print("locangy ", rad_to_deg(locangy), " xr_cameraz ", Vector2(xr_cameraz.x, xr_cameraz.z), " skel ", Vector2(skelz.x, skelz.z))
+		print("angs  xr_camera ", rad_to_deg(Vector2(xr_cameraz.x, xr_cameraz.z).angle()), " skelang ", rad_to_deg(Vector2(skelz.x, skelz.z).angle()))
 		controllerbasisyrot = Basis(Vector3(0,1,0), -locangy)
 
 
