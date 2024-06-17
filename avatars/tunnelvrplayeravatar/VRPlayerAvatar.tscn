@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bgw2tanm4il3j"]
+[gd_scene load_steps=15 format=3 uid="uid://bgw2tanm4il3j"]
 
 [ext_resource type="Script" path="res://avatars/tunnelvrplayeravatar/VRPlayerAvatar.gd" id="2"]
 [ext_resource type="Material" uid="uid://f2uhcqq8s2jx" path="res://addons/godot-xr-tools/hands/materials/glove_caucasian_green_camo.tres" id="5_82yut"]
@@ -34,6 +34,13 @@ height = 0.05
 radial_segments = 32
 rings = 0
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qiaoq"]
+albedo_color = Color(1, 1, 0, 1)
+
+[sub_resource type="PrismMesh" id="PrismMesh_u1gcd"]
+material = SubResource("StandardMaterial3D_qiaoq")
+size = Vector3(0.2, 0.01, 0.01)
+
 [node name="VRPlayerAvatar" type="Node3D"]
 script = ExtResource("2")
 
@@ -45,6 +52,10 @@ material = SubResource("2")
 transform = Transform3D(0.9, 0, 0, 0, 1, 0, 0, 0, 0.98, 0, -0.051, 0.085)
 mesh = SubResource("3")
 material = SubResource("4")
+
+[node name="RemoteTransform3D" type="RemoteTransform3D" parent="HeadCam"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0802994, -0.057813)
+remote_path = NodePath("../../AudioStreamPlayer")
 
 [node name="ControllerLeft" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.307861, -0.332077, -0.346588)
@@ -106,6 +117,10 @@ surface_material_override/0 = ExtResource("5_82yut")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.259361, 0, -0.240846)
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0802994, -0.057813)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AudioStreamPlayer"]
+mesh = SubResource("PrismMesh_u1gcd")
 
 [editable path="ControllerLeft/left_quest2_controller"]
 [editable path="ControllerRight/right_quest2_contoller"]

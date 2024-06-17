@@ -184,6 +184,10 @@ func PF_framedatatoavatar(fd):
 		print("remote setpaddlebody ", fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY])
 		setpaddlebody(fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY])
 
+	if fd.has(NCONSTANTS.CFI_SPEAKING):
+		$AudioStreamPlayer.visible = fd[NCONSTANTS.CFI_SPEAKING]
+
+
 static func PF_changethinnedframedatafordoppelganger(fd, doppelnetoffset, isframe0):
 	fd[NCONSTANTS.CFI_TIMESTAMP] += doppelnetoffset
 	fd[NCONSTANTS.CFI_TIMESTAMPPREV] += doppelnetoffset
