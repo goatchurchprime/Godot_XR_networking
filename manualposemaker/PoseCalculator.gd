@@ -450,5 +450,3 @@ func setisconstorientation(constrainedbones):
 		var bje = bonejointsequence[i]
 		assert (bonejointsequence[0].prevboneunitindex != bje.boneunitindex)
 		bje.isconstorientation = constrainedsgindexes.has(bje.boneunitindex)
-
-

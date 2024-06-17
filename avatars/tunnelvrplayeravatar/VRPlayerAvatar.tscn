@@ -1,12 +1,11 @@
-[gd_scene load_steps=14 format=3 uid="uid://bgw2tanm4il3j"]
+[gd_scene load_steps=13 format=3 uid="uid://bgw2tanm4il3j"]
 
 [ext_resource type="Script" path="res://avatars/tunnelvrplayeravatar/VRPlayerAvatar.gd" id="2"]
+[ext_resource type="Material" uid="uid://f2uhcqq8s2jx" path="res://addons/godot-xr-tools/hands/materials/glove_caucasian_green_camo.tres" id="5_82yut"]
 [ext_resource type="PackedScene" uid="uid://coia0xdb1hc3c" path="res://xrassets/right_quest2_contoller.tscn" id="6"]
 [ext_resource type="PackedScene" uid="uid://c83vlx50waes5" path="res://xrassets/left_quest2_controller.tscn" id="7"]
 [ext_resource type="PackedScene" uid="uid://dhaqth6q5yw4n" path="res://addons/godot-xr-tools/hands/model/hand_l.gltf" id="7_s2tnc"]
-[ext_resource type="Material" uid="uid://b718ylp68nhtc" path="res://addons/godot-xr-tools/hands/materials/glove_caucasian_green_camo.material" id="8_8gnxd"]
 [ext_resource type="PackedScene" uid="uid://ds1t8vc0kxoeo" path="res://addons/godot-xr-tools/hands/model/hand_r.gltf" id="9_v8raj"]
-[ext_resource type="Material" uid="uid://ba02jnd2dswyn" path="res://addons/godot-xr-tools/hands/materials/cleaning_glove.material" id="10_18cds"]
 
 [sub_resource type="BoxMesh" id="1"]
 size = Vector3(0.2, 0.1, 0.1)
@@ -57,7 +56,7 @@ transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 
 show_rest_only = true
 
 [node name="ControllerRight" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.319285, -0.267242, -0.39732)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.319285, -0.390021, -0.39732)
 
 [node name="right_quest2_contoller" parent="ControllerRight" instance=ExtResource("6")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0.15)
@@ -101,13 +100,12 @@ mesh = SubResource("6")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.127978, -0.08176, -0.254065)
 
 [node name="mesh_Hand_L" parent="hand_l/Armature/Skeleton3D" index="0"]
-surface_material_override/0 = ExtResource("8_8gnxd")
+surface_material_override/0 = ExtResource("5_82yut")
 
 [node name="hand_r" parent="." instance=ExtResource("9_v8raj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.259361, 0, -0.240846)
 
-[node name="mesh_Hand_R" parent="hand_r/Armature/Skeleton3D" index="0"]
-surface_material_override/0 = ExtResource("10_18cds")
+[node name="AudioStreamPlayer" type="AudioStreamPlayer3D" parent="."]
 
 [editable path="ControllerLeft/left_quest2_controller"]
 [editable path="ControllerRight/right_quest2_contoller"]

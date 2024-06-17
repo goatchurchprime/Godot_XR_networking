@@ -46,9 +46,6 @@ func makecontextUI():
 	var cpos = FunctionPointer.transform.origin + cp*FunctionPointer._world_scale
 	var pgt = get_parent().global_transform
 	look_at_from_position(pgt*cpos, pgt*(cpos - b.z), Vector3(0,1,0))
-	#print(transform)
-	#transform = Transform3D(b, cpos)
-	#print(transform)
 	
 	for i in range(len(cmitexts)):
 		var contextmenuitem = contextmenuclass.instantiate()
@@ -94,4 +91,3 @@ func _ready():
 	_controller_right_node.button_pressed.connect(controller_button_pressed.bind(_controller_right_node))
 	_controller_right_node.button_released.connect(controller_button_released.bind(_controller_right_node))
 	
-

@@ -197,4 +197,3 @@ static func PF_changethinnedframedatafordoppelganger(fd, doppelnetoffset, isfram
 
 	if fd.has(NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY):
 		print("OPP setpaddlebody ", fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY])
-
