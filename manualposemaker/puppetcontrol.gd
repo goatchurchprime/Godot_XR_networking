@@ -91,7 +91,7 @@ var f2
 
 			
 func _on_picked_up(pickable):
-	controllerpickedby = pickable.by_controller
+	controllerpickedby = pickable.get_picked_up_by_controller()
 	if not controllerpickedby.is_button_pressed("trigger_click"):
 		if bonenode == null or bonenode.skelbone["bonename"] != bonecontrolname:
 			bonenode = get_node("../..").findbonenodefromname(bonecontrolname)

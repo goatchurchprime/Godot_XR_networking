@@ -11,6 +11,14 @@ var selectedlocktarget = null
 
 # then pinning nodes (for feet) and lifting them like crutches
 
+# LERPs find their way into this node!
+func getgeonobjects():
+	var geonobjects = [ ]
+	for gn in $GeonObjects.get_children():
+		if gn.is_class("RigidBody3D"):
+			geonobjects.append(gn)
+	return geonobjects
+
 
 func makecontextmenufor(target, pt):
 	if len(heldgeons) > (1 if headlockedgeon != null else 0):
@@ -128,7 +136,7 @@ func resetskeletonpose(skel : Skeleton3D, btoposerest):
 			var rtr = skel.get_bone_rest(j)
 			skel.set_bone_pose_rotation(j, rtr.basis.get_rotation_quaternion())
 			skel.set_bone_pose_position(j, rtr.origin)
-	var geonobjects = $GeonObjects.get_children()
+	var geonobjects = getgeonobjects()
 	var lockedgeons = [ ]
 	for gn in geonobjects:
 		if gn.skelbone == null:
@@ -294,7 +302,7 @@ func makejointskeleton(skel : Skeleton3D, ptloc):
 				geonobject.setjointmarkers()
 
 	$PoseCalculator.invalidategeonunits()
-	#$PoseCalculator.makegeongroups($GeonObjects.get_children())
+	#$PoseCalculator.makegeongroups(getgeonobjects())
 	#$PoseCalculator.Dcheckbonejoints()
 	#await get_tree().create_timer(1.0).timeout
 	#$PoseCalculator.Dsetfrombonequat0()
@@ -305,7 +313,7 @@ func setjointparentstohingesbyregex(regexmatch):
 	print("setting to hinges ", regexmatch)
 	var regex = RegEx.new()
 	regex.compile(regexmatch)
-	var geonobjects = $GeonObjects.get_children()
+	var geonobjects = getgeonobjects()
 	for gn in geonobjects:
 		if gn.skelbone == null:
 			continue
@@ -328,7 +336,7 @@ func setjointparentstohingesbyregex(regexmatch):
 		#break
 
 func findbonenodefromname(bonecontrolname):
-	for gn in $GeonObjects.get_children():
+	for gn in getgeonobjects():
 		if gn.skelbone != null and gn.skelbone["bonename"] == bonecontrolname:
 			return gn
 	return null
@@ -337,7 +345,7 @@ func findbonenodefromname(bonecontrolname):
 # so that the previous bone global pose can be used
 # Should upgrade this to handle the root properly and the conjskelleft value being carried across
 func setboneposefromunits(Dverify=false):
-	var geonobjects = $GeonObjects.get_children()
+	var geonobjects = getgeonobjects()
 	for gn in geonobjects:
 		if gn.skelbone == null:
 			continue
@@ -389,7 +397,7 @@ var Danimateupdateondrop = false  # opposite of continuous
 func pickupgeon(pickable, geonobject, geonobjectsecondary=null):
 	removeremotetransforms()
 	if len(heldgeons) == 0:
-		$PoseCalculator.makegeongroupsIfInvalid($GeonObjects.get_children())
+		$PoseCalculator.makegeongroupsIfInvalid(getgeonobjects())
 		#$PoseCalculator.Dcheckbonejoints()
 		#$PoseCalculator.Dcheckbonejoints()
 		#$PoseCalculator.Dsetfrombonequat0()
@@ -425,7 +433,7 @@ func dropgeon(pickable, geonobject, geonobjectsecondary=null):
 				await get_tree().create_timer(0.1).timeout
 			$PoseCalculator.sgseebonequatscentres(true)
 			#$PoseCalculator.Dsetfrombonequat0()
-			#$PoseCalculator.makegeongroups($GeonObjects.get_children())
+			#$PoseCalculator.makegeongroups(getgeonobjects())
 			#$PoseCalculator.bonejointsequence = [ ]
 			#$PoseCalculator.Dcheckbonejoints()
 			setboneposefromunits()

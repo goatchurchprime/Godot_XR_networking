@@ -51,34 +51,34 @@ height = 0.06
 radial_segments = 12
 rings = 0
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_swlsb"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_xgoek"]
 animation = &"Grip"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_nh603"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_mlmvm"]
 animation = &"Grip"
 
-[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_5hcnu"]
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_oux6t"]
 filter_enabled = true
 filters = ["Armature/Skeleton3D:Little_Distal_R", "Armature/Skeleton3D:Little_Intermediate_R", "Armature/Skeleton3D:Little_Metacarpal_R", "Armature/Skeleton3D:Little_Proximal_R", "Armature/Skeleton3D:Middle_Distal_R", "Armature/Skeleton3D:Middle_Intermediate_R", "Armature/Skeleton3D:Middle_Metacarpal_R", "Armature/Skeleton3D:Middle_Proximal_R", "Armature/Skeleton3D:Ring_Distal_R", "Armature/Skeleton3D:Ring_Intermediate_R", "Armature/Skeleton3D:Ring_Metacarpal_R", "Armature/Skeleton3D:Ring_Proximal_R", "Armature/Skeleton3D:Thumb_Distal_R", "Armature/Skeleton3D:Thumb_Metacarpal_R", "Armature/Skeleton3D:Thumb_Proximal_R", "Armature/Skeleton:Little_Distal_R", "Armature/Skeleton:Little_Intermediate_R", "Armature/Skeleton:Little_Proximal_R", "Armature/Skeleton:Middle_Distal_R", "Armature/Skeleton:Middle_Intermediate_R", "Armature/Skeleton:Middle_Proximal_R", "Armature/Skeleton:Ring_Distal_R", "Armature/Skeleton:Ring_Intermediate_R", "Armature/Skeleton:Ring_Proximal_R", "Armature/Skeleton:Thumb_Distal_R", "Armature/Skeleton:Thumb_Proximal_R"]
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_51ey8"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_mveq2"]
 animation = &"Grip 5"
 
-[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_vgwur"]
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_lqejv"]
 filter_enabled = true
 filters = ["Armature/Skeleton3D:Index_Distal_R", "Armature/Skeleton3D:Index_Intermediate_R", "Armature/Skeleton3D:Index_Metacarpal_R", "Armature/Skeleton3D:Index_Proximal_R", "Armature/Skeleton:Index_Distal_R", "Armature/Skeleton:Index_Intermediate_R", "Armature/Skeleton:Index_Proximal_R"]
 
-[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_k8ht7"]
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_nr6yk"]
 graph_offset = Vector2(-552.664, 107.301)
-nodes/ClosedHand1/node = SubResource("AnimationNodeAnimation_swlsb")
+nodes/ClosedHand1/node = SubResource("AnimationNodeAnimation_xgoek")
 nodes/ClosedHand1/position = Vector2(-600, 300)
-nodes/ClosedHand2/node = SubResource("AnimationNodeAnimation_nh603")
+nodes/ClosedHand2/node = SubResource("AnimationNodeAnimation_mlmvm")
 nodes/ClosedHand2/position = Vector2(-360, 300)
-nodes/Grip/node = SubResource("AnimationNodeBlend2_5hcnu")
+nodes/Grip/node = SubResource("AnimationNodeBlend2_oux6t")
 nodes/Grip/position = Vector2(0, 40)
-nodes/OpenHand/node = SubResource("AnimationNodeAnimation_51ey8")
+nodes/OpenHand/node = SubResource("AnimationNodeAnimation_mveq2")
 nodes/OpenHand/position = Vector2(-600, 100)
-nodes/Trigger/node = SubResource("AnimationNodeBlend2_vgwur")
+nodes/Trigger/node = SubResource("AnimationNodeBlend2_lqejv")
 nodes/Trigger/position = Vector2(-360, 40)
 node_connections = [&"Grip", 0, &"Trigger", &"Grip", 1, &"ClosedHand2", &"Trigger", 0, &"OpenHand", &"Trigger", 1, &"ClosedHand1", &"output", 0, &"Grip"]
 
@@ -92,13 +92,13 @@ subdivide_depth = 20
 resource_local_to_scene = true
 size = Vector2(3, 2)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_mhpat"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_kc6sq"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8hgka"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xlw6r"]
 transparency = 1
 cull_mode = 2
-albedo_texture = SubResource("ViewportTexture_mhpat")
+albedo_texture = SubResource("ViewportTexture_kc6sq")
 texture_filter = 1
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ttrwc"]
@@ -242,7 +242,7 @@ bones/11/rotation = Quaternion(0.293691, -1.17e-07, 0.177446, 0.939286)
 bones/12/rotation = Quaternion(-0.036431, 0.137976, 0.958697, 0.246038)
 bones/12/scale = Vector3(1, 1, 1)
 bones/13/rotation = Quaternion(0.486931, 0.118692, 0.0204862, 0.865096)
-bones/14/rotation = Quaternion(0.053339, 0.993171, 0.0849141, -0.0596379)
+bones/14/rotation = Quaternion(0.053339, 0.993171, 0.0849142, -0.0596379)
 bones/14/scale = Vector3(1, 1, 1)
 bones/15/rotation = Quaternion(-0.146806, 0.00668973, -0.591355, 0.792907)
 bones/15/scale = Vector3(1, 1, 1)
@@ -263,7 +263,7 @@ bones/25/scale = Vector3(1, 1, 1)
 bones/26/rotation = Quaternion(0.871613, -1.37044e-07, 4.58009e-08, 0.490195)
 bones/26/scale = Vector3(1, 1, 1)
 bones/27/rotation = Quaternion(0.54421, 6.70964e-09, -1.21111e-07, 0.838949)
-bones/28/rotation = Quaternion(0.888033, 0.0315337, 0.0200545, -0.458258)
+bones/28/rotation = Quaternion(0.888033, 0.0315336, 0.0200545, -0.458258)
 bones/28/scale = Vector3(1, 1, 1)
 bones/29/rotation = Quaternion(0.000133956, -9.01909e-08, -0.043297, 0.999062)
 bones/29/scale = Vector3(1, 1, 1)
@@ -388,7 +388,7 @@ bone_idx = 9
 
 [node name="AnimationTree" parent="XROrigin3D/RightHandController/RightHand" index="1"]
 root_node = NodePath("../Hand_low_R")
-tree_root = SubResource("AnimationNodeBlendTree_k8ht7")
+tree_root = SubResource("AnimationNodeBlendTree_nr6yk")
 parameters/current_length = 0.0416667
 parameters/current_position = 0.0416667
 parameters/current_delta = 0.0
@@ -436,7 +436,6 @@ collision_layer = 5246976
 
 [node name="ContextUI" type="Node3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55274, -1.29367)
-visible = false
 script = ExtResource("30_2r0rg")
 
 [node name="ViewportNetworkGateway" parent="." instance=ExtResource("15")]
@@ -453,7 +452,7 @@ selected = 3
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource("QuadMesh_wuwme")
-surface_material_override/0 = SubResource("StandardMaterial3D_8hgka")
+surface_material_override/0 = SubResource("StandardMaterial3D_xlw6r")
 
 [node name="StaticBody3D" parent="ViewportNetworkGateway" index="2"]
 viewport_size = Vector2(650, 400)
