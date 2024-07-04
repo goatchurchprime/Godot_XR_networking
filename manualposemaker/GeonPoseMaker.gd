@@ -130,7 +130,8 @@ func _process(delta):
 		headlockedgeon.transform.basis = xr_camera.transform.basis * headloccambasis
 		headlockedgeon.transform.origin = xr_camera.global_transform.origin + headlocorgcampos
 		
-func resetskeletonpose(skel : Skeleton3D, btoposerest):
+func resetskeletonpose(playerframe, btoposerest):
+	var skel : Skeleton3D = playerframe.get_parent().get_skeleton()
 	#btoposerest = false
 	var bvalidate = false
 	if btoposerest:
@@ -177,7 +178,8 @@ func resetskeletonpose(skel : Skeleton3D, btoposerest):
 			gnl.transform = gn.transform*tr.inverse()
 	$PoseCalculator.invalidategeonunits()
 	
-func makejointskeleton(skel : Skeleton3D, ptloc):
+func makejointskeleton(playerframe, ptloc):
+	var skel : Skeleton3D = playerframe.get_parent().get_skeleton()
 	#var trj = Transform3D(Basis(), ptloc - skel.global_position)
 	var trj = Transform3D(Basis(), ptloc)*Transform3D(Basis(Vector3(0,1,0), deg_to_rad(180)), Vector3(0,0,0))*Transform3D(Basis(), -skel.global_position)
 	var skeltransform = skel.global_transform
