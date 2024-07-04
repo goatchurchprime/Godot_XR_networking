@@ -45,9 +45,11 @@ func makecontextmenufor(target, pt):
 			res.append("select lock target")
 		return res
 	var res = [ "new geon" ]
-	if is_instance_valid(target) and is_instance_of(target.get_parent(), Skeleton3D):
-		res.append("geon skeleton")
-		res.append("reset pose")
+	if is_instance_valid(target):
+		if target.get_parent().has_method("MakeJointSkeleton"):
+			res.append("geon skeleton")
+		if target.get_parent().has_method("ResetJointSkeleton"):
+			res.append("reset pose")
 	return res
 
 #var lockedobjectnext = self
@@ -528,14 +530,12 @@ func contextmenuitemselected(target, cmitext, spawnlocation):
 			delockobject(selectedlocktarget)
 
 	elif cmitext == "geon skeleton":
-		if is_instance_valid(target) and is_instance_of(target.get_parent(), Skeleton3D):
-			makejointskeleton(target.get_parent(), spawnlocation)
-			setjointparentstohingesbyregex("(foot|leg|fingers) \\.[LR]$")
-			setjointparentstohingesbyregex("jaw$")
+		if is_instance_valid(target) and target.get_parent().has_method("MakeJointSkeleton"):
+			target.get_parent().MakeJointSkeleton(self, spawnlocation)
 			
 	elif cmitext == "reset pose":
-		if is_instance_valid(target) and is_instance_of(target.get_parent(), Skeleton3D):
-			resetskeletonpose(target.get_parent(), true)
+		if is_instance_valid(target) and target.get_parent().has_method("ResetJointSkeleton"):
+			target.get_parent().ResetJointSkeleton(self)
 		
 	elif cmitext == "solve continuous":
 		Danimateupdateondrop = false
