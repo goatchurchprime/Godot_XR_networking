@@ -214,7 +214,7 @@ func makejointskeleton(skel : Skeleton3D, ptloc):
 			bu.nextboneunitjoints[i]["jointvector"] = bu.bonequat0.inverse()*jointvectorabs
 			bu.bonemass += jointvectorabs.length()
 		if len(bu.nextboneunitjoints) <= (2 if not bu.nextboneunitjoints[0].has("nextboneunit") else 1):
-			print("bonemass 0 on unit ", j)
+			print("bonemass 0 on unit ", j, "  ", skel.get_bone_name(j), "  ", len(bu.nextboneunitjoints))
 			bu.bonemass = 0.0
 
 	# record the boneunits that have hinges
@@ -244,6 +244,8 @@ func makejointskeleton(skel : Skeleton3D, ptloc):
 		for i in range(1, len(bu.nextboneunitjoints)):
 			var geonobject = newgeonobjectat()
 			geonobject.set_name(gname + (("_j%d" % i) if i > 1 else ""))
+			if geonobject.name == "Ear03_L_j2":
+				print(geonobject)
 			var vj0 = bu.nextboneunitjoints[0]["jointvector"]
 			var vji = bu.nextboneunitjoints[i]["jointvector"]
 			var vpbcen = (vji + vj0)/2
@@ -471,7 +473,7 @@ func _physics_process(delta):
 		if physt - bonejointseqstartticks > 200000:
 			bonejointgradsteps = -1
 			break
-		if physt - physt0 > 8000:
+		if physt - physt0 > 1000:
 			break
 	if bonejointgradsteps == -1:
 		#print(" setbonepose from units")

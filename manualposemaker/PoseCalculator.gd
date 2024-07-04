@@ -45,7 +45,7 @@ class SolidGeonGroups:
 				sumboneunitjointpos += boneunitjointspos[i]
 			bonecentre0 = sumboneunitjointpos/len(nextboneunitbyjoints)
 		else:
-			assert (len(geonunits) == 1)
+			#assert (len(geonunits) == 1)  # discarding of mass zero ends up with some bones having no connectors
 			bonecentre0 = geonunits[0].transform*Vector3(0,0,0)
 
 		var bonequat0inverse = bonequat0.inverse()
