@@ -52,6 +52,8 @@ func makecontextmenufor(target, pt):
 			res.append("geon skeleton")
 		if target.get_parent().has_method("ResetJointSkeleton"):
 			res.append("reset pose")
+	else:
+		res.append("")
 	return res
 
 #var lockedobjectnext = self
