@@ -7,13 +7,13 @@ extends Node3D
 #export var webrtcbroker = "mosquitto.doesliverpool.xyz"
 
 # use this one for WebXR because it can only come from HTML5 served from an https:// link
-@export var webrtcbroker = "wss://mosquitto.doesliverpool.xyz:8081"  
+#@export var webrtcbroker = "wss://mosquitto.doesliverpool.xyz:8081"
 #export var webrtcbroker = "ws://mosquitto.doesliverpool.xyz:8080"
 #export var webrtcbroker = "ssl://mosquitto.doesliverpool.xyz:8884"
-#export var webrtcbroker = "mosquitto.doesliverpool.xyz:1883"
+@export var webrtcbroker = "mosquitto.doesliverpool.xyz"
 
 
-# "ws://broker.mqttdashboard.com:8000"
+# "ws://broker.mqttdashboard.com:8webrtcbroker000"
 @export var PCstartupprotocol = "webrtc"
 @export var QUESTstartupprotocol = "webrtc"
 
@@ -43,7 +43,6 @@ func _ready():
 			NetworkGateway.initialstatemqttwebrtc(NetworkGateway.NETWORK_OPTIONS_MQTT_WEBRTC.AS_NECESSARY, webrtcroomname, webrtcbroker)
 		elif PCstartupprotocol == "enet":
 			NetworkGateway.initialstatenormal(NetworkGateway.NETWORK_PROTOCOL.ENET, NetworkGateway.NETWORK_OPTIONS.AS_SERVER)
-			$XROrigin3D/PlayerBody
 
 	#get_node("/root").msaa = SubViewport.MSAA_4X
 	$XROrigin3D/RightHandController.button_pressed.connect(vr_right_button_pressed)
@@ -57,7 +56,7 @@ func _ready():
 
 	NetworkGateway.set_process_input(false)
 	if webrtcroomname:
-		NetworkGateway.get_node("MQTTsignalling/roomname").text = webrtcroomname
+		NetworkGateway.MQTTsignalling.get_node("VBox/HBox2/roomname").text = webrtcroomname
 
 func ball_body_entered(body):
 	#print("ball_body_entered ", body)
@@ -86,14 +85,14 @@ func vr_right_button_pressed(button: String):
 			$ViewportNetworkGateway.visible = true
 			
 	#if button == "grip_click":
-	#	if NetworkGateway.get_node("PlayerConnections").LocalPlayer.has_method("setpaddlebody"):
-	#		NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(true)
+	#	if NetworkGateway.PlayerConnections.LocalPlayer.has_method("setpaddlebody"):
+	#		NetworkGateway.PlayerConnections.LocalPlayer.setpaddlebody(true)
 
 	
 func vr_right_button_release(button: String):
 	if button == "grip_click":
-		if NetworkGateway.get_node("PlayerConnections").LocalPlayer.has_method("setpaddlebody"):
-			NetworkGateway.get_node("PlayerConnections").LocalPlayer.setpaddlebody(false)
+		if NetworkGateway.PlayerConnections.LocalPlayer.has_method("setpaddlebody"):
+			NetworkGateway.PlayerConnections.LocalPlayer.setpaddlebody(false)
 
 func vr_left_button_pressed(button: String):
 	print("vr left button pressd ", button)
@@ -121,15 +120,18 @@ func _input(event):
 		if event.keycode == KEY_F and event.pressed:
 			vr_left_button_pressed("by_button")
 		if event.keycode == KEY_G and event.pressed:
-			NetworkGateway.get_node("DoppelgangerPanel/hbox/VBox_enable/DoppelgangerEnable").button_pressed = not NetworkGateway.get_node("DoppelgangerPanel/hbox/VBox_enable/DoppelgangerEnable").button_pressed
+			NetworkGateway.DoppelgangerPanel.get_node("/hbox/VBox_enable/DoppelgangerEnable").button_pressed = not NetworkGateway.get_node("DoppelgangerPanel/hbox/VBox_enable/DoppelgangerEnable").button_pressed
 		#if (event.keycode == KEY_2):
 		#	NetworkGateway.selectandtrigger_networkoption(NetworkGateway.NETWORK_OPTIONS.LOCAL_NETWORK)
 		#if (event.keycode == KEY_3):
 		#	NetworkGateway.selectandtrigger_networkoption(NetworkGateway.NETWORK_OPTIONS.AS_SERVER)
 
 		if (event.keycode == KEY_4) and event.pressed:
-			NetworkGateway.get_node("PlayerConnections").LocalPlayer.projectedhands = not NetworkGateway.get_node("PlayerConnections").LocalPlayer.projectedhands
+			NetworkGateway.PlayerConnections.LocalPlayer.projectedhands = not NetworkGateway.get_node("PlayerConnections").LocalPlayer.projectedhands
 			
+		if (event.keycode == KEY_C) and event.pressed:
+			_on_interactable_area_button_button_pressed(null)
+
 
 		#if event.keycode == KEY_SHIFT:
 		#	vr_right_button_pressed("grip_click") if event.pressed else vr_right_button_release("grip_click")
@@ -174,3 +176,10 @@ func _process(delta):
 #** consider the dinosaur
 #** does it work in different world scales?
 #** consider the dinosaur avatar as a mechanoid
+
+
+func _on_interactable_area_button_button_pressed(button):
+	if multiplayer.get_connection_status() == MultiplayerPeer.CONNECTION_DISCONNECTED:
+		NetworkGateway.simple_webrtc_connect(webrtcroomname)
+	if button:
+		button.get_node("Label3D").text = "X"
