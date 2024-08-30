@@ -179,7 +179,7 @@ func _process(delta):
 
 
 func _on_interactable_area_button_button_pressed(button):
-	if multiplayer.get_connection_status() == MultiplayerPeer.CONNECTION_DISCONNECTED:
+	if NetworkGateway.is_disconnected():
 		NetworkGateway.simple_webrtc_connect(webrtcroomname)
 	if button:
 		button.get_node("Label3D").text = "X"

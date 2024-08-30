@@ -1,13 +1,13 @@
 [gd_scene load_steps=15 format=3 uid="uid://ck2gyhhrb4h57"]
 
 [ext_resource type="Script" path="res://avatars/monster/monster.gd" id="1"]
-[ext_resource type="PackedScene" uid="uid://b25rmawjthw5w" path="res://avatars/monster/mesh/monster.glb" id="2"]
-[ext_resource type="AudioStream" uid="uid://bwbmo3r8gep5g" path="res://avatars/monster/sounds/step.wav" id="3"]
-[ext_resource type="AudioStream" uid="uid://dvnfkqcari18m" path="res://avatars/monster/sounds/swing.wav" id="4"]
-[ext_resource type="AudioStream" uid="uid://m8wgcclyfrl7" path="res://avatars/monster/sounds/monster_roar.wav" id="5"]
-[ext_resource type="AudioStream" uid="uid://cmt8hikt2t0dg" path="res://avatars/monster/sounds/monster_eat.wav" id="6"]
-[ext_resource type="AudioStream" uid="uid://ddbnlyte4to7k" path="res://avatars/monster/sounds/monster_smash.wav" id="7"]
-[ext_resource type="AudioStream" uid="uid://5vde6b7wb8o2" path="res://avatars/monster/sounds/monster_die.wav" id="8"]
+[ext_resource type="PackedScene" uid="uid://mykhqd1mfgq4" path="res://avatars/monster/mesh/monster.glb" id="2"]
+[ext_resource type="AudioStream" uid="uid://bhehjxdo7j6do" path="res://avatars/monster/sounds/step.wav" id="3"]
+[ext_resource type="AudioStream" uid="uid://bheq1cqjxucx" path="res://avatars/monster/sounds/swing.wav" id="4"]
+[ext_resource type="AudioStream" uid="uid://fy2ar1jett4x" path="res://avatars/monster/sounds/monster_roar.wav" id="5"]
+[ext_resource type="AudioStream" uid="uid://c7lnmrs7ob4v4" path="res://avatars/monster/sounds/monster_eat.wav" id="6"]
+[ext_resource type="AudioStream" uid="uid://myv54jcekk1a" path="res://avatars/monster/sounds/monster_smash.wav" id="7"]
+[ext_resource type="AudioStream" uid="uid://dc61s73jrakrw" path="res://avatars/monster/sounds/monster_die.wav" id="8"]
 
 [sub_resource type="SphereShape3D" id="8"]
 radius = 2.0
