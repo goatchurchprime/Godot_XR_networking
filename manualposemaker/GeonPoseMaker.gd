@@ -6,6 +6,8 @@ var selectedlocktarget = null
 
 @onready var xr_camera : XRCamera3D = XRHelpers.get_xr_camera(get_node("../XROrigin3D"))
 
+var activeplayerframe = null
+
 # next begin to put the pose calculator into a physics loop with 
 # control on the timing.  Or put it into a thread that we poll for updates
 
@@ -45,9 +47,13 @@ func makecontextmenufor(target, pt):
 			res.append("select lock target")
 		return res
 	var res = [ "new geon" ]
-	if is_instance_valid(target) and is_instance_of(target.get_parent(), Skeleton3D):
-		res.append("geon skeleton")
-		res.append("reset pose")
+	if is_instance_valid(target):
+		if target.get_parent().has_method("MakeJointSkeleton"):
+			res.append("geon skeleton")
+		if target.get_parent().has_method("ResetJointSkeleton"):
+			res.append("reset pose")
+	else:
+		res.append("")
 	return res
 
 #var lockedobjectnext = self
@@ -128,7 +134,8 @@ func _process(delta):
 		headlockedgeon.transform.basis = xr_camera.transform.basis * headloccambasis
 		headlockedgeon.transform.origin = xr_camera.global_transform.origin + headlocorgcampos
 		
-func resetskeletonpose(skel : Skeleton3D, btoposerest):
+func resetskeletonpose(playerframe, btoposerest):
+	var skel : Skeleton3D = playerframe.get_parent().get_skeleton()
 	#btoposerest = false
 	var bvalidate = false
 	if btoposerest:
@@ -175,7 +182,9 @@ func resetskeletonpose(skel : Skeleton3D, btoposerest):
 			gnl.transform = gn.transform*tr.inverse()
 	$PoseCalculator.invalidategeonunits()
 	
-func makejointskeleton(skel : Skeleton3D, ptloc):
+func makejointskeleton(playerframe, ptloc):
+	activeplayerframe = playerframe
+	var skel : Skeleton3D = playerframe.get_parent().get_skeleton()
 	#var trj = Transform3D(Basis(), ptloc - skel.global_position)
 	var trj = Transform3D(Basis(), ptloc)*Transform3D(Basis(Vector3(0,1,0), deg_to_rad(180)), Vector3(0,0,0))*Transform3D(Basis(), -skel.global_position)
 	var skeltransform = skel.global_transform
@@ -346,26 +355,39 @@ func findbonenodefromname(bonecontrolname):
 # This assumes that the bonepositions are set in order
 # so that the previous bone global pose can be used
 # Should upgrade this to handle the root properly and the conjskelleft value being carried across
-func setboneposefromunits(Dverify=false):
+func setboneposefromunits(playerframe):
 	var geonobjects = getgeonobjects()
+	var skel = playerframe.get_parent().get_skeleton()
+	var sca = skel.global_transform.basis.get_scale()
+	var vd = { }
+	var bonejointparenttransforms = { }
 	for gn in geonobjects:
 		if gn.skelbone == null:
 			continue
-		var skel = gn.skelbone.skel
+		if gn.skelbone.skel != skel:
+			continue
 		var j = gn.skelbone.j
-		var sca = skel.global_transform.basis.get_scale()
 		var jtrans = Transform3D(gn.transform.basis, gn.transform.origin + gn.transform.basis.y*(-gn.rodlength/2))
 
 		var jparent = skel.get_bone_parent(j)
-		var bonejoint0parent = skel.global_transform*(skel.get_bone_global_pose(jparent) if jparent != -1 else Transform3D())
+		var bonejoint0parent = skel.global_transform
+		if jparent != -1:
+			if bonejointparenttransforms.has(jparent):
+				bonejoint0parent = bonejointparenttransforms[jparent]
+			else:
+				bonejoint0parent = skel.global_transform*skel.get_bone_global_pose(jparent)
+
 		var conjskelright = Transform3D(gn.skelbone["conjskelright"].basis, Vector3(0,-gn.rodlength/2,0))
 		var bonejoint0 = gn.skelbone["conjskelleft"] * gn.transform * conjskelright
+		bonejointparenttransforms[j] = bonejoint0.scaled_local(sca)
 		var bonejoint0rel = bonejoint0parent.affine_inverse()*bonejoint0
-		if Dverify:
-			assert (bonejoint0rel.origin.is_equal_approx(skel.get_bone_pose_position(j)))
-			assert (bonejoint0rel.basis.get_rotation_quaternion().is_equal_approx(skel.get_bone_pose_rotation(j)))
-		skel.set_bone_pose_position(j, bonejoint0rel.origin)
-		skel.set_bone_pose_rotation(j, bonejoint0rel.basis.get_rotation_quaternion())
+#m		vd[NCONSTANTS2.CFI_SKELETON_BONE_POSITIONS + j] = bonejoint0rel.origin
+		vd[NCONSTANTS2.CFI_SKELETON_BONE_ROTATIONS + j] = bonejoint0rel.basis.get_rotation_quaternion()
+		#skel.set_bone_pose_position(j, bonejoint0rel.origin)
+		#skel.set_bone_pose_rotation(j, bonejoint0rel.basis.get_rotation_quaternion())
+	return vd
+
+
 
 	
 func removeremotetransforms():
@@ -438,7 +460,10 @@ func dropgeon(pickable, geonobject, geonobjectsecondary=null):
 			#$PoseCalculator.makegeongroups(getgeonobjects())
 			#$PoseCalculator.bonejointsequence = [ ]
 			#$PoseCalculator.Dcheckbonejoints()
-			setboneposefromunits()
+			if activeplayerframe != null:
+				var fd = setboneposefromunits(activeplayerframe)
+				activeplayerframe.get_parent().PF_framedatatoavatar(fd)
+
 	else:
 		if $PoseCalculator.derivejointsequenceIfNecessary(heldgeons[0]):
 			bonejointgradsteps = 0
@@ -478,7 +503,13 @@ func _physics_process(delta):
 	if bonejointgradsteps == -1:
 		#print(" setbonepose from units")
 		$PoseCalculator.sgseebonequatscentres(true)
-		setboneposefromunits()
+		if activeplayerframe != null:
+			var fd = setboneposefromunits(activeplayerframe)
+			fd[NCONSTANTS.CFI_NOTHINFRAME] = 1
+			var vd = activeplayerframe.get_parent().PF_intendedskelposes(fd)
+			#activeplayerframe.get_parent().PF_framedatatoavatar(fd)
+			activeplayerframe.networkedavatarthinnedframedata(vd)
+
 		bonejointseqstartticks = Time.get_ticks_usec()
 		bonejointgradsteps = 0
 
@@ -528,14 +559,12 @@ func contextmenuitemselected(target, cmitext, spawnlocation):
 			delockobject(selectedlocktarget)
 
 	elif cmitext == "geon skeleton":
-		if is_instance_valid(target) and is_instance_of(target.get_parent(), Skeleton3D):
-			makejointskeleton(target.get_parent(), spawnlocation)
-			setjointparentstohingesbyregex("(foot|leg|fingers) \\.[LR]$")
-			setjointparentstohingesbyregex("jaw$")
+		if is_instance_valid(target) and target.get_parent().has_method("MakeJointSkeleton"):
+			target.get_parent().MakeJointSkeleton(self, spawnlocation)
 			
 	elif cmitext == "reset pose":
-		if is_instance_valid(target) and is_instance_of(target.get_parent(), Skeleton3D):
-			resetskeletonpose(target.get_parent(), true)
+		if is_instance_valid(target) and target.get_parent().has_method("ResetJointSkeleton"):
+			target.get_parent().ResetJointSkeleton(self)
 		
 	elif cmitext == "solve continuous":
 		Danimateupdateondrop = false

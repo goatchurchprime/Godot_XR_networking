@@ -1,67 +1,20 @@
 
 This is a funciontal VR networking example using the https://github.com/goatchurchprime/godot_multiplayer_networking_workbench as 
 the basis for connecting using one of the three godot networking protocols (ENet, WebSocket or WebRTC) and spawning player avatars 
-into the space on connection.  This works in Godot 4.2 (to take advantage of its more advanced OpenXR interface).
-
+into the space on connection.  This works in Godot 4.3.
 
 ## Installation
 
-There are several addons that need to be copied or linked from the addons directory.
+There are many addons that need to be copied or linked from the addons directory.
 
-1. **Godot OpenXR Loaders**
-
-See them here, for your version.  https://github.com/GodotVR/godot_openxr_loaders/releases
-
-(OpenXR is now part of the core of Godot, but the loaders need to be installed and set up, along with the android templates and export options 
-for your platform.  Don't forget to enable hand tracking and passthrough.
-
-2. **Godot XR Tools**
-
-Use the AssetLib to install the "Godot XR Tools - AR and VR helper library" plugin, which will go into the Godot_XR_networking/addons/godot-xr-tools directory
-
-(Alternatively, to use a symlink, which will make it easier to update any changes to these base libraries and spot any unintentional edits 
-check out https://github.com/GodotVR/godot-xr-tools next to your Godot_XR_networking directory before going into the Godot_XR_networking/addons directory 
-and executing `ln -s ../../godot-xr-tools/addons/godot-xr-tools/ godot-xr-tools`.)
-
-3. **Networking workbench**
-
-The networking workbench is not in the AssetLib, so you will need to check out or download the repository 
-https://github.com/goatchurchprime/godot_multiplayer_networking_workbench and copy its
-godot_multiplayer_networking_workbench/addons/player-networking directory into the Godot_XR_networking/addons directory.
-
-(Alternatively go into the Godot_XR_networking/addons directory and execute
-`ln -s ../../godot_multiplayer_networking_workbench/addons/player-networking/ player-networking`.)
-
-4. **MQTT**
-
-Use the AssetLib to install the "MQTT Client" plugin, which will go into the Godot_XR_networking/addons/mqtt directory
-
-This is also available at: https://github.com/goatchurchprime/godot-mqtt/
-
-This is used by the Networking workbench as the signalling protocol for WebRTC
-
-
-5. **WebRTC libraries**
-
-If you also want to use WebRTC capability you will need to download the latest precompiled set of libraries from https://github.com/godotengine/webrtc-native/releases
- *Godot_XR_networking/webrtc*.  Make sure you don't have arm7 selected as a feature as this makes it difficult for the GDExtension system to find 
- the correct arm8 libaries
-
-
-6. **Auto hand tracking**
-
-The networking workbench is not in the AssetLib, so you will need to check out or download the repository 
-https://github.com/Godot-Dojo/Godot-XR-AH and copy its
-Godot-XR-AH/addons/xr-autohandtracker directory into the Godot_XR_networking/addons directory.
-
-(Alternatively go into the Godot_XR_networking/addons directory and execute
-`ln -s ../../Godot-XR-AH/addons/xr-autohandtracker/ xr-autohandtracker`.)
-
-7. **Opus library**
-
-These haven't been recompiled for Godot4, but should done at some point.  This will enable VOIP over the networks using the 
-similar logic of buffering and syncronizing as we do for the avatar motions 
-
+* **Godot XR Tools** Version: 4.3.3, installs into addons/godot-xr-tools
+* **Godot OpenXR Vendors plugin for Godot 4.3** Version: 3.0.0, installs into addons/godotopenxrvendors
+* **NetworkingWorkbench** clone from [repo](https://github.com/goatchurchprime/godot_multiplayer_networking_workbench) and copy into addons/player-networking or symlink `ln -s ../../godot_multiplayer_networking_workbench/addons/player-networking/ player-networking`
+*  **WebRTC plugin - Godot 4.1+** Version: 1.0.6, !!install into addons/webrtc
+*  **MQTT CLient** Version: 1.2 installs into addons/mqtt
+*  **TwoVoip** Version: v3.0 install into addons/twovoip
+*  **Godot XR Autohands** Version: 1.1 installs into addons/xr-autohandstracker
+*  **XR Input Simulator** Version: 1.2.0 installs into addons/xr-simulator
 
 ## Operation
 
