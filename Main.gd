@@ -120,7 +120,7 @@ func _input(event):
 		if event.keycode == KEY_F and event.pressed:
 			vr_left_button_pressed("by_button")
 		if event.keycode == KEY_G and event.pressed:
-			NetworkGateway.DoppelgangerPanel.get_node("/hbox/VBox_enable/DoppelgangerEnable").button_pressed = not NetworkGateway.get_node("DoppelgangerPanel/hbox/VBox_enable/DoppelgangerEnable").button_pressed
+			NetworkGateway.DoppelgangerPanel.get_node("hbox/VBox_enable/DoppelgangerEnable").button_pressed = not NetworkGateway.DoppelgangerPanel.get_node("hbox/VBox_enable/DoppelgangerEnable").button_pressed
 		#if (event.keycode == KEY_2):
 		#	NetworkGateway.selectandtrigger_networkoption(NetworkGateway.NETWORK_OPTIONS.LOCAL_NETWORK)
 		#if (event.keycode == KEY_3):
