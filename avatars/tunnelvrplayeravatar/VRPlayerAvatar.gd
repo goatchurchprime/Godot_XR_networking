@@ -1,7 +1,6 @@
 extends Node3D
 
 @onready var arvrorigin = XRHelpers.get_xr_origin(get_node("/root/Main/XROrigin3D"))
-var labeltext = "unknown"
 
 @onready var LeftHandController = XRHelpers.get_left_controller(arvrorigin)
 @onready var RightHandController = XRHelpers.get_right_controller(arvrorigin)
@@ -24,48 +23,23 @@ func _ready():
 var possibleusernames = ["Alice", "Beth", "Cath", "Dan", "Earl", "Fred", "George", "Harry", "Ivan", "John", "Kevin", "Larry", "Martin", "Oliver", "Peter", "Quentin", "Robert", "Samuel", "Thomas", "Ulrik", "Victor", "Wayne", "Xavier", "Youngs", "Zephir"]
 func PF_initlocalplayer():
 	randomize()
-	labeltext = possibleusernames[randi()%len(possibleusernames)]
+	$HeadCam/NameplateLabel3D.text = possibleusernames[randi()%len(possibleusernames)]
 
-func PF_connectedtoserver():
-	if not multiplayer.is_server():
-		clientawaitingspawnpoint = true
+func playername():
+	return $HeadCam/NameplateLabel3D.text
 
-func spawnpointfornewplayer():
-	var sfd = {  NCONSTANTS2.CFI_VRORIGIN_POSITION: transform.origin, 
-				 NCONSTANTS2.CFI_VRORIGIN_ROTATION: transform.basis.get_rotation_quaternion()
-			  }
-	sfd[NCONSTANTS2.CFI_VRORIGIN_ROTATION] *= Quaternion(Vector3(0,1,0), deg_to_rad(45))
-	sfd[NCONSTANTS2.CFI_VRORIGIN_POSITION] += Vector3(1,0,-1.5)
-	return sfd
+func PF_spawninfo_fornewplayer():
+	return { 
+		NCONSTANTS.CFI_ANIMTRACKS+0: transform.origin + Vector3(1,0,-1.5),
+		NCONSTANTS.CFI_ANIMTRACKS+1: transform.basis.get_rotation_quaternion()*Quaternion(Vector3(0,1,0), deg_to_rad(45))
+	}
 
-func spawnpointreceivedfromserver(sfd):
-	print("** spawnpointreceivedfromserver", sfd)
-	arvrorigin.transform = Transform3D(Basis(sfd[NCONSTANTS2.CFI_VRORIGIN_ROTATION]), sfd[NCONSTANTS2.CFI_VRORIGIN_POSITION])
-	clientawaitingspawnpoint = false
-	nextframeisfirst = true
+func PF_spawninfo_receivedfromserver(sfd):
+	arvrorigin.transform = Transform3D(Basis(sfd[NCONSTANTS.CFI_ANIMTRACKS+1]), sfd[NCONSTANTS.CFI_ANIMTRACKS+0])
 
-func PF_datafornewconnectedplayer():
-	var avatardata = { "avatarsceneresource":get_scene_file_path(), 
-					   "labeltext":labeltext
-					 }
-	if multiplayer.is_server():
-		avatardata["spawnframedata"] = spawnpointfornewplayer()
 
-	# if we are already spawned then we should send our position
-	if not clientawaitingspawnpoint:
-		avatardata["framedata0"] = get_node("PlayerFrame").framedata0.duplicate()
-		avatardata["framedata0"].erase(NCONSTANTS.CFI_TIMESTAMP_F0)
-
-	return avatardata
-
-func PF_startupdatafromconnectedplayer(avatardata, localplayer):
-	labeltext = avatardata["labeltext"]
-	if "framedata0" in avatardata:
-		get_node("PlayerFrame").networkedavatarthinnedframedata(avatardata["framedata0"])
-	else:
-		visible = false
-	if "spawnframedata" in avatardata:
-		localplayer.spawnpointreceivedfromserver(avatardata["spawnframedata"])
+func PF_startupdatafromconnectedplayer(avatardata):
+	visible = false
 
 func skelbonescopy(skela, skelb):
 	for i in range(skela.get_bone_count()):
@@ -89,11 +63,16 @@ func PF_processlocalavatarposition(delta):
 	if clientawaitingspawnpoint:
 		return false
 	return true
+	
+func PF_setspeakingvolume(v):
+	$AudioStreamPlayer/MeshInstance3D.scale.x = v
 
 func setpaddlebody(active):
 	$ControllerRight/PaddleBody.visible = active
 	$ControllerRight/PaddleBody/CollisionShape3D.disabled = not active
 
+
+"""
 func PF_avatartoframedata():
 	var fd = {  NCONSTANTS2.CFI_VRORIGIN_POSITION: transform.origin, 
 				NCONSTANTS2.CFI_VRORIGIN_ROTATION: transform.basis.get_rotation_quaternion(), 
@@ -201,3 +180,4 @@ static func PF_changethinnedframedatafordoppelganger(fd, doppelnetoffset, isfram
 
 	if fd.has(NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY):
 		print("OPP setpaddlebody ", fd[NCONSTANTS2.CFI_VRHANDRIGHT_PADDLEBODY])
+"""

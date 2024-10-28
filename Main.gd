@@ -56,7 +56,7 @@ func _ready():
 
 	NetworkGateway.set_process_input(false)
 	if webrtcroomname:
-		NetworkGateway.MQTTsignalling.get_node("VBox/HBox2/roomname").text = webrtcroomname
+		NetworkGateway.MQTTsignalling.Roomnametext.text = webrtcroomname
 
 func ball_body_entered(body):
 	#print("ball_body_entered ", body)
@@ -123,6 +123,8 @@ func _input(event):
 			NetworkGateway.DoppelgangerPanel.get_node("/hbox/VBox_enable/DoppelgangerEnable").button_pressed = not NetworkGateway.get_node("DoppelgangerPanel/hbox/VBox_enable/DoppelgangerEnable").button_pressed
 		#if (event.keycode == KEY_2):
 		#	NetworkGateway.selectandtrigger_networkoption(NetworkGateway.NETWORK_OPTIONS.LOCAL_NETWORK)
+		#if (event.keycode == KEY_3):
+		#	NetworkGateway.selectandtrigger_networkoption(NetworkGateway.NETWORK_OPTIONS.AS_SERVER)
 		#if (event.keycode == KEY_3):
 		#	NetworkGateway.selectandtrigger_networkoption(NetworkGateway.NETWORK_OPTIONS.AS_SERVER)
 
