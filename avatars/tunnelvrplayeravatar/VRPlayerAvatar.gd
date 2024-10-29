@@ -37,8 +37,18 @@ func PF_spawninfo_fornewplayer():
 	var spawnrot = transform.basis.get_rotation_quaternion()*Quaternion(Vector3(0,1,0), deg_to_rad(45))
 	return { "spawnpointtransform":Transform3D(spawnrot, spawnpos) }
 
-func PF_spawninfo_receivedfromserver(sfd):
+func set_fade(p_value : float):
+	XRToolsFade.set_fade("spawnpoint", Color(0, 0, 0, p_value))
+
+func PF_spawninfo_receivedfromserver(sfd, PlayerConnection):
+	var tween = get_tree().create_tween()
+	tween.tween_method(set_fade, 0.0, 1.0, 0.34)
+	await tween.finished
 	arvrorigin.transform = sfd["spawnpointtransform"]
+	tween = get_tree().create_tween()
+	tween.tween_method(set_fade, 1.0, 0.0, 0.34)
+	PlayerConnection.spawninfoforclientprocessed()
+	await tween.finished
 	
 func PF_startupdatafromconnectedplayer(avatardata):
 	visible = false

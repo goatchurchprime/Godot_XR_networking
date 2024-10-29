@@ -436,15 +436,22 @@ mesh = SubResource("6")
 [node name="hand_l" parent="." instance=ExtResource("7_s2tnc")]
 
 [node name="Skeleton3D" parent="hand_l/Armature" index="0"]
-bones/1/rotation = Quaternion(0.323537, -2.56595e-05, -0.0272204, 0.945824)
+bones/1/rotation = Quaternion(0.323537, -2.56585e-05, -0.0272204, 0.945824)
 bones/2/rotation = Quaternion(-0.0459503, -0.0271357, -0.0752572, 0.995735)
+bones/3/rotation = Quaternion(0.0556407, 0.0103261, 0.0139847, 0.9983)
+bones/5/rotation = Quaternion(-0.000588777, 2.10359e-05, 0.0252196, 0.999682)
 bones/6/rotation = Quaternion(0.111223, -0.00277812, 0.117574, 0.986812)
+bones/7/rotation = Quaternion(-0.0136832, -0.0246682, -0.235071, 0.971569)
 bones/8/rotation = Quaternion(0.014226, -0.0119908, -0.134541, 0.990733)
+bones/11/rotation = Quaternion(-0.0119466, 0.000966737, -0.0105008, 0.999873)
+bones/12/rotation = Quaternion(0.0394554, 0.00492874, -0.137827, 0.989658)
 bones/13/rotation = Quaternion(-0.0139315, -0.000142422, -0.168612, 0.985584)
+bones/16/rotation = Quaternion(-0.0510567, -0.00202299, 0.0418045, 0.997818)
 bones/17/rotation = Quaternion(0.0173263, 0.0186085, -0.160829, 0.986655)
 bones/18/rotation = Quaternion(-0.0113518, 0.0126214, -0.131984, 0.991107)
 bones/21/rotation = Quaternion(-0.089286, 0.00316807, -0.00673912, 0.995978)
 bones/22/rotation = Quaternion(0.0449258, 0.032808, -0.185059, 0.981152)
+bones/23/rotation = Quaternion(-0.0180548, 0.0114553, -0.107075, 0.994021)
 
 [node name="hand_r" parent="." instance=ExtResource("9_v8raj")]
 
