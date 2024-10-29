@@ -1,4 +1,4 @@
-[gd_scene load_steps=76 format=3 uid="uid://ckhwmlkgnklol"]
+[gd_scene load_steps=74 format=3 uid="uid://ckhwmlkgnklol"]
 
 [ext_resource type="Script" path="res://Main.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://obbgumvvb3yw" path="res://avatars/monster/mesh/redoran3.glb" id="2_6hbic"]
@@ -59,34 +59,34 @@ rings = 0
 [sub_resource type="BoxShape3D" id="BoxShape3D_5osqo"]
 size = Vector3(0.15, 0.18, 0.02)
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_k3iji"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_gct8v"]
 animation = &"Grip"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_mmp18"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_78e0b"]
 animation = &"Grip"
 
-[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_urb2a"]
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_rv3mv"]
 filter_enabled = true
 filters = ["Armature/Skeleton3D:Little_Distal_R", "Armature/Skeleton3D:Little_Intermediate_R", "Armature/Skeleton3D:Little_Metacarpal_R", "Armature/Skeleton3D:Little_Proximal_R", "Armature/Skeleton3D:Middle_Distal_R", "Armature/Skeleton3D:Middle_Intermediate_R", "Armature/Skeleton3D:Middle_Metacarpal_R", "Armature/Skeleton3D:Middle_Proximal_R", "Armature/Skeleton3D:Ring_Distal_R", "Armature/Skeleton3D:Ring_Intermediate_R", "Armature/Skeleton3D:Ring_Metacarpal_R", "Armature/Skeleton3D:Ring_Proximal_R", "Armature/Skeleton3D:Thumb_Distal_R", "Armature/Skeleton3D:Thumb_Metacarpal_R", "Armature/Skeleton3D:Thumb_Proximal_R", "Armature/Skeleton:Little_Distal_R", "Armature/Skeleton:Little_Intermediate_R", "Armature/Skeleton:Little_Proximal_R", "Armature/Skeleton:Middle_Distal_R", "Armature/Skeleton:Middle_Intermediate_R", "Armature/Skeleton:Middle_Proximal_R", "Armature/Skeleton:Ring_Distal_R", "Armature/Skeleton:Ring_Intermediate_R", "Armature/Skeleton:Ring_Proximal_R", "Armature/Skeleton:Thumb_Distal_R", "Armature/Skeleton:Thumb_Proximal_R"]
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ygxe3"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_0uh0y"]
 animation = &"Grip 5"
 
-[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_svkhc"]
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_p0koy"]
 filter_enabled = true
 filters = ["Armature/Skeleton3D:Index_Distal_R", "Armature/Skeleton3D:Index_Intermediate_R", "Armature/Skeleton3D:Index_Metacarpal_R", "Armature/Skeleton3D:Index_Proximal_R", "Armature/Skeleton:Index_Distal_R", "Armature/Skeleton:Index_Intermediate_R", "Armature/Skeleton:Index_Proximal_R"]
 
-[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_jfpyp"]
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_vrs27"]
 graph_offset = Vector2(-552.664, 107.301)
-nodes/ClosedHand1/node = SubResource("AnimationNodeAnimation_k3iji")
+nodes/ClosedHand1/node = SubResource("AnimationNodeAnimation_gct8v")
 nodes/ClosedHand1/position = Vector2(-600, 300)
-nodes/ClosedHand2/node = SubResource("AnimationNodeAnimation_mmp18")
+nodes/ClosedHand2/node = SubResource("AnimationNodeAnimation_78e0b")
 nodes/ClosedHand2/position = Vector2(-360, 300)
-nodes/Grip/node = SubResource("AnimationNodeBlend2_urb2a")
+nodes/Grip/node = SubResource("AnimationNodeBlend2_rv3mv")
 nodes/Grip/position = Vector2(0, 40)
-nodes/OpenHand/node = SubResource("AnimationNodeAnimation_ygxe3")
+nodes/OpenHand/node = SubResource("AnimationNodeAnimation_0uh0y")
 nodes/OpenHand/position = Vector2(-600, 100)
-nodes/Trigger/node = SubResource("AnimationNodeBlend2_svkhc")
+nodes/Trigger/node = SubResource("AnimationNodeBlend2_p0koy")
 nodes/Trigger/position = Vector2(-360, 40)
 node_connections = [&"Grip", 0, &"Trigger", &"Grip", 1, &"ClosedHand2", &"Trigger", 0, &"OpenHand", &"Trigger", 1, &"ClosedHand1", &"output", 0, &"Grip"]
 
@@ -100,226 +100,18 @@ subdivide_depth = 20
 resource_local_to_scene = true
 size = Vector2(3, 2)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_7dyol"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_blelg"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3a0p7"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_je2v3"]
 transparency = 1
 cull_mode = 2
-albedo_texture = SubResource("ViewportTexture_7dyol")
+albedo_texture = SubResource("ViewportTexture_blelg")
 texture_filter = 1
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ttrwc"]
 resource_local_to_scene = true
 size = Vector3(3, 2, 0.02)
-
-[sub_resource type="Animation" id="Animation_1xqwv"]
-length = 1.2
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array()
-tracks/1/type = "rotation_3d"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = PackedFloat32Array()
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".:visible")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(),
-"transitions": PackedFloat32Array(),
-"update": 1,
-"values": []
-}
-tracks/3/type = "position_3d"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("HeadCam")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = PackedFloat32Array()
-tracks/4/type = "rotation_3d"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("HeadCam")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = PackedFloat32Array()
-tracks/5/type = "scale_3d"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("AudioStreamPlayer/MeshInstance3D")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = PackedFloat32Array()
-tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("HeadCam/NameplateLabel3D:text")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = {
-"times": PackedFloat32Array(),
-"transitions": PackedFloat32Array(),
-"update": 1,
-"values": []
-}
-tracks/7/type = "position_3d"
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/path = NodePath("hand_l")
-tracks/7/interp = 1
-tracks/7/loop_wrap = true
-tracks/7/keys = PackedFloat32Array()
-tracks/8/type = "rotation_3d"
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/path = NodePath("hand_l")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/keys = PackedFloat32Array()
-tracks/9/type = "position_3d"
-tracks/9/imported = false
-tracks/9/enabled = true
-tracks/9/path = NodePath("hand_r")
-tracks/9/interp = 1
-tracks/9/loop_wrap = true
-tracks/9/keys = PackedFloat32Array()
-tracks/10/type = "rotation_3d"
-tracks/10/imported = false
-tracks/10/enabled = true
-tracks/10/path = NodePath("hand_r")
-tracks/10/interp = 1
-tracks/10/loop_wrap = true
-tracks/10/keys = PackedFloat32Array()
-tracks/11/type = "rotation_3d"
-tracks/11/imported = false
-tracks/11/enabled = true
-tracks/11/path = NodePath("hand_l/Armature/Skeleton3D:Index_Metacarpal_L")
-tracks/11/interp = 1
-tracks/11/loop_wrap = true
-tracks/11/keys = PackedFloat32Array()
-tracks/12/type = "rotation_3d"
-tracks/12/imported = false
-tracks/12/enabled = true
-tracks/12/path = NodePath("hand_l/Armature/Skeleton3D:Index_Proximal_L")
-tracks/12/interp = 1
-tracks/12/loop_wrap = true
-tracks/12/keys = PackedFloat32Array()
-tracks/13/type = "rotation_3d"
-tracks/13/imported = false
-tracks/13/enabled = true
-tracks/13/path = NodePath("hand_l/Armature/Skeleton3D:Index_Intermediate_L")
-tracks/13/interp = 1
-tracks/13/loop_wrap = true
-tracks/13/keys = PackedFloat32Array()
-tracks/14/type = "rotation_3d"
-tracks/14/imported = false
-tracks/14/enabled = true
-tracks/14/path = NodePath("hand_l/Armature/Skeleton3D:Index_Distal_L")
-tracks/14/interp = 1
-tracks/14/loop_wrap = true
-tracks/14/keys = PackedFloat32Array()
-tracks/15/type = "rotation_3d"
-tracks/15/imported = false
-tracks/15/enabled = true
-tracks/15/path = NodePath("hand_l/Armature/Skeleton3D:Thumb_Metacarpal_L")
-tracks/15/interp = 1
-tracks/15/loop_wrap = true
-tracks/15/keys = PackedFloat32Array()
-tracks/16/type = "rotation_3d"
-tracks/16/imported = false
-tracks/16/enabled = true
-tracks/16/path = NodePath("hand_l/Armature/Skeleton3D:Thumb_Proximal_L")
-tracks/16/interp = 1
-tracks/16/loop_wrap = true
-tracks/16/keys = PackedFloat32Array()
-tracks/17/type = "rotation_3d"
-tracks/17/imported = false
-tracks/17/enabled = true
-tracks/17/path = NodePath("hand_l/Armature/Skeleton3D:Thumb_Distal_L")
-tracks/17/interp = 1
-tracks/17/loop_wrap = true
-tracks/17/keys = PackedFloat32Array()
-tracks/18/type = "rotation_3d"
-tracks/18/imported = false
-tracks/18/enabled = true
-tracks/18/path = NodePath("hand_l/Armature/Skeleton3D:Middle_Proximal_L")
-tracks/18/interp = 1
-tracks/18/loop_wrap = true
-tracks/18/keys = PackedFloat32Array()
-tracks/19/type = "rotation_3d"
-tracks/19/imported = false
-tracks/19/enabled = true
-tracks/19/path = NodePath("hand_l/Armature/Skeleton3D:Middle_Intermediate_L")
-tracks/19/interp = 1
-tracks/19/loop_wrap = true
-tracks/19/keys = PackedFloat32Array()
-tracks/20/type = "rotation_3d"
-tracks/20/imported = false
-tracks/20/enabled = true
-tracks/20/path = NodePath("hand_l/Armature/Skeleton3D:Middle_Distal_L")
-tracks/20/interp = 1
-tracks/20/loop_wrap = true
-tracks/20/keys = PackedFloat32Array()
-tracks/21/type = "rotation_3d"
-tracks/21/imported = false
-tracks/21/enabled = true
-tracks/21/path = NodePath("hand_l/Armature/Skeleton3D:Ring_Proximal_L")
-tracks/21/interp = 1
-tracks/21/loop_wrap = true
-tracks/21/keys = PackedFloat32Array()
-tracks/22/type = "rotation_3d"
-tracks/22/imported = false
-tracks/22/enabled = true
-tracks/22/path = NodePath("hand_l/Armature/Skeleton3D:Ring_Intermediate_L")
-tracks/22/interp = 1
-tracks/22/loop_wrap = true
-tracks/22/keys = PackedFloat32Array()
-tracks/23/type = "rotation_3d"
-tracks/23/imported = false
-tracks/23/enabled = true
-tracks/23/path = NodePath("hand_l/Armature/Skeleton3D:Ring_Distal_L")
-tracks/23/interp = 1
-tracks/23/loop_wrap = true
-tracks/23/keys = PackedFloat32Array()
-tracks/24/type = "rotation_3d"
-tracks/24/imported = false
-tracks/24/enabled = true
-tracks/24/path = NodePath("hand_l/Armature/Skeleton3D:Little_Proximal_L")
-tracks/24/interp = 1
-tracks/24/loop_wrap = true
-tracks/24/keys = PackedFloat32Array()
-tracks/25/type = "rotation_3d"
-tracks/25/imported = false
-tracks/25/enabled = true
-tracks/25/path = NodePath("hand_l/Armature/Skeleton3D:Little_Intermediate_L")
-tracks/25/interp = 1
-tracks/25/loop_wrap = true
-tracks/25/keys = PackedFloat32Array()
-tracks/26/type = "rotation_3d"
-tracks/26/imported = false
-tracks/26/enabled = true
-tracks/26/path = NodePath("hand_l/Armature/Skeleton3D:Little_Distal_L")
-tracks/26/interp = 1
-tracks/26/loop_wrap = true
-tracks/26/keys = PackedFloat32Array()
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_v6gds"]
-resource_local_to_scene = true
-_data = {
-"trackstemplate": SubResource("Animation_1xqwv")
-}
 
 [sub_resource type="PlaneMesh" id="2"]
 size = Vector2(20, 20)
@@ -618,7 +410,7 @@ bone_idx = 9
 
 [node name="AnimationTree" parent="XROrigin3D/RightHandController/RightHand" index="1"]
 root_node = NodePath("../Hand_low_R")
-tree_root = SubResource("AnimationNodeBlendTree_jfpyp")
+tree_root = SubResource("AnimationNodeBlendTree_vrs27")
 
 [node name="AutoHandtracker" parent="XROrigin3D/RightHandController" instance=ExtResource("6_4vxvi")]
 
@@ -675,7 +467,7 @@ localplayerscene = ""
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource("QuadMesh_wuwme")
-surface_material_override/0 = SubResource("StandardMaterial3D_3a0p7")
+surface_material_override/0 = SubResource("StandardMaterial3D_je2v3")
 
 [node name="StaticBody3D" parent="ViewportNetworkGateway" index="2"]
 viewport_size = Vector2(650, 400)
@@ -687,95 +479,6 @@ shape = SubResource("BoxShape3D_ttrwc")
 [node name="Players" type="Node3D" parent="."]
 
 [node name="VRPlayerAvatar" parent="Players" instance=ExtResource("9")]
-
-[node name="left_quest2_controller_world" parent="Players/VRPlayerAvatar/ControllerLeft/left_quest2_controller" index="1"]
-bones/0/position = Vector3(0.00935476, -0.00472996, 0.0027986)
-bones/0/rotation = Quaternion(-0.492159, -0.496569, 0.563952, 0.439496)
-bones/1/position = Vector3(-0.00507331, 0.000788253, -0.0137306)
-bones/2/position = Vector3(0.0134458, -0.000953069, -0.0156308)
-bones/3/position = Vector3(-0.00499064, -0.00947063, 0.0272572)
-bones/3/rotation = Quaternion(-0.00106794, 0.774512, 0.632554, -0.00240391)
-bones/4/position = Vector3(0.00360325, -0.0275246, -0.00867584)
-bones/5/position = Vector3(-0.0126844, 0.00123654, 0.000535727)
-
-[node name="right_quest2_controller_world" parent="Players/VRPlayerAvatar/ControllerRight/right_quest2_contoller" index="0"]
-bones/0/position = Vector3(-0.00935476, -0.00472996, 0.0027986)
-bones/1/position = Vector3(0.0126844, 0.00123654, 0.000535727)
-bones/2/position = Vector3(0.00522335, 0.00064359, -0.0130829)
-bones/3/position = Vector3(-0.00494865, -0.0357376, -0.0133871)
-bones/4/position = Vector3(-0.0134458, -0.000953069, -0.0156308)
-bones/5/position = Vector3(0.00499064, -0.00947063, 0.0272572)
-
-[node name="PaddleBody" parent="Players/VRPlayerAvatar/ControllerRight" index="1"]
-collision_layer = 0
-collision_mask = 4096
-
-[node name="Skeleton3D" parent="Players/VRPlayerAvatar/hand_l/Armature" index="0"]
-bones/0/rotation = Quaternion(-0.706517, 6.47275e-06, 6.47275e-06, 0.707696)
-bones/0/scale = Vector3(1, 1, 1)
-bones/1/rotation = Quaternion(0.323537, -2.56575e-05, -0.0272204, 0.945824)
-bones/4/rotation = Quaternion(-0.0757687, -0.019257, -0.0337124, 0.996369)
-bones/4/scale = Vector3(1, 1, 1)
-bones/5/scale = Vector3(1, 1, 1)
-bones/7/scale = Vector3(1, 1, 1)
-bones/9/rotation = Quaternion(-0.0522884, -0.000557213, 0.103621, 0.993241)
-bones/10/rotation = Quaternion(-0.0358546, 4.20051e-05, 0.0499776, 0.998107)
-bones/14/rotation = Quaternion(0.0136882, 7.99237e-05, 0.168411, 0.985622)
-bones/14/scale = Vector3(1, 1, 1)
-bones/15/rotation = Quaternion(-0.0711949, 1.57336e-05, 0.0180856, 0.997298)
-bones/16/scale = Vector3(1, 1, 1)
-bones/17/scale = Vector3(1, 1, 1)
-bones/18/scale = Vector3(1, 1, 1)
-bones/19/rotation = Quaternion(0.0330517, -0.00671975, 0.126351, 0.991412)
-bones/19/scale = Vector3(1, 1, 1)
-bones/20/rotation = Quaternion(-0.0917695, 2.45622e-05, 0.0284477, 0.995374)
-bones/20/scale = Vector3(1, 1, 1)
-bones/21/scale = Vector3(1, 1, 1)
-bones/23/scale = Vector3(1, 1, 1)
-bones/24/rotation = Quaternion(0.0158363, -0.0193397, 0.153777, 0.987789)
-
-[node name="Skeleton3D" parent="Players/VRPlayerAvatar/hand_r/Armature" index="0"]
-bones/0/rotation = Quaternion(-0.706517, -6.47275e-06, -6.47275e-06, 0.707696)
-bones/0/scale = Vector3(1, 1, 1)
-bones/1/rotation = Quaternion(0.323537, 2.56575e-05, 0.0272204, 0.945824)
-bones/2/rotation = Quaternion(-0.0459503, 0.0271357, 0.0752572, 0.995735)
-bones/3/rotation = Quaternion(0.0556407, -0.0103261, -0.0139847, 0.9983)
-bones/4/rotation = Quaternion(-0.0757687, 0.019257, 0.0337124, 0.996369)
-bones/4/scale = Vector3(1, 1, 1)
-bones/5/scale = Vector3(1, 1, 1)
-bones/6/rotation = Quaternion(0.111223, 0.00277812, -0.117574, 0.986812)
-bones/7/rotation = Quaternion(-0.0136832, 0.0246682, 0.235071, 0.971569)
-bones/7/scale = Vector3(1, 1, 1)
-bones/8/rotation = Quaternion(0.014226, 0.0119908, 0.134541, 0.990733)
-bones/9/rotation = Quaternion(-0.0522884, 0.000557213, -0.103621, 0.993241)
-bones/10/rotation = Quaternion(-0.0358546, -4.20051e-05, -0.0499776, 0.998107)
-bones/11/rotation = Quaternion(-0.0119466, -0.000966737, 0.0105008, 0.999873)
-bones/12/rotation = Quaternion(0.0394554, -0.00492874, 0.137827, 0.989658)
-bones/13/rotation = Quaternion(-0.0139315, 0.000142422, 0.168612, 0.985584)
-bones/14/rotation = Quaternion(0.0136882, -7.99237e-05, -0.168411, 0.985622)
-bones/14/scale = Vector3(1, 1, 1)
-bones/15/rotation = Quaternion(-0.0711949, -1.57336e-05, -0.0180856, 0.997298)
-bones/16/rotation = Quaternion(-0.0510567, 0.00202299, -0.0418045, 0.997818)
-bones/16/scale = Vector3(1, 1, 1)
-bones/17/rotation = Quaternion(0.0173263, -0.0186085, 0.160829, 0.986655)
-bones/17/scale = Vector3(1, 1, 1)
-bones/18/rotation = Quaternion(-0.0113518, -0.0126214, 0.131984, 0.991107)
-bones/18/scale = Vector3(1, 1, 1)
-bones/19/rotation = Quaternion(0.0330517, 0.00671975, -0.126351, 0.991412)
-bones/19/scale = Vector3(1, 1, 1)
-bones/20/rotation = Quaternion(-0.0917695, -2.45622e-05, -0.0284477, 0.995374)
-bones/20/scale = Vector3(1, 1, 1)
-bones/21/rotation = Quaternion(-0.089286, -0.00316807, 0.00673912, 0.995978)
-bones/21/scale = Vector3(1, 1, 1)
-bones/22/rotation = Quaternion(0.0449258, -0.032808, 0.185059, 0.981152)
-bones/23/rotation = Quaternion(-0.0180548, -0.0114553, 0.107075, 0.994021)
-bones/23/scale = Vector3(1, 1, 1)
-bones/24/rotation = Quaternion(0.0158363, 0.0193397, -0.153777, 0.987789)
-
-[node name="PlayerAnimation" parent="Players/VRPlayerAvatar" index="6"]
-libraries = {
-"playeral": SubResource("AnimationLibrary_v6gds")
-}
 
 [node name="Floor" type="StaticBody3D" parent="."]
 collision_layer = 131073
@@ -883,10 +586,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.77671, -1.39514)
 [editable path="XROrigin3D/FunctionPointer"]
 [editable path="ViewportNetworkGateway"]
 [editable path="ViewportNetworkGateway/Viewport/NetworkGateway"]
-[editable path="Players/VRPlayerAvatar"]
-[editable path="Players/VRPlayerAvatar/ControllerLeft/left_quest2_controller"]
-[editable path="Players/VRPlayerAvatar/ControllerRight/right_quest2_contoller"]
-[editable path="Players/VRPlayerAvatar/hand_l"]
-[editable path="Players/VRPlayerAvatar/hand_r"]
 [editable path="SportBall"]
 [editable path="ClimbableCylinder"]
