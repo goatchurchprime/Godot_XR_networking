@@ -19,20 +19,20 @@ func ResetJointSkeleton(geonposemaker):
 
 
 
-var framedata0 = { NCONSTANTS.CFI_TIMESTAMP:0.0, NCONSTANTS.CFI_TIMESTAMP_F0:0.0 }
+var framedata0 = { NCONSTANTS2.CFI_TIMESTAMP:0.0, NCONSTANTS2.CFI_TIMESTAMP_F0:0.0 }
 var heartbeatfullframeseconds = 5.0
 func PF_intendedskelposes(fd):
 	var tstamp = Time.get_ticks_msec()*0.001
 	var dft = tstamp - framedata0[NCONSTANTS.CFI_TIMESTAMP]
-	framedata0[NCONSTANTS.CFI_TIMESTAMPPREV] = framedata0[NCONSTANTS.CFI_TIMESTAMP_F0]
-	framedata0[NCONSTANTS.CFI_TIMESTAMP_F0] = tstamp
-	var bnothinning = (dft >= heartbeatfullframeseconds) or (fd.get(NCONSTANTS.CFI_NOTHINFRAME) == 1)
+	framedata0[NCONSTANTS.CFI_TIMESTAMPPREV] = framedata0[NCONSTANTS2.CFI_TIMESTAMP_F0]
+	framedata0[NCONSTANTS2.CFI_TIMESTAMP_F0] = tstamp
+	var bnothinning = (dft >= heartbeatfullframeseconds) or (fd.get(NCONSTANTS2.CFI_NOTHINFRAME) == 1)
 	var vd = thinframedata_updatef0(framedata0, fd, bnothinning)
 	if len(vd) == 0:
 		return
-	framedata0[NCONSTANTS.CFI_TIMESTAMP] = tstamp
-	vd[NCONSTANTS.CFI_TIMESTAMPPREV] = framedata0[NCONSTANTS.CFI_TIMESTAMPPREV]
-	vd[NCONSTANTS.CFI_TIMESTAMP] = tstamp
+	framedata0[NCONSTANTS2.CFI_TIMESTAMP] = tstamp
+	vd[NCONSTANTS2.CFI_TIMESTAMPPREV] = framedata0[NCONSTANTS.CFI_TIMESTAMPPREV]
+	vd[NCONSTANTS2.CFI_TIMESTAMP] = tstamp
 	#print("vv ", vd)
 	return vd
 

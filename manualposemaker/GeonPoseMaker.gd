@@ -505,7 +505,7 @@ func _physics_process(delta):
 		$PoseCalculator.sgseebonequatscentres(true)
 		if activeplayerframe != null:
 			var fd = setboneposefromunits(activeplayerframe)
-			fd[NCONSTANTS.CFI_NOTHINFRAME] = 1
+			fd[NCONSTANTS2.CFI_NOTHINFRAME] = 1
 			var vd = activeplayerframe.get_parent().PF_intendedskelposes(fd)
 			#activeplayerframe.get_parent().PF_framedatatoavatar(fd)
 			activeplayerframe.networkedavatarthinnedframedata(vd)
