@@ -14,16 +14,22 @@ const TRACKING_CONFIDENCE_NONE = 0
 var shrinkavatartransform = Transform3D()
 
 var projectedhands = false
-static var selectedtrackslookup = { ^".:position":-1, 
-							^".:rotation":-1,
-							^"HeadCam:quaternion":-1 }
+static var selectedtrackslookup = { 
+	".:position":-1, 
+	".:rotation":-1,
+	"HeadCam:rotation":-1 }
 
 func _ready():
 	var anim : Animation = $PlayerAnimation.get_animation("playeral/trackstemplate")
+	var pf = get_node("PlayerFrame")
+	if not pf.has_method("getnodepropertynamefortrack"):
+		return
 	for i in anim.get_track_count():
-		if selectedtrackslookup.has(anim.track_get_path(i)):
-			selectedtrackslookup[anim.track_get_path(i)] = i
-
+		var r = pf.getnodepropertynamefortrack(anim, self, i)
+		if selectedtrackslookup.has(r):
+			selectedtrackslookup[r] = i
+	print("selectedtrackslookup ", selectedtrackslookup)
+	
 var possibleusernames = ["Alice", "Beth", "Cath", "Dan", "Earl", "Fred", "George", "Harry", "Ivan", "John", "Kevin", "Larry", "Martin", "Oliver", "Peter", "Quentin", "Robert", "Samuel", "Thomas", "Ulrik", "Victor", "Wayne", "Xavier", "Youngs", "Zephir"]
 func PF_initlocalplayer():
 	randomize()
@@ -50,8 +56,6 @@ func PF_spawninfo_receivedfromserver(sfd, PlayerConnection):
 	PlayerConnection.spawninfoforclientprocessed()
 	await tween.finished
 	
-func PF_startupdatafromconnectedplayer(avatardata):
-	visible = false
 
 func skelbonescopy(skela, skelb):
 	for i in range(skela.get_bone_count()):
@@ -77,11 +81,14 @@ func setpaddlebody(active):
 	$ControllerRight/PaddleBody.visible = active
 	$ControllerRight/PaddleBody/CollisionShape3D.disabled = not active
 
+
 static func PF_changethinnedframedatafordoppelganger(fd, doppelnetoffset):
-	fd[NCONSTANTS.CFI_TIMESTAMP] += doppelnetoffset
-	fd[NCONSTANTS.CFI_TIMESTAMPPREV] += doppelnetoffset
-	var itrackpos = selectedtrackslookup[^".:position"]
-	var itrackheadrot = selectedtrackslookup[^"HeadCam:quaternion"]
+	if fd.has(NCONSTANTS.CFI_TIMESTAMP):
+		fd[NCONSTANTS.CFI_TIMESTAMP] += doppelnetoffset
+	if fd.has(NCONSTANTS.CFI_TIMESTAMPPREV):
+		fd[NCONSTANTS.CFI_TIMESTAMPPREV] += doppelnetoffset
+	var itrackpos = selectedtrackslookup[".:position"]
+	var itrackheadrot = selectedtrackslookup[".:rotation"]
 	if fd.has(NCONSTANTS.CFI_ANIMTRACKS+itrackpos):
 		fd[NCONSTANTS.CFI_ANIMTRACKS+itrackpos].z += -2 # should only be set in the spawn point
 	if fd.has(NCONSTANTS.CFI_ANIMTRACKS+itrackheadrot):
