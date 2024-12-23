@@ -1,6 +1,6 @@
 [gd_scene load_steps=16 format=3 uid="uid://bgw2tanm4il3j"]
 
-[ext_resource type="Script" path="res://avatars/tunnelvrplayeravatar/VRPlayerAvatar.gd" id="2"]
+[ext_resource type="Script" uid="uid://cj85ykry5pr77" path="res://avatars/tunnelvrplayeravatar/VRPlayerAvatar.gd" id="2"]
 [ext_resource type="PackedScene" uid="uid://coia0xdb1hc3c" path="res://xrassets/right_quest2_contoller.tscn" id="6"]
 [ext_resource type="PackedScene" uid="uid://c83vlx50waes5" path="res://xrassets/left_quest2_controller.tscn" id="7"]
 [ext_resource type="PackedScene" uid="uid://dhaqth6q5yw4n" path="res://addons/godot-xr-tools/hands/model/hand_l.gltf" id="7_s2tnc"]
@@ -378,7 +378,7 @@ tracks/45/keys = PackedFloat32Array()
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_qatlg"]
 resource_local_to_scene = true
 _data = {
-"trackstemplate": SubResource("Animation_1xqwv")
+&"trackstemplate": SubResource("Animation_1xqwv")
 }
 
 [node name="VRPlayerAvatar" type="Node3D"]
@@ -442,6 +442,7 @@ collision_mask = 4100
 transform = Transform3D(0.704795, 0.709411, 0, -0.709411, 0.704795, 0, 0, 0, 1, 0, 0, 0)
 shape = SubResource("5")
 disabled = true
+debug_color = Color(0, 0.6, 0.7, 0.42)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="ControllerRight/PaddleBody/CollisionShape3D"]
 mesh = SubResource("6")
@@ -488,7 +489,7 @@ mesh = SubResource("PrismMesh_u1gcd")
 
 [node name="PlayerAnimation" type="AnimationPlayer" parent="."]
 libraries = {
-"playeral": SubResource("AnimationLibrary_qatlg")
+&"playeral": SubResource("AnimationLibrary_qatlg")
 }
 
 [editable path="ControllerLeft/left_quest2_controller"]

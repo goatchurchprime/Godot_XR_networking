@@ -1,10 +1,10 @@
 [gd_scene load_steps=74 format=3 uid="uid://ckhwmlkgnklol"]
 
-[ext_resource type="Script" path="res://Main.gd" id="1"]
+[ext_resource type="Script" uid="uid://4b3kqph42yye" path="res://Main.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://obbgumvvb3yw" path="res://avatars/monster/mesh/redoran3.glb" id="2_6hbic"]
-[ext_resource type="Script" path="res://manualposemaker/GeonPoseMaker.gd" id="2_lkn5y"]
+[ext_resource type="Script" uid="uid://cjew7dkvijnjx" path="res://manualposemaker/GeonPoseMaker.gd" id="2_lkn5y"]
 [ext_resource type="PackedScene" uid="uid://clc5dre31iskm" path="res://addons/godot-xr-tools/xr/start_xr.tscn" id="2_y037t"]
-[ext_resource type="Script" path="res://manualposemaker/PoseCalculator.gd" id="3_ephg7"]
+[ext_resource type="Script" uid="uid://mcm2ku17s6ig" path="res://manualposemaker/PoseCalculator.gd" id="3_ephg7"]
 [ext_resource type="PackedScene" uid="uid://diyu06cw06syv" path="res://addons/godot-xr-tools/player/player_body.tscn" id="4"]
 [ext_resource type="PackedScene" uid="uid://bxm1ply47vaan" path="res://addons/godot-xr-tools/functions/movement_climb.tscn" id="4_5iym2"]
 [ext_resource type="PackedScene" uid="uid://bl2nuu3qhlb5k" path="res://addons/godot-xr-tools/functions/movement_direct.tscn" id="5"]
@@ -12,8 +12,8 @@
 [ext_resource type="PackedScene" uid="uid://bx1xdisoqo1f6" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/left_tac_glove_low.tscn" id="5_l4gbm"]
 [ext_resource type="PackedScene" uid="uid://c8l60rnugru40" path="res://addons/godot-xr-tools/objects/pickable.tscn" id="6"]
 [ext_resource type="PackedScene" uid="uid://bufelcry36rw1" path="res://addons/xr-autohandtracker/auto_handtracker.tscn" id="6_4vxvi"]
-[ext_resource type="Script" path="res://manualposemaker/playmover.gd" id="6_q0vii"]
-[ext_resource type="Script" path="res://addons/player-networking/PlayerFrameRemote.gd" id="7_lm1d2"]
+[ext_resource type="Script" uid="uid://cjpwjl6v5ua8o" path="res://manualposemaker/playmover.gd" id="6_q0vii"]
+[ext_resource type="Script" uid="uid://getm81aitdl" path="res://addons/player-networking/PlayerFrameRemote.gd" id="7_lm1d2"]
 [ext_resource type="PackedScene" uid="uid://bjcxf427un2wp" path="res://addons/godot-xr-tools/player/poke/poke.tscn" id="7_xiqf5"]
 [ext_resource type="PackedScene" uid="uid://b6bk2pj8vbj28" path="res://addons/godot-xr-tools/functions/movement_turn.tscn" id="8"]
 [ext_resource type="PackedScene" uid="uid://bgw2tanm4il3j" path="res://avatars/tunnelvrplayeravatar/VRPlayerAvatar.tscn" id="9"]
@@ -29,9 +29,9 @@
 [ext_resource type="PackedScene" uid="uid://ctltchlf2j2r4" path="res://addons/xr-simulator/XRSimulator.tscn" id="21_8gxkp"]
 [ext_resource type="PackedScene" uid="uid://c4oce4qdpabpq" path="res://manualposemaker/puppetcontrol.tscn" id="22_b0atk"]
 [ext_resource type="PackedScene" uid="uid://bg8xxi40ghkbl" path="res://scenemanagerstaticbody.tscn" id="25_hyc11"]
-[ext_resource type="Script" path="res://open_xr_fb_scene_manager.gd" id="26_mi13g"]
+[ext_resource type="Script" uid="uid://c1jp1xxsyiyhg" path="res://open_xr_fb_scene_manager.gd" id="26_mi13g"]
 [ext_resource type="PackedScene" uid="uid://wtpox7m5vu2b" path="res://addons/godot-xr-tools/effects/fade.tscn" id="27_7ktgc"]
-[ext_resource type="Script" path="res://contextui/ContextUI.gd" id="30_2r0rg"]
+[ext_resource type="Script" uid="uid://rfgrmh0pp762" path="res://contextui/ContextUI.gd" id="30_2r0rg"]
 [ext_resource type="PackedScene" uid="uid://cme66uldrjl2i" path="res://addons/godot-xr-tools/interactables/interactable_area_button.tscn" id="34_vk8kn"]
 [ext_resource type="PackedScene" uid="uid://dgdb1texynduw" path="res://addons/godot-xr-tools/objects/virtual_keyboard.tscn" id="51_rjdns"]
 
@@ -59,34 +59,34 @@ rings = 0
 [sub_resource type="BoxShape3D" id="BoxShape3D_5osqo"]
 size = Vector3(0.15, 0.18, 0.02)
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_7svhu"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_sph85"]
 animation = &"Grip"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_tndsc"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_o7g6l"]
 animation = &"Grip"
 
-[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_qty44"]
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_vi5kq"]
 filter_enabled = true
 filters = ["Armature/Skeleton3D:Little_Distal_R", "Armature/Skeleton3D:Little_Intermediate_R", "Armature/Skeleton3D:Little_Metacarpal_R", "Armature/Skeleton3D:Little_Proximal_R", "Armature/Skeleton3D:Middle_Distal_R", "Armature/Skeleton3D:Middle_Intermediate_R", "Armature/Skeleton3D:Middle_Metacarpal_R", "Armature/Skeleton3D:Middle_Proximal_R", "Armature/Skeleton3D:Ring_Distal_R", "Armature/Skeleton3D:Ring_Intermediate_R", "Armature/Skeleton3D:Ring_Metacarpal_R", "Armature/Skeleton3D:Ring_Proximal_R", "Armature/Skeleton3D:Thumb_Distal_R", "Armature/Skeleton3D:Thumb_Metacarpal_R", "Armature/Skeleton3D:Thumb_Proximal_R", "Armature/Skeleton:Little_Distal_R", "Armature/Skeleton:Little_Intermediate_R", "Armature/Skeleton:Little_Proximal_R", "Armature/Skeleton:Middle_Distal_R", "Armature/Skeleton:Middle_Intermediate_R", "Armature/Skeleton:Middle_Proximal_R", "Armature/Skeleton:Ring_Distal_R", "Armature/Skeleton:Ring_Intermediate_R", "Armature/Skeleton:Ring_Proximal_R", "Armature/Skeleton:Thumb_Distal_R", "Armature/Skeleton:Thumb_Proximal_R"]
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_tmjxc"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_5mkgo"]
 animation = &"Grip 5"
 
-[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_8aj28"]
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_3ccbu"]
 filter_enabled = true
 filters = ["Armature/Skeleton3D:Index_Distal_R", "Armature/Skeleton3D:Index_Intermediate_R", "Armature/Skeleton3D:Index_Metacarpal_R", "Armature/Skeleton3D:Index_Proximal_R", "Armature/Skeleton:Index_Distal_R", "Armature/Skeleton:Index_Intermediate_R", "Armature/Skeleton:Index_Proximal_R"]
 
-[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_8lrd4"]
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_ny7u2"]
 graph_offset = Vector2(-552.664, 107.301)
-nodes/ClosedHand1/node = SubResource("AnimationNodeAnimation_7svhu")
+nodes/ClosedHand1/node = SubResource("AnimationNodeAnimation_sph85")
 nodes/ClosedHand1/position = Vector2(-600, 300)
-nodes/ClosedHand2/node = SubResource("AnimationNodeAnimation_tndsc")
+nodes/ClosedHand2/node = SubResource("AnimationNodeAnimation_o7g6l")
 nodes/ClosedHand2/position = Vector2(-360, 300)
-nodes/Grip/node = SubResource("AnimationNodeBlend2_qty44")
+nodes/Grip/node = SubResource("AnimationNodeBlend2_vi5kq")
 nodes/Grip/position = Vector2(0, 40)
-nodes/OpenHand/node = SubResource("AnimationNodeAnimation_tmjxc")
+nodes/OpenHand/node = SubResource("AnimationNodeAnimation_5mkgo")
 nodes/OpenHand/position = Vector2(-600, 100)
-nodes/Trigger/node = SubResource("AnimationNodeBlend2_8aj28")
+nodes/Trigger/node = SubResource("AnimationNodeBlend2_3ccbu")
 nodes/Trigger/position = Vector2(-360, 40)
 node_connections = [&"Grip", 0, &"Trigger", &"Grip", 1, &"ClosedHand2", &"Trigger", 0, &"OpenHand", &"Trigger", 1, &"ClosedHand1", &"output", 0, &"Grip"]
 
@@ -100,13 +100,13 @@ subdivide_depth = 20
 resource_local_to_scene = true
 size = Vector2(3, 2)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_i86ub"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_x3yn0"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j0vq2"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sph85"]
 transparency = 1
 cull_mode = 2
-albedo_texture = SubResource("ViewportTexture_i86ub")
+albedo_texture = SubResource("ViewportTexture_x3yn0")
 texture_filter = 1
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ttrwc"]
@@ -289,6 +289,7 @@ collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="redoran3/StaticBody3D"]
 shape = SubResource("CapsuleShape3D_wykar")
+debug_color = Color(0, 0.6, 0.7, 0.42)
 
 [node name="XROrigin3D" type="XROrigin3D" parent="."]
 
@@ -335,6 +336,7 @@ duration = 0.2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/LeftHandController/ConnectButton"]
 shape = SubResource("BoxShape3D_5osqo")
+debug_color = Color(0, 0.6, 0.7, 0.42)
 
 [node name="Label3D" type="Label3D" parent="XROrigin3D/LeftHandController/ConnectButton"]
 text = "C"
@@ -409,7 +411,7 @@ bone_idx = 9
 
 [node name="AnimationTree" parent="XROrigin3D/RightHandController/RightHand" index="1"]
 root_node = NodePath("../Hand_low_R")
-tree_root = SubResource("AnimationNodeBlendTree_8lrd4")
+tree_root = SubResource("AnimationNodeBlendTree_ny7u2")
 
 [node name="AutoHandtracker" parent="XROrigin3D/RightHandController" instance=ExtResource("6_4vxvi")]
 
@@ -433,6 +435,9 @@ collide_with_areas = true
 
 [node name="Laser" parent="XROrigin3D/FunctionPointer" index="1"]
 mesh = SubResource("BoxMesh_omx8q")
+
+[node name="CollisionShape3D" parent="XROrigin3D/FunctionPointer/SuppressArea" index="0"]
+debug_color = Color(0, 0.6, 0.7, 0.42)
 
 [node name="VirtualKeyboard" parent="XROrigin3D" instance=ExtResource("51_rjdns")]
 transform = Transform3D(0.49751, -1.86265e-09, 0.0498422, -0.0252061, 0.43135, 0.251599, -0.0429988, -0.252859, 0.429201, 0, 0.7, -0.4)
@@ -466,7 +471,7 @@ localplayerscene = ""
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource("QuadMesh_wuwme")
-surface_material_override/0 = SubResource("StandardMaterial3D_j0vq2")
+surface_material_override/0 = SubResource("StandardMaterial3D_sph85")
 
 [node name="StaticBody3D" parent="ViewportNetworkGateway" index="2"]
 viewport_size = Vector2(650, 400)
@@ -474,6 +479,7 @@ viewport_size = Vector2(650, 400)
 [node name="CollisionShape3D" parent="ViewportNetworkGateway/StaticBody3D" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.00999999)
 shape = SubResource("BoxShape3D_ttrwc")
+debug_color = Color(0, 0.6, 0.7, 0.42)
 
 [node name="Players" type="Node3D" parent="."]
 
@@ -489,6 +495,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_vxt1b")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 shape = SubResource("BoxShape3D_53q5i")
+debug_color = Color(0, 0.6, 0.7, 0.42)
 
 [node name="Desk" type="StaticBody3D" parent="."]
 transform = Transform3D(0.609619, 0, -0.792694, 0, 1, 0, 0.792694, 0, 0.609619, 1.65528, 0.922265, -1.84827)
@@ -500,6 +507,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_3gppb")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Desk"]
 shape = SubResource("6")
+debug_color = Color(0, 0.6, 0.7, 0.42)
 
 [node name="SportBall" parent="." instance=ExtResource("6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.43823, 3.95023, -2.82623)
@@ -522,6 +530,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5.51366, -10.3501)
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Wall"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.86959, 0)
 shape = SubResource("10")
+debug_color = Color(0, 0.6, 0.7, 0.42)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Wall/CollisionShape3D"]
 mesh = SubResource("11")
@@ -533,6 +542,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5.05293, 6.91089)
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Wall4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.86959, 0)
 shape = SubResource("10")
+debug_color = Color(0, 0.6, 0.7, 0.42)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Wall4/CollisionShape3D"]
 mesh = SubResource("11")
@@ -544,6 +554,7 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -10.92
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Wall2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.86959, 0)
 shape = SubResource("10")
+debug_color = Color(0, 0.6, 0.7, 0.42)
 
 [node name="Wall3" type="StaticBody3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 9.63735, -4.36763, -3.38746)
@@ -551,6 +562,7 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 9.6373
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Wall3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.86959, 0)
 shape = SubResource("10")
+debug_color = Color(0, 0.6, 0.7, 0.42)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Wall3/CollisionShape3D"]
 visible = false
@@ -566,6 +578,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.53583, 1, -1.06835)
 
 [node name="CollisionShape3D" parent="ClimbableCylinder" index="0"]
 shape = SubResource("29")
+debug_color = Color(0, 0.6, 0.7, 0.42)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="ClimbableCylinder"]
 mesh = SubResource("26")
