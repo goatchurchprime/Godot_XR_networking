@@ -75,11 +75,17 @@ func PF_processlocalavatarposition(delta):
 		$hand_l.transform.origin += Vector3(headface.x*0.2, 0.2, headface.z*0.2)
 
 func PF_setspeakingvolume(v):
-	$AudioStreamPlayer/MeshInstance3D.scale.x = v
+	$HeadCam/AudioStreamPlayer/MouthSign.scale.z = v
 
 func setpaddlebody(active):
 	$ControllerRight/PaddleBody.visible = active
 	$ControllerRight/PaddleBody/CollisionShape3D.disabled = not active
+
+func _process(_delta):
+		# since we cannot animate fading of the mouth sign
+	var v = $HeadCam/AudioStreamPlayer/MouthSign.scale.z
+	$HeadCam/AudioStreamPlayer/MouthSign.visible = (v != 0.0)
+	$HeadCam/AudioStreamPlayer/MouthSign.get_surface_override_material(0).albedo_color.a = v
 
 
 static func PF_changethinnedframedatafordoppelganger(fd, doppelnetoffset):
