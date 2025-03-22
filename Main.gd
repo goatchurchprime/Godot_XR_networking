@@ -51,26 +51,9 @@ func _ready():
 
 
 	$XROrigin3D/PlayerBody.default_physics.move_drag = 45
-	$SportBall.connect("body_entered", Callable(self, "ball_body_entered"))
-	$SportBall.connect("body_exited", Callable(self, "ball_body_exited"))
-
 	NetworkGateway.set_process_input(false)
 	if webrtcroomname:
 		NetworkGateway.MQTTsignalling.Roomnametext.text = webrtcroomname
-
-func ball_body_entered(body):
-	#print("ball_body_entered ", body)
-	if body.name == "PaddleBody":
-		$SportBall/bouncesound.play()
-		body.get_node("CollisionShape3D/MeshInstance3D").get_surface_override_material(0).emission_enabled = true
-		await get_tree().create_timer(0.2).timeout
-		body.get_node("CollisionShape3D/MeshInstance3D").get_surface_override_material(0).emission_enabled = false
-		
-func ball_body_exited(body):	
-	if body.name == "PaddleBody":
-		body.get_node("CollisionShape/MeshInstance").get_surface_material(0).emission_enabled = false
-	pass
-		
 
 func vr_right_button_pressed(button: String):
 	print("vr right button pressed ", button)
@@ -96,11 +79,6 @@ func vr_right_button_release(button: String):
 
 func vr_left_button_pressed(button: String):
 	print("vr left button pressd ", button)
-	if button == "by_button":
-		$SportBall.transform.origin = $XROrigin3D/XRCamera3D.global_transform.origin + \
-									  Vector3(0, 2, 0) + \
-									  $XROrigin3D/XRCamera3D.global_transform.basis.z*-0.75
-		
 	if button == "ax_button":
 		pass
 	if button == "by_button":
@@ -145,9 +123,6 @@ func _physics_process(delta):
 	var lowestfloorheight = -30
 	if $XROrigin3D.transform.origin.y < lowestfloorheight:
 		$XROrigin3D.transform.origin = Vector3(0, 2, 0)
-	if has_node("SportBall"):
-		if $SportBall.transform.origin.y < -3:
-			$SportBall.transform.origin = Vector3(0, 2, -3)
 
 
 func _process(delta):

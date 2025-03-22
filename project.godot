@@ -106,4 +106,5 @@ vram_compression/import_etc=true
 [xr]
 
 openxr/enabled=true
+openxr/extensions/hand_tracking=true
 shaders/enabled=true
