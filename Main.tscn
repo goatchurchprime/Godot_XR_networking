@@ -275,12 +275,12 @@ bone_idx = 9
 [node name="Poke" parent="XROrigin3D/RightHandController/RightHand/Hand_low_R/Armature/Skeleton3D/BoneAttachment3D" instance=ExtResource("7_xiqf5")]
 
 [node name="AnimationTree" parent="XROrigin3D/RightHandController/RightHand" index="1"]
+root_node = NodePath("../Hand_low_R")
 tree_root = SubResource("AnimationNodeBlendTree_xrxkg")
 
 [node name="AutoHandtracker" parent="XROrigin3D/RightHandController" instance=ExtResource("6_4vxvi")]
 
 [node name="XRSimulator" parent="XROrigin3D" instance=ExtResource("21_8gxkp")]
-xr_origin = NodePath("..")
 
 [node name="PlayerBody" parent="XROrigin3D" instance=ExtResource("4")]
 collision_layer = 524295

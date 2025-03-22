@@ -5,16 +5,27 @@ into the space on connection.  This works in Godot 4.3.
 
 ## Installation
 
-There are many addons that need to be copied or linked from the addons directory.
+There are many addons that need to be brought in.  We are using the https://github.com/imjp94/gd-plug plugins tool.
+
+Before opening the project, please run the following command to download them:
+
+> godot4 --headless -s plug.gd install 
+
+This will load the following plugins
 
 * **Godot XR Tools** Version: 4.3.3, installs into addons/godot-xr-tools
-* **Godot OpenXR Vendors plugin for Godot 4.3** Version: 3.0.0, installs into addons/godotopenxrvendors
 * **NetworkingWorkbench** clone from [repo](https://github.com/goatchurchprime/godot_multiplayer_networking_workbench) and copy into addons/player-networking or symlink `ln -s ../../godot_multiplayer_networking_workbench/addons/player-networking/ player-networking`
-*  **WebRTC plugin - Godot 4.1+** Version: 1.0.6, !!install into addons/webrtc
 *  **MQTT CLient** Version: 1.2 installs into addons/mqtt
-*  **TwoVoip** Version: v3.4 install into addons/twovoip
 *  **Godot XR Autohands** Version: 1.1 installs into addons/xr-autohandstracker
 *  **XR Input Simulator** Version: 1.2.0 installs into addons/xr-simulator
+
+
+The ones here cannot currently be loaded like this, and need to be copied in from the artifacts.
+
+*  **WebRTC plugin - Godot 4.1+** Version: 1.0.6, !!install into addons/webrtc
+*  **TwoVoip** Version: v3.4 install into addons/twovoip
+*  **Godot OpenXR Vendors plugin for Godot 4.3** Version: 3.0.0, installs into addons/godotopenxrvendors
+
 
 ## Operation
 

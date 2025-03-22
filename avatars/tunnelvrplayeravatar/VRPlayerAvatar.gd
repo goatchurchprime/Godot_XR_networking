@@ -77,9 +77,6 @@ func PF_processlocalavatarposition(delta):
 func PF_setspeakingvolume(v):
 	$HeadCam/AudioStreamPlayer/MouthSign.scale.z = v
 
-func setpaddlebody(active):
-	$ControllerRight/PaddleBody.visible = active
-	$ControllerRight/PaddleBody/CollisionShape3D.disabled = not active
 
 func _process(_delta):
 		# since we cannot animate fading of the mouth sign
