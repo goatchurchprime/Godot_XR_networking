@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://bbs6y7pyb5fh8"]
 
-[ext_resource type="Script" path="res://contextui/contextmenu.gd" id="1_bweyg"]
+[ext_resource type="Script" uid="uid://bpml7bmcqskqq" path="res://contextui/contextmenu.gd" id="1_bweyg"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_u11d0"]
 resource_local_to_scene = true

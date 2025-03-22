@@ -103,7 +103,7 @@ size = Vector2(3, 2)
 [sub_resource type="ViewportTexture" id="ViewportTexture_x3yn0"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1w2xm"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sph85"]
 transparency = 1
 cull_mode = 2
 albedo_texture = SubResource("ViewportTexture_x3yn0")
@@ -289,7 +289,6 @@ collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="redoran3/StaticBody3D"]
 shape = SubResource("CapsuleShape3D_wykar")
-debug_color = Color(0, 0.6, 0.7, 0.42)
 
 [node name="XROrigin3D" type="XROrigin3D" parent="."]
 
@@ -336,7 +335,6 @@ duration = 0.2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/LeftHandController/ConnectButton"]
 shape = SubResource("BoxShape3D_5osqo")
-debug_color = Color(0, 0.6, 0.7, 0.42)
 
 [node name="Label3D" type="Label3D" parent="XROrigin3D/LeftHandController/ConnectButton"]
 text = "C"
@@ -366,20 +364,39 @@ skeleton = NodePath("")
 [node name="Skeleton3D" parent="XROrigin3D/RightHandController/RightHand/Hand_low_R/Armature" index="0"]
 bones/0/rotation = Quaternion(-0.706517, -6.47275e-06, -6.47275e-06, 0.707696)
 bones/0/scale = Vector3(1, 1, 1)
+bones/1/rotation = Quaternion(0.323537, 2.56581e-05, 0.0272204, 0.945824)
+bones/2/rotation = Quaternion(-0.0904441, 0.0415175, 0.166293, 0.981042)
+bones/3/rotation = Quaternion(-0.0466199, -0.020971, -0.0103276, 0.998639)
 bones/4/rotation = Quaternion(-0.0757687, 0.019257, 0.0337124, 0.996369)
 bones/4/scale = Vector3(1, 1, 1)
+bones/5/rotation = Quaternion(-0.00128455, 0.0116081, 0.0168259, 0.99979)
 bones/5/scale = Vector3(1, 1, 1)
+bones/6/rotation = Quaternion(0.102925, 0.00993208, 0.00794419, 0.994608)
+bones/7/rotation = Quaternion(-0.012859, 0.0236108, 0.323258, 0.945929)
 bones/7/scale = Vector3(1, 1, 1)
+bones/8/rotation = Quaternion(0.0120575, 0.00929193, 0.247472, 0.968775)
 bones/9/rotation = Quaternion(-0.0522884, 0.000557213, -0.103621, 0.993241)
+bones/10/rotation = Quaternion(-0.0357539, 0.000400032, -0.00636763, 0.99934)
+bones/11/rotation = Quaternion(-0.00264964, 0.00114471, 0.125992, 0.992027)
+bones/12/rotation = Quaternion(0.0394225, -0.00193393, 0.228074, 0.972843)
+bones/13/rotation = Quaternion(-0.0123395, 0.00881294, 0.280669, 0.959685)
 bones/14/rotation = Quaternion(0.0136882, -7.99237e-05, -0.168411, 0.985622)
 bones/14/scale = Vector3(1, 1, 1)
+bones/15/rotation = Quaternion(-0.0702656, -0.0101908, 0.0243307, 0.99718)
+bones/16/rotation = Quaternion(-0.0320634, 0.00223624, 0.0686366, 0.997124)
 bones/16/scale = Vector3(1, 1, 1)
+bones/17/rotation = Quaternion(0.0253452, -0.00812462, 0.249005, 0.968136)
 bones/17/scale = Vector3(1, 1, 1)
+bones/18/rotation = Quaternion(0.00252233, -0.00788073, 0.243204, 0.96994)
 bones/18/scale = Vector3(1, 1, 1)
 bones/19/rotation = Quaternion(0.0330517, 0.00671975, -0.126351, 0.991412)
 bones/19/scale = Vector3(1, 1, 1)
+bones/20/rotation = Quaternion(-0.0917369, -0.0203027, 0.010183, 0.995524)
 bones/20/scale = Vector3(1, 1, 1)
+bones/21/rotation = Quaternion(-0.0625182, 0.000225721, 0.115393, 0.991351)
 bones/21/scale = Vector3(1, 1, 1)
+bones/22/rotation = Quaternion(0.0585786, -0.0216483, 0.269905, 0.96086)
+bones/23/rotation = Quaternion(0.00687177, 0.00357275, 0.211953, 0.977249)
 bones/23/scale = Vector3(1, 1, 1)
 bones/24/rotation = Quaternion(0.0158363, 0.0193397, -0.153777, 0.987789)
 
@@ -391,7 +408,6 @@ bone_idx = 9
 [node name="Poke" parent="XROrigin3D/RightHandController/RightHand/Hand_low_R/Armature/Skeleton3D/BoneAttachment3D" instance=ExtResource("7_xiqf5")]
 
 [node name="AnimationTree" parent="XROrigin3D/RightHandController/RightHand" index="1"]
-root_node = NodePath("../Hand_low_R")
 tree_root = SubResource("AnimationNodeBlendTree_ny7u2")
 
 [node name="AutoHandtracker" parent="XROrigin3D/RightHandController" instance=ExtResource("6_4vxvi")]
@@ -416,9 +432,6 @@ collide_with_areas = true
 
 [node name="Laser" parent="XROrigin3D/FunctionPointer" index="1"]
 mesh = SubResource("BoxMesh_omx8q")
-
-[node name="CollisionShape3D" parent="XROrigin3D/FunctionPointer/SuppressArea" index="0"]
-debug_color = Color(0, 0.6, 0.7, 0.42)
 
 [node name="VirtualKeyboard" parent="XROrigin3D" instance=ExtResource("51_rjdns")]
 transform = Transform3D(0.49751, -1.86265e-09, 0.0498422, -0.0252061, 0.43135, 0.251599, -0.0429988, -0.252859, 0.429201, 0, 0.7, -0.4)
@@ -452,7 +465,7 @@ localplayerscene = ""
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource("QuadMesh_wuwme")
-surface_material_override/0 = SubResource("StandardMaterial3D_1w2xm")
+surface_material_override/0 = SubResource("StandardMaterial3D_sph85")
 
 [node name="StaticBody3D" parent="ViewportNetworkGateway" index="2"]
 viewport_size = Vector2(650, 400)
@@ -460,7 +473,6 @@ viewport_size = Vector2(650, 400)
 [node name="CollisionShape3D" parent="ViewportNetworkGateway/StaticBody3D" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.00999999)
 shape = SubResource("BoxShape3D_ttrwc")
-debug_color = Color(0, 0.6, 0.7, 0.42)
 
 [node name="Players" type="Node3D" parent="."]
 
@@ -477,7 +489,6 @@ surface_material_override/0 = SubResource("StandardMaterial3D_vxt1b")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 shape = SubResource("BoxShape3D_53q5i")
-debug_color = Color(0, 0.6, 0.7, 0.42)
 
 [node name="Desk" type="StaticBody3D" parent="."]
 transform = Transform3D(0.609619, 0, -0.792694, 0, 1, 0, 0.792694, 0, 0.609619, 1.65528, 0.922265, -1.84827)
@@ -489,7 +500,6 @@ surface_material_override/0 = SubResource("StandardMaterial3D_3gppb")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Desk"]
 shape = SubResource("6")
-debug_color = Color(0, 0.6, 0.7, 0.42)
 
 [node name="SportBall" parent="." instance=ExtResource("6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.43823, 3.95023, -2.82623)
@@ -512,7 +522,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5.51366, -10.3501)
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Wall"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.86959, 0)
 shape = SubResource("10")
-debug_color = Color(0, 0.6, 0.7, 0.42)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Wall/CollisionShape3D"]
 mesh = SubResource("11")
@@ -524,7 +533,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5.05293, 6.91089)
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Wall4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.86959, 0)
 shape = SubResource("10")
-debug_color = Color(0, 0.6, 0.7, 0.42)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Wall4/CollisionShape3D"]
 mesh = SubResource("11")
@@ -536,7 +544,6 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -10.92
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Wall2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.86959, 0)
 shape = SubResource("10")
-debug_color = Color(0, 0.6, 0.7, 0.42)
 
 [node name="Wall3" type="StaticBody3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 9.63735, -4.36763, -3.38746)
@@ -544,7 +551,6 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 9.6373
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Wall3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.86959, 0)
 shape = SubResource("10")
-debug_color = Color(0, 0.6, 0.7, 0.42)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Wall3/CollisionShape3D"]
 visible = false
@@ -560,7 +566,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.53583, 1, -1.06835)
 
 [node name="CollisionShape3D" parent="ClimbableCylinder" index="0"]
 shape = SubResource("29")
-debug_color = Color(0, 0.6, 0.7, 0.42)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="ClimbableCylinder"]
 mesh = SubResource("26")

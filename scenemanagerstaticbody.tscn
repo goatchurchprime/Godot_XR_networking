@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://bg8xxi40ghkbl"]
 
-[ext_resource type="Script" path="res://SceneAnchor.gd" id="1_fnsqq"]
+[ext_resource type="Script" uid="uid://bpq7egi70tc1t" path="res://SceneAnchor.gd" id="1_fnsqq"]
 [ext_resource type="PackedScene" uid="uid://c8l60rnugru40" path="res://addons/godot-xr-tools/objects/pickable.tscn" id="1_y3i43"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_deigr"]
