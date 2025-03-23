@@ -168,6 +168,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 environment = SubResource("Environment_spl7d")
 current = true
 
+[node name="SteamAudioListener" type="SteamAudioListener" parent="XROrigin3D/XRCamera3D"]
+
+[node name="SteamAudioConfig" type="SteamAudioConfig" parent="XROrigin3D/XRCamera3D"]
+
 [node name="LeftHandController" type="XRController3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1, -0.5)
 tracker = &"left_hand"

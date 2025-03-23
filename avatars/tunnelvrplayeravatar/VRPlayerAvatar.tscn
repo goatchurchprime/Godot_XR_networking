@@ -387,8 +387,9 @@ pixel_size = 0.002
 billboard = 1
 text = "<name>"
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer3D" parent="HeadCam"]
+[node name="AudioStreamPlayer" type="SteamAudioPlayer" parent="HeadCam"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.102821, -0.057813)
+panning_strength = 0.0
 
 [node name="MouthSign" type="MeshInstance3D" parent="HeadCam/AudioStreamPlayer"]
 mesh = SubResource("BoxMesh_c7mpy")
