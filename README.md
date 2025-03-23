@@ -21,9 +21,13 @@ This will load the following plugins
 
 
 The ones here cannot currently be loaded like this, and need to be copied in from the artifacts.
+These are stashed into goatchurchprime/paraviewgodot, branch: stashedaddons
 
 *  **WebRTC plugin - Godot 4.1+** Version: 1.0.6, !!install into addons/webrtc
 *  **TwoVoip** Version: v3.4 install into addons/twovoip
+
+This one needs loading directly
+
 *  **Godot OpenXR Vendors plugin for Godot 4.3** Version: 3.0.0, installs into addons/godotopenxrvendors
 
 

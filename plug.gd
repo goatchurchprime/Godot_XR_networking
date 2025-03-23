@@ -8,3 +8,7 @@ func _plugging():
 	plug("goatchurchprime/godot-mqtt")
 	plug("goatchurchprime/godot_multiplayer_networking_workbench", {"include":["addons/player-networking"]})
 	plug("Godot-Dojo/Godot-XR-AH", {"include":["addons/xr-autohandtracker"]})
+
+	# large binary addons unpacked and put into a spare repo for the moment
+	plug("goatchurchprime/paraviewgodot", {"branch":"stashedaddons", "include":["addons/twovoip", "addons/webrtc"]})
+	#plug("goatchurchprime/paraviewgodot", {"branch":"stashedaddons", "include":["addons/webrtc"]})
