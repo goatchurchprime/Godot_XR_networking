@@ -1,8 +1,6 @@
-[gd_scene load_steps=16 format=3 uid="uid://bgw2tanm4il3j"]
+[gd_scene load_steps=12 format=3 uid="uid://bgw2tanm4il3j"]
 
 [ext_resource type="Script" uid="uid://cj85ykry5pr77" path="res://avatars/tunnelvrplayeravatar/VRPlayerAvatar.gd" id="2"]
-[ext_resource type="PackedScene" uid="uid://coia0xdb1hc3c" path="res://xrassets/right_quest2_contoller.tscn" id="6"]
-[ext_resource type="PackedScene" uid="uid://c83vlx50waes5" path="res://xrassets/left_quest2_controller.tscn" id="7"]
 [ext_resource type="PackedScene" uid="uid://dhaqth6q5yw4n" path="res://addons/godot-xr-tools/hands/model/hand_l.gltf" id="7_s2tnc"]
 [ext_resource type="PackedScene" uid="uid://ds1t8vc0kxoeo" path="res://addons/godot-xr-tools/hands/model/hand_r.gltf" id="9_v8raj"]
 
@@ -27,18 +25,6 @@ size = Vector3(0.05, 0.01, 0.001)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qiaoq"]
 transparency = 1
 albedo_color = Color(1, 1, 0, 1)
-
-[sub_resource type="CylinderShape3D" id="5"]
-margin = 0.02
-height = 0.05
-radius = 0.4
-
-[sub_resource type="CylinderMesh" id="6"]
-top_radius = 0.4
-bottom_radius = 0.4
-height = 0.05
-radial_segments = 32
-rings = 0
 
 [sub_resource type="Animation" id="Animation_1xqwv"]
 length = 1.2
@@ -406,88 +392,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.102821, -0.057813)
 mesh = SubResource("BoxMesh_c7mpy")
 surface_material_override/0 = SubResource("StandardMaterial3D_qiaoq")
 
-[node name="ControllerLeft" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.307861, 0.146323, -0.346588)
-visible = false
-
-[node name="left_quest2_controller" parent="ControllerLeft" instance=ExtResource("7")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0.15)
-
-[node name="left_quest2_mesh" parent="ControllerLeft/left_quest2_controller" index="0"]
-skeleton = NodePath("")
-
-[node name="left_quest2_controller_world" parent="ControllerLeft/left_quest2_controller" index="1"]
-show_rest_only = true
-
 [node name="hand_l" parent="." instance=ExtResource("7_s2tnc")]
 
-[node name="Skeleton3D" parent="hand_l/Armature" index="0"]
-bones/1/rotation = Quaternion(0.323537, -2.56565e-05, -0.0272204, 0.945824)
-bones/2/rotation = Quaternion(-0.0459503, -0.0271357, -0.0752572, 0.995735)
-bones/3/rotation = Quaternion(0.0556407, 0.0103261, 0.0139847, 0.9983)
-bones/6/rotation = Quaternion(0.111223, -0.00277812, 0.117574, 0.986812)
-bones/7/rotation = Quaternion(-0.0136832, -0.0246682, -0.235071, 0.971569)
-bones/11/rotation = Quaternion(-0.0119466, 0.000966737, -0.0105008, 0.999873)
-bones/13/rotation = Quaternion(-0.0139315, -0.000142422, -0.168612, 0.985584)
-bones/17/rotation = Quaternion(0.0173263, 0.0186085, -0.160829, 0.986655)
-bones/18/rotation = Quaternion(-0.0113518, 0.0126214, -0.131984, 0.991107)
-bones/21/rotation = Quaternion(-0.089286, 0.00316807, -0.00673912, 0.995978)
-bones/23/rotation = Quaternion(-0.0180548, 0.0114553, -0.107075, 0.994021)
-
-[node name="ControllerRight" type="Node3D" parent="hand_l"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1055, 0.251593, -0.39732)
-visible = false
-
-[node name="right_quest2_contoller" parent="hand_l/ControllerRight" instance=ExtResource("6")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0.15)
-
-[node name="right_quest2_controller_world" parent="hand_l/ControllerRight/right_quest2_contoller" index="0"]
-show_rest_only = true
-bones/0/position = Vector3(0, 0, 0)
-bones/1/position = Vector3(0, 0, 0)
-bones/2/position = Vector3(0, 0, 0)
-bones/3/position = Vector3(0, 0, 0)
-bones/4/position = Vector3(0, 0, 0)
-bones/5/position = Vector3(0, 0, 0)
-
-[node name="PaddleBody" type="CharacterBody3D" parent="hand_l/ControllerRight"]
-transform = Transform3D(0.752357, 0.658755, 0, -0.658755, 0.752357, 0, 0, 0, 1, 0.011775, -0.044319, -0.348128)
-visible = false
-collision_layer = 4100
-collision_mask = 4100
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="hand_l/ControllerRight/PaddleBody"]
-transform = Transform3D(0.704795, 0.709411, 0, -0.709411, 0.704795, 0, 0, 0, 1, 0, 0, 0)
-shape = SubResource("5")
-disabled = true
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="hand_l/ControllerRight/PaddleBody/CollisionShape3D"]
-mesh = SubResource("6")
-
 [node name="hand_r" parent="." instance=ExtResource("9_v8raj")]
-
-[node name="Skeleton3D" parent="hand_r/Armature" index="0"]
-bones/1/rotation = Quaternion(0.323537, 2.56565e-05, 0.0272204, 0.945824)
-bones/2/rotation = Quaternion(-0.0459503, 0.0271357, 0.0752572, 0.995735)
-bones/3/rotation = Quaternion(0.0556407, -0.0103261, -0.0139847, 0.9983)
-bones/6/rotation = Quaternion(0.111223, 0.00277812, -0.117574, 0.986812)
-bones/7/rotation = Quaternion(-0.0136832, 0.0246682, 0.235071, 0.971569)
-bones/10/rotation = Quaternion(-0.0358546, -4.20051e-05, -0.0499776, 0.998107)
-bones/11/rotation = Quaternion(-0.0119466, -0.000966737, 0.0105008, 0.999873)
-bones/13/rotation = Quaternion(-0.0139315, 0.000142422, 0.168612, 0.985584)
-bones/15/rotation = Quaternion(-0.0711949, -1.57336e-05, -0.0180856, 0.997298)
-bones/17/rotation = Quaternion(0.0173263, -0.0186085, 0.160829, 0.986655)
-bones/18/rotation = Quaternion(-0.0113518, -0.0126214, 0.131984, 0.991107)
-bones/20/rotation = Quaternion(-0.0917695, -2.45622e-05, -0.0284477, 0.995374)
-bones/21/rotation = Quaternion(-0.089286, -0.00316807, 0.00673912, 0.995978)
-bones/23/rotation = Quaternion(-0.0180548, -0.0114553, 0.107075, 0.994021)
 
 [node name="PlayerAnimation" type="AnimationPlayer" parent="."]
 libraries = {
 &"playeral": SubResource("AnimationLibrary_qatlg")
 }
 
-[editable path="ControllerLeft/left_quest2_controller"]
 [editable path="hand_l"]
-[editable path="hand_l/ControllerRight/right_quest2_contoller"]
 [editable path="hand_r"]
