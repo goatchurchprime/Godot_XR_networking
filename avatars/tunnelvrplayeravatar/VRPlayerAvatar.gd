@@ -77,7 +77,6 @@ func PF_processlocalavatarposition(delta):
 func PF_setspeakingvolume(v):
 	$HeadCam/AudioStreamPlayer/MouthSign.scale.z = v
 
-
 func _process(_delta):
 		# since we cannot animate fading of the mouth sign
 	var v = $HeadCam/AudioStreamPlayer/MouthSign.scale.z
