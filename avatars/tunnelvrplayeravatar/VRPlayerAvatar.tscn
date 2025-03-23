@@ -1,6 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://bgw2tanm4il3j"]
+[gd_scene load_steps=13 format=3 uid="uid://bgw2tanm4il3j"]
 
 [ext_resource type="Script" uid="uid://cj85ykry5pr77" path="res://avatars/tunnelvrplayeravatar/VRPlayerAvatar.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://8jsauvbqvkou" path="res://addons/xr-autohandtracker/simplelefthand.glb" id="2_c0lny"]
 [ext_resource type="PackedScene" uid="uid://dhaqth6q5yw4n" path="res://addons/godot-xr-tools/hands/model/hand_l.gltf" id="7_s2tnc"]
 [ext_resource type="PackedScene" uid="uid://ds1t8vc0kxoeo" path="res://addons/godot-xr-tools/hands/model/hand_r.gltf" id="9_v8raj"]
 
@@ -392,6 +393,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.102821, -0.057813)
 mesh = SubResource("BoxMesh_c7mpy")
 surface_material_override/0 = SubResource("StandardMaterial3D_qiaoq")
 
+[node name="simplelefthand" parent="." instance=ExtResource("2_c0lny")]
+
 [node name="hand_l" parent="." instance=ExtResource("7_s2tnc")]
 
 [node name="hand_r" parent="." instance=ExtResource("9_v8raj")]
@@ -401,5 +404,6 @@ libraries = {
 &"playeral": SubResource("AnimationLibrary_qatlg")
 }
 
+[editable path="simplelefthand"]
 [editable path="hand_l"]
 [editable path="hand_r"]

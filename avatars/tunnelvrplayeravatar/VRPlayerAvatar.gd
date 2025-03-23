@@ -13,6 +13,15 @@ const TRACKING_CONFIDENCE_NONE = 0
 
 var shrinkavatartransform = Transform3D()
 
+@onready var handl = $hand_l
+@onready var handlskel = handl.find_child("Skeleton3D")
+@onready var chandl = LeftHandController.get_node("LeftHand/Hand_Glove_low_L")
+@onready var chandlskel = chandl.find_child("Skeleton3D")
+@onready var handr = $hand_r
+@onready var handrskel = handr.find_child("Skeleton3D")
+@onready var chandr = RightHandController.get_node("RightHand/Hand_low_R")
+@onready var chandrskel = chandr.find_child("Skeleton3D")
+
 var projectedhands = false
 static var selectedtrackslookup = { 
 	".:position":-1, 
@@ -64,15 +73,17 @@ func skelbonescopy(skela, skelb):
 func PF_processlocalavatarposition(delta):
 	transform = shrinkavatartransform*arvrorigin.transform
 	$HeadCam.transform = arvrorigin.get_node("XRCamera3D").transform
-	$hand_l.transform = arvrorigin.global_transform.inverse()*arvrorigin.get_node("LeftHandController/LeftHand/Hand_Glove_low_L").global_transform
-	skelbonescopy($hand_l/Armature/Skeleton3D, arvrorigin.get_node("LeftHandController/LeftHand/Hand_Glove_low_L/Armature/Skeleton3D"))
-	$hand_r.transform = arvrorigin.global_transform.inverse()*arvrorigin.get_node("RightHandController/RightHand/Hand_low_R").global_transform
-	skelbonescopy($hand_r/Armature/Skeleton3D, arvrorigin.get_node("RightHandController/RightHand/Hand_low_R/Armature/Skeleton3D"))
+
+	handl.transform = arvrorigin.global_transform.inverse()*chandl.global_transform
+	skelbonescopy(handlskel, chandlskel)
+	handr.transform = arvrorigin.global_transform.inverse()*chandr.global_transform
+	skelbonescopy(handrskel, chandrskel)
+
 	if projectedhands:
 		var headface = Vector3($HeadCam.transform.basis.z.x, 0, $HeadCam.transform.basis.z.z).normalized()
 		var headup = Vector3(headface.x, 0.8, headface.z)*0.25
-		$hand_r.transform.origin += Vector3(headface.x*0.2, 0.2, headface.z*0.2)
-		$hand_l.transform.origin += Vector3(headface.x*0.2, 0.2, headface.z*0.2)
+		handl.transform.origin += Vector3(headface.x*0.2, 0.2, headface.z*0.2)
+		handr.transform.origin += Vector3(headface.x*0.2, 0.2, headface.z*0.2)
 
 func PF_setspeakingvolume(v):
 	$HeadCam/AudioStreamPlayer/MouthSign.scale.z = v
