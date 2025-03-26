@@ -31,6 +31,20 @@ This one needs loading directly
 *  **Godot OpenXR Vendors plugin for Godot 4.3** Version: 3.0.0, installs into addons/godotopenxrvendors
 
 
+
+https://github.com/godotengine/webrtc-native/issues/110
+
+nix build github:nixos/nixpkgs/nixos-unstable#gcc-unwrapped.lib
+
+readlink -f result-lib/lib/libstdc++.so.6
+> /nix/store/ik84lbv5jvjm1xxvdl8mhg52ry3xycvm-gcc-14-20241116-lib/lib/libstdc++.so.6.0.33
+
+patchelf --replace-needed libstdc++.so.6 /nix/store/ik84lbv5jvjm1xxvdl8mhg52ry3xycvm-gcc-14-20241116-lib/lib/libstdc++.so.6.0.33 ./libgodot-steam-audio.linux.template_debug.x86_64.so
+patchelf --replace-needed libstdc++.so.6 /nix/store/ik84lbv5jvjm1xxvdl8mhg52ry3xycvm-gcc-14-20241116-lib/lib/libstdc++.so.6.0.33 ./libgodot-steam-audio.linux.template_release.x86_64.so
+patchelf --replace-needed libstdc++.so.6 /nix/store/ik84lbv5jvjm1xxvdl8mhg52ry3xycvm-gcc-14-20241116-lib/lib/libstdc++.so.6.0.33 ./libphonon.so
+
+
+
 ## Operation
 
 The NetworkGateway dashboard appears in VR and is operable.  If you set it to WebRTC via MQTT signalling, the 
