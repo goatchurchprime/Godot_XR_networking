@@ -1,7 +1,10 @@
 
 This is a funciontal VR networking example using the https://github.com/goatchurchprime/godot_multiplayer_networking_workbench as 
 the basis for connecting using one of the three godot networking protocols (ENet, WebSocket or WebRTC) and spawning player avatars 
-into the space on connection.  This works in Godot 4.3.
+into the space on connection.  This works in Godot 4.4.
+
+The microphone in Godot is buggy for Android, so use this PR fork until it is merged: https://github.com/godotengine/godot/pull/100508
+
 
 ## Installation
 
@@ -9,26 +12,33 @@ There are many addons that need to be brought in.  We are using the https://gith
 
 Before opening the project, please run the following command to download them:
 
-> godot4 --headless -s plug.gd install 
+> godot4 --xr-mode off --headless -s plug.gd install 
 
 This will load the following plugins
 
 * **Godot XR Tools** Version: 4.3.3, installs into addons/godot-xr-tools
-* **NetworkingWorkbench** clone from [repo](https://github.com/goatchurchprime/godot_multiplayer_networking_workbench) and copy into addons/player-networking or symlink `ln -s ../../godot_multiplayer_networking_workbench/addons/player-networking/ player-networking`
+* [**NetworkingWorkbench**](https://github.com/goatchurchprime/godot_multiplayer_networking_workbench)
 *  **MQTT CLient** Version: 1.2 installs into addons/mqtt
 *  **Godot XR Autohands** Version: 1.1 installs into addons/xr-autohandstracker
 *  **XR Input Simulator** Version: 1.2.0 installs into addons/xr-simulator
-
-
-The ones here cannot currently be loaded like this, and need to be copied in from the artifacts.
-These are stashed into goatchurchprime/paraviewgodot, branch: stashedaddons
-
-*  **WebRTC plugin - Godot 4.1+** Version: 1.0.6, !!install into addons/webrtc
-*  **TwoVoip** Version: v3.4 install into addons/twovoip
+*  **WebRTC plugin - Godot 4.1+** Version: 1.0.6, binary plugin pulled from goatchurchprime/paraviewgodot
+*  **TwoVoip** Version: v3.4 install into addons/twovoip binary plugin pulled from goatchurchprime/paraviewgodot
 
 This one needs loading directly
-
 *  **Godot OpenXR Vendors plugin for Godot 4.3** Version: 3.0.0, installs into addons/godotopenxrvendors
+
+
+## Branches
+
+### steamaudio 
+Currently waiting on a working Android build of:
+*  **Godot-Steam-Audio**   (made a mess of the checkout as I need to fork and prepare the voip plugin to work with its streams)
+
+### preclean
+
+Contains a lot of subprojects including tensegrity, puppet monster, glaucoma tester
+
+
 
 
 ## Operation
