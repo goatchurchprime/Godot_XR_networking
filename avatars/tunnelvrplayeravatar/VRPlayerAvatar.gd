@@ -107,3 +107,16 @@ static func PF_changethinnedframedatafordoppelganger(fd, doppelnetoffset):
 	if fd.has(NCONSTANTS.CFI_ANIMTRACKS+itrackheadrot):
 		print(var_to_str(fd[NCONSTANTS.CFI_ANIMTRACKS+itrackheadrot]))
 		fd[NCONSTANTS.CFI_ANIMTRACKS+itrackheadrot] *= Quaternion(Vector3(0, 1, 0), deg_to_rad(180))
+
+
+func PF_getvoicestream():
+	return $HeadCam/AudioStreamPlayer.stream
+
+func PF_setvoicestream(lstream):
+	$HeadCam/AudioStreamPlayer.stream = lstream
+
+func PF_playvoicestream():
+	$HeadCam/AudioStreamPlayer.play()
+	
+func PF_setvoicespeedup(fac):
+	$HeadCam/AudioStreamPlayer.pitch_scale = fac

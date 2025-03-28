@@ -10,5 +10,6 @@ func _plugging():
 	plug("Godot-Dojo/Godot-XR-AH", {"include":["addons/xr-autohandtracker"]})
 
 	# large binary addons unpacked and put into a spare repo for the moment
-	plug("goatchurchprime/paraviewgodot", {"branch":"stashedaddons", "include":["addons/twovoip", "addons/webrtc"]})
+	var stashedaddons = ["addons/twovoip", "addons/webrtc"]
+	plug("goatchurchprime/paraviewgodot", {"branch":"stashedaddons", "include":stashedaddons})
 	#plug("goatchurchprime/paraviewgodot", {"branch":"stashedaddons", "include":["addons/webrtc"]})
