@@ -86,14 +86,13 @@ func PF_processlocalavatarposition(delta):
 		handr.transform.origin += Vector3(headface.x*0.2, 0.2, headface.z*0.2)
 
 func PF_setspeakingvolume(v):
-	$HeadCam/AudioStreamPlayer/MouthSign.scale.z = v
+	$HeadCam/SteamAudioPlayer/MouthSign.scale.z = v
 
 func _process(_delta):
 		# since we cannot animate fading of the mouth sign
-	var v = $HeadCam/AudioStreamPlayer/MouthSign.scale.z
-	$HeadCam/AudioStreamPlayer/MouthSign.visible = (v != 0.0)
-	$HeadCam/AudioStreamPlayer/MouthSign.get_surface_override_material(0).albedo_color.a = v
-
+	var v = $HeadCam/SteamAudioPlayer/MouthSign.scale.z
+	$HeadCam/SteamAudioPlayer/MouthSign.visible = (v != 0.0)
+	$HeadCam/SteamAudioPlayer/MouthSign.get_surface_override_material(0).albedo_color.a = v
 
 static func PF_changethinnedframedatafordoppelganger(fd, doppelnetoffset):
 	if fd.has(NCONSTANTS.CFI_TIMESTAMP):
@@ -108,15 +107,14 @@ static func PF_changethinnedframedatafordoppelganger(fd, doppelnetoffset):
 		print(var_to_str(fd[NCONSTANTS.CFI_ANIMTRACKS+itrackheadrot]))
 		fd[NCONSTANTS.CFI_ANIMTRACKS+itrackheadrot] *= Quaternion(Vector3(0, 1, 0), deg_to_rad(180))
 
-
 func PF_getvoicestream():
-	return $HeadCam/AudioStreamPlayer.stream
+	return $HeadCam/SteamAudioPlayer.get_inner_stream()
 
 func PF_setvoicestream(lstream):
-	$HeadCam/AudioStreamPlayer.stream = lstream
+	$HeadCam/SteamAudioPlayer.play_stream(lstream)
 
 func PF_playvoicestream():
-	$HeadCam/AudioStreamPlayer.play()
+	$HeadCam/SteamAudioPlayer.play()
 	
 func PF_setvoicespeedup(fac):
-	$HeadCam/AudioStreamPlayer.pitch_scale = fac
+	$HeadCam/SteamAudioPlayer.pitch_scale = fac

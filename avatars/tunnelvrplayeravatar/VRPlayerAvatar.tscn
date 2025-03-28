@@ -358,7 +358,7 @@ tracks/44/keys = PackedFloat32Array()
 tracks/45/type = "scale_3d"
 tracks/45/imported = false
 tracks/45/enabled = true
-tracks/45/path = NodePath("HeadCam/AudioStreamPlayer/MouthSign")
+tracks/45/path = NodePath("HeadCam/SteamAudioPlayer/MouthSign")
 tracks/45/interp = 1
 tracks/45/loop_wrap = true
 tracks/45/keys = PackedFloat32Array()
@@ -387,10 +387,13 @@ pixel_size = 0.002
 billboard = 1
 text = "<name>"
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer3D" parent="HeadCam"]
+[node name="SteamAudioPlayer" type="SteamAudioPlayer" parent="HeadCam"]
+distance_attenuation = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.102821, -0.057813)
+attenuation_model = 3
+panning_strength = 0.0
 
-[node name="MouthSign" type="MeshInstance3D" parent="HeadCam/AudioStreamPlayer"]
+[node name="MouthSign" type="MeshInstance3D" parent="HeadCam/SteamAudioPlayer"]
 mesh = SubResource("BoxMesh_c7mpy")
 surface_material_override/0 = SubResource("StandardMaterial3D_qiaoq")
 

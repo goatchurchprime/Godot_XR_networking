@@ -87,7 +87,7 @@ size = Vector2(3, 2)
 [sub_resource type="ViewportTexture" id="ViewportTexture_xrxkg"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sqvbp"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2gh4u"]
 transparency = 1
 cull_mode = 2
 albedo_texture = SubResource("ViewportTexture_xrxkg")
@@ -168,8 +168,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 environment = SubResource("Environment_spl7d")
 current = true
 
-[node name="AudioListener3D" type="AudioListener3D" parent="XROrigin3D/XRCamera3D"]
-current = true
+[node name="AudioListener3D" type="SteamAudioListener" parent="XROrigin3D/XRCamera3D"]
+
+[node name="SteamAudioConfig" type="SteamAudioConfig" parent="XROrigin3D/XRCamera3D"]
 
 [node name="LeftHandController" type="XRController3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1, -0.5)
@@ -325,7 +326,7 @@ localplayerscene = ""
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource("QuadMesh_wuwme")
-surface_material_override/0 = SubResource("StandardMaterial3D_sqvbp")
+surface_material_override/0 = SubResource("StandardMaterial3D_2gh4u")
 
 [node name="StaticBody3D" parent="ViewportNetworkGateway" index="2"]
 viewport_size = Vector2(650, 400)
