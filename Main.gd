@@ -114,6 +114,10 @@ func _input(event):
 		#	var mqtt = get_node("/root/Main/ViewportNetworkGateway/SubViewport/NetworkGateway/MQTTsignalling/MQTT")
 		#	mqtt.publish("hand/pos", "hithere")
 
+		if event.keycode == KEY_L and event.pressed:
+			_on_icosa_gallery_downloadcompleted("user://icosa_downloads/astronaut/Astronaut.gltf")
+
+
 func _physics_process(delta):
 	var lowestfloorheight = -30
 	if $XROrigin3D.transform.origin.y < lowestfloorheight:
@@ -155,3 +159,14 @@ func _on_interactable_area_button_button_pressed(button):
 		NetworkGateway.simple_webrtc_connect(webrtcroomname)
 	if button:
 		button.get_node("Label3D").text = "X"
+
+func _on_icosa_gallery_downloadcompleted(fname):
+	print("to load", fname)
+	var gltf_document_load = GLTFDocument.new()
+	var gltf_state_load = GLTFState.new()
+	var error = gltf_document_load.append_from_file(fname, gltf_state_load)
+	if error == OK:
+		var gltf_scene_root_node = gltf_document_load.generate_scene(gltf_state_load)
+		add_child(gltf_scene_root_node)
+	else:
+		printerr("Couldn't load glTF scene (error code: %s)." % error_string(error))
