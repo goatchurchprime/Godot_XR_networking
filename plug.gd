@@ -8,7 +8,7 @@ func _plugging():
 	plug("goatchurchprime/godot-mqtt")
 	plug("goatchurchprime/godot_multiplayer_networking_workbench", {"include":["addons/player-networking"]})
 	plug("Godot-Dojo/Godot-XR-AH", {"include":["addons/xr-autohandtracker"]})
-	plug("icosa-foundation/icosa-godot-addon", {"include":["addons/icosa-gallery"]})
+	plug("goatchurchprime/icosa-godot-addon", {"include":["addons/icosa-gallery"]})
 
 	# large binary addons unpacked and put into a spare repo for the moment
 	var stashedaddons = ["addons/twovoip", "addons/webrtc"]

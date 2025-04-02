@@ -7,10 +7,12 @@ extends Node3D
 #export var webrtcbroker = "mosquitto.doesliverpool.xyz"
 
 # use this one for WebXR because it can only come from HTML5 served from an https:// link
-#@export var webrtcbroker = "wss://mosquitto.doesliverpool.xyz:8081"
+@export var webrtcbroker = "wss://mosquitto.doesliverpool.xyz:8081"
 #export var webrtcbroker = "ws://mosquitto.doesliverpool.xyz:8080"
 #export var webrtcbroker = "ssl://mosquitto.doesliverpool.xyz:8884"
-@export var webrtcbroker = "mosquitto.doesliverpool.xyz"
+#@export var webrtcbroker = "mosquitto.doesliverpool.xyz"
+#@export var webrtcbroker = "ssl://mosquitto.doesliverpool.xyz:8884"
+
 
 
 # "ws://broker.mqttdashboard.com:8webrtcbroker000"
@@ -54,6 +56,7 @@ func _ready():
 	NetworkGateway.set_process_input(false)
 	if webrtcroomname:
 		NetworkGateway.MQTTsignalling.Roomnametext.text = webrtcroomname
+	$Viewport2Din3D/Viewport/IcosaGallery.model_downloaded.connect(_on_icosa_gallery_downloadcompleted)
 
 func vr_right_button_pressed(button: String):
 	print("vr right button pressed ", button)
@@ -153,20 +156,41 @@ func _process(delta):
 #** does it work in different world scales?
 #** consider the dinosaur avatar as a mechanoid
 
-
 func _on_interactable_area_button_button_pressed(button):
 	if NetworkGateway.is_disconnected():
 		NetworkGateway.simple_webrtc_connect(webrtcroomname)
 	if button:
 		button.get_node("Label3D").text = "X"
 
+func addicosameshnode(mnode, pos):
+	var pickableobject : XRToolsPickable = load("res://addons/godot-xr-tools/objects/pickable.tscn").instantiate()
+	var bb = mnode.mesh.get_aabb()
+	var fac = 0.5/max(bb.size.x, max(bb.size.y, bb.size.z))
+	mnode.position = (-bb.position - bb.size*0.5)*fac
+	mnode.scale = Vector3.ONE*fac
+	var colshape = CollisionShape3D.new()
+	colshape.shape = BoxShape3D.new()
+	colshape.shape.size = bb.size*fac
+	pickableobject.add_child(colshape)
+	pickableobject.add_child(mnode)
+	pickableobject.position = pos
+	pickableobject.freeze = true
+	pickableobject.freeze_mode = RigidBody3D.FREEZE_MODE_STATIC
+	$IcosaObjects.add_child(pickableobject)
+
 func _on_icosa_gallery_downloadcompleted(fname):
-	print("to load", fname)
+	print("to load: ", fname)
+	var gltf = IcosaGLTF.new()
+	GLTFDocument.register_gltf_document_extension(gltf)
 	var gltf_document_load = GLTFDocument.new()
 	var gltf_state_load = GLTFState.new()
 	var error = gltf_document_load.append_from_file(fname, gltf_state_load)
 	if error == OK:
 		var gltf_scene_root_node = gltf_document_load.generate_scene(gltf_state_load)
-		add_child(gltf_scene_root_node)
+		if gltf_scene_root_node is MeshInstance3D:
+			addicosameshnode(gltf_scene_root_node, $XROrigin3D/XRCamera3D.global_transform*Vector3(0,0,-1))
+		else:
+			print("unknown")
 	else:
 		printerr("Couldn't load glTF scene (error code: %s)." % error_string(error))
+	GLTFDocument.unregister_gltf_document_extension(gltf)

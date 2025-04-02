@@ -1,4 +1,4 @@
-[gd_scene load_steps=59 format=3 uid="uid://ckhwmlkgnklol"]
+[gd_scene load_steps=60 format=3 uid="uid://ckhwmlkgnklol"]
 
 [ext_resource type="Script" uid="uid://4b3kqph42yye" path="res://Main.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://clc5dre31iskm" path="res://addons/godot-xr-tools/xr/start_xr.tscn" id="2_y037t"]
@@ -17,6 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://cqhw276realc" path="res://addons/godot-xr-tools/functions/function_pointer.tscn" id="16_j5krt"]
 [ext_resource type="PackedScene" uid="uid://b4ysuy43poobf" path="res://addons/godot-xr-tools/functions/function_pickup.tscn" id="20"]
 [ext_resource type="PackedScene" uid="uid://ctltchlf2j2r4" path="res://addons/xr-simulator/XRSimulator.tscn" id="21_8gxkp"]
+[ext_resource type="PackedScene" uid="uid://c8l60rnugru40" path="res://addons/godot-xr-tools/objects/pickable.tscn" id="22_3b0ty"]
 [ext_resource type="PackedScene" uid="uid://dxh5b6t8axr8q" path="res://addons/icosa-gallery/icosa_gallery.tscn" id="22_bg4s2"]
 [ext_resource type="PackedScene" uid="uid://wtpox7m5vu2b" path="res://addons/godot-xr-tools/effects/fade.tscn" id="27_7ktgc"]
 [ext_resource type="PackedScene" uid="uid://cme66uldrjl2i" path="res://addons/godot-xr-tools/interactables/interactable_area_button.tscn" id="34_vk8kn"]
@@ -88,7 +89,7 @@ size = Vector2(3, 2)
 [sub_resource type="ViewportTexture" id="ViewportTexture_sqvbp"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hri7i"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3b0ty"]
 transparency = 1
 cull_mode = 2
 albedo_texture = SubResource("ViewportTexture_sqvbp")
@@ -164,7 +165,7 @@ size = Vector2(5, 3)
 [sub_resource type="ViewportTexture" id="ViewportTexture_w3rk5"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5mvff"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bg4s2"]
 transparency = 1
 cull_mode = 2
 albedo_texture = SubResource("ViewportTexture_w3rk5")
@@ -342,7 +343,7 @@ localplayerscene = ""
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource("QuadMesh_wuwme")
-surface_material_override/0 = SubResource("StandardMaterial3D_hri7i")
+surface_material_override/0 = SubResource("StandardMaterial3D_3b0ty")
 
 [node name="StaticBody3D" parent="ViewportNetworkGateway" index="2"]
 viewport_size = Vector2(650, 400)
@@ -424,7 +425,7 @@ transform = Transform3D(0.925065, -0.301336, 0.231195, 0.0305464, 0.66577, 0.745
 shadow_enabled = true
 
 [node name="Viewport2Din3D" parent="." instance=ExtResource("15")]
-transform = Transform3D(0.453571, 0, 0.89122, 0, 1, 0, -0.89122, 0, 0.453571, -3.61356, 1.51391, -2.17092)
+transform = Transform3D(0.453571, 0, 0.89122, 0, 1, 0, -0.89122, 0, 0.453571, -3.61356, 1.86987, -3.48282)
 screen_size = Vector2(5, 3)
 viewport_size = Vector2(1000, 600)
 
@@ -435,7 +436,7 @@ size = Vector2i(1000, 600)
 
 [node name="Screen" parent="Viewport2Din3D" index="1"]
 mesh = SubResource("QuadMesh_w3rk5")
-surface_material_override/0 = SubResource("StandardMaterial3D_5mvff")
+surface_material_override/0 = SubResource("StandardMaterial3D_bg4s2")
 
 [node name="StaticBody3D" parent="Viewport2Din3D" index="2"]
 screen_size = Vector2(5, 3)
@@ -448,8 +449,11 @@ shape = SubResource("BoxShape3D_40n85")
 transform = Transform3D(-0.227434, -0.309358, 0.923348, -0.110514, 0.950271, 0.291157, -0.967502, -0.0358236, -0.250312, -4.16009, 0.716198, 0)
 scene_properties_keys = PackedStringArray("virtual_keyboard_2d.gd")
 
+[node name="IcosaObjects" type="Node3D" parent="."]
+
+[node name="PickableObject" parent="IcosaObjects" instance=ExtResource("22_3b0ty")]
+
 [connection signal="button_pressed" from="XROrigin3D/LeftHandController/ConnectButton" to="." method="_on_interactable_area_button_button_pressed"]
-[connection signal="downloadcompleted" from="Viewport2Din3D/Viewport/IcosaGallery" to="." method="_on_icosa_gallery_downloadcompleted"]
 
 [editable path="XROrigin3D/RightHandController/RightHand"]
 [editable path="XROrigin3D/RightHandController/RightHand/Hand_low_R"]
