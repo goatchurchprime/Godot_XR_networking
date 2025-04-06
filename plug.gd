@@ -7,7 +7,9 @@ func _plugging():
 	plug("Cafezinhu/godot-vr-simulator", {"commit": "5bedbbacf6fe40af10e0bfea99487c84387b19f3"})
 	plug("goatchurchprime/godot-mqtt")
 	plug("goatchurchprime/godot_multiplayer_networking_workbench", {"include":["addons/player-networking"]})
-	plug("Godot-Dojo/Godot-XR-AH", {"include":["addons/xr-autohandtracker"]})
+
+	var ahaddons = ["addons/xr-autohandtracker", "addons/xr-radialmenu"]
+	plug("Godot-Dojo/Godot-XR-AH", {"include":ahaddons})
 
 	# large binary addons unpacked and put into a spare repo for the moment
 	var stashedaddons = ["addons/twovoip", "addons/webrtc"]

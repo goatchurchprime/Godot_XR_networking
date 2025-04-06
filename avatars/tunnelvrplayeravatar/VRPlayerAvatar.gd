@@ -13,9 +13,9 @@ const TRACKING_CONFIDENCE_NONE = 0
 
 var shrinkavatartransform = Transform3D()
 
-@onready var handl = $hand_l
+@onready var handl = $simplelefthand
 @onready var handlskel = handl.find_child("Skeleton3D")
-@onready var chandl = LeftHandController.get_node("LeftHand/Hand_Glove_low_L")
+@onready var chandl = LeftHandController.get_node("simplelefthand")
 @onready var chandlskel = chandl.find_child("Skeleton3D")
 @onready var handr = $hand_r
 @onready var handrskel = handr.find_child("Skeleton3D")
