@@ -168,7 +168,7 @@ func addicosameshnode(mnode, pos):
 	var fac = 0.5/max(bb.size.x, max(bb.size.y, bb.size.z))
 	mnode.position = (-bb.position - bb.size*0.5)*fac
 	mnode.scale = Vector3.ONE*fac
-	var colshape = CollisionShape3D.new()
+	var colshape = pickableobject.get_node("CollisionShape3D")
 	colshape.shape = BoxShape3D.new()
 	colshape.shape.size = bb.size*fac
 	pickableobject.add_child(colshape)
