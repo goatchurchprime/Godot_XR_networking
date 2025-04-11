@@ -17,9 +17,9 @@ var shrinkavatartransform = Transform3D()
 @onready var handlskel = handl.find_child("Skeleton3D")
 @onready var chandl = LeftHandController.get_node("simplelefthand")
 @onready var chandlskel = chandl.find_child("Skeleton3D")
-@onready var handr = $hand_r
+@onready var handr = $simplerighthand
 @onready var handrskel = handr.find_child("Skeleton3D")
-@onready var chandr = RightHandController.get_node("RightHand/Hand_low_R")
+@onready var chandr = RightHandController.get_node("simplerighthand")
 @onready var chandrskel = chandr.find_child("Skeleton3D")
 
 var projectedhands = false
