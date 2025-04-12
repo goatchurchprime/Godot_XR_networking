@@ -120,10 +120,28 @@ func _physics_process(delta):
 		$XROrigin3D.transform.origin = Vector3(0, 2, 0)
 
 
+var bodytrackinglogfile : FileAccess = null
 func _process(delta):
-	pass
-	
+	if bodytrackinglogfile:
+		var v = { "tms":Time.get_ticks_msec() }
+		v["cam"] = var_to_str($XROrigin3D/XRCamera3D.transform)
+		v["left"] = var_to_str($XROrigin3D/LeftHandController.transform)
+		v["right"] = var_to_str($XROrigin3D/RightHandController.transform)
+		bodytrackinglogfile.store_line(JSON.stringify(v))
 
+func menuitemselected(menutext):
+	if menutext == "StartRecord":
+		bodytrackinglogfile = FileAccess.open("user://bodytracking.log", FileAccess.WRITE)
+		print("Body Tracking File: ", bodytrackinglogfile.get_path_absolute())
+	elif menutext == "StopRecord":
+		print("Closing body Tracking File: ", bodytrackinglogfile.get_path_absolute())
+		bodytrackinglogfile.close()
+		
+func getcontextmenutexts():
+	$XROrigin3D/RightHandController/RadialMenu.menuitemselected.connect(menuitemselected)
+	var cm = [ ]
+	cm.append("StopRecord" if bodytrackinglogfile else "StartRecord")
+	return cm
 
 
 #** Remove the debug printing messages
