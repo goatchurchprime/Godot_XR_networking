@@ -125,8 +125,8 @@ func _process(delta):
 	if bodytrackinglogfile:
 		var v = { "tms":Time.get_ticks_msec() }
 		v["cam"] = var_to_str($XROrigin3D/XRCamera3D.transform)
-		v["left"] = var_to_str($XROrigin3D/LeftHandController.transform)
-		v["right"] = var_to_str($XROrigin3D/RightHandController.transform)
+		v["left"] = var_to_str($XROrigin3D.global_transform.inverse()*$XROrigin3D/LeftHandController/simplelefthand.global_transform)
+		v["right"] = var_to_str($XROrigin3D.global_transform.inverse()*$XROrigin3D/LeftHandController/simplerighthand.global_transform)
 		bodytrackinglogfile.store_line(JSON.stringify(v))
 
 func menuitemselected(menutext):

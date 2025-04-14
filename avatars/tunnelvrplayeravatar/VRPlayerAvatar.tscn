@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://bgw2tanm4il3j"]
+[gd_scene load_steps=20 format=3 uid="uid://bgw2tanm4il3j"]
 
 [ext_resource type="Script" uid="uid://cj85ykry5pr77" path="res://avatars/tunnelvrplayeravatar/VRPlayerAvatar.gd" id="2"]
 [ext_resource type="PackedScene" uid="uid://8jsauvbqvkou" path="res://addons/xr-autohandtracker/simplelefthand.glb" id="2_c0lny"]
@@ -27,8 +27,23 @@ size = Vector3(0.05, 0.01, 0.001)
 transparency = 1
 albedo_color = Color(1, 1, 0, 1)
 
+[sub_resource type="SphereMesh" id="SphereMesh_c7mpy"]
+radius = 0.01
+height = 0.02
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c7mpy"]
+no_depth_test = true
+albedo_color = Color(1, 1, 0.0313726, 1)
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4l6ea"]
 albedo_texture = ExtResource("3_fq0c1")
+
+[sub_resource type="SphereMesh" id="SphereMesh_c0lny"]
+radius = 0.01
+height = 0.02
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fq0c1"]
+albedo_color = Color(1, 1, 0.0313726, 1)
 
 [sub_resource type="Animation" id="Animation_fq0c1"]
 length = 0.001
@@ -425,6 +440,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.102821, -0.057813)
 mesh = SubResource("BoxMesh_c7mpy")
 surface_material_override/0 = SubResource("StandardMaterial3D_qiaoq")
 
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HeadCam"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.097, 0.089)
+mesh = SubResource("SphereMesh_c7mpy")
+surface_material_override/0 = SubResource("StandardMaterial3D_c7mpy")
+
 [node name="simplelefthand" parent="." instance=ExtResource("2_c0lny")]
 
 [node name="Skeleton3D" parent="simplelefthand/LeftHandHumanoid" index="0"]
@@ -451,7 +471,17 @@ bones/23/rotation = Quaternion(0.0174155, 0.0143753, -0.0127796, 0.999663)
 [node name="LeftHandHumanoidMesh" parent="simplelefthand/LeftHandHumanoid/Skeleton3D" index="0"]
 surface_material_override/0 = SubResource("StandardMaterial3D_4l6ea")
 
+[node name="MeshInstance3D" type="MeshInstance3D" parent="simplelefthand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.059, 0, 0)
+mesh = SubResource("SphereMesh_c0lny")
+surface_material_override/0 = SubResource("StandardMaterial3D_fq0c1")
+
 [node name="simplerighthand" parent="." instance=ExtResource("4_c0lny")]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="simplerighthand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.056, -0.052, 0.133)
+mesh = SubResource("SphereMesh_c0lny")
+surface_material_override/0 = SubResource("StandardMaterial3D_fq0c1")
 
 [node name="PlayerAnimation" type="AnimationPlayer" parent="."]
 libraries = {

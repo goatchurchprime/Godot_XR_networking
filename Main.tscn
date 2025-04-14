@@ -1,4 +1,4 @@
-[gd_scene load_steps=48 format=3 uid="uid://ckhwmlkgnklol"]
+[gd_scene load_steps=50 format=3 uid="uid://ckhwmlkgnklol"]
 
 [ext_resource type="Script" uid="uid://4b3kqph42yye" path="res://Main.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://clc5dre31iskm" path="res://addons/godot-xr-tools/xr/start_xr.tscn" id="2_y037t"]
@@ -43,6 +43,13 @@ rings = 0
 [sub_resource type="BoxShape3D" id="BoxShape3D_5osqo"]
 size = Vector3(0.15, 0.18, 0.02)
 
+[sub_resource type="SphereMesh" id="SphereMesh_2gh4u"]
+radius = 0.01
+height = 0.02
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2gh4u"]
+albedo_color = Color(1, 0.541176, 0.0705882, 1)
+
 [sub_resource type="BoxMesh" id="BoxMesh_omx8q"]
 resource_local_to_scene = true
 material = ExtResource("11_6nfff")
@@ -53,13 +60,13 @@ subdivide_depth = 20
 resource_local_to_scene = true
 size = Vector2(3, 2)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_devvj"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_2gh4u"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2gh4u"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_devvj"]
 transparency = 1
 cull_mode = 2
-albedo_texture = SubResource("ViewportTexture_devvj")
+albedo_texture = SubResource("ViewportTexture_2gh4u")
 texture_filter = 1
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ttrwc"]
@@ -161,7 +168,13 @@ mesh = SubResource("20")
 skeleton = NodePath("")
 
 [node name="simplelefthand" parent="XROrigin3D/LeftHandController" instance=ExtResource("6_5tuhn")]
-transform = Transform3D(0.274454, -0.122701, -0.95374, -0.0339321, -0.992444, 0.117916, -0.961002, 0, -0.276543, 0, 0, 0)
+transform = Transform3D(0.274531, -0.120432, -0.954007, -0.0333045, -0.992722, 0.115735, -0.961002, 0, -0.276543, 0, 0, 0)
+
+[node name="Skeleton3D" parent="XROrigin3D/LeftHandController/simplelefthand/LeftHandHumanoid" index="0"]
+bones/6/rotation = Quaternion(-0.0744182, 0.00207577, 0.111238, 0.991001)
+bones/11/rotation = Quaternion(0.133134, 0.00149939, -0.0119655, 0.991025)
+bones/16/rotation = Quaternion(0.0809525, -0.000156998, -0.0503869, 0.995444)
+bones/21/rotation = Quaternion(0.128825, 0.00640803, -0.0883368, 0.987704)
 
 [node name="AutoHandtracker" parent="XROrigin3D/LeftHandController" instance=ExtResource("6_4vxvi")]
 
@@ -177,6 +190,11 @@ shape = SubResource("BoxShape3D_5osqo")
 
 [node name="Label3D" type="Label3D" parent="XROrigin3D/LeftHandController/ConnectButton"]
 text = "C"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="XROrigin3D/LeftHandController"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.052, -0.059, 0.172)
+mesh = SubResource("SphereMesh_2gh4u")
+surface_material_override/0 = SubResource("StandardMaterial3D_2gh4u")
 
 [node name="RightHandController" type="XRController3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1, -0.5)
@@ -247,7 +265,7 @@ localplayerscene = ""
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource("QuadMesh_wuwme")
-surface_material_override/0 = SubResource("StandardMaterial3D_2gh4u")
+surface_material_override/0 = SubResource("StandardMaterial3D_devvj")
 
 [node name="StaticBody3D" parent="ViewportNetworkGateway" index="2"]
 viewport_size = Vector2(650, 400)
@@ -330,7 +348,9 @@ shadow_enabled = true
 
 [connection signal="button_pressed" from="XROrigin3D/LeftHandController/ConnectButton" to="." method="_on_interactable_area_button_button_pressed"]
 
+[editable path="XROrigin3D/LeftHandController/simplelefthand"]
 [editable path="XROrigin3D/RightHandController/AutoHandtracker"]
+[editable path="XROrigin3D/RightHandController/simplerighthand"]
 [editable path="XROrigin3D/PlayerBody"]
 [editable path="XROrigin3D/FunctionPointer"]
 [editable path="ViewportNetworkGateway"]
