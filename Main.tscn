@@ -277,7 +277,6 @@ bone_idx = 9
 [node name="Poke" parent="XROrigin3D/RightHandController/RightHand/Hand_low_R/Armature/Skeleton3D/BoneAttachment3D" instance=ExtResource("7_xiqf5")]
 
 [node name="AnimationTree" parent="XROrigin3D/RightHandController/RightHand" index="1"]
-root_node = NodePath("../Hand_low_R")
 tree_root = SubResource("AnimationNodeBlendTree_mxvw5")
 
 [node name="AutoHandtracker" parent="XROrigin3D/RightHandController" instance=ExtResource("6_4vxvi")]
@@ -314,7 +313,6 @@ scene_properties_keys = PackedStringArray("virtual_keyboard_2d.gd")
 [node name="ViewportNetworkGateway" parent="." instance=ExtResource("15")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.29126, -3.78203)
 viewport_size = Vector2(650, 400)
-scene_properties_keys = PackedStringArray()
 
 [node name="Viewport" parent="ViewportNetworkGateway" index="0"]
 size = Vector2i(650, 400)
