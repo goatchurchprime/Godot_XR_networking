@@ -55,6 +55,7 @@ func _ready():
 	if webrtcroomname:
 		NetworkGateway.MQTTsignalling.Roomnametext.text = webrtcroomname
 
+
 func vr_right_button_pressed(button: String):
 	print("vr right button pressed ", button)
 	if button == "by_button":
@@ -125,7 +126,6 @@ func _process(delta):
 	
 
 
-
 #** Remove the debug printing messages
 #** make the -1 controllerid named
 #** test out drawing laser in contact only case
@@ -155,3 +155,14 @@ func _on_interactable_area_button_button_pressed(button):
 		NetworkGateway.simple_webrtc_connect(webrtcroomname)
 	if button:
 		button.get_node("Label3D").text = "X"
+
+
+func _on_xr_tools_pickable_dropped(pickable):
+	print("dropped ", pickable)
+	$CSGMesh3D/CSGBox3D.global_transform = $XRToolsPickable.transform
+	$XRToolsPickable/CSGBox3D.material.albedo_color.a = 0.05
+	$CSGMesh3D/CSGBox3D.visible = true
+
+func _on_xr_tools_pickable_picked_up(pickable):
+	$XRToolsPickable/CSGBox3D.material.albedo_color.a = 0.9
+	$CSGMesh3D/CSGBox3D.visible = false
