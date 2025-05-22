@@ -57,4 +57,3 @@ Godot_XR_networking directory itself and executing the godot executable, and it 
 immediately without the editor.  
 
 (However to make this work properly we will probably need a [keyboard simulator](https://github.com/GodotVR/godot-xr-tools/issues/93) added.)
-
