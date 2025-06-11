@@ -1,7 +1,7 @@
 extends "res://addons/gd-plug/plug.gd"
 
 func _plugging():
-	plug("GodotVR/godot-xr-tools", {"commit": "4d53140015ba5feb6f6ec07873f050311ffe1fdc", "include":["addons/godot-xr-tools"]})
+	plug("goatchurchprime/godot-xr-tools", {"branch": "handle-missing-rumble", "include":["addons/godot-xr-tools"]})
 	plug("Cafezinhu/godot-vr-simulator", {"commit": "5bedbbacf6fe40af10e0bfea99487c84387b19f3"})
 	plug("goatchurchprime/godot-mqtt", {"include":["addons/mqtt"]})
 	plug("goatchurchprime/godot_multiplayer_networking_workbench", {"include":["addons/player-networking"]})
