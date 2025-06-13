@@ -400,11 +400,9 @@ visible = false
 [node name="simplerighthand" parent="." instance=ExtResource("3_c7mpy")]
 
 [node name="hand_l" parent="." instance=ExtResource("7_s2tnc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.146362, -0.196251, -0.157425)
 visible = false
 
 [node name="hand_r" parent="." instance=ExtResource("9_v8raj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0879506, -0.231131, -0.154249)
 visible = false
 
 [node name="PlayerAnimation" type="AnimationPlayer" parent="."]
