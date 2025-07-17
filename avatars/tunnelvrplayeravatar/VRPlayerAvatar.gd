@@ -103,7 +103,7 @@ static func PF_changethinnedframedatafordoppelganger(fd, doppelnetoffset):
 	var itrackpos = selectedtrackslookup[".:position"]
 	var itrackheadrot = selectedtrackslookup[".:rotation"]
 	if fd.has(NCONSTANTS.CFI_ANIMTRACKS+itrackpos):
-		fd[NCONSTANTS.CFI_ANIMTRACKS+itrackpos].z += -2 # should only be set in the spawn point
+		fd[NCONSTANTS.CFI_ANIMTRACKS+itrackpos].z += -1 # should only be set in the spawn point
 	if fd.has(NCONSTANTS.CFI_ANIMTRACKS+itrackheadrot):
 		print(var_to_str(fd[NCONSTANTS.CFI_ANIMTRACKS+itrackheadrot]))
 		fd[NCONSTANTS.CFI_ANIMTRACKS+itrackheadrot] *= Quaternion(Vector3(0, 1, 0), deg_to_rad(180))

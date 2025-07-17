@@ -1,8 +1,6 @@
-[gd_scene load_steps=14 format=3 uid="uid://bgw2tanm4il3j"]
+[gd_scene load_steps=12 format=3 uid="uid://bgw2tanm4il3j"]
 
 [ext_resource type="Script" uid="uid://cj85ykry5pr77" path="res://avatars/tunnelvrplayeravatar/VRPlayerAvatar.gd" id="2"]
-[ext_resource type="PackedScene" uid="uid://8jsauvbqvkou" path="res://addons/xr-autohandtracker/simplelefthand.glb" id="2_c0lny"]
-[ext_resource type="PackedScene" uid="uid://dngec4nbh3ngj" path="res://addons/xr-autohandtracker/simplerighthand.glb" id="3_c7mpy"]
 [ext_resource type="PackedScene" uid="uid://dhaqth6q5yw4n" path="res://addons/godot-xr-tools/hands/model/hand_l.gltf" id="7_s2tnc"]
 [ext_resource type="PackedScene" uid="uid://ds1t8vc0kxoeo" path="res://addons/godot-xr-tools/hands/model/hand_r.gltf" id="9_v8raj"]
 
@@ -378,6 +376,7 @@ material = SubResource("2")
 
 [node name="skullcomponent" type="CSGMesh3D" parent="HeadCam"]
 transform = Transform3D(0.9, 0, 0, 0, 1, 0, 0, 0, 0.98, 0, -0.051, 0.085)
+operation = 2
 mesh = SubResource("3")
 material = SubResource("4")
 
@@ -394,25 +393,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.102821, -0.057813)
 mesh = SubResource("BoxMesh_c7mpy")
 surface_material_override/0 = SubResource("StandardMaterial3D_qiaoq")
 
-[node name="simplelefthand" parent="." instance=ExtResource("2_c0lny")]
-visible = false
-
-[node name="simplerighthand" parent="." instance=ExtResource("3_c7mpy")]
-
 [node name="hand_l" parent="." instance=ExtResource("7_s2tnc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.146362, -0.196251, -0.157425)
-visible = false
 
 [node name="hand_r" parent="." instance=ExtResource("9_v8raj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0879506, -0.231131, -0.154249)
-visible = false
 
 [node name="PlayerAnimation" type="AnimationPlayer" parent="."]
 libraries = {
 &"playeral": SubResource("AnimationLibrary_qatlg")
 }
 
-[editable path="simplelefthand"]
-[editable path="simplerighthand"]
 [editable path="hand_l"]
 [editable path="hand_r"]
