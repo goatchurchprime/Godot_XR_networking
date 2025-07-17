@@ -43,7 +43,9 @@ var possibleusernames = ["Alice", "Beth", "Cath", "Dan", "Earl", "Fred", "George
 func PF_initlocalplayer():
 	randomize()
 	$HeadCam/NameplateLabel3D.text = possibleusernames[randi()%len(possibleusernames)]
-
+	$hand_l/Armature/Skeleton3D/mesh_Hand_L.visible = false
+	$hand_r/Armature/Skeleton3D/mesh_Hand_R.visible = false
+	
 func playername():
 	return $HeadCam/NameplateLabel3D.text
 
@@ -64,7 +66,6 @@ func PF_spawninfo_receivedfromserver(sfd, PlayerConnection):
 	tween.tween_method(set_fade, 1.0, 0.0, 0.34)
 	PlayerConnection.spawninfoforclientprocessed()
 	await tween.finished
-	
 
 func skelbonescopy(skela, skelb):
 	for i in range(skela.get_bone_count()):
