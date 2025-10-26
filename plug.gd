@@ -4,7 +4,7 @@ extends "res://addons/gd-plug/plug.gd"
 # You will also need to install openxrvendorsplugin (v 4.0.0) from the assetlib
 
 func _plugging():
-	plug("GodotVR/godot-xr-tools", {"commit": "4d53140015ba5feb6f6ec07873f050311ffe1fdc"})
+	plug("GodotVR/godot-xr-tools", {"commit": "8823edbbcfe89b3e6c2a809c9407face3dbaa4c6"})
 	plug("Cafezinhu/godot-vr-simulator", {"commit": "5bedbbacf6fe40af10e0bfea99487c84387b19f3"})
 	plug("goatchurchprime/godot-mqtt")
 	plug("goatchurchprime/godot_multiplayer_networking_workbench", {"include":["addons/player-networking"], "branch":"main"})
