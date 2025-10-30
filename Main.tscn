@@ -1,4 +1,4 @@
-[gd_scene load_steps=58 format=3 uid="uid://ckhwmlkgnklol"]
+[gd_scene load_steps=59 format=3 uid="uid://ckhwmlkgnklol"]
 
 [ext_resource type="Script" uid="uid://4b3kqph42yye" path="res://Main.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://clc5dre31iskm" path="res://addons/godot-xr-tools/xr/start_xr.tscn" id="2_y037t"]
@@ -23,18 +23,6 @@
 [ext_resource type="PackedScene" uid="uid://cme66uldrjl2i" path="res://addons/godot-xr-tools/interactables/interactable_area_button.tscn" id="34_vk8kn"]
 [ext_resource type="PackedScene" uid="uid://dgdb1texynduw" path="res://addons/godot-xr-tools/objects/virtual_keyboard.tscn" id="51_rjdns"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_58518"]
-sky_curve = 0.0512265
-ground_bottom_color = Color(0.278431, 0.12549, 0.0823529, 1)
-ground_curve = 0.393966
-
-[sub_resource type="Sky" id="Sky_gwala"]
-sky_material = SubResource("ProceduralSkyMaterial_58518")
-
-[sub_resource type="Environment" id="Environment_spl7d"]
-background_mode = 2
-sky = SubResource("Sky_gwala")
-
 [sub_resource type="CylinderMesh" id="20"]
 top_radius = 0.008
 bottom_radius = 0.001
@@ -45,34 +33,34 @@ rings = 0
 [sub_resource type="BoxShape3D" id="BoxShape3D_5osqo"]
 size = Vector3(0.15, 0.18, 0.02)
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_3b0ty"]
+animation = &"Grip"
+
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_bg4s2"]
 animation = &"Grip"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_hhcpw"]
-animation = &"Grip"
-
-[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_mxvw5"]
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_hhcpw"]
 filter_enabled = true
 filters = ["Armature/Skeleton3D:Little_Distal_R", "Armature/Skeleton3D:Little_Intermediate_R", "Armature/Skeleton3D:Little_Metacarpal_R", "Armature/Skeleton3D:Little_Proximal_R", "Armature/Skeleton3D:Middle_Distal_R", "Armature/Skeleton3D:Middle_Intermediate_R", "Armature/Skeleton3D:Middle_Metacarpal_R", "Armature/Skeleton3D:Middle_Proximal_R", "Armature/Skeleton3D:Ring_Distal_R", "Armature/Skeleton3D:Ring_Intermediate_R", "Armature/Skeleton3D:Ring_Metacarpal_R", "Armature/Skeleton3D:Ring_Proximal_R", "Armature/Skeleton3D:Thumb_Distal_R", "Armature/Skeleton3D:Thumb_Metacarpal_R", "Armature/Skeleton3D:Thumb_Proximal_R", "Armature/Skeleton:Little_Distal_R", "Armature/Skeleton:Little_Intermediate_R", "Armature/Skeleton:Little_Proximal_R", "Armature/Skeleton:Middle_Distal_R", "Armature/Skeleton:Middle_Intermediate_R", "Armature/Skeleton:Middle_Proximal_R", "Armature/Skeleton:Ring_Distal_R", "Armature/Skeleton:Ring_Intermediate_R", "Armature/Skeleton:Ring_Proximal_R", "Armature/Skeleton:Thumb_Distal_R", "Armature/Skeleton:Thumb_Proximal_R"]
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_xrxkg"]
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_mxvw5"]
 animation = &"Grip 5"
 
-[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_sqvbp"]
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_xrxkg"]
 filter_enabled = true
 filters = ["Armature/Skeleton3D:Index_Distal_R", "Armature/Skeleton3D:Index_Intermediate_R", "Armature/Skeleton3D:Index_Metacarpal_R", "Armature/Skeleton3D:Index_Proximal_R", "Armature/Skeleton:Index_Distal_R", "Armature/Skeleton:Index_Intermediate_R", "Armature/Skeleton:Index_Proximal_R"]
 
-[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_hri7i"]
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_sqvbp"]
 graph_offset = Vector2(-552.664, 107.301)
-nodes/ClosedHand1/node = SubResource("AnimationNodeAnimation_bg4s2")
+nodes/ClosedHand1/node = SubResource("AnimationNodeAnimation_3b0ty")
 nodes/ClosedHand1/position = Vector2(-600, 300)
-nodes/ClosedHand2/node = SubResource("AnimationNodeAnimation_hhcpw")
+nodes/ClosedHand2/node = SubResource("AnimationNodeAnimation_bg4s2")
 nodes/ClosedHand2/position = Vector2(-360, 300)
-nodes/Grip/node = SubResource("AnimationNodeBlend2_mxvw5")
+nodes/Grip/node = SubResource("AnimationNodeBlend2_hhcpw")
 nodes/Grip/position = Vector2(0, 40)
-nodes/OpenHand/node = SubResource("AnimationNodeAnimation_xrxkg")
+nodes/OpenHand/node = SubResource("AnimationNodeAnimation_mxvw5")
 nodes/OpenHand/position = Vector2(-600, 100)
-nodes/Trigger/node = SubResource("AnimationNodeBlend2_sqvbp")
+nodes/Trigger/node = SubResource("AnimationNodeBlend2_xrxkg")
 nodes/Trigger/position = Vector2(-360, 40)
 node_connections = [&"output", 0, &"Grip", &"Grip", 0, &"Trigger", &"Grip", 1, &"ClosedHand2", &"Trigger", 0, &"OpenHand", &"Trigger", 1, &"ClosedHand1"]
 
@@ -86,13 +74,13 @@ subdivide_depth = 20
 resource_local_to_scene = true
 size = Vector2(3, 2)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_w3rk5"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_hri7i"]
 viewport_path = NodePath("ViewportNetworkGateway/Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5mvff"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w3rk5"]
 transparency = 1
 cull_mode = 2
-albedo_texture = SubResource("ViewportTexture_w3rk5")
+albedo_texture = SubResource("ViewportTexture_hri7i")
 texture_filter = 1
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ttrwc"]
@@ -158,12 +146,33 @@ albedo_color = Color(0.592157, 0.415686, 0.415686, 1)
 albedo_texture = SubResource("NoiseTexture2D_dlwpg")
 uv1_scale = Vector3(10, 20, 1)
 
+[sub_resource type="Gradient" id="Gradient_3b0ty"]
+colors = PackedColorArray(0.5609549, 0.5609549, 0.5609549, 1, 1, 1, 1, 1)
+
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_hhcpw"]
 frequency = 0.017
 offset = Vector3(-4.45, 0, 0)
+domain_warp_enabled = true
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_mxvw5"]
 noise = SubResource("FastNoiseLite_hhcpw")
+color_ramp = SubResource("Gradient_3b0ty")
+seamless = true
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_3b0ty"]
+
+[sub_resource type="Sky" id="Sky_bg4s2"]
+sky_material = SubResource("ProceduralSkyMaterial_3b0ty")
+
+[sub_resource type="Environment" id="Environment_3b0ty"]
+background_mode = 2
+sky = SubResource("Sky_bg4s2")
+ambient_light_sky_contribution = 0.02
+reflected_light_source = 1
+glow_enabled = true
+glow_strength = 1.1
+glow_bloom = 0.45
+glow_blend_mode = 0
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1")
@@ -174,7 +183,6 @@ script = ExtResource("1")
 
 [node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-environment = SubResource("Environment_spl7d")
 current = true
 
 [node name="AudioListener3D" type="AudioListener3D" parent="XROrigin3D/XRCamera3D"]
@@ -285,7 +293,7 @@ bone_idx = 9
 
 [node name="AnimationTree" parent="XROrigin3D/RightHandController/RightHand" index="1"]
 root_node = NodePath("../Hand_low_R")
-tree_root = SubResource("AnimationNodeBlendTree_hri7i")
+tree_root = SubResource("AnimationNodeBlendTree_sqvbp")
 
 [node name="XRSimulator" parent="XROrigin3D" instance=ExtResource("21_8gxkp")]
 
@@ -331,7 +339,7 @@ localplayerscene = ""
 
 [node name="Screen" parent="ViewportNetworkGateway" index="1"]
 mesh = SubResource("QuadMesh_wuwme")
-surface_material_override/0 = SubResource("StandardMaterial3D_5mvff")
+surface_material_override/0 = SubResource("StandardMaterial3D_w3rk5")
 
 [node name="StaticBody3D" parent="ViewportNetworkGateway" index="2"]
 viewport_size = Vector2(650, 400)
@@ -410,6 +418,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_gvpyy")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.925065, -0.301336, 0.231195, 0.0305464, 0.66577, 0.745531, -0.378578, -0.682603, 0.625085, 3.30504, 8.65411, 0)
+visible = false
 light_energy = 0.395
 shadow_enabled = true
 
@@ -426,9 +435,12 @@ transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
 amount = 400
 
 [node name="OmniLight3D" type="OmniLight3D" parent="TinselCampfire"]
-light_color = Color(1, 0.050000012, 0.050000012, 1)
+light_color = Color(0.6918371, 0.46862704, 0.48546696, 1)
 light_projector = SubResource("NoiseTexture2D_mxvw5")
 shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_3b0ty")
 
 [connection signal="button_pressed" from="XROrigin3D/LeftHandController/ConnectButton" to="." method="_on_interactable_area_button_button_pressed"]
 
