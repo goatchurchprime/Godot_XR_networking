@@ -54,6 +54,10 @@ func _ready():
 	NetworkGateway.set_process_input(false)
 	if webrtcroomname:
 		NetworkGateway.MQTTsignalling.Roomnametext.text = webrtcroomname
+		
+	await get_tree().create_timer(2.0).timeout
+	print("startsimulationnn")
+	$Character.sim.physical_bones_start_simulation()
 
 func vr_right_button_pressed(button: String):
 	print("vr right button pressed ", button)
